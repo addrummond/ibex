@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <!-- General utilities (map, filter, hashtables, ...) -->
+    <script type="text/javascript" src="util.js"></script>
+    <!-- Code for executing shuffle sequences. -->
+    <script type="text/javascript" src="shuffle.js"></script>
+    <!-- JS file containing list of sentences and comprehension questions. -->
+    <script type="text/javascript" src="data.js"></script>
+    <!-- Set up configuration variables. -->
+    <script type="text/javascript" src="conf.js"></script>
+    <!-- JSON serialization code. -->
+    <script type="text/javascript" src="json.js"></script>
+
+    <!-- To be reset by JavaScript. -->
+    <title>Experiment</title>
+    <script type="text/javascript">
+    <!--
+    document.title = conf_pageTitle;
+    -->
+    </script>
+
+    <style>
+        body {
+            color: black;
+            background-color: white;
+            font-size: small;
+        }
+        div.sentence {
+            background-color: white;
+        }
+        p.question {
+            padding-left: 0.6em;
+        }
+        div.rating {
+            padding-left: 0.6em;
+        }
+        div.rating-choice {
+            margin-top: 1em;
+        }
+        div.sentence div {
+            background-color: white;
+            border-bottom: 1px solid;
+            color: white;
+            border-color: #9ea4b1;
+            float: left;
+	        margin-left: 0.6em;
+            margin-bottom: 2em;
+        }
+        p.preamble {
+            margin-left: 0.6em;
+            margin-bottom: 2em;
+        }
+        .lpad {
+            margin-left: 0.6em;
+            margin-right: 0.6em;
+        }
+        div.bar-container {
+            border: 1px solid;
+            border-color: #9ea4b1;
+            background-color: white;
+        }
+        div.bar {
+            background-color: blue;
+        }
+        p.progress-text {
+            padding-top: 0.5em;
+            margin-top: 0;
+            font-style: italic;
+        }
+        p.practice-text {
+            color: blue; 
+            font-weight: bold;
+        }
+        .number-message {
+            font-style: italic;
+            margin-top: 1.5em;
+        }
+        p.next-sentence-message {
+            font-style: italic;
+        }
+        p.next-sentence-message b {
+            font-style: normal;
+            color: red;
+        }
+        p.finished-message {
+            font-weight: bold;
+            margin-top: 2em;
+        }
+        p.sending-results {
+            margin-left: 0.5em;
+            margin-top: 2em;
+            font-weight: bold;
+            font-size: medium;
+        }
+        p.counter {
+            font-weight: bold;
+            font-size: x-large;
+            color: blue;
+            border: solid 1px red;
+            text-align: center;
+            width: 2em;
+            height: 2em;
+        }
+        div.counter-number {
+            padding-top: 0.5em;
+        }
+    </style>
+</head>
+<body id="bod">
+
+<!-- We set these to visible using JS, so that someone with JS disabled won't
+     see this (assuming their browser has decent CSS support). -->
+<div id="instructions" style="visibility: hidden; font-size: medium;">
+<script type="text/javascript">
+<!--
+document.write(conf_instructionsHTML);
+-->
+</script>
+<noscript>
+<p>You need to have Javascript enabled in order to use this page.</p>
+</noscript>
+</div>
+
+<!-- The main body of JS code. -->
+<script type="text/javascript" src="main.js"></script>
+
+</body>
+</html>

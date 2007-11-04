@@ -1,0 +1,434 @@
+=======================================================================
+Webspr 0.1.3 Beta
+=======================================================================
+
+
+0. Release notes
+-----------------------------------------------------------------------
+Differences with 1.3-beta1/1.3-beta2:
+
+    * Fixed bug which prevented newlines from being recorded in
+      results (this was introduced in 1.3).
+
+Differences with 1.2:
+
+    * Support for latin-square designs.
+
+    * Customizable sentence ordering with shuffle sequences (see
+      section 4).
+
+    * More configuration options (e.g. showing progress bar is
+      optional, instructions are configurable).
+
+    * A number of important bug fixes.
+
+Though this is a beta, it is probably more stable and bug-free than
+previous versions.
+
+
+1. Introduction
+-----------------------------------------------------------------------
+Webspr allows self-paced reading experiments and speeded acceptability
+judgment experiments to be conducted online through a web browser.
+
+
+2. Setting up the server.
+-----------------------------------------------------------------------
+You will need to install the "paste" module for Python before using
+this software.
+
+There are two components: the server, server.py, and the webpage,
+spr.html.  The server uses the "toy" HTTP server provided by paste, so
+you probably don't want to use it directly, but should rather hide it
+behind a proxy. The server is limited to serving the files "spr.html",
+"json.js", "main.js", "conf.js", "util.js" and "data.js" (or any other
+file matching "*data.js") and is thus rather inflexible in its current
+form. (This is another reason to run it behind a proxy.)
+
+In theory, using the software is a simple as running the server and
+pointing your subjects to http://your.server/spr.html.
+
+Input data should be in a file called data.js in the same directory as
+spr.html.  The server saves results in a file called "results", and
+saves the raw post data it receives in a file called "raw_results".
+
+
+3. Self-paced reading tasks
+-----------------------------------------------------------------------
+The following is an example data.js for a self-paced reading task:
+
+    __________ BEGIN EXAMPLE data.js __________
+
+    var experimentType = "self-paced reading";
+
+    var instructionsHTML = "<p>[Your instructions go here.]</p>";
+
+    var sentences_strings = [
+
+    [0, "A practice sentence"],
+    [0, "A practice sentence with a comprehension question",
+        ["What kind of sentence was that?",
+         "A practice", "A real sentence"]],
+
+    [[1,1], "A type 1 sentence that has correct agreement"],
+    [[2,1], "A type 2 sentence that have incorrect agreement"],
+
+    [[1,2], "Another type 1 sentence that has correct agreement"],
+    [[2,2], "Another type 2 sentence that have incorrect agreement",
+            ["A comprehension question?",
+             "Right answer",
+             "First wrong answer",
+             "Second wrong answer"]],
+
+    [-1, "This is a filler sentence"],
+    [-1, "A boring filler, now with a comprehension question",
+         ["Did you understand that?",
+          "Yes", "No"]]
+
+    ];
+
+    __________ END EXAMPLE data.js __________
+
+The instructions you give in the 'instructionsHTML' variable will be
+displayed when the user first visits the page. The user can press the
+space bar to clear the instructions and move onto the experiment, so
+remember to include some kind of "press space to continue" message in
+your instructions.
+
+Each sentence has a type. Types are stored in the results file and
+make it easy to group sentences for analysis. Types may be either
+strings or integers, and types themselves have no meaning (this is a
+change from earlier versions of this software).
+
+In addition to a type, each sentence has a "group" (which also may be
+either a string or an integer). This facilitates the implementation of
+latin-square designs. See the next section for more information on
+types and groups, and means of shuffling sentences into an appropriate
+order.
+
+Owing to differences in browsers, screen sizes, etc., it is impossible
+to predict whether or not a given sentence will fit onto a single
+line. For this reason, the software detects when a line boundary is
+crossed and flags this in the results, allowing timings influenced by
+line breaks to be excluded from analysis.
+
+Results are saved in CSV format. The columns do not have headings in
+the results file. Each set of results is preceded by a header giving
+the time, date and other information. Each line of the header is
+preceded by a '#'.
+
+** Each row corresponds to a single instance of a spacebar pressing **
+** by a single participant.                                         **
+
+In order, the columns are as follows:
+
+    1. Date
+    The date/time at which the server received the results of which
+    this line is a part. This is an integer representing seconds since
+    January 1 1970 (UNIX/POSIX time).
+
+    2. Sentence
+    The number of the sentence (as determined by the order of
+    sentences in data.js). Note that sentence hashes can also be used
+    to identify sentences.
+
+    3. Word
+    The word number, starting from 1. (I.e. the result for word 1 is
+    the time it took to read the first word, or in other words, the
+    time it took for the subject to make the second word appear.)
+
+    4. Type
+    The type of the sentence, as given in data.js.
+
+    5. Time
+    Integer giving the reading time in ms.
+
+    6. Newline
+    Indicates whether or not the user went onto a new line to read
+    this word (i.e., whether the word is the last word on a line). 1
+    for yes, 0 for no.
+
+    7. Answer
+    Indicates whether or not the comprehension question was answered
+    correctly.  1 for yes, 0 for no.
+
+    8. Length
+    The length of the word in characters.
+
+    9. IP Hash
+    MD5 hash of the subject's IP address as a hexadecimal string.
+
+    10. Sentence hash
+    MD5 hash of the sentence (with one space between each word --
+    multiple spaces, newlines, etc. are trimmed before hashing).
+
+    11. Group
+    The sentence's group.
+    (This is last in order to maintain backwards compatibility with
+    earlier versions of the software which did not implement groups).
+
+The following variables may be defined in data.js to alter the default
+parameters of the task:
+
+    var instructionsHTML     (default: see above)
+        STRING
+        See above in this section.
+
+    var practiceSentenceType (default = 0)
+    	STRING/INT
+        The type associated with practice sentences. Webspr flags
+    	practice sentences so that participants know they are not
+    	reading a "real" sentence. In speeded acceptability judgment
+    	tasks, there is also the option to give participants more time
+    	for practice sentences (see section 5).
+
+    var shuffleSequence      (default: see section 4)
+        OBJECT
+        See section 4.
+
+    var pageTitle            (default = "Experiment")
+        STRING
+	Changes the title of the webpage.
+
+    var showProgressBar      (default = true)
+    	BOOLEAN
+	Whether or not to display a progress bar indicating how far
+        the participant has progressed through the set of sentences.
+
+The following variable only applies to self-paced reading experiments:
+
+    var flagWrongAnswers     (default = true)
+        BOOLEAN
+	Whether or not to tell participants when they have answered a
+        comprehension question incorrectly.
+
+
+4. Types, groups and the order of sentences.
+-----------------------------------------------------------------------
+Webspr is able to automate simple "latin square" designs, and
+randomize the order of "real" and filler sentences in such a way that
+fillers are evenly spaced. This feature depends on the assignment of
+sentences to "types" and "groups". Groups are relevant to latin
+squares: each participant is presented with one sentence from each
+group over the course of the task. Types are used for randomizing the
+order of sentences after sentences have been picked out of groups.
+To recap, types and groups are assigned using the following syntax:
+
+    [[TYPE, GROUP], "Sentence string...", ...]
+
+GROUP can be set to null if the sentence is not in a group of similar
+sentences (this is equivalent to assigning the sentence to its own
+unique group). Both types and groups may either be strings or integers
+(or, as mentioned, null in the case of groups). An alternative to
+explicitly specifying a null group is to use the following format
+with an implicit null group:
+
+    [TYPE, "Sentence string", ...]
+
+Webspr has a rather involved method of ordering sentences that is
+designed to be highly customizable. The method used has the following
+two major steps:
+
+    1. Pick a single sentence from each group (i.e. implement a latin
+       square design).
+
+    2. Execute a "shuffle sequence" specified by the user in order to
+       determine the final ordering of sentences.
+
+The first step is straightforward. The server maintains a counter
+which is used to rotate latin square designs, such that every design
+is run an equal number of times (or as close as possible to an equal
+number of times). The counter depends on the participant having
+cookies enabled in his browser; if he does not, a random choice of
+design is made.
+
+Moving on to the second major step, a "shuffle sequence" is a
+JavaScript data structure describing a series of "shuffling",
+randomizing and sequencing operations over an array of sentences.
+There are three basic operations, 'seq', 'randomize' and
+'shuffle'. Both take a series of "type predicates" as arguments, where
+each type predicate is the characteristic function of a set of
+sentence types. A type predicate may be any of the following:
+
+    * A string or integer, denoting the characteristic function of all
+      sentences of the given type.
+
+    * A list of strings/integers, denoting the characteristic function
+      of all sentences belonging to any one of the types in the list.
+
+    * A JavaScript function object, returning a boolean value when
+      given a type (either a string or integer).
+
+The following type predicates are predefined as JavaScript functions:
+
+    anyType       // Matches any type
+    lessThan0     // Matches any integer type < 0
+    greaterThan0  // Matches any integer type > 0
+    equalTo0      // Matches any integer type == 0
+
+The basic operations work as follows:
+
+    * A statement of the form seq(type1, type2, type3, ...) specifies
+      a sequence where all sentences of type1 precede all sentences of
+      type2, all sentences of type2 precede all sentences of type3,
+      and so on.  The original relative ordering between sentences of
+      the same type is preserved.
+
+    * A statement of the form randomize(type1) specifies a randomly
+      ordered sequence of all type1 sentences.
+
+    * A statement of the form shuffle(type1, type2, type3, ...)
+      specifies that sentences of type1, type2, type3, ... should be
+      shuffled together in such a way that sentences of each type are
+      evenly spaced. The original relative ordering between sentences
+      of the same type is preserved.
+
+The power of shuffle sequences derives from the possibility of
+composing them without limit.  Suppose we want the following order:
+all practice sentences in their original order followed by evenly
+spaced real and filler sentences in random order. Assuming the types
+"practice", "real" and "filler", we could use the following shuffle
+sequence:
+
+    seq("practice", shuffle(randomize("real"), randomize("filler")))
+
+Now suppose that there are two types of real sentence ("real1" and
+"real2"), and we wish to order the sentences in the same way as
+before:
+
+    seq("practice", shuffle(randomize(["real1", "real2"]),
+                    randomize("filler")))
+
+What if we want the two types of real sentence to be evenly spaced
+too?  The following formula will do the trick:
+
+    seq("practice", shuffle(randomize("filler"),
+                            randomize("real1"),
+                            randomize("real2"))))
+
+This first evenly shuffles fillers, sentences of type real1 and
+sentences of type real2, and then prepends the practice sentences in
+the order they were given in data.js.
+
+Since it is often useful to apply 'randomize' to every argument of
+'shuffle', there is a utility function, 'rshuffle', which automates
+this. The following equivalence holds:
+
+    rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
+
+If no shuffle sequence is specified, Webspr uses the following default
+sequence:
+
+    seq(equalTo0, shuffle(greaterThan0, lessThan0))
+
+This will seem rather cryptic to anyone not familiar with the behavior
+of previous versions of Webspr, where this ordering specification was
+built in and unchangeable. In short, it works well if practice
+sentences have type 0, filler sentences have integer types < 0, and
+real sentences have integer types > 0.
+
+IMPORTANT: A shuffle sequence must always have one of "seq", "shuffle"
+or "randomize" as its outer element. A single string or integer is NOT
+a valid shuffle sequence. Thus, one must use seq("foo"), not just
+"foo".
+
+
+5. Speeded acceptability judgment tasks.
+-----------------------------------------------------------------------
+This section describes the differences between a data.js for a
+self-paced reading task and a data.js for a speeded acceptability
+judgment task; it will therefore not make much sense unless you've
+read the previous section.
+
+The most important difference is that the value of 'experimentType'
+must be changed to "speeded acceptability".
+
+The list of sentences has exactly the same format as for a self-paced
+reading experiment. However, any comprehension questions will be
+ignored. There are some additional variables which can be defined in
+data.js in order to modify the default parameters for the task:
+
+    var wordTime                  (default = 300)
+        INTEGER
+        The time in ms for which each word is displayed.
+
+    var wordPauseTime             (default = 100)
+        INTEGER
+        The time in ms for which each word is blanked before the next
+        word is shown.
+
+    var acceptabilityRatingsPreamble
+        STRING
+        Example: "How would you rate this sentence on a scale of 1-5?"
+
+    var acceptabilityRatings      (default=[["Good","f"], ["Bad","j"]])
+        ARRAY OF STRINGS
+        If all ratings are single digits, the user may use the number
+        keys to select ratings as well as the mouse. The order of the
+        ratings in the array determines the order in which they are
+        displayed, but has no other significance.
+
+    var judgmentTimeFrame         (default = 3)
+        INTEGER
+        The time in seconds a participant has to make an acceptability
+        judgment on a "real" or filler sentence. If this is set to 0
+        or null, no time limit is imposed on participants.
+
+    var practiceJudgmentTimeFrame (default = 10)
+        INTEGER
+        As above, but applies to practice sentences only. Note that it
+        is not possible for only one of judgmentTimeFrame and
+        practiceJudgmentTimeFrame to be 0 or null.
+
+    var showCounter               (default = true)
+        BOOLEAN
+        Whether or not to display a counter showing the participant
+        how much time he has left to give a judgment.
+
+The value of the variable 'flagWrongAnswers' is ignored, since speeded
+accpetability judgment tasks cannot have comprehension questions.
+
+The format of the results file is quite different compared to that for
+self-paced reading experiments. There is one line per sentence, and
+each line has the following columns:
+
+    1. Time
+    As for self-paced reading results.
+
+    2. Sentence type
+    As for self-paced reading results.
+
+    3. Line breaks
+    A list of the form "(n1-n2-n3...)" (i.e. a hyphen-separated list
+    of integers enclosed in brackets), giving a list of the numbers of
+    the words which were the last word on a line.
+
+    4. Rating
+    The rating the user gave the sentence. The special value "TIMEOUT"
+    is used if the user did not give the sentence a rating within the
+    time limit.
+
+    5. IP hash
+    MD5 hash of the participant's IP address, as for self-paced
+    reading results.
+
+    6. Sentence hash
+    MD5 hash of the sentence, as for self-paced reading results.
+
+    7. Group
+    The sentence's group.
+
+
+6. Browser compatibility
+-----------------------------------------------------------------------
+Webspr has been tested on Firefox 2.0.0.8/1.5.0.7, Safari 2.0.4, Opera
+9.24 and Internet Explorer 7. Earlier versions were known to work on
+IE 6; please let me know if they still do (or don't).
+
+
+7. Contact
+-----------------------------------------------------------------------
+Feel free to contact me with any suggestions or questions at
+<a.d.drummond@gmail.com>. It would be great to see people actually
+using this, so I'm generally happy to assist with any technical issues
+with setting up the server, etc.
