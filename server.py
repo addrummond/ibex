@@ -27,12 +27,32 @@ import StringIO
 import md5
 import time as time_module
 import types
+import os
+import os.path
+import sys
 
 PORT = 3000
 RESULT_FILE_NAME = "results"
 RAW_RESULT_FILE_NAME = "raw_results"
+SERVER_STATE_DIR = "server_state"
 
-counter = 1
+def get_counter():
+    try:
+        f = open(SERVER_STATE_DIR + '/counter', "r")
+        n = int(f.read().strip())
+        f.close()
+        return n
+    except IOError, ValueError:
+        print "ERROR: Error reading counter from server state"
+        sys.exit(1)
+def set_counter(n):
+    try:
+        f = open(SERVER_STATE_DIR + '/counter', "w")
+        f.write(str(n))
+        f.close()
+    except IOError:
+        print "ERROR: Error setting counter in server state"
+        sys.exit(1)
 
 class HighLevelParseError(Exception):
     def __init__(self, *args):
@@ -139,19 +159,19 @@ def rearrange(parsed_json, ip):
     else:
         raise HighLevelParseError()
 
-def counter_cookie_header():
+def counter_cookie_header(c):
     return (
         "Set-Cookie",
         "counter=%i; path=/; expires=%s GMT" % \
-        (counter,
+        (c,
          time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time_module.time() + 60 * 60)))
     )
 
 def control(env, start_response):
     def cc_start_response(status, headers):
-        global counter
-        start_response(status, headers + [counter_cookie_header()])
-        counter += 1
+        c = get_counter()
+        start_response(status, headers + [counter_cookie_header(c)])
+        set_counter(c + 1)
 
     ip = None
     if env.has_key('HTTP_X_FORWARDED_FOR'):
@@ -229,5 +249,24 @@ def control(env, start_response):
     else:
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=utf-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
+
+# Create a directory for storing the server state
+# (if it doesn't already exist), and initialize the counter.
+try:
+    # Create the directory.
+    if os.path.isfile(SERVER_STATE_DIR):
+        print "ERROR: '%s' is a file, so could not create server state directory" % SERVER_STATE_DIR
+        sys.exit(1)
+    elif not os.path.isdir(SERVER_STATE_DIR):
+        os.mkdir(SERVER_STATE_DIR)
+
+    # Initialize the counter, if there isn't one already.
+    if not os.path.isfile(SERVER_STATE_DIR + '/counter'):
+        f = open(SERVER_STATE_DIR + '/counter', "w")
+        f.write("0")
+        f.close()
+except os.error, IOError:
+    print "ERROR: Could not create server state directory at %s" % SERVER_STATE_DIR
+    sys.exit(1)
 
 httpserver.serve(control, port=PORT)
