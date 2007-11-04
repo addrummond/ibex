@@ -30,11 +30,7 @@ import types
 import os
 import os.path
 import sys
-
-PORT = 3000
-RESULT_FILE_NAME = "results"
-RAW_RESULT_FILE_NAME = "raw_results"
-SERVER_STATE_DIR = "server_state"
+from server_conf import *
 
 def get_counter():
     try:
