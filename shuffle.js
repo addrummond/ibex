@@ -105,6 +105,23 @@ function anyType(x) { return true; }
 function lessThan0(x) { return typeof(x) == "number" && x < 0 ;}
 function greaterThan0(x) { return typeof(x) == "number" && x > 0; }
 function equalTo0(x) { return typeof(x) == "number" && x == 0; }
+function startsWith(k) {
+    return function(s) {
+        // Avoid searching through the whole string in cases where
+        // it's not necessary.
+        if (typeof(s) != "string")
+            return false;
+        else if (s.length == 0 && k.length == 0)
+            return true;
+        else if (s[0] != k[0])
+            return false;
+        else
+            return typeof(s) == "string" && s.indexOf(k) == 0;
+    }
+}
+function not(pred) {
+    return function(k) { return ! pred(k); }
+}
 
 function Seq(args) {
     this.ssType = "Seq";
