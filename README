@@ -389,11 +389,15 @@ data.js in order to modify the default parameters for the task:
         Example: "How would you rate this sentence on a scale of 1-5?"
 
     var acceptabilityRatings      (default=[["Good","f"], ["Bad","j"]])
-        ARRAY OF STRINGS
-        If all ratings are single digits, the user may use the number
-        keys to select ratings as well as the mouse. The order of the
-        ratings in the array determines the order in which they are
-        displayed, but has no other significance.
+        ARRAY OF STRINGs/[STRING,STRING]s
+            or
+        ARRAY OF [STRING,STRING] pairs
+        If an array of strings, specifies the ratings which a user may
+        choose from. The user may press the first character of each
+        rating to select it. A [STRING,STRING] pair may be used
+        instead of a simple string; in this case, the second string
+        must be of length 1, specifying the key the user should press
+        to select the rating.
 
     var judgmentTimeFrame         (default = 3)
         INTEGER
