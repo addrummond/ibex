@@ -20,7 +20,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from paste import httpserver
+import sys
+from server_conf import *
+if SERVER_MODE == "paste":
+    from paste import httpserver
+elif SERVER_MODE == "cgi":
+    import wsgiref.handlers
+else:
+    print "ERROR: Unrecognized value for SERVER_MODE"
+    sys.exit(1)
+
 import json
 import itertools
 import StringIO
@@ -29,8 +38,6 @@ import time as time_module
 import types
 import os
 import os.path
-import sys
-from server_conf import *
 
 def get_counter():
     try:
@@ -163,6 +170,16 @@ def counter_cookie_header(c):
          time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time_module.time() + 60 * 60)))
     )
 
+STATIC_FILES = [
+    'spr.html',
+    'data.js',
+    'json.js',
+    'main.js',
+    'conf.js',
+    'shuffle.js',
+    'util.js'
+]
+
 def control(env, start_response):
     def cc_start_response(status, headers):
         c = get_counter()
@@ -176,26 +193,20 @@ def control(env, start_response):
         ip = env['REMOTE_ADDR']
 
     uri = env['PATH_INFO'] + ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
-    stripped_uri = uri.strip('/');
-    if stripped_uri == 'spr.html' or \
-       stripped_uri.endswith('data.js') or \
-       stripped_uri == 'json.js' or \
-       stripped_uri == 'main.js' or \
-       stripped_uri == 'conf.js' or \
-       stripped_uri == 'shuffle.js' or \
-       stripped_uri == "util.js":
+    last = filter(lambda x: x != [], uri.split('/'))[-1];
+    if last in STATIC_FILES:
         contents = None
         f = None
         try:
-            f = open(stripped_uri)
+            f = open(last)
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if f: f.close()
-        rr = stripped_uri == 'main.js' and cc_start_response or start_response
-        rr('200 OK', [('Content-Type', (stripped_uri == 'spr.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
+        rr = last == 'main.js' and cc_start_response or start_response
+        rr('200 OK', [('Content-Type', (last == 'spr.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
     elif uri.strip('/') == 'send-results':
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
@@ -265,4 +276,7 @@ except os.error, IOError:
     print "ERROR: Could not create server state directory at %s" % SERVER_STATE_DIR
     sys.exit(1)
 
-httpserver.serve(control, port=PORT)
+if SERVER_MODE == "paste":
+    httpserver.serve(control, port=PORT)
+elif SERVER_MODE == "cgi":
+    wsgiref.handlers.CGIHandler().run(control)
