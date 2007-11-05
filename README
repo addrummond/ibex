@@ -5,6 +5,18 @@ Webspr 0.1.3 Beta
 
 0. Release notes
 -----------------------------------------------------------------------
+Though this is a beta, it is more stable and bug-free than 1.2.
+
+Differences with 1.3-beta-3:
+
+    * Can now be deployed as a CGI process as well as a stand-alone
+      server.
+
+    * Server state (i.e. the counter) is now stored on disk in the
+      server_state directory.
+
+    * New 'startsWith' and 'not' predicates for shuffle sequences.
+
 Differences with 1.3-beta1/1.3-beta2:
 
     * Fixed bug which prevented newlines from being recorded in
@@ -22,9 +34,6 @@ Differences with 1.2:
 
     * A number of important bug fixes.
 
-Though this is a beta, it is probably more stable and bug-free than
-previous versions.
-
 
 1. Introduction
 -----------------------------------------------------------------------
@@ -34,23 +43,31 @@ judgment experiments to be conducted online through a web browser.
 
 2. Setting up the server.
 -----------------------------------------------------------------------
-You will need to install the "paste" module for Python before using
-this software.
+There are two ways of running the server: either as a stand-alone
+server, or as a CGI process. By default, the server runs in
+stand-alone mode; to start it, simply execute server.py. Note that you
+will need to have the "paste" module installed for Python in order for
+stand-alone mode to work. The CGI mode requires only modules that come
+with the standard Python 2.5 distribution.
 
-There are two components: the server, server.py, and the webpage,
-spr.html.  The server uses the "toy" HTTP server provided by paste, so
-you probably don't want to use it directly, but should rather hide it
-behind a proxy. The server is limited to serving the files "spr.html",
-"json.js", "main.js", "conf.js", "util.js" and "data.js" (or any other
-file matching "*data.js") and is thus rather inflexible in its current
-form. (This is another reason to run it behind a proxy.)
-
-In theory, using the software is a simple as running the server and
-pointing your subjects to http://your.server/spr.html.
+The stand-alone server is limited to serving the files "spr.html",
+"json.js", "main.js", "conf.js", "util.js" and "data.js", and is thus
+rather inflexible in its current form. However, it is useful for testing
+experimental designs without setting up a full-blown HTTP server.
 
 Input data should be in a file called data.js in the same directory as
 spr.html.  The server saves results in a file called "results", and
 saves the raw post data it receives in a file called "raw_results".
+
+In theory, using the software is a simple as running the server by
+either of the methods described above, constructing a suitable data.js
+file, and pointing your subjects to http://your.server/spr.html.
+
+The server can be configured by editing server_conf.py. Each of the
+options is commented. Change the SERVER_MODE variable to determine
+whether the server will run in stand-alone mode or as a CGI process.
+When SERVER_MODE is set to "cgi", server.py will work as a standard
+CGI program.
 
 
 3. Self-paced reading tasks
@@ -168,7 +185,14 @@ In order, the columns are as follows:
     earlier versions of the software which did not implement groups).
 
 The following variables may be defined in data.js to alter the default
-parameters of the task:
+parameters of the task and to configure other options:
+
+    var serverURI            (default = "server.py")
+        STRING
+        The URI for the server (used when results are sent to the
+        server). Keep this in synch with (a) the name of .py file
+        containing the server code and (b) the value of PY_SCRIPT_NAME
+        in server_conf.py.
 
     var instructionsHTML     (default: see above)
         STRING
@@ -259,13 +283,6 @@ sentence types. A type predicate may be any of the following:
     * A JavaScript function object, returning a boolean value when
       given a type (either a string or integer).
 
-The following type predicates are predefined as JavaScript functions:
-
-    anyType       // Matches any type
-    lessThan0     // Matches any integer type < 0
-    greaterThan0  // Matches any integer type > 0
-    equalTo0      // Matches any integer type == 0
-
 The basic operations work as follows:
 
     * A statement of the form seq(type1, type2, type3, ...) specifies
@@ -282,6 +299,16 @@ The basic operations work as follows:
       shuffled together in such a way that sentences of each type are
       evenly spaced. The original relative ordering between sentences
       of the same type is preserved.
+
+The following type predicates are predefined as JavaScript functions:
+
+    anyType       // Matches any type
+    lessThan0     // Matches any integer type < 0
+    greaterThan0  // Matches any integer type > 0
+    equalTo0      // Matches any integer type == 0
+    startsWith(s) // Matches any string type starting with s
+    not(pred)     // Matches anything that is not of a type matched
+                  // by pred.
 
 The power of shuffle sequences derives from the possibility of
 composing them without limit.  Suppose we want the following order:
@@ -322,7 +349,7 @@ sequence:
     seq(equalTo0, shuffle(greaterThan0, lessThan0))
 
 This will seem rather cryptic to anyone not familiar with the behavior
-of previous versions of Webspr, where this ordering specification was
+of earlier versions of Webspr, where this ordering specification was
 built in and unchangeable. In short, it works well if practice
 sentences have type 0, filler sentences have integer types < 0, and
 real sentences have integer types > 0.
