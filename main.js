@@ -674,7 +674,7 @@ function sendResults(address, port)
             }
         }
     };
-    xmlhttp.open("POST", "/send-results", true);
+    xmlhttp.open("POST", conf_serverURI, true);
     xmlhttp.send(data);
 }
 

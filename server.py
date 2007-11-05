@@ -170,6 +170,7 @@ def counter_cookie_header(c):
          time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time_module.time() + 60 * 60)))
     )
 
+# Not used when this module is run as a CGI process.
 STATIC_FILES = [
     'spr.html',
     'data.js',
@@ -193,9 +194,10 @@ def control(env, start_response):
         ip = env['REMOTE_ADDR']
 
     base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
-    qs = ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
-    uri = base + qs
-    last = filter(lambda x: x != [], uri.split('/'))[-1];
+    # Currently, we're ignoring the QS.
+    # qs = ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
+
+    last = filter(lambda x: x != [], base.split('/'))[-1];
     if last in STATIC_FILES:
         contents = None
         f = None
@@ -210,7 +212,7 @@ def control(env, start_response):
         rr = last == 'main.js' and cc_start_response or start_response
         rr('200 OK', [('Content-Type', (last == 'spr.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
-    elif uri.strip('/') == 'send-results':
+    elif last == PY_SCRIPT_NAME:
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]

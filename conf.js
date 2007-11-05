@@ -2,6 +2,9 @@
 // Set configuration variables.
 //
 
+// Variables relating to server configuration.
+var conf_serverURI = "/server.py";
+
 // Variables common to all experiments.
 var conf_experimentType = "self-paced reading";
 var conf_instructionsHTML = "<p>[Define the &lsquo;instructionsHTML&rsquo; variable in your data file.]</p>\
@@ -24,6 +27,9 @@ var conf_acceptabilityRatings = [["Good", "f"], ["Bad", "j"]];
 var conf_judgmentTimeFrame = 3;
 var conf_showCounter = false;
 var conf_practiceJudgmentTimeFrame; // Set later.
+
+if (typeof(serverURI) != "undefined")
+    conf_serverURI = serverURI;
 
 if (typeof(experimentType) != "undefined")
     conf_experimentType = experimentType;
