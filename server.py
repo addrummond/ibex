@@ -192,7 +192,9 @@ def control(env, start_response):
     else:
         ip = env['REMOTE_ADDR']
 
-    uri = env['PATH_INFO'] + ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
+    base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
+    qs = ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
+    uri = base + qs
     last = filter(lambda x: x != [], uri.split('/'))[-1];
     if last in STATIC_FILES:
         contents = None
