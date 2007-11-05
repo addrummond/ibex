@@ -446,14 +446,30 @@ each line has the following columns:
     The sentence's group.
 
 
-6. Browser compatibility
+6. Common gotchas
+-----------------------------------------------------------------------
+The following are some subtle problems which can often arise when
+writing data.js:
+
+    * A missing comma in the list of sentences in data.js can cause
+      highly obscure JavaScript errors with no obvious relation to
+      their source.
+
+    * Some browsers accept trailing commas in JavaScript array
+      literals (i.e. they accept [1,2,3,4,] as a fine array); others
+      do not. If your browser of choice accepts array literals of this
+      form, be sure to check that your data.js has no trailing commas
+      so that there will be no browser incompatabilities.
+
+
+7. Browser compatibility
 -----------------------------------------------------------------------
 Webspr has been tested on Firefox 2.0.0.8/1.5.0.7, Safari 2.0.4, Opera
 9.24 and Internet Explorer 7. Earlier versions were known to work on
 IE 6; please let me know if they still do (or don't).
 
 
-7. Contact
+8. Contact
 -----------------------------------------------------------------------
 Feel free to contact me with any suggestions or questions at
 <a.d.drummond@gmail.com>. It would be great to see people actually
