@@ -19,6 +19,9 @@ Differences with 1.3-beta-3:
 
     * More detailed documentation in this file.
 
+    * Some improvements in the organization of the JavaScript code
+      (addition of dashed_sentence.js).
+
 Differences with 1.3-beta1/1.3-beta2:
 
     * Fixed bug which prevented newlines from being recorded in
