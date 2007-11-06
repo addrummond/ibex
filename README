@@ -352,7 +352,7 @@ this. The following equivalence holds:
 If no shuffle sequence is specified, Webspr uses the following default
 sequence:
 
-    seq(equalTo0, shuffle(greaterThan0, lessThan0))
+    seq(equalTo0, rshuffle(greaterThan0, lessThan0))
 
 This will seem rather cryptic to anyone not familiar with the behavior
 of earlier versions of Webspr, where this ordering specification was
