@@ -178,7 +178,8 @@ STATIC_FILES = [
     'main.js',
     'conf.js',
     'shuffle.js',
-    'util.js'
+    'util.js',
+    'dashed_sentence.js'
 ]
 
 def control(env, start_response):

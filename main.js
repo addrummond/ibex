@@ -120,28 +120,7 @@ sendingResults.appendChild(sendingResultsMessage);
 
 var resultsHaveBeenSentToServer = false;
 
-var sentenceDivs = new Array(sentences.length);
-var wordDivs = new Array(sentences.length);
-for (var i = 0; i < sentences.length; ++i) {
-    var p = document.createElement("div");
-    p.className = "sentence";
-    sentenceDivs[i] = p;
-
-    if (sentences[i].preamble) {
-        var ppr = document.createElement("p");
-        ppr.className = "preamble";
-        ppr.appendChild(document.createTextNode(preamble));
-        p.appendChild(ppr);
-    }
-
-    wordDivs[i] = new Array(sentences[i].words.length);
-    for (var j = 0; j < sentences[i].words.length; ++j) {
-        div = document.createElement("div");
-        div.appendChild(document.createTextNode(sentences[i].words[j]));
-        p.appendChild(div)
-        wordDivs[i][j] = div;
-    }
-}
+var dashedSentences = map(function (x) { return new DashedSentence(x); }, sentences);
 
 var questionsPs;
 var answerNumbers;
@@ -303,7 +282,7 @@ function goToNextSentence() {
     else {
         // Show the new sentence (note that currentSentence has been
         // incremented above).
-        showSentence.replaceChild(sentenceDivs[currentSentence],
+        showSentence.replaceChild(dashedSentences[currentSentence].sentenceDiv,
                                   showSentence.firstChild);
         setProgressBar(currentSentence / sentences.length);
 
@@ -413,30 +392,14 @@ function startCountdown(from)
 
 function blankCurrentWord()
 {
-    if (currentWord > 0) {
-        var wprev = wordDivs[currentSentence][currentWord - 1];
-        wprev.style.borderColor = "#9ea4b1";
-        wprev.style.color = "white";
-    }
+    if (currentWord > 0)
+        dashedSentences[currentSentence].blankWord(currentWord - 1);
 }
 
 function advanceWord(time)
 {
-    var wc = null;
-    if (currentWord < sentences[currentSentence].words.length) {
-        wc = wordDivs[currentSentence][currentWord];
-        wc.style.borderColor = "black";
-        wc.style.color = "black";
-    }
-
-    var wprev = null;
-    if (currentWord > 0) wprev = wordDivs[currentSentence][currentWord - 1];
-
-    // Is this the first word on a new line?
-    if (wc && wprev) {
-        newlines[currentSentence][currentWord - 1] =
-            (wc.offsetTop != wprev.offsetTop) ? 1 : 0;
-    }
+    var onto_newline = dashedSentences[currentSentence].showWord(currentWord);
+    newlines[currentSentence][currentWord - 1] = onto_newline;
 
     // Don't record a time if this was the keypress that makes the
     // last word of a sentence disappear.
@@ -543,7 +506,7 @@ document.onkeydown =
             if (state == "initial") {
                 state = "sentence";
                 document.getElementById("instructions").style.visibility = "hidden";
-                showSentence.replaceChild(sentenceDivs[0], showSentence.firstChild);
+                showSentence.replaceChild(dashedSentences[0].sentenceDiv, showSentence.firstChild);
                 // Substitute the progress/sentece stuff for the instructions.
                 body.replaceChild(showProgressAndSentenceGroup,
                                   document.getElementById("instructions"));

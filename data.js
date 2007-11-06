@@ -48,7 +48,7 @@ var sentences_strings = [
 [0,"The exotic new cocktail was invented by the bartender from Spain who thought it should cost at least ten dollars."],
 [0,"Because of the warm weather, a crickets have been chirping so loud that the lumberjacks can't sleep."],
 [0,"The new computer programs that the software developers were carefully testing were completely free of glitches."],
-[0,"The new computer programs that the software developers were carefully testing were completely free of glitches."]/*,
+[0,"The new computer programs that the software developers were carefully testing were completely free of glitches."],
 
 
 //
@@ -269,7 +269,7 @@ var sentences_strings = [
 [-2,"The freshmen that complain too much about their toughest class has always failed the final exam."],
 [-2,"The little girl that played a ghost with a bed sheet on Halloween scared himself in the mirror."],
 [-2,"The child that chases the neighbor's dogs around the yard like playing games."]
-*/
+
 
 ];
 

@@ -17,6 +17,8 @@ Differences with 1.3-beta-3:
 
     * New 'startsWith' and 'not' predicates for shuffle sequences.
 
+    * More detailed documentation in this file.
+
 Differences with 1.3-beta1/1.3-beta2:
 
     * Fixed bug which prevented newlines from being recorded in
@@ -51,9 +53,10 @@ stand-alone mode to work. The CGI mode requires only modules that come
 with the standard Python 2.5 distribution.
 
 The stand-alone server is limited to serving the files "spr.html",
-"json.js", "main.js", "conf.js", "util.js" and "data.js", and is thus
-rather inflexible in its current form. However, it is useful for testing
-experimental designs without setting up a full-blown HTTP server.
+"json.js", "main.js", "conf.js", "util.js", "dashed_sentence.js" and
+"data.js", and is thus rather inflexible in its current form. However,
+it is useful for testing experimental designs without setting up a
+full-blown HTTP server.
 
 Input data should be in a file called data.js in the same directory as
 spr.html.  The server saves results in a file called "results", and
