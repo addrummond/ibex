@@ -12,7 +12,7 @@ Differences with 1.3-beta-3:
     * Can now be deployed as a CGI process as well as a stand-alone
       server.
 
-    * Server state (i.e. the counter) is now stored on disk in the
+    * The server state (i.e. the counter) is now stored on disk in the
       server_state directory.
 
     * New 'startsWith' and 'not' predicates for shuffle sequences.
