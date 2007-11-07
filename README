@@ -5,9 +5,9 @@ Webspr 0.1.3 Beta 4
 
 0. Release notes
 -----------------------------------------------------------------------
-Though this is a beta, it is more stable and bug-free than 1.2.
+Though this is a beta, it is more stable and bug-free than 0.1.2.
 
-Differences with 1.3-beta-3:
+Differences between current version and 0.1.3-beta-3:
 
     * Can now be deployed as a CGI process as well as a stand-alone
       server.
@@ -22,12 +22,16 @@ Differences with 1.3-beta-3:
     * Some improvements in the organization of the JavaScript code
       (addition of dashed_sentence.js).
 
-Differences with 1.3-beta1/1.3-beta2:
+    * Fixed bug which caused self-paced reading experiments to fail to
+      send their results to the server successfully, and speeded
+      acceptability experiments to fail to record sentence numbers.
+
+Differences between 0.1.3-beta-3 and 0.1.3-beta1/0.1.3-beta2:
 
     * Fixed bug which prevented newlines from being recorded in
-      results (this was introduced in 1.3).
+      results (this was introduced in 0.1.3).
 
-Differences with 1.2:
+Differences between 0.1.3beta-1/0.1.3-beta-2 and 0.1.2:
 
     * Support for latin-square designs.
 
@@ -360,10 +364,11 @@ built in and unchangeable. In short, it works well if practice
 sentences have type 0, filler sentences have integer types < 0, and
 real sentences have integer types > 0.
 
-IMPORTANT: A shuffle sequence must always have one of "seq", "shuffle"
-or "randomize" as its outer element. A single string or integer is NOT
-a valid shuffle sequence. Thus, one must use seq("foo"), not just
-"foo".
+IMPORTANT: A shuffle sequence must always have one of 'seq',
+'shuffle', 'randomize' or 'rshuffle' as its outer element. A single
+string or integer is NOT a valid shuffle sequence, and neither is
+not("foo"). Thus, one must use seq("foo"), not just "foo", and
+seq(not("foo")), not just not("foo").
 
 
 5. Speeded acceptability judgment tasks.
@@ -432,27 +437,30 @@ each line has the following columns:
     1. Time
     As for self-paced reading results.
 
-    2. Sentence type
+    2. Sentence number
     As for self-paced reading results.
 
-    3. Line breaks
+    3. Sentence type
+    As for self-paced reading results.
+
+    4. Line breaks
     A list of the form "(n1-n2-n3...)" (i.e. a hyphen-separated list
     of integers enclosed in brackets), giving a list of the numbers of
     the words which were the last word on a line.
 
-    4. Rating
+    5. Rating
     The rating the user gave the sentence. The special value "TIMEOUT"
     is used if the user did not give the sentence a rating within the
     time limit.
 
-    5. IP hash
+    6. IP hash
     MD5 hash of the participant's IP address, as for self-paced
     reading results.
 
-    6. Sentence hash
+    7. Sentence hash
     MD5 hash of the sentence, as for self-paced reading results.
 
-    7. Group
+    8. Group
     The sentence's group.
 
 

@@ -110,7 +110,7 @@ class SpeededResultSet(object):
 
             sentence = ' '.join(row.words)
             sentence_md5 = md5.md5(sentence).hexdigest()
-            out.write("%i,%s,%s,%s,%s,%s,%s\n" % (thetime, str(row.type), '(' + '-'.join(newline_words) + ')', row.answer, row.ip_hash, sentence_md5, get_group(row.group)))
+            out.write("%i,%i,%s,%s,%s,%s,%s,%s\n" % (thetime, row.sentence, str(row.type), '(' + '-'.join(newline_words) + ')', row.answer, row.ip_hash, sentence_md5, get_group(row.group)))
         return out.getvalue()
 
 def rearrange(parsed_json, ip):

@@ -14,7 +14,7 @@ function Sentence(type, group, preamble, words, question, num) {
     this.num = num;
 }
 
-function makeSentence(a) {
+function makeSentence(a, number) {
     var type = null;
     var group = null; // Default group
     var words = null;
@@ -54,11 +54,14 @@ function makeSentence(a) {
         preamble,
         words,
         question,
-        i + 1
+        number
     );
 }
 
-var initialSentencesArray = map(makeSentence, sentences_strings);
+var initialSentencesArray = new Array(sentences_strings.length);
+for (var i = 0; i < sentences_strings.length; ++i) {
+    initialSentencesArray[i] = makeSentence(sentences_strings[i], i);
+}
 var mungedSentencesArray = mungGroups(initialSentencesArray, counter);
 var sentences = runShuffleSequence(mungedSentencesArray, conf_shuffleSequence);
 
