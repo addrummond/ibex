@@ -479,6 +479,15 @@ writing data.js:
       form, be sure to check that your data.js has no trailing commas
       so that there will be no browser incompatabilities.
 
+Setting the value of the 'instructionsHTML' configuration option can
+also be a bit of a pain, since writing HTML code inside JavaScript
+string literals is a bit finicky. Remember to escape singe/double
+quotes with a "\" (depending on whether you enclose the string in
+single/double quotes) and to escape newlines with a "\" also (by
+making "\" the last character of the line). Some browsers may accept
+JavaScript string literals containing unescaped newlines, but most
+will not, so make sure you don't use them.
+
 
 7. Browser compatibility
 -----------------------------------------------------------------------
