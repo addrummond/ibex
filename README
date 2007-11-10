@@ -411,10 +411,10 @@ each line has the following columns:
     3. Sentence type
     As for self-paced reading results.
 
-    4. Line breaks
-    A list of the form "(n1-n2-n3...)" (i.e. a hyphen-separated list
-    of integers enclosed in brackets), giving a list of the numbers of
-    the words which were the last word on a line.
+    4. Line breaks A list of the form "(n1-n2-n3...)" (i.e. a
+    hyphen-separated list of integers enclosed in parantheses), giving
+    a list of the numbers of the words which were the last word on a
+    line.
 
     5. Rating
     The rating the user gave the sentence. The special value "TIMEOUT"
