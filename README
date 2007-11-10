@@ -200,7 +200,7 @@ parameters of the task and to configure other options:
     var serverURI            (default = "server.py")
         STRING
         The URI for the server (used when results are sent to the
-        server). Keep this in synch with (a) the name of .py file
+        server). Keep this in sync with (a) the name of .py file
         containing the server code and (b) the value of PY_SCRIPT_NAME
         in server_conf.py.
 
@@ -290,8 +290,8 @@ sentence types. A type predicate may be any of the following:
     * A list of strings/integers, denoting the characteristic function
       of all sentences belonging to any one of the types in the list.
 
-    * A JavaScript function object, returning a boolean value when
-      given a type (either a string or integer).
+    * A JavaScript function, returning a boolean value when given a
+      type (either a string or integer).
 
 The basic operations work as follows:
 
@@ -369,6 +369,11 @@ IMPORTANT: A shuffle sequence must always have one of 'seq',
 string or integer is NOT a valid shuffle sequence, and neither is
 not("foo"). Thus, one must use seq("foo"), not just "foo", and
 seq(not("foo")), not just not("foo").
+
+Note that it is possible to include duplicate sentences in the final
+sequence. For example, seq("foo", "foo") would include every sentence
+of type "foo" twice. For this reason, it is possible to make subtler
+errors if a number of your predicates overlap.
 
 
 5. Speeded acceptability judgment tasks.
@@ -477,7 +482,7 @@ writing data.js:
       literals (i.e. they accept [1,2,3,4,] as a fine array); others
       do not. If your browser of choice accepts array literals of this
       form, be sure to check that your data.js has no trailing commas
-      so that there will be no browser incompatabilities.
+      so that there will be no browser incompatibilities.
 
 Setting the value of the 'instructionsHTML' configuration option can
 also be a bit of a pain, since writing HTML code inside JavaScript

@@ -170,11 +170,12 @@ function runShuffleSequence(masterArray, ss) {
     var arrays = new Array();
     for (var i = 0; i < ss.args.length; ++i) {
         if (typeof(ss.args[i]) == "object" && ss.ssType != undefined) {
-            arrays.push(runShuffleSequence(masterArray, ss.args[i]))
+            arrays.push(runShuffleSequence(masterArray, ss.args[i]));
         }
         else {
             var pred = toPredicate(ss.args[i]);
             var elems = filter(function (s) { return pred(s.type); }, masterArray);
+
             if (elems.length > 0)
                 arrays.push(elems);
         }
@@ -198,12 +199,3 @@ function runShuffleSequence(masterArray, ss) {
     }
 }
 
-
-/* TEST CODE.
-
-function S(t, s) { this.type = t; this.words = s; }
-
-var a = [new S("foo", "blah blah"), new S("foo", "bar amp"), new S("foo", "another one"), new S("bar", "omgf bar!"), new S("bar", "another bar!")];
-var ss = shuffle("barrrr", randomize("foo"));
-alert(map(function(x) { return x.words; }, runShuffleSequence(a, ss)));
-*/
