@@ -474,7 +474,7 @@ with setting up the server, etc.
 
 9. Release notes
 -----------------------------------------------------------------------
-Differences between current version and 0.1.3-beta-3:
+Differences between the current version and 0.1.3-beta-3:
 
     * Can now be deployed as a CGI process as well as a stand-alone
       server.
