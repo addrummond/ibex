@@ -298,8 +298,9 @@ The basic operations work as follows:
     * A statement of the form seq(type1, type2, type3, ...) specifies
       a sequence where all sentences of type1 precede all sentences of
       type2, all sentences of type2 precede all sentences of type3,
-      and so on.  The original relative ordering between sentences of
-      the same type is preserved.
+      and so on. The original relative ordering between sentences of
+      the same type is preserved. A 'seq' with only one argument is
+      permissible.
 
     * A statement of the form randomize(type1) specifies a randomly
       ordered sequence of all type1 sentences.
