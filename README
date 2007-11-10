@@ -2,46 +2,8 @@
 Webspr 0.1.3 Beta 4
 =======================================================================
 
-
-0. Release notes
------------------------------------------------------------------------
-Though this is a beta, it is more stable and bug-free than 0.1.2.
-
-Differences between current version and 0.1.3-beta-3:
-
-    * Can now be deployed as a CGI process as well as a stand-alone
-      server.
-
-    * The server state (i.e. the counter) is now stored on disk in the
-      server_state directory.
-
-    * New 'startsWith' and 'not' predicates for shuffle sequences.
-
-    * More detailed documentation in this file.
-
-    * Some improvements in the organization of the JavaScript code
-      (addition of dashed_sentence.js).
-
-    * Fixed bug which caused self-paced reading experiments to fail to
-      send their results to the server successfully, and speeded
-      acceptability experiments to fail to record sentence numbers.
-
-Differences between 0.1.3-beta-3 and 0.1.3-beta1/0.1.3-beta2:
-
-    * Fixed bug which prevented newlines from being recorded in
-      results (this was introduced in 0.1.3).
-
-Differences between 0.1.3beta-1/0.1.3-beta-2 and 0.1.2:
-
-    * Support for latin-square designs.
-
-    * Customizable sentence ordering with shuffle sequences (see
-      section 4).
-
-    * More configuration options (e.g. showing progress bar is
-      optional, instructions are configurable).
-
-    * A number of important bug fixes.
+See the end of this README for release notes. Though this is a beta,
+it is more stable and bug-free than 0.1.2.
 
 
 1. Introduction
@@ -508,3 +470,42 @@ Feel free to contact me with any suggestions or questions at
 <a.d.drummond@gmail.com>. It would be great to see people actually
 using this, so I'm generally happy to assist with any technical issues
 with setting up the server, etc.
+
+
+9. Release notes
+-----------------------------------------------------------------------
+Differences between current version and 0.1.3-beta-3:
+
+    * Can now be deployed as a CGI process as well as a stand-alone
+      server.
+
+    * The server state (i.e. the counter) is now stored on disk in the
+      server_state directory.
+
+    * New 'startsWith' and 'not' predicates for shuffle sequences.
+
+    * More detailed documentation in this file.
+
+    * Some improvements in the organization of the JavaScript code
+      (addition of dashed_sentence.js).
+
+    * Fixed bug which caused self-paced reading experiments to fail to
+      send their results to the server successfully, and speeded
+      acceptability experiments to fail to record sentence numbers.
+
+Differences between 0.1.3-beta-3 and 0.1.3-beta1/0.1.3-beta2:
+
+    * Fixed bug which prevented newlines from being recorded in
+      results (this was introduced in 0.1.3).
+
+Differences between 0.1.3beta-1/0.1.3-beta-2 and 0.1.2:
+
+    * Support for latin-square designs.
+
+    * Customizable sentence ordering with shuffle sequences (see
+      section 4).
+
+    * More configuration options (e.g. showing progress bar is
+      optional, instructions are configurable).
+
+    * A number of important bug fixes.
