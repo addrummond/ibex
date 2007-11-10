@@ -66,7 +66,7 @@ it is useful for testing experimental designs without setting up a
 full-blown HTTP server.
 
 Input data should be in a file called data.js in the same directory as
-spr.html.  The server saves results in a file called "results", and
+spr.html. The server saves results in a file called "results", and
 saves the raw post data it receives in a file called "raw_results".
 
 In theory, using the software is a simple as running the server by
@@ -177,7 +177,7 @@ In order, the columns are as follows:
 
     7. Answer
     Indicates whether or not the comprehension question was answered
-    correctly.  1 for yes, 0 for no.
+    correctly. 1 for yes, 0 for no.
 
     8. Length
     The length of the word in characters.
@@ -322,7 +322,7 @@ The following type predicates are predefined as JavaScript functions:
                   // by pred.
 
 The power of shuffle sequences derives from the possibility of
-composing them without limit.  Suppose we want the following order:
+composing them without limit. Suppose we want the following order:
 all practice sentences in their original order followed by evenly
 spaced real and filler sentences in random order. Assuming the types
 "practice", "real" and "filler", we could use the following shuffle
