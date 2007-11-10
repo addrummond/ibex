@@ -154,7 +154,7 @@ In order, the columns are as follows:
     11. Group
     The sentence's group.
     (This is last in order to maintain backwards compatibility with
-    earlier versions of the software which did not implement groups).
+    earlier versions of the software which did not implement groups.)
 
 The following variables may be defined in data.js to alter the default
 parameters of the task and to configure other options:
