@@ -344,7 +344,7 @@ errors if a number of your predicates overlap.
 This section describes the differences between a data.js for a
 self-paced reading task and a data.js for a speeded acceptability
 judgment task; it will therefore not make much sense unless you've
-read the previous section.
+read section 3.
 
 The most important difference is that the value of 'experimentType'
 must be changed to "speeded acceptability".
