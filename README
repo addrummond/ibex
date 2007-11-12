@@ -47,7 +47,7 @@ already exist, and in order to start the server from a fresh state,
 you may simply delete this directory. (Currently, it only contains the
 counter used to alternate latin square designs.) On Linux/Unix/OS X,
 the server uses file locking to ensure that the state maintains
-consistent.  Currently, it does not do so on Windows, so there is a
+consistent. Currently, it does not do so on Windows, so there is a
 theoretical possibility of the state being corrupted if you run the
 server on a Windows box (but unless you have very high traffic, it's
 purely theoretical).
