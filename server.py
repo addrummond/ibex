@@ -23,7 +23,7 @@
 import sys
 import types
 
-# File locking on UNIX.
+# File locking on UNIX/Linux/OS X
 HAVE_FLOCK = False
 try:
     import fcntl # For flock.
