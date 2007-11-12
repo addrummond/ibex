@@ -21,6 +21,19 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
+import types
+
+# File locking on UNIX.
+HAVE_FLOCK = False
+try:
+    import fcntl # For flock.
+    if 'flock' in dir(fcntl) and \
+       type(fcntl.flock) == types.BuiltinFunctionType:
+        HAVE_FLOCK = True
+except:
+    pass
+
+# Configuration.
 from server_conf import *
 if SERVER_MODE == "paste":
     from paste import httpserver
@@ -42,7 +55,11 @@ import os.path
 def get_counter():
     try:
         f = open(SERVER_STATE_DIR + '/counter', "r")
+        if HAVE_FLOCK:
+            fcntl.flock(f.fileno(), 2)
         n = int(f.read().strip())
+        if HAVE_FLOCK:
+            fcntl.flock(f.fileno(), 8)
         f.close()
         return n
     except IOError, ValueError:
@@ -50,8 +67,17 @@ def get_counter():
         sys.exit(1)
 def set_counter(n):
     try:
+        # Open first as read-only, then lock it, close the file,
+        # open again as "w" (not sure if this is necessary).
+        # Note that locks are on files, not file handles.
+        f = open(SERVER_STATE_DIR + '/counter', "r")
+        if HAVE_FLOCK:
+            fcntl.flock(f.fileno(), 2)
+        f.close()
         f = open(SERVER_STATE_DIR + '/counter', "w")
         f.write(str(n))
+        if HAVE_FLOCK:
+            fcntl.flock(f.fileno(), 8)
         f.close()
     except IOError:
         print "ERROR: Error setting counter in server state"
