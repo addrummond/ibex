@@ -2,23 +2,28 @@
 Webspr 0.1.3
 =======================================================================
 
-See the end of this README for release notes. Though this is a beta,
-it is more stable and bug-free than 0.1.2.
+See the end of this README for release notes.
 
 
 1. Introduction
 -----------------------------------------------------------------------
 Webspr allows self-paced reading experiments and speeded acceptability
-judgment experiments to be conducted online through a web browser.
+judgment experiments to be conducted online through a web
+browser. There are two components: a JavaScript-heavy web page, and a
+server written in Python.
 
 
 2. Setting up the server.
 -----------------------------------------------------------------------
 There are two ways of running the server: either as a stand-alone
 server or as a CGI process. By default, the server runs in stand-alone
-mode; to start it, simply execute server.py. Note that you will need
-to have the "paste" module installed for Python in order for
-stand-alone mode to work. The CGI mode requires only modules that come
+mode; to start it, simply execute server.py:
+
+    python server.py
+
+Note that you will need to have the "paste" module installed for
+Python in order for stand-alone mode to work (see
+http://pythonpaste.org). The CGI mode requires only modules that come
 with the standard Python 2.5 distribution.
 
 The stand-alone server is limited to serving the files "spr.html",
@@ -53,7 +58,18 @@ server on a Windows box (but unless you have very high traffic, it's
 purely theoretical).
 
 
-3. Self-paced reading tasks
+3. Example data file
+-----------------------------------------------------------------------
+This distribution comes with an example data file, example_data.js,
+containing a data set for a speeded acceptability judgment task
+(thanks to Brian Dillon for the data). You can switch to a self-paced
+reading design by changing the value of the 'experimentType' variable
+to "self-paced reading". The next section covers the format of data.js
+for self-paced reading tasks, and section 6 for speeded acceptability
+judgement tasks.
+
+
+4. Self-paced reading tasks
 -----------------------------------------------------------------------
 The following is an example data.js for a self-paced reading task:
 
@@ -188,11 +204,11 @@ parameters of the task and to configure other options:
     	practice sentences so that participants know they are not
     	reading a "real" sentence. In speeded acceptability judgment
     	tasks, there is also the option to give participants more time
-    	for practice sentences (see section 5).
+    	for practice sentences (see section 6).
 
-    var shuffleSequence      (default: see section 4)
+    var shuffleSequence      (default: see section 5)
         OBJECT
-        See section 4.
+        See section 5.
 
     var pageTitle            (default = "Experiment")
         STRING
@@ -211,7 +227,7 @@ The following variable only applies to self-paced reading experiments:
         comprehension question incorrectly.
 
 
-4. Types, groups and the order of sentences.
+5. Types, groups and the order of sentences.
 -----------------------------------------------------------------------
 Webspr is able to automate simple "latin square" designs, and
 randomize the order of "real" and filler sentences in such a way that
@@ -350,12 +366,12 @@ of type "foo" twice. For this reason, it is possible to accidentally
 include duplicate sentences if a number of your predicates overlap.
 
 
-5. Speeded acceptability judgment tasks.
+6. Speeded acceptability judgment tasks.
 -----------------------------------------------------------------------
 This section describes the differences between a data.js for a
 self-paced reading task and a data.js for a speeded acceptability
 judgment task; it will therefore not make much sense unless you've
-read section 3.
+read section 4.
 
 The most important difference is that the value of 'experimentType'
 must be changed to "speeded acceptability".
@@ -393,7 +409,7 @@ data.js in order to modify the default parameters for the task:
         judgment on a "real" or filler sentence. If this is set to 0
         or null, no time limit is imposed on participants.
 
-    var practiceJudgmentTimeFrame (default = 10)
+    var practiceJudgmentTimeFrame (default = 3)
         INTEGER
         As above, but applies to practice sentences only. Note that it
         is not possible for only one of judgmentTimeFrame and
@@ -405,7 +421,7 @@ data.js in order to modify the default parameters for the task:
         how much time he has left to give a judgment.
 
 The value of the variable 'flagWrongAnswers' is ignored, since speeded
-accpetability judgment tasks cannot have comprehension questions.
+acceptability judgment tasks cannot have comprehension questions.
 
 The format of the results file is quite different compared to that for
 self-paced reading experiments. There is one line per sentence, and
@@ -421,7 +437,7 @@ each line has the following columns:
     As for self-paced reading results.
 
     4. Line breaks A list of the form "(n1-n2-n3...)" (i.e. a
-    hyphen-separated list of integers enclosed in parantheses), giving
+    hyphen-separated list of integers enclosed in parentheses), giving
     a list of the numbers of the words which were the last word on a
     line.
 
@@ -441,7 +457,7 @@ each line has the following columns:
     The sentence's group.
 
 
-6. Common gotchas
+7. Common gotchas
 -----------------------------------------------------------------------
 The following are some subtle problems which can often arise when
 writing data.js:
@@ -466,14 +482,14 @@ JavaScript string literals containing unescaped newlines, but most
 will not, so make sure you don't use them.
 
 
-7. Browser compatibility
+8. Browser compatibility
 -----------------------------------------------------------------------
 Webspr has been tested on Firefox 2.0.0.8/1.5.0.7, Safari 2.0.4, Opera
 9.24 and Internet Explorer 7. Earlier versions were known to work on
 IE 6; please let me know if they still do (or don't).
 
 
-8. Contact
+9. Contact
 -----------------------------------------------------------------------
 Feel free to contact me with any suggestions or questions at
 <a.d.drummond@gmail.com>. It would be great to see people actually
@@ -481,14 +497,16 @@ using this, so I'm generally happy to assist with any technical issues
 setting up the server, etc.
 
 
-9. Release notes
+10. Release notes
 -----------------------------------------------------------------------
-Differences between the current version and 0.1.3-beta-4:
+Differences between the current version (0.1.3) and 0.1.3-beta-4:
 
     * Server now uses file locking for server state on UNIX/Linux/OS
       X.
 
     * Some minor errors fixed in this README.
+
+    * example_data.js included.
 
 Differences between the 0.1.3-beta-4 version and 0.1.3-beta-3:
 
@@ -519,7 +537,7 @@ Differences between 0.1.3beta-1/0.1.3-beta-2 and 0.1.2:
     * Support for latin-square designs.
 
     * Customizable sentence ordering with shuffle sequences (see
-      section 4).
+      section 5).
 
     * More configuration options (e.g. showing progress bar is
       optional, instructions are configurable).
