@@ -504,7 +504,7 @@ Differences between the current version (0.1.3) and 0.1.3-beta-4:
     * Server now uses file locking for server state on UNIX/Linux/OS
       X.
 
-    * Some minor errors fixed in this README.
+    * Various improvements to this README.
 
     * example_data.js included.
 
