@@ -167,8 +167,8 @@ def output_dataset(dataset, writer):
 #
 # TEST CODE.
 #
-
-d = Dataset({ 'wordPauseTime' : 500 }, [Sentence(1, None, "foo '\xE6' foo")])
-s = StringIO.StringIO()
-output_dataset(d, s)
-print s.getvalue()
+#
+#d = Dataset({ 'wordPauseTime' : 500 }, [Sentence(1, None, "foo '\xE6' foo")])
+#s = StringIO.StringIO()
+#output_dataset(d, s)
+#print s.getvalue()
