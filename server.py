@@ -22,6 +22,11 @@
 
 import sys
 import types
+import logging
+
+logging.basicConfig(filename="server.log")
+logger = logging.getLogger("server")
+logger.addHandler(logging.StreamHandler())
 
 # File locking on UNIX/Linux/OS X
 HAVE_FLOCK = False
@@ -40,7 +45,7 @@ if SERVER_MODE == "paste":
 elif SERVER_MODE == "cgi":
     import wsgiref.handlers
 else:
-    print "ERROR: Unrecognized value for SERVER_MODE"
+    logger.error("Unrecognized value for SERVER_MODE configuration variable")
     sys.exit(1)
 
 import json
@@ -63,7 +68,7 @@ def get_counter():
         f.close()
         return n
     except IOError, ValueError:
-        print "ERROR: Error reading counter from server state"
+        logger.error("Error reading counter from server state")
         sys.exit(1)
 def set_counter(n):
     try:
@@ -80,7 +85,7 @@ def set_counter(n):
             fcntl.flock(f.fileno(), 8)
         f.close()
     except IOError:
-        print "ERROR: Error setting counter in server state"
+        logger.error("Error setting counter in server state")
         sys.exit(1)
 
 class HighLevelParseError(Exception):
@@ -293,7 +298,7 @@ def control(env, start_response):
 try:
     # Create the directory.
     if os.path.isfile(SERVER_STATE_DIR):
-        print "ERROR: '%s' is a file, so could not create server state directory" % SERVER_STATE_DIR
+        logger.error("'%s' is a file, so could not create server state directory" % SERVER_STATE_DIR)
         sys.exit(1)
     elif not os.path.isdir(SERVER_STATE_DIR):
         os.mkdir(SERVER_STATE_DIR)
@@ -304,7 +309,7 @@ try:
         f.write("0")
         f.close()
 except os.error, IOError:
-    print "ERROR: Could not create server state directory at %s" % SERVER_STATE_DIR
+    logger.error("Could not create server state directory at %s" % SERVER_STATE_DIR)
     sys.exit(1)
 
 if SERVER_MODE == "paste":
