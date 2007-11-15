@@ -1,5 +1,5 @@
 =======================================================================
-Webspr 0.1.3
+Webspr 0.1.3.1
 =======================================================================
 
 See the end of this README for release notes.
@@ -106,10 +106,10 @@ The following is an example data.js for a self-paced reading task:
     __________ END EXAMPLE data.js __________
 
 The instructions you give in the 'instructionsHTML' variable will be
-displayed when the user first visits the page. The user can press the
-space bar to clear the instructions and move onto the experiment, so
-remember to include some kind of "press space to continue" message in
-your instructions.
+displayed when the user first visits the page. The user can press any
+key to clear the instructions and move onto the experiment, so
+remember to include some kind of "press any key to continue" message
+in your instructions.
 
 Each sentence has a type. Types are stored in the results file and
 make it easy to group sentences for analysis. Types may be either
@@ -499,7 +499,17 @@ setting up the server, etc.
 
 10. Release notes
 -----------------------------------------------------------------------
-Differences between the current version (0.1.3) and 0.1.3-beta-4:
+Differences between 0.1.3.1 and 0.1.3:
+
+    * Fixed bug which caused some shuffle sequences with 'shuffle' to
+      send the program into an infinite loop.
+
+    * Shuffle sequences are executed a little more efficiently.
+
+    * "Press space to continue" changed to "Press any key to
+      continue."
+
+Differences between 0.1.3 and 0.1.3-beta-4:
 
     * Server now uses file locking for server state on UNIX/Linux/OS
       X.
