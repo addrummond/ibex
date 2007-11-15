@@ -85,6 +85,19 @@ class ShuffleSequence(object):
 
     def js_string(): return s
 
+class AcceptabilityRatings(object):
+    def __init__(self, r):
+        assert type(r) == types.ListType
+        for e in r:
+            if type(e) == types.ListType:
+                assert len(e) == 2 and (type(e[0]) == types.StringType or \
+                       type(e[0]) == types.UnicodeType) and \
+                       (type(e[1]) == types.StringType or \
+                        type(e[1]) == types.UnicodeType)
+            elif type(e) != types.StringType and type(e) != types.UnicodeType:
+                assert False
+        self.ratings = r
+
 CONF_VARS = [
     ['serverURI', types.StringType, types.UnicodeType],
     ['experimentType', types.StringType, types.UnicodeType],
@@ -98,6 +111,7 @@ CONF_VARS = [
     ['wordTime', types.IntType, types.LongType],
     ['wordPauseTime', types.IntType, types.LongType],
     ['acceptabilityRatingsPreamble', types.StringType, types.UnicodeType],
+    ['acceptabilityRatings', AcceptabilityRatings],
     ['judgmentTimeFrame', types.IntType, types.LongType],
     ['showCounter', types.BooleanType, types.IntType, types.LongType],
     ['practiceJudgmentTimeFrame', types.IntType, types.LongType]
@@ -135,6 +149,15 @@ def pyval_to_jsval(x):
         return "null";
     elif type(x) == ShuffleSequence:
         return x.js_string()
+    elif type(x) == AcceptabilityRatings:
+        def elem(x):
+            if type(x) == types.StringType or type(x) == types.UnicodeType:
+                return string_to_js_literal(x)
+            else: # It's a pair (list) of strings
+                return '[' + string_to_js_literal(x[0]) + ', ' + string_to_js_literal(x[1]) + ']'
+        return '[' + (', '.join(map(elem, x.ratings))) + ']'
+    else:
+        assert False
 
 def output_dataset(dataset, writer):
     writer.write("//\n// Configuration variables.\n//\n")
@@ -168,7 +191,7 @@ def output_dataset(dataset, writer):
 # TEST CODE.
 #
 #
-#d = Dataset({ 'wordPauseTime' : 500 }, [Sentence(1, None, "foo '\xE6' foo")])
+#d = Dataset({ 'wordPauseTime' : 500, 'acceptabilityRatings' : AcceptabilityRatings([["f", "g"], ["f", "g"]]) }, [Sentence(1, None, "foo '\xE6' foo")])
 #s = StringIO.StringIO()
 #output_dataset(d, s)
 #print s.getvalue()
