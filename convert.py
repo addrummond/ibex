@@ -182,6 +182,8 @@ def output_dataset(dataset, writer):
                     writer.write(", ")
             writer.write("]")
 
+        writer.write("]")
+
         if i < len(dataset.sentences) - 1:
             writer.write(",\n");
 
