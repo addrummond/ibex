@@ -57,6 +57,9 @@ theoretical possibility of the state being corrupted if you run the
 server on a Windows box (but unless you have very high traffic, it's
 purely theoretical).
 
+The server logs messages in the file server.log in the same directory
+as server.py.
+
 
 3. Example data file
 -----------------------------------------------------------------------
@@ -508,6 +511,8 @@ Differences between 0.1.3.1 and 0.1.3:
 
     * "Press space to continue" changed to "Press any key to
       continue."
+
+    * Improved logging of server messages.
 
 Differences between 0.1.3 and 0.1.3-beta-4:
 
