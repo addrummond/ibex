@@ -26,6 +26,8 @@ function evenShuffle(arrayOfArrays) {
         totalLength += arrayOfArrays[i].length;
     }
 
+    if (totalLength == 0) { return []; }
+
     var loopsPerIncrement = new Array(arrayOfArrays.length);
     for (var i = 0; i < arrayOfArrays.length; ++i) {
         loopsPerIncrement[i] = (arrayOfArrays[i].length + 0.0) / (longestArrayLength + 0.0)
@@ -41,12 +43,13 @@ function evenShuffle(arrayOfArrays) {
         for (var j = 0; j < arrayOfArrays.length; ++j) {
             var oldi = indexArray[j];
             var newi = oldi + loopsPerIncrement[j];
-            if (Math.floor(oldi) != Math.floor(newi) &&
-                newi <= arrayOfArrays[j].length) {
-                shuffledArray[idx] = arrayOfArrays[j][Math.floor(oldi)];
-                ++idx;
-                if (! (idx < totalLength))
-                    break; // The outer loop will now exit too.
+            if (Math.floor(oldi) != Math.floor(newi)) {
+                if (oldi < arrayOfArrays[j].length) {
+                    shuffledArray[idx] = arrayOfArrays[j][Math.floor(oldi)];
+                    ++idx;
+                    if (! (idx < totalLength))
+                        break; // The outer loop will now exit too.
+                }
             }
             indexArray[j] = newi;
         }
@@ -189,9 +192,17 @@ function runShuffleSequence(masterArray, ss) {
         return arrays[0];
     }
     else if (ss.ssType == "Seq") {
-        var a = new Array();
+        var totLength = 0;
         for (var i = 0; i < arrays.length; ++i)
-            a = a.concat(arrays[i]);
+            totLength += arrays[i].length;
+        var a = new Array(totLength);
+        var count = 0;
+        for (var i = 0; i < arrays.length; ++i) {
+            for (var j = 0; j < arrays[i].length; ++j) {
+                a[count] = arrays[i][j];
+                ++count;
+            }
+        }
         return a;
     }
     else if (ss.ssType == "Shuffle") {

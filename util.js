@@ -1,16 +1,26 @@
-function filter(f, a) {
-    na = new Array();
+function filter(f, a, initialLength) {
+    if (initialLength != null && initialLength != undefined)
+        initialLength = Math.floor(a.length / 3);
+
+    na = new Array(initialLength);
+    var count = 0;
     for (var i = 0; i < a.length; ++i) {
-        if (f(a[i]))
-            na.push(a[i])
+        var x = a[i];
+        if (f(x)) {
+            if (count < na.length)
+                na.length += Math.floor(a.length / 3);
+            na[count] = x;
+            ++count;
+        }
     }
+    na.length = count;
     return na;
 }
 
 function map(f, a) {
-    na = new Array();
+    na = new Array(a.length);
     for (var i = 0; i < a.length; ++i) {
-        na.push(f(a[i]));
+        na[i] = f(a[i]);
     }
     return na;
 }
