@@ -228,7 +228,7 @@ if (conf_experimentType == "speeded acceptability") {
 var pressSpaceP = document.createElement("p");
 pressSpaceP.className = "lpad next-sentence-message";
 pressSpaceP.appendChild(
-    document.createTextNode("Press space to continue")
+    document.createTextNode("Press any key to continue")
 );
 var youbadPressSpaceP = document.createElement("p");
 youbadPressSpaceP.className = "lpad next-sentence-message";
@@ -240,7 +240,7 @@ bold.appendChild(document.createElement("br"));
 bold.appendChild(document.createElement("br")); // Ugly...
 youbadPressSpaceP.appendChild(bold);
 youbadPressSpaceP.appendChild(
-    document.createTextNode("Press space to continue.")
+    document.createTextNode("Press any key to continue.")
 );
 
 var times;
@@ -261,7 +261,7 @@ var currentWord = 0;
 var currentTime = 0;
 var previousTime = null;
 var state = "initial"; // Either "initial", "sentence", "question",
-                       // "press_space" or "finished".
+                       // "press_any" or "finished".
 
 function setProgressBar(fraction) {
     if (conf_showProgressBar)
@@ -311,7 +311,7 @@ function handleAnswer(index) {
         else {
             answers[currentSentence] = 0;
             if (conf_flagWrongAnswers) {
-                state = "press_space";
+                state = "press_any";
                 showSentence.replaceChild(youbadPressSpaceP, showSentence.firstChild);
             }
         }
@@ -322,7 +322,7 @@ function handleAnswer(index) {
         // We want a "press space" message (unless this is the last sentence).
         if (currentSentence < sentences.length - 1) {
             showSentence.replaceChild(pressSpaceP, showSentence.firstChild);
-            state = "press_space";
+            state = "press_any";
         }
         else {
             goToNextSentence();
@@ -376,7 +376,7 @@ function startCountdown(from)
             // Record this in the answers array.
             answers[currentSentence] = "TIMEOUT";
 
-            state = "press_space";
+            state = "press_any";
             showSentence.replaceChild(youbadPressSpaceP,
                                       showSentence.firstChild);
 
@@ -451,7 +451,7 @@ function advanceWord(time)
             // Don't show the "press space" message if that was
             // the last sentence.
             if (currentSentence < sentences.length - 1) {
-                state = "press_space";
+                state = "press_any";
                 showSentence.replaceChild(pressSpaceP,
                                           showSentence.firstChild);
             }
@@ -505,6 +505,16 @@ document.onkeydown =
             e = window.event;
         }
 
+       if (state == "press_any") { // I.e. "press any key to continue".
+            goToNextSentence();
+            if (conf_experimentType == "speeded acceptability" ) {
+                if (startCountdownTimeoutId) {
+                    clearTimeout(startCountdownTimeoutId);
+                }
+                startAutoSpacebar();
+            }
+        }
+
         if (e.keyCode == 32) {
             if (state == "initial") {
                 state = "sentence";
@@ -520,15 +530,6 @@ document.onkeydown =
             else if (conf_experimentType == "self-paced reading" && state == "sentence") {
                 blankCurrentWord();
                 advanceWord(time);
-            }
-            else if (state == "press_space") { // I.e. "press space to continue".
-                goToNextSentence();
-                if (conf_experimentType == "speeded acceptability" ) {
-                    if (startCountdownTimeoutId) {
-                        clearTimeout(startCountdownTimeoutId);
-                    }
-                    startAutoSpacebar();
-                }
             }
 
             // Prevents this being handled by the browser as a pagedown.

@@ -8,7 +8,7 @@ var conf_serverURI = "/server.py";
 // Variables common to all experiments.
 var conf_experimentType = "self-paced reading";
 var conf_instructionsHTML = "<p>[Define the &lsquo;instructionsHTML&rsquo; variable in your data file.]</p>\
-<p>Press space to start the experiment.</p>";
+<p>Press any key to start the experiment.</p>";
 var conf_practiceSentenceType = 0;
 var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
 var conf_pageTitle = "Experiment";
