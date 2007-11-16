@@ -514,24 +514,20 @@ document.onkeydown =
                 startAutoSpacebar();
             }
         }
-
-        if (e.keyCode == 32) {
-            if (state == "initial") {
-                state = "sentence";
-                document.getElementById("instructions").style.visibility = "hidden";
-                showSentence.replaceChild(dashedSentences[0].sentenceDiv, showSentence.firstChild);
-                // Substitute the progress/sentece stuff for the instructions.
-                body.replaceChild(showProgressAndSentenceGroup,
-                                  document.getElementById("instructions"));
-                if (conf_experimentType == "speeded acceptability") {
-                    startAutoSpacebar();
-                }
+        else if (state == "initial") {
+            state = "sentence";
+            document.getElementById("instructions").style.visibility = "hidden";
+            showSentence.replaceChild(dashedSentences[0].sentenceDiv, showSentence.firstChild);
+            // Substitute the progress/sentece stuff for the instructions.
+            body.replaceChild(showProgressAndSentenceGroup,
+                              document.getElementById("instructions"));
+            if (conf_experimentType == "speeded acceptability") {
+                startAutoSpacebar();
             }
-            else if (conf_experimentType == "self-paced reading" && state == "sentence") {
-                blankCurrentWord();
-                advanceWord(time);
-            }
-
+        }
+        else if (e.keyCode == 32 && conf_experimentType == "self-paced reading" && state == "sentence") {
+            blankCurrentWord();
+            advanceWord(time);
             // Prevents this being handled by the browser as a pagedown.
             return false;
         }

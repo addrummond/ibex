@@ -70,10 +70,18 @@ if (conf_experimentType == "speeded acceptability") {
         conf_showCounter = showCounter;
 }
 
+//
+// Checks.
+//
 if (conf_experimentType == "speeded acceptability") {
 if ((conf_judgmentTimeFrame && (! conf_practiceJudgmentTimeFrame)) ||
     (conf_practiceJudgmentTimeFrame && (! conf_judgmentTimeFrame))) {
     alert("ERROR: If one of 'judgmentTimeFrame' or 'practiceJudgmentTimeFrame' is 0/null, the other must be too.");
     var foo = 1/0;
 }
+}
+
+if (conf_experimentType != "speeded acceptability" && conf_experimentType != "self-paced reading") {
+    alert("ERROR: Bad experiment type");
+    var foo = 1/0;
 }
