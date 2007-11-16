@@ -57,9 +57,15 @@ import types
 import os
 import os.path
 
+PWD = os.environ.get("WEBSPR_WORKING_DIR")
+if PWD:
+    PWD = PWD.rstrip("/\\") + "/"
+else:
+    PWD = ''
+
 def get_counter():
     try:
-        f = open(SERVER_STATE_DIR + '/counter', "r")
+        f = open(PWD + SERVER_STATE_DIR + '/counter', "r")
         if HAVE_FLOCK:
             fcntl.flock(f.fileno(), 2)
         n = int(f.read().strip())
@@ -75,11 +81,11 @@ def set_counter(n):
         # Open first as read-only, then lock it, close the file,
         # open again as "w" (not sure if this is necessary).
         # Note that locks are on files, not file handles.
-        f = open(SERVER_STATE_DIR + '/counter', "r")
+        f = open(PWD + SERVER_STATE_DIR + '/counter', "r")
         if HAVE_FLOCK:
             fcntl.flock(f.fileno(), 2)
         f.close()
-        f = open(SERVER_STATE_DIR + '/counter', "w")
+        f = open(PWD + SERVER_STATE_DIR + '/counter', "w")
         f.write(str(n))
         if HAVE_FLOCK:
             fcntl.flock(f.fileno(), 8)
@@ -234,7 +240,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(last)
+            f = open(PWD + last)
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
@@ -261,7 +267,7 @@ def control(env, start_response):
         # Keep a backup of the raw post data.
         bf = None
         try:
-            bf = open(RAW_RESULT_FILE_NAME, "a")
+            bf = open(PWD + RAW_RESULT_FILE_NAME, "a")
             bf.write(post_data)
         except:
             pass
@@ -297,19 +303,19 @@ def control(env, start_response):
 # (if it doesn't already exist), and initialize the counter.
 try:
     # Create the directory.
-    if os.path.isfile(SERVER_STATE_DIR):
+    if os.path.isfile(PWD + SERVER_STATE_DIR):
         logger.error("'%s' is a file, so could not create server state directory" % SERVER_STATE_DIR)
         sys.exit(1)
-    elif not os.path.isdir(SERVER_STATE_DIR):
-        os.mkdir(SERVER_STATE_DIR)
+    elif not os.path.isdir(PWD + SERVER_STATE_DIR):
+        os.mkdir(PWD + SERVER_STATE_DIR)
 
     # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(SERVER_STATE_DIR + '/counter'):
-        f = open(SERVER_STATE_DIR + '/counter', "w")
+    if not os.path.isfile(PWD + SERVER_STATE_DIR + '/counter'):
+        f = open(PWD + SERVER_STATE_DIR + '/counter', "w")
         f.write("0")
         f.close()
 except os.error, IOError:
-    logger.error("Could not create server state directory at %s" % SERVER_STATE_DIR)
+    logger.error("Could not create server state directory at %s" % PWD + SERVER_STATE_DIR)
     sys.exit(1)
 
 if SERVER_MODE == "paste":

@@ -60,6 +60,10 @@ purely theoretical).
 The server logs messages in the file server.log in the same directory
 as server.py.
 
+The server defaults to storing all files in the same directory as
+server.py, but the working directory of the server can be modified by
+setting the environment variable "WEBSPR_WORKING_DIR".
+
 
 3. Example data file
 -----------------------------------------------------------------------
@@ -541,6 +545,9 @@ Differences between the 0.1.3-beta-4 version and 0.1.3-beta-3:
     * Fixed bug which caused self-paced reading experiments to fail to
       send their results to the server successfully, and speeded
       acceptability experiments to fail to record sentence numbers.
+
+    * Working directory of the server process can now be changed by
+      setting an environment variable.
 
 Differences between 0.1.3-beta-3 and 0.1.3-beta1/0.1.3-beta2:
 
