@@ -25,8 +25,6 @@
 # classes for representing datasets as Python data structures and a
 # function for outputting a data.js file given such a data structure.
 #
-# See README for more info.
-#
 
 import types
 import StringIO
