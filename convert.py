@@ -33,19 +33,22 @@ import itertools
 class BadDatasetError(Exception):
     def __init__(self, *args):
         super(BadDatasetError, self).__init__(*args)
+def ds_assert(cond, message="Bad data structure"):
+    if not cond:
+        raise BadDatasetError(message)
 
 class Dataset(object):
     def __init__(self, conf, sentences):
-        assert type(sentences) == types.ListType
+        ds_assert(type(sentences) == types.ListType)
         for s in sentences:
-            assert type(s) == Sentence
-        assert type(conf) == types.DictType or type(conf) == types.DictionaryType or \
-               type(conf) == types.DictProxyType
+            ds_assert(type(s) == Sentence)
+        ds_assert(type(conf) == types.DictType or type(conf) == types.DictionaryType or \
+                  type(conf) == types.DictProxyType)
         for k,v in conf.iteritems():
             if not k in itertools.imap(lambda x: x[0], CONF_VARS):
                 raise BadDatasetError("'%s' is not a recognized configuration variable" % k)
             cv = filter(lambda x: x[0] == k, CONF_VARS)
-            assert len(cv) == 1
+            ds_assert(len(cv) == 1)
             if not type(v) in cv[0][1:]:
                 raise BadDatasetError("Bad type for configuration variable '%s'" % k)
         self.conf = conf
@@ -53,25 +56,25 @@ class Dataset(object):
 
 class Question(object):
     def __init__(self, question, *answers):
-        assert type(question) == types.StringType or type(question) == types.UnicodeType
-        assert type(answers) == types.ListType
+        ds_assert(type(question) == types.StringType or type(question) == types.UnicodeType)
+        ds_assert(type(answers) == types.ListType)
         for a in answers:
-            assert type(a) == types.StringType or type(a) == types.UnicodeType
+            ds_assert(type(a) == types.StringType or type(a) == types.UnicodeType)
         self.question = question
         self.answers = answers
 
 def type_(x): return type(x)
 class Sentence(object):
     def __init__(self, type, group, words, question=None):
-        assert type_(type) == types.StringType or type_(type) == types.IntType or \
-               type_(type) == types.LongType or type_(type) == types.UnicodeType
-        assert type_(group) == types.StringType or type_(group) == types.IntType or \
-               type_(group) == types.LongType or type_(group) == types.UnicodeType or \
-               type_(group) == types.NoneType
-        assert type_(question) == Question or type_(question) == types.NoneType
-        assert type_(words) == types.StringType or type_(words) == types.UnicodeType
+        ds_assert(type_(type) == types.StringType or type_(type) == types.IntType or \
+                  type_(type) == types.LongType or type_(type) == types.UnicodeType)
+        ds_assert(type_(group) == types.StringType or type_(group) == types.IntType or \
+                  type_(group) == types.LongType or type_(group) == types.UnicodeType or \
+                  type_(group) == types.NoneType)
+        ds_assert(type_(question) == Question or type_(question) == types.NoneType)
+        ds_assert(type_(words) == types.StringType or type_(words) == types.UnicodeType)
         for w in words:
-            assert type_(w) == types.StringType or type_(w) == types.UnicodeType
+            ds_assert(type_(w) == types.StringType or type_(w) == types.UnicodeType)
         self.type = type
         self.group = group
         self.words = words
@@ -85,15 +88,15 @@ class ShuffleSequence(object):
 
 class AcceptabilityRatings(object):
     def __init__(self, r):
-        assert type(r) == types.ListType
+        ds_assert(type(r) == types.ListType)
         for e in r:
             if type(e) == types.ListType:
-                assert len(e) == 2 and (type(e[0]) == types.StringType or \
-                       type(e[0]) == types.UnicodeType) and \
-                       (type(e[1]) == types.StringType or \
-                        type(e[1]) == types.UnicodeType)
+                ds_assert(len(e) == 2 and (type(e[0]) == types.StringType or \
+                          type(e[0]) == types.UnicodeType) and \
+                          (type(e[1]) == types.StringType or \
+                           type(e[1]) == types.UnicodeType))
             elif type(e) != types.StringType and type(e) != types.UnicodeType:
-                assert False
+                raise BadDatasetError("Expecting string for acceptability rating")
         self.ratings = r
 
 CONF_VARS = [
@@ -155,7 +158,7 @@ def pyval_to_jsval(x):
                 return '[' + string_to_js_literal(x[0]) + ', ' + string_to_js_literal(x[1]) + ']'
         return '[' + (', '.join(map(elem, x.ratings))) + ']'
     else:
-        assert False
+        raise BadDatasetError("Unable to convert Python value to JavaScript value")
 
 def output_dataset(dataset, writer):
     writer.write("//\n// Configuration variables.\n//\n")
