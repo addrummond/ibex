@@ -13,7 +13,7 @@ var conf_practiceSentenceType = 0;
 var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
 var conf_pageTitle = "Experiment";
 var conf_showProgressBar = true;
-var conf_answerInstructions = "Click links or use keys to answer";
+var conf_answerInstructions = "Click links or use keys to answer.";
 
 // The following variable applies to self-paced reading tasks only.
 var conf_flagWrongAnswers = true;

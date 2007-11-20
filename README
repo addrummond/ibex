@@ -1,5 +1,5 @@
 =======================================================================
-Webspr 0.1.3.1
+Webspr 0.1.3.2
 =======================================================================
 
 See the end of this README for release notes.
@@ -62,7 +62,8 @@ as server.py.
 
 The server defaults to storing all files in the same directory as
 server.py, but the working directory of the server can be modified by
-setting the environment variable "WEBSPR_WORKING_DIR".
+setting the environment variable "WEBSPR_WORKING_DIR". You can also
+set the variable of the same name in server_conf.py.
 
 
 3. Example data file
@@ -519,7 +520,15 @@ setting up the server, etc.
 
 11. Release notes
 -----------------------------------------------------------------------
-Differences between the current version (0.1.3.1) and 0.1.3:
+Differences between the current version (0.1.3.2) and 0.1.3.1:
+
+    * Server's working directory can be set in server_conf.py as as an
+      alternative to using an environment variable.
+
+    * convert.py now uses exceptions instead of asserts to signal bad
+      data structures.
+
+Differences between 0.1.3.1 and 0.1.3:
 
     * Fixed bug which caused some shuffle sequences with 'shuffle' to
       send the program into an infinite loop.

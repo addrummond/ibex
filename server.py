@@ -57,7 +57,11 @@ import types
 import os
 import os.path
 
-PWD = os.environ.get("WEBSPR_WORKING_DIR")
+PWD = None
+if globals().has_key('WEBSPR_WORKING_DIR'):
+    PWD = WEBSPR_WORKING_DIR
+if os.environ.get("WEBSPR_WORKING_DIR"):
+    PWD = os.environ.get("WEBSPR_WORKING_DIR")
 if PWD:
     PWD = PWD.rstrip("/\\") + "/"
 else:
