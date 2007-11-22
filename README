@@ -296,21 +296,21 @@ sentence types. A type predicate may be any of the following:
 
 The basic operations work as follows:
 
-    * A statement of the form seq(type1, type2, type3, ...) specifies
-      a sequence where all sentences of type1 precede all sentences of
-      type2, all sentences of type2 precede all sentences of type3,
-      and so on. The original relative ordering between sentences of
-      the same type is preserved. A 'seq' with only one argument is
-      permissible.
+    * A statement of the form seq(pred1, pred2, pred3, ...) specifies
+      a sequence where all sentences matching pred1 precede all
+      sentences matching pred2, all sentences matching pred2 precede
+      all sentences matching pred3, and so on. The original relative
+      ordering between sentences of the same type is preserved. A
+      'seq' with only one argument is permissible.
 
-    * A statement of the form randomize(type1) specifies a randomly
-      ordered sequence of all type1 sentences.
+    * A statement of the form randomize(pred1) specifies a randomly
+      ordered sequence of all sentences matching pred1.
 
-    * A statement of the form shuffle(type1, type2, type3, ...)
-      specifies that sentences of type1, type2, type3, ... should be
-      shuffled together in such a way that sentences of each type are
-      evenly spaced. The original relative ordering between sentences
-      of the same type is preserved.
+    * A statement of the form shuffle(pred1, pred2, pred3, ...)
+      specifies that sentences matching the given predicates should be
+      shuffled together in such a way that sentences matching each
+      predicate are evenly spaced. The original relative ordering
+      between sentences of the same type is preserved.
 
 The following type predicates are predefined as JavaScript functions:
 
@@ -321,6 +321,9 @@ The following type predicates are predefined as JavaScript functions:
     startsWith(s) // Matches any string type starting with s
     not(pred)     // Matches anything that is not of a type matched
                   // by pred.
+
+If you define your own predicates, be careful to test that they are
+cross-browser compatible. See section 7 for some pertinent advice.
 
 The power of shuffle sequences derives from the possibility of
 composing them without limit. Suppose we want the following order:
@@ -493,6 +496,10 @@ single/double quotes) and to escape newlines with a "\" also (by
 making "\" the last character of the line). Some browsers may accept
 JavaScript string literals containing unescaped newlines, but most
 will not, so make sure you don't use them.
+
+Most browsers allow strings to be indexed using square brackets
+(i.e. "foo"[1] == "f"). Internet Explorer, however, requires the use
+of the string's 'charAt' method).
 
 
 8. Browser compatibility
