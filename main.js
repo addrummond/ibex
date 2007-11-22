@@ -347,9 +347,10 @@ function handleKeyPress(k) {
             if (typeof(conf_acceptabilityRatings[i]) != "object")
                 toMatch = conf_acceptabilityRatings[i][0];
             else toMatch = conf_acceptabilityRatings[i][1];
+	    toMatch = toMatch.charAt(0);
 
-            if (toMatch[0].toLowerCase().charCodeAt(0) == k ||
-                toMatch[0].toUpperCase().charCodeAt(0) == k) {
+            if (toMatch.toLowerCase().charCodeAt(0) == k ||
+                toMatch.toUpperCase().charCodeAt(0) == k) {
                 handleAnswer(i);
                 break;
             }
@@ -612,7 +613,7 @@ function sendResults(address, port)
 
     // Prepare the POST data.
     if (conf_experimentType == "self-paced reading") {
-        data = ["self-paced reading", sentences, times, answers, newlines].toJSONString();
+        data = ["self-paced reading", sentences, times, answers, newlines, navigator.userAgent].toJSONString();
     }
     else if (conf_experimentType == "speeded acceptability") {
         var answerValues = new Array(answers.length);
@@ -621,7 +622,7 @@ function sendResults(address, port)
                 answerValues[i] = answers[i][0];
             else answerValues[i] = answers[i];
         }
-        data = ["speeded acceptability", sentences, answerValues, newlines].toJSONString();
+        data = ["speeded acceptability", sentences, answerValues, newlines, navigator.userAgent].toJSONString();
     }
 
     xmlhttp.onreadystatechange = function() {

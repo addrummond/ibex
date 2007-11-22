@@ -158,27 +158,33 @@ def rearrange(parsed_json, ip):
     if len(parsed_json) < 2:
         raise HighLevelParseError()
 
-    sentences = None
-    times     = None
-    answers   = None
-    newlines  = None
+    sentences  = None
+    times      = None
+    answers    = None
+    newlines   = None
+    user_agent = None
 
     # Are these the results of a self-paced reading experiment
     # or of a speeded accpetability experiment?
     if parsed_json[0] == "self-paced reading":
-        if len(parsed_json) != 5:
+        if len(parsed_json) != 6:
             raise HighLevelParseError()
 
-        sentences = parsed_json[1]
-        times     = parsed_json[2]
-        answers   = parsed_json[3]
-        newlines  = parsed_json[4]
+        sentences  = parsed_json[1]
+        times      = parsed_json[2]
+        answers    = parsed_json[3]
+        newlines   = parsed_json[4]
+        user_agent = parsed_json[5]
         if len(sentences) != len(times):
             raise HighLevelParseError()
     elif parsed_json[0] == "speeded acceptability":
-        sentences = parsed_json[1]
+        if len(parsed_json) != 5:
+            raise HighLevelParseError()
+
+        sentences  = parsed_json[1]
         answers    = parsed_json[2]
-        newlines  = parsed_json[3]
+        newlines   = parsed_json[3]
+        user_agent = parsed_json[4]
     else:
         raise HighLevelParseError()
 
@@ -197,9 +203,9 @@ def rearrange(parsed_json, ip):
         rows.append(new_row)
 
     if parsed_json[0] == "self-paced reading":
-        return SPRResultSet(rows)
+        return SPRResultSet(rows), user_agent
     elif parsed_json[0] == "speeded acceptability":
-        return SpeededResultSet(rows)
+        return SpeededResultSet(rows), user_agent
     else:
         raise HighLevelParseError()
 
@@ -283,12 +289,14 @@ def control(env, start_response):
             parsed_json = json.read(post_data)
             rf = open(RESULT_FILE_NAME, "a")
             thetime = time_module.time()
-            main_results = rearrange(parsed_json, ip).to_csv(thetime)
-            rf.write('#\n# Results on %s; %s.\n#\n' %
+            main_results, user_agent = rearrange(parsed_json, ip)
+            csv_results = main_results.to_csv(thetime)
+            rf.write('#\n# Results on %s; %s.\n# USER AGENT: %s\n#\n' %
                      (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                            time_module.gmtime(thetime)),
-                      parsed_json[0]))
-            rf.write(main_results)
+                      parsed_json[0],
+                      user_agent))
+            rf.write(csv_results)
             start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
             return ["OK"]
         except (json.ReadException, HighLevelParseError), e:
