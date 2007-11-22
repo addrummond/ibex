@@ -76,7 +76,7 @@ containing a data set for a speeded acceptability judgment task
 reading design by changing the value of the 'experimentType' variable
 to "self-paced reading". The next section covers the format of data.js
 for self-paced reading tasks, and section 6 for speeded acceptability
-judgement tasks.
+judgment tasks.
 
 
 4. Self-paced reading tasks
@@ -525,7 +525,7 @@ subject's browser is stored in the header for each set of results.
 9. Automatic generation of data.js
 -----------------------------------------------------------------------
 This distribution includes the Python module convert.py, which may be
-useful for writing scripts to generata data.js files automatically.
+useful for writing scripts to generate data.js files automatically.
 The module defines classes which allow the contents of a data.js file
 to be represented as a Python data structures, and a function for
 outputting a data.js file given one of these data structures. The
