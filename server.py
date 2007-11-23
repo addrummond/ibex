@@ -67,33 +67,33 @@ if PWD:
 else:
     PWD = ''
 
+def lock_and_open(filename, mode):
+    f = open(filename, "r") # Open first as read-only.
+    if HAVE_FLOCK:
+        fcntl.flock(f.fileno(), 2)
+    if mode != "r": # If necessary, reopen with the given mode.
+        f.close()
+        f = open(filename, mode)
+    return f
+def unlock_and_close(f):
+    if HAVE_FLOCK:
+        fcntl.flock(f.fileno(), 8)
+    f.close()
+
 def get_counter():
     try:
-        f = open(PWD + SERVER_STATE_DIR + '/counter', "r")
-        if HAVE_FLOCK:
-            fcntl.flock(f.fileno(), 2)
+        f = lock_and_open(PWD + SERVER_STATE_DIR + '/counter', "r")
         n = int(f.read().strip())
-        if HAVE_FLOCK:
-            fcntl.flock(f.fileno(), 8)
-        f.close()
+        unlock_and_close(f)
         return n
     except IOError, ValueError:
         logger.error("Error reading counter from server state")
         sys.exit(1)
 def set_counter(n):
     try:
-        # Open first as read-only, then lock it, close the file,
-        # open again as "w" (not sure if this is necessary).
-        # Note that locks are on files, not file handles.
-        f = open(PWD + SERVER_STATE_DIR + '/counter', "r")
-        if HAVE_FLOCK:
-            fcntl.flock(f.fileno(), 2)
-        f.close()
-        f = open(PWD + SERVER_STATE_DIR + '/counter', "w")
+        f = lock_and_open(PWD + SERVER_STATE_DIR + '/counter', "w")
         f.write(str(n))
-        if HAVE_FLOCK:
-            fcntl.flock(f.fileno(), 8)
-        f.close()
+        unlock_and_close(f)
     except IOError:
         logger.error("Error setting counter in server state")
         sys.exit(1)
@@ -277,17 +277,17 @@ def control(env, start_response):
         # Keep a backup of the raw post data.
         bf = None
         try:
-            bf = open(PWD + RAW_RESULT_FILE_NAME, "a")
+            bf = lock_and_open(PWD + RAW_RESULT_FILE_NAME, "a")
             bf.write(post_data)
         except:
             pass
         finally:
-            if bf: bf.close()
+            if bf: unlock_and_close(bf)
 
         rf = None
         try:
             parsed_json = json.read(post_data)
-            rf = open(RESULT_FILE_NAME, "a")
+            rf = lock_and_open(RESULT_FILE_NAME, "a")
             thetime = time_module.time()
             main_results, user_agent = rearrange(parsed_json, ip)
             csv_results = main_results.to_csv(thetime)
@@ -306,7 +306,7 @@ def control(env, start_response):
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
-            if rf: rf.close()
+            if rf: unlock_and_close(rf)
     else:
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=utf-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]

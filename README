@@ -50,18 +50,20 @@ The server stores some state in a directory called server_state. This
 directory is automatically created by the server if it does not
 already exist, and in order to start the server from a fresh state,
 you may simply delete this directory. (Currently, it only contains the
-counter used to alternate latin square designs.) On Linux/Unix/OS X,
-the server uses file locking to ensure that the state maintains
-consistent. Currently, it does not do so on Windows, so there is a
-theoretical possibility of the state being corrupted if you run the
-server on a Windows box (but unless you have very high traffic, it's
-purely theoretical).
+counter used to alternate latin square designs.)
 
 The server logs messages in the file server.log in the same directory
 as server.py. The default is to store all files in the same directory
 as server.py, but the working directory of the server can be modified
 by setting the environment variable "WEBSPR_WORKING_DIR". You can also
 set the variable of the same name in server_conf.py.
+
+On Linux/Unix/OS X, the server uses file locking to ensure that the
+results file and server state remain consistent. Currently, it does
+not do so on Windows, so there is a theoretical possibility of the
+state or the results being corrupted if you run the server on a
+Windows box (but unless you have very high traffic, it's purely
+theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will
 almost certainly work on any system with Python 2.5). The CGI server
@@ -564,6 +566,9 @@ Differences between the current version (0.1.3.2) and 0.1.3.1:
       IE 6.
 
     * User agent string now included in results headers.
+
+    * Server now uses file locking for results file as well as for
+      server state.
 
     * Important new information in section 8.
 
