@@ -23,10 +23,39 @@
 import sys
 import types
 import logging
+import getopt
+import json
+import itertools
+import StringIO
+import md5
+import time as time_module
+import types
+import os
+import os.path
+from server_conf import *
 
 logging.basicConfig(filename="server.log")
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
+
+# Check that all conf variables have been defined
+# (except the optional WEBSPR_WORKING_DIR).
+for k in ['PY_SCRIPT_NAME', 'PORT', 'RESULT_FILE_NAME',
+          'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR', 'SERVER_MODE']:
+    if not globals().has_key(k):
+        logger.error("Configuration variable '%s' was not defined." % k)
+        sys.exit(1)
+
+# Check for "-m" option (sets server mode).
+try:
+    opts, _ = getopt.getopt(sys.argv[1:], "m:")
+    print opts
+    for k,v in opts:
+        if k == "-m":
+            SERVER_MODE = v
+except getopt.GetoptError:
+    logger.error("Bad arguments")
+    sys.exit(1)
 
 # File locking on UNIX/Linux/OS X
 HAVE_FLOCK = False
@@ -39,23 +68,14 @@ except:
     pass
 
 # Configuration.
-from server_conf import *
+
 if SERVER_MODE == "paste":
     from paste import httpserver
 elif SERVER_MODE == "cgi":
     import wsgiref.handlers
 else:
-    logger.error("Unrecognized value for SERVER_MODE configuration variable")
+    logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
     sys.exit(1)
-
-import json
-import itertools
-import StringIO
-import md5
-import time as time_module
-import types
-import os
-import os.path
 
 PWD = None
 if globals().has_key('WEBSPR_WORKING_DIR'):

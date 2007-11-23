@@ -1,5 +1,5 @@
 =======================================================================
-Webspr 0.1.3.2
+Webspr 0.1.3.3
 =======================================================================
 
 See the end of this README for release notes.
@@ -40,7 +40,10 @@ The server can be configured by editing server_conf.py. Each of the
 options is commented. Change the SERVER_MODE variable to determine
 whether the server will run in stand-alone mode or as a CGI process.
 When SERVER_MODE is set to "cgi", server.py will work as a standard
-CGI program.
+CGI program. The "-m" command line option can also be used to set the
+server mode when starting the server (e.g. using the command "python
+server.py -m cgi"). This option overrides the value of SERVER_MODE in
+server_conf.py.
 
 In theory, using the software is a simple as running the server by
 either of the methods described above, constructing a suitable data.js
@@ -554,7 +557,11 @@ setting up the server, etc.
 
 11. Release notes
 -----------------------------------------------------------------------
-Differences between the current version (0.1.3.2) and 0.1.3.1:
+Differences between the current version (0.1.3.3) and 0.1.3.2:
+
+    * Server mode can now be set using the "-m" command line option.
+
+Differences between 0.1.3.2 and 0.1.3.1:
 
     * Server's working directory can be set in server_conf.py as as an
       alternative to using an environment variable.

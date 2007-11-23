@@ -18,6 +18,9 @@ SERVER_STATE_DIR = "server_state"
 # Options are "paste" or "cgi" (case-sensitive).
 # If "paste", the server will run in stand-alone mode.
 # If "cgi", the server will run as a CGI process.
+#
+# Note that the value of this variable can be overridden by the
+# "-m" command line option.
 SERVER_MODE = "paste"
 
 # Optionally define this variable to set the working directory
