@@ -64,6 +64,10 @@ for (var i = 0; i < sentences_strings.length; ++i) {
 }
 var mungedSentencesArray = mungGroups(initialSentencesArray, counter);
 var sentences = runShuffleSequence(mungedSentencesArray, conf_shuffleSequence);
+if (sentences.length == 0) {
+    alert("ERROR: No sentences were specified by the shuffle sequence.");
+    var dummy = 1/0;
+}
 
 var progressBarHeight;
 var progressBarWidth;
@@ -114,11 +118,16 @@ showProgressAndSentenceGroup.appendChild(showSentence);
 
 var sendingResults = document.createElement("p")
 sendingResults.className = "sending-results"
-var spinSpan = document.createElement("span");
+var spinSpan = document.createElement("div");
 spinSpan.appendChild(document.createTextNode(""));
+spinSpan.style.width = "1.5em";
+spinSpan.style.cssFloat = "left";
+spinSpan.style.styleFloat = "left";
 sendingResults.appendChild(spinSpan);
-var sendingResultsMessage = document.createElement("span");
+var sendingResultsMessage = document.createElement("div");
 sendingResultsMessage.appendChild(document.createTextNode(" Sending results to server..."));
+sendingResultsMessage.style.cssFloat = "left";
+sendingResultsMessage.style.styleFloat = "left";
 sendingResults.appendChild(sendingResultsMessage);
 
 var resultsHaveBeenSentToServer = false;

@@ -40,10 +40,16 @@ The server can be configured by editing server_conf.py. Each of the
 options is commented. Change the SERVER_MODE variable to determine
 whether the server will run in stand-alone mode or as a CGI process.
 When SERVER_MODE is set to "cgi", server.py will work as a standard
-CGI program. The "-m" command line option can also be used to set the
-server mode when starting the server (e.g. using the command "python
-server.py -m cgi"). This option overrides the value of SERVER_MODE in
-server_conf.py.
+CGI program; when it is set to "paste", the server will run in
+stand-alone mode.  You can change the value of the PORT variable to
+determine the port the server will listen on when run in stand-alone
+mode.
+
+The "-m" command line option can be used to set the server mode when
+starting the server, overriding the value of SERVER_MODE in
+server_conf.py. The "-p" option can be used to set the listening port
+of the server when running in stand-alone mode; this option overrides
+the value of PORT in server_conf.py.
 
 In theory, using the software is a simple as running the server by
 either of the methods described above, constructing a suitable data.js
@@ -319,16 +325,18 @@ The basic operations work as follows:
 
 The following type predicates are predefined as JavaScript functions:
 
-    anyType       // Matches any type
-    lessThan0     // Matches any integer type < 0
-    greaterThan0  // Matches any integer type > 0
-    equalTo0      // Matches any integer type == 0
-    startsWith(s) // Matches any string type starting with s
+    anyType       // Matches any type.
+    lessThan0     // Matches any integer type < 0.
+    greaterThan0  // Matches any integer type > 0.
+    equalTo0      // Matches any integer type == 0.
+    startsWith(s) // Matches any string type starting with s.
+    endsWith(s)   // Matches any string type ending with s.
     not(pred)     // Matches anything that is not of a type matched
                   // by pred.
 
 If you define your own predicates, be careful to test that they are
 cross-browser compatible. See section 7 for some pertinent advice.
+The predicates above are defined in shuffle.js.
 
 The power of shuffle sequences derives from the possibility of
 composing them without limit. Suppose we want the following order:
@@ -504,7 +512,7 @@ will not, so make sure you don't use them.
 
 Most browsers allow strings to be indexed using square brackets
 (i.e. "foo"[1] == "f"). Internet Explorer, however, requires the use
-of the string's 'charAt' method).
+of the string's 'charAt' method.
 
 
 8. Browser compatibility
@@ -519,8 +527,8 @@ be slightly longer than those specified in data.js on all browsers
 (simply because it takes additional time to blank/show
 words). However, there is still a significant difference between
 Firefox and other browsers. The following are times for getting
-through a 100 word sentence with wordTime = 300 and wordPauseTime =
-100:
+through a 100 word sentence with wordTime = 300 and
+wordPauseTime = 100:
 
 Firefox 2/3b1   41.4 seconds
 IE 6            42.8 seconds
@@ -560,6 +568,17 @@ setting up the server, etc.
 Differences between the current version (0.1.3.3) and 0.1.3.2:
 
     * Server mode can now be set using the "-m" command line option.
+
+    * Server port can now be set using the "-p" command line option.
+
+    * New 'endsWith' predicate for shuffle sequences.
+
+    * Alert now shown if a shuffle sequence fails to specify any
+      sentences.
+
+    * Server can send email alerts when results are received.
+
+    * Improved appearence of "sending results to server" message.
 
 Differences between 0.1.3.2 and 0.1.3.1:
 

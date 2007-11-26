@@ -32,29 +32,51 @@ import time as time_module
 import types
 import os
 import os.path
+import smtplib
 from server_conf import *
+
+#
+# Logging and configuration variables.
+#
 
 logging.basicConfig(filename="server.log")
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
 
 # Check that all conf variables have been defined
-# (except the optional WEBSPR_WORKING_DIR).
-for k in ['PY_SCRIPT_NAME', 'PORT', 'RESULT_FILE_NAME',
+# (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
+for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR', 'SERVER_MODE']:
     if not globals().has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
+# Define optional variables if they are not already defined.
+PORT = globals().has_key('PORT') and PORT or None
+WEBSPR_WORKING_DIR = globals().has_key('WEBSPR_WORKING_DIR') and WEBSPR_WORKING_DIR or None
+RESULTS_SMTP = globals().has_key('RESULTS_SMTP') and RESULTS_SMTP or None
+RESULTS_SMTP_USERNAME = globals().has_key('RESULTS_SMTP_USERNAME') and RESULTS_SMTP_USERNAME or None
+RESULTS_EMAIL_FROM = globals().has_key('RESULTS_EMAIL_FROM') and RESULTS_EMAIL_FROM or None
+RESULTS_EMAIL_TO = globals().has_key('RESULTS_EMAIL_TO') and RESULTS_EMAIL_TO or None
+RESULTS_PASSWORD = globals().has_key('RESULTS_PASSWORD') and RESULTS_PASSWORD or None
 
-# Check for "-m" option (sets server mode).
+# Check for "-m" and "-p" options (sets server mode and port respectively).
 try:
-    opts, _ = getopt.getopt(sys.argv[1:], "m:")
-    print opts
+    opts, _ = getopt.getopt(sys.argv[1:], "m:p:")
     for k,v in opts:
         if k == "-m":
             SERVER_MODE = v
+        elif k == "-p":
+            PORT = int(v)
 except getopt.GetoptError:
     logger.error("Bad arguments")
+    sys.exit(1)
+except ValueError:
+    logger.error("Argument to -p must be an integer")
+    sys.exit(1)
+
+# Check values of (some) conf variables.
+if type(PORT) != types.IntType:
+    logger.error("Bad value (or no value) for server port.")
     sys.exit(1)
 
 # File locking on UNIX/Linux/OS X
@@ -68,7 +90,6 @@ except:
     pass
 
 # Configuration.
-
 if SERVER_MODE == "paste":
     from paste import httpserver
 elif SERVER_MODE == "cgi":
@@ -86,6 +107,11 @@ if PWD:
     PWD = PWD.rstrip("/\\") + "/"
 else:
     PWD = ''
+
+
+#
+# Some utility functions/classes.
+#
 
 def lock_and_open(filename, mode):
     f = open(filename, "r") # Open first as read-only.
@@ -118,6 +144,25 @@ def set_counter(n):
         logger.error("Error setting counter in server state")
         sys.exit(1)
 
+def nice_time(time):
+    return time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time))
+
+def send_email(experiment_type, time, results_header):
+    # Note that we don't check RESULTS_PASSWORD because it may be None.
+    if RESULTS_SMTP and RESULTS_SMTP_USERNAME and RESULTS_EMAIL_TO and RESULTS_EMAIL_FROM:
+        try:
+            msg = "From: %s\r\nTo: %s\r\nSubject: %s at %s\r\nType: text/plain\r\n\r\n" % (RESULTS_EMAIL_FROM, RESULTS_EMAIL_TO, experiment_type, nice_time(time))
+            msg += "At %s, results were received by the server.\
+ The following header was recorded:\r\n\r\n%s" % (nice_time(time), results_header)
+
+            server = smtplib.SMTP(RESULTS_SMTP)
+            if RESULTS_PASSWORD:
+                server.esmtp_features["auth"] = "TLS" #"LOGIN PLAIN"
+                server.login(RESULTS_SMTP_USERNAME, RESULTS_PASSWORD)
+            server.sendmail(RESULTS_EMAIL_FROM, RESULTS_EMAIL_TO, msg)
+        except Exception, e:
+            logger.warning("Failed to send email notification: %s" % str(e))
+        
 class HighLevelParseError(Exception):
     def __init__(self, *args):
         Exception.__init__(self, *args)
@@ -229,12 +274,17 @@ def rearrange(parsed_json, ip):
     else:
         raise HighLevelParseError()
 
+
+#
+# The server itself.
+#
+
 def counter_cookie_header(c):
     return (
         "Set-Cookie",
         "counter=%i; path=/; expires=%s GMT" % \
         (c,
-         time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time_module.time() + 60 * 60)))
+         nice_time(time_module.time() + 60 * 60))
     )
 
 # Not used when this module is run as a CGI process.
@@ -311,12 +361,16 @@ def control(env, start_response):
             thetime = time_module.time()
             main_results, user_agent = rearrange(parsed_json, ip)
             csv_results = main_results.to_csv(thetime)
-            rf.write('#\n# Results on %s; %s.\n# USER AGENT: %s\n#\n' %
+            header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n#\n' % \
                      (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                            time_module.gmtime(thetime)),
                       parsed_json[0],
-                      user_agent))
+                      user_agent)
+            rf.write(header)
             rf.write(csv_results)
+
+            send_email(parsed_json[0], thetime, header)
+
             start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
             return ["OK"]
         except (json.ReadException, HighLevelParseError), e:

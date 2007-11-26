@@ -29,3 +29,17 @@ SERVER_MODE = "paste"
 # precedence over the value of this variable).
 #
 # WEBSPR_WORKING_DIR = "foo"
+
+# Define ALL of the following variables if you want the server to send
+# email when a subject has completed an experiment.
+#
+#RESULTS_SMTP          = "smtp.gmail.com"
+#RESULTS_SMTP_USERNAME = "a.d.drummond@gmail.com"
+#RESULTS_EMAIL_FROM    = "SA_results"
+#RESULTS_EMAIL_TO      = "a.d.drummond@gmail.com"
+#RESULTS_PASSWORD      = "foo"
+#
+# The 'RESULTS_PASSWORD' variable should be set to None if no
+# authentication is required by the SMTP server.  Note that in most
+# circumstances, it is not necessary for the value of
+# RESULTS_EMAIL_FROM to be a real email address.
