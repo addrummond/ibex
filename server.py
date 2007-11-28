@@ -33,7 +33,6 @@ import types
 import os
 import os.path
 from util import *
-import tempfile
 from server_conf import *
 
 #
@@ -54,11 +53,6 @@ for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
 # Define optional variables if they are not already defined.
 PORT = globals().has_key('PORT') and PORT or None
 WEBSPR_WORKING_DIR = globals().has_key('WEBSPR_WORKING_DIR') and WEBSPR_WORKING_DIR or None
-RESULTS_SMTP = globals().has_key('RESULTS_SMTP') and RESULTS_SMTP or None
-RESULTS_SMTP_USERNAME = globals().has_key('RESULTS_SMTP_USERNAME') and RESULTS_SMTP_USERNAME or None
-RESULTS_EMAIL_FROM = globals().has_key('RESULTS_EMAIL_FROM') and RESULTS_EMAIL_FROM or None
-RESULTS_EMAIL_TO = globals().has_key('RESULTS_EMAIL_TO') and RESULTS_EMAIL_TO or None
-RESULTS_PASSWORD = globals().has_key('RESULTS_PASSWORD') and RESULTS_PASSWORD or None
 
 # Check for "-m" and "-p" options (sets server mode and port respectively).
 try:
@@ -142,32 +136,6 @@ def set_counter(n):
         logger.error("Error setting counter in server state")
         sys.exit(1)
 
-def send_email(experiment_type, time, results_header):
-    # Note that we don't check RESULTS_PASSWORD because it may be None.
-    if RESULTS_SMTP and RESULTS_SMTP_USERNAME and RESULTS_EMAIL_TO and RESULTS_EMAIL_FROM:
-        try:
-            # Fork. The child process will carry on as the server,
-            # and the parent process will send the email.
-            pid = os.fork()
-            if pid == 0:
-                # Parent.
-                f, name = tempfile.mkstemp()
-                os.write(f, json.write(dict(experiment_type=experiment_type,
-                                            time=time,
-                                            results_header=results_header,
-                                            child_pid=pid,
-                                            RESULTS_EMAIL_FROM = RESULTS_EMAIL_FROM,
-                                            RESULTS_EMAIL_TO = RESULTS_EMAIL_TO,
-                                            RESULTS_SMTP_USERNAME = RESULTS_SMTP_USERNAME,
-                                            RESULTS_SMTP = RESULTS_SMTP,
-                                            RESULTS_PASSWORD = RESULTS_PASSWORD)))
-                os.close(f)
-                os.execl("/opt/local/bin/python2.5", "/opt/local/bin/python2.5 sendemail.py", "sendemail.py", name)
-            elif pid < 0:
-                assert False # Fork shouldn't fail.
-        except Exception, e:
-            logger.warning("Unable to create temp file to send info to email process: %s" % str(e))
-        
 class HighLevelParseError(Exception):
     def __init__(self, *args):
         Exception.__init__(self, *args)
@@ -373,8 +341,6 @@ def control(env, start_response):
                       user_agent)
             rf.write(header)
             rf.write(csv_results)
-
-            send_email(parsed_json[0], thetime, header)
 
             start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
             return ["OK"]
