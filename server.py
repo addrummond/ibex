@@ -32,7 +32,8 @@ import time as time_module
 import types
 import os
 import os.path
-import smtplib
+from util import *
+import tempfile
 from server_conf import *
 
 #
@@ -103,10 +104,7 @@ if globals().has_key('WEBSPR_WORKING_DIR'):
     PWD = WEBSPR_WORKING_DIR
 if os.environ.get("WEBSPR_WORKING_DIR"):
     PWD = os.environ.get("WEBSPR_WORKING_DIR")
-if PWD:
-    PWD = PWD.rstrip("/\\") + "/"
-else:
-    PWD = ''
+if PWD is None: PWD = ''
 
 
 #
@@ -128,7 +126,7 @@ def unlock_and_close(f):
 
 def get_counter():
     try:
-        f = lock_and_open(PWD + SERVER_STATE_DIR + '/counter', "r")
+        f = lock_and_open(os.path.join(PWD, SERVER_STATE_DIR, 'counter'), "r")
         n = int(f.read().strip())
         unlock_and_close(f)
         return n
@@ -137,31 +135,38 @@ def get_counter():
         sys.exit(1)
 def set_counter(n):
     try:
-        f = lock_and_open(PWD + SERVER_STATE_DIR + '/counter', "w")
+        f = lock_and_open(os.path.join(PWD, SERVER_STATE_DIR, 'counter'), "w")
         f.write(str(n))
         unlock_and_close(f)
     except IOError:
         logger.error("Error setting counter in server state")
         sys.exit(1)
 
-def nice_time(time):
-    return time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(time))
-
 def send_email(experiment_type, time, results_header):
     # Note that we don't check RESULTS_PASSWORD because it may be None.
     if RESULTS_SMTP and RESULTS_SMTP_USERNAME and RESULTS_EMAIL_TO and RESULTS_EMAIL_FROM:
         try:
-            msg = "From: %s\r\nTo: %s\r\nSubject: %s at %s\r\nType: text/plain\r\n\r\n" % (RESULTS_EMAIL_FROM, RESULTS_EMAIL_TO, experiment_type, nice_time(time))
-            msg += "At %s, results were received by the server.\
- The following header was recorded:\r\n\r\n%s" % (nice_time(time), results_header)
-
-            server = smtplib.SMTP(RESULTS_SMTP)
-            if RESULTS_PASSWORD:
-                server.esmtp_features["auth"] = "TLS" #"LOGIN PLAIN"
-                server.login(RESULTS_SMTP_USERNAME, RESULTS_PASSWORD)
-            server.sendmail(RESULTS_EMAIL_FROM, RESULTS_EMAIL_TO, msg)
+            # Fork. The child process will carry on as the server,
+            # and the parent process will send the email.
+            pid = os.fork()
+            if pid == 0:
+                # Parent.
+                f, name = tempfile.mkstemp()
+                os.write(f, json.write(dict(experiment_type=experiment_type,
+                                            time=time,
+                                            results_header=results_header,
+                                            child_pid=pid,
+                                            RESULTS_EMAIL_FROM = RESULTS_EMAIL_FROM,
+                                            RESULTS_EMAIL_TO = RESULTS_EMAIL_TO,
+                                            RESULTS_SMTP_USERNAME = RESULTS_SMTP_USERNAME,
+                                            RESULTS_SMTP = RESULTS_SMTP,
+                                            RESULTS_PASSWORD = RESULTS_PASSWORD)))
+                os.close(f)
+                os.execl("/opt/local/bin/python2.5", "/opt/local/bin/python2.5 sendemail.py", "sendemail.py", name)
+            elif pid < 0:
+                assert False # Fork shouldn't fail.
         except Exception, e:
-            logger.warning("Failed to send email notification: %s" % str(e))
+            logger.warning("Unable to create temp file to send info to email process: %s" % str(e))
         
 class HighLevelParseError(Exception):
     def __init__(self, *args):
@@ -320,7 +325,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(PWD + last)
+            f = open(os.path.join(PWD, last))
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
@@ -347,7 +352,7 @@ def control(env, start_response):
         # Keep a backup of the raw post data.
         bf = None
         try:
-            bf = lock_and_open(PWD + RAW_RESULT_FILE_NAME, "a")
+            bf = lock_and_open(os.path.join(PWD, RAW_RESULT_FILE_NAME), "a")
             bf.write(post_data)
         except:
             pass
@@ -389,19 +394,19 @@ def control(env, start_response):
 # (if it doesn't already exist), and initialize the counter.
 try:
     # Create the directory.
-    if os.path.isfile(PWD + SERVER_STATE_DIR):
+    if os.path.isfile(os.path.join(PWD, SERVER_STATE_DIR)):
         logger.error("'%s' is a file, so could not create server state directory" % SERVER_STATE_DIR)
         sys.exit(1)
-    elif not os.path.isdir(PWD + SERVER_STATE_DIR):
-        os.mkdir(PWD + SERVER_STATE_DIR)
+    elif not os.path.isdir(os.path.join(PWD, SERVER_STATE_DIR)):
+        os.mkdir(os.path.join(PWD, SERVER_STATE_DIR))
 
     # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(PWD + SERVER_STATE_DIR + '/counter'):
-        f = open(PWD + SERVER_STATE_DIR + '/counter', "w")
+    if not os.path.isfile(os.path.join(PWD, SERVER_STATE_DIR, '/counter')):
+        f = open(os.path.join(PWD, SERVER_STATE_DIR, 'counter'), "w")
         f.write("0")
         f.close()
 except os.error, IOError:
-    logger.error("Could not create server state directory at %s" % PWD + SERVER_STATE_DIR)
+    logger.error("Could not create server state directory at %s" % os.path.join(PWD, SERVER_STATE_DIR))
     sys.exit(1)
 
 if SERVER_MODE == "paste":

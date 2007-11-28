@@ -33,11 +33,11 @@ SERVER_MODE = "paste"
 # Define ALL of the following variables if you want the server to send
 # email when a subject has completed an experiment.
 #
-#RESULTS_SMTP          = "smtp.gmail.com"
-#RESULTS_SMTP_USERNAME = "a.d.drummond@gmail.com"
+#RESULTS_SMTP          = "mail.umd.edu"
+#RESULTS_SMTP_USERNAME = "alexdd@umd.edu"
 #RESULTS_EMAIL_FROM    = "SA_results"
 #RESULTS_EMAIL_TO      = "a.d.drummond@gmail.com"
-#RESULTS_PASSWORD      = "foo"
+#RESULTS_PASSWORD      = "mnWP[[]]"
 #
 # The 'RESULTS_PASSWORD' variable should be set to None if no
 # authentication is required by the SMTP server.  Note that in most

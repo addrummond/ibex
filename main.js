@@ -580,13 +580,13 @@ function indicateThatResultsWereSent(success)
     spinSpan.removeChild(spinSpan.firstChild); // This will cause the callback to stop.
     if (success) {
         sendingResultsMessage.replaceChild(
-            document.createTextNode("The results were successfully sent to the server. Thanks!"),
+            document.createTextNode(conf_completionMessage),
             sendingResultsMessage.firstChild
         );
     }
     else {
         sendingResultsMessage.replaceChild(
-            document.createTextNode("There was an error sending the results to the server."),
+            document.createTextNode(conf_completionErrorMessage),
             sendingResultsMessage.firstChild
         );
     }
