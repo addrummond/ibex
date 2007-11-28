@@ -1,8 +1,10 @@
 var body = document.getElementsByTagName("body")[0];
 
 var counter = readCookie("counter");
+var randomCounter = false;
 if (parseInt(counter) == NaN) {
     counter = Math.floor(Math.random() * 10000);
+    randomCounter = true;
 }
 
 function Sentence(type, group, preamble, words, question, num) {
@@ -62,7 +64,9 @@ var initialSentencesArray = new Array(sentences_strings.length);
 for (var i = 0; i < sentences_strings.length; ++i) {
     initialSentencesArray[i] = makeSentence(sentences_strings[i], i);
 }
-var mungedSentencesArray = mungGroups(initialSentencesArray, counter);
+var extras = {};
+var mungedSentencesArray = mungGroups(initialSentencesArray, counter, extras);
+var groupSize = extras['groupSize'];
 var sentences = runShuffleSequence(mungedSentencesArray, conf_shuffleSequence);
 if (sentences.length == 0) {
     alert("ERROR: No sentences were specified by the shuffle sequence.");
@@ -622,7 +626,7 @@ function sendResults(address, port)
 
     // Prepare the POST data.
     if (conf_experimentType == "self-paced reading") {
-        data = ["self-paced reading", sentences, times, answers, newlines, navigator.userAgent].toJSONString();
+        data = ["self-paced reading", sentences, times, answers, newlines, navigator.userAgent, randomCounter, counter % groupSize].toJSONString();
     }
     else if (conf_experimentType == "speeded acceptability") {
         var answerValues = new Array(answers.length);
@@ -631,7 +635,7 @@ function sendResults(address, port)
                 answerValues[i] = answers[i][0];
             else answerValues[i] = answers[i];
         }
-        data = ["speeded acceptability", sentences, answerValues, newlines, navigator.userAgent].toJSONString();
+        data = ["speeded acceptability", sentences, answerValues, newlines, navigator.userAgent, randomCounter, counter % groupSize].toJSONString();
     }
 
     xmlhttp.onreadystatechange = function() {

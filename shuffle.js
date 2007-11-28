@@ -58,7 +58,7 @@ function evenShuffle(arrayOfArrays) {
     return shuffledArray;
 }
 
-function latinSquare(arrayOfArrays, counter) {
+function latinSquare(arrayOfArrays, counter, extras) {
     var groupSize = null;
     for (var i = 0; i < arrayOfArrays.length; ++i) {
         if (groupSize == null) {
@@ -79,10 +79,11 @@ function latinSquare(arrayOfArrays, counter) {
             idx = 0;
     }
 
+    if (extras != null) { extras['groupSize'] = groupSize; }
     return a;
 }
 
-function mungGroups(sentenceArray, counter) {
+function mungGroups(sentenceArray, counter, extras) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
     var grouped = filter(function (e) { return e.group != null; }, sentenceArray);
 
@@ -100,7 +101,9 @@ function mungGroups(sentenceArray, counter) {
     while (hash.next()) {
         flat.push(hash.getValue());
     }
-    var ls = flat.length > 0 ? latinSquare(flat, counter) : [];
+    var es = {};
+    var ls = flat.length > 0 ? latinSquare(flat, counter, es) : [];
+    if (extras != null) { extras['groupSize'] = es['groupSize']; }
     return nulls.concat(ls);
 }
 

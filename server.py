@@ -196,33 +196,39 @@ def rearrange(parsed_json, ip):
     if len(parsed_json) < 2:
         raise HighLevelParseError()
 
-    sentences  = None
-    times      = None
-    answers    = None
-    newlines   = None
-    user_agent = None
+    sentences      = None
+    times          = None
+    answers        = None
+    newlines       = None
+    user_agent     = None
+    random_counter = None
+    design         = None
 
     # Are these the results of a self-paced reading experiment
     # or of a speeded accpetability experiment?
     if parsed_json[0] == "self-paced reading":
-        if len(parsed_json) != 6:
+        if len(parsed_json) != 8:
             raise HighLevelParseError()
 
-        sentences  = parsed_json[1]
-        times      = parsed_json[2]
-        answers    = parsed_json[3]
-        newlines   = parsed_json[4]
-        user_agent = parsed_json[5]
+        sentences      = parsed_json[1]
+        times          = parsed_json[2]
+        answers        = parsed_json[3]
+        newlines       = parsed_json[4]
+        user_agent     = parsed_json[5]
+        random_counter = parsed_json[6]
+        design         = parsed_json[7]
         if len(sentences) != len(times):
             raise HighLevelParseError()
     elif parsed_json[0] == "speeded acceptability":
-        if len(parsed_json) != 5:
+        if len(parsed_json) != 7:
             raise HighLevelParseError()
 
-        sentences  = parsed_json[1]
-        answers    = parsed_json[2]
-        newlines   = parsed_json[3]
-        user_agent = parsed_json[4]
+        sentences      = parsed_json[1]
+        answers        = parsed_json[2]
+        newlines       = parsed_json[3]
+        user_agent     = parsed_json[4]
+        random_counter = parsed_json[5]
+        design         = parsed_json[6]
     else:
         raise HighLevelParseError()
 
@@ -241,9 +247,9 @@ def rearrange(parsed_json, ip):
         rows.append(new_row)
 
     if parsed_json[0] == "self-paced reading":
-        return SPRResultSet(rows), user_agent
+        return SPRResultSet(rows), user_agent, random_counter, design
     elif parsed_json[0] == "speeded acceptability":
-        return SpeededResultSet(rows), user_agent
+        return SpeededResultSet(rows), user_agent, random_counter, design
     else:
         raise HighLevelParseError()
 
@@ -332,13 +338,14 @@ def control(env, start_response):
             parsed_json = json.read(post_data)
             rf = lock_and_open(RESULT_FILE_NAME, "a")
             thetime = time_module.time()
-            main_results, user_agent = rearrange(parsed_json, ip)
+            main_results, user_agent, random_counter, design = rearrange(parsed_json, ip)
             csv_results = main_results.to_csv(thetime)
-            header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n#\n' % \
+            header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                      (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                            time_module.gmtime(thetime)),
                       parsed_json[0],
-                      user_agent)
+                      user_agent,
+                      "Design number was " + (random_counter and "random = " or "non-random = " + str(design)))
             rf.write(header)
             rf.write(csv_results)
 
@@ -367,7 +374,7 @@ try:
         os.mkdir(os.path.join(PWD, SERVER_STATE_DIR))
 
     # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(os.path.join(PWD, SERVER_STATE_DIR, '/counter')):
+    if not os.path.isfile(os.path.join(PWD, SERVER_STATE_DIR, 'counter')):
         f = open(os.path.join(PWD, SERVER_STATE_DIR, 'counter'), "w")
         f.write("0")
         f.close()

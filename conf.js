@@ -9,7 +9,7 @@ var conf_serverURI = "/server.py";
 var conf_experimentType = "self-paced reading";
 var conf_instructionsHTML = "<p>[Define the &lsquo;instructionsHTML&rsquo; variable in your data file.]</p>\
 <p>Press any key to start the experiment.</p>";
-var conf_completionMessage = "The resultts were successfully sent to the server. Thanks!";
+var conf_completionMessage = "The results were successfully sent to the server. Thanks!";
 var conf_completionErrorMessage = "There was an error sending the results to the server.";
 var conf_practiceSentenceType = 0;
 var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));

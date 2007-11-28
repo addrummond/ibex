@@ -208,7 +208,7 @@ In order, the columns are as follows:
 The following variables may be defined in data.js to alter the default
 parameters of the task and to configure other options:
 
-    var serverURI            (default = "server.py")
+    var serverURI              (default = "server.py")
         STRING
         The URI for the server (used when results are sent to the
         server). Keep this in sync with (a) the name of .py file
@@ -216,11 +216,21 @@ parameters of the task and to configure other options:
         in server_conf.py. It is unlikely that you want to change
         this, and the default should Just Work.
 
-    var instructionsHTML     (default: see above)
+    var instructionsHTML       (default: see above)
         STRING
         See above in this section.
 
-    var practiceSentenceType (default = 0)
+    var completionMessage      (default: basic success message)
+        STRING
+        The message displayed when the results have successfully been
+        sent to the server.
+
+    var completionErrorMessage (default: basic error message)
+        STRING
+        The message displayed if there was an error sending the
+        results to the server.
+
+    var practiceSentenceType   (default = 0)
     	STRING/INT
         The type associated with practice sentences. Webspr flags
     	practice sentences so that participants know they are not
@@ -228,22 +238,22 @@ parameters of the task and to configure other options:
     	tasks, there is also the option to give participants more time
     	for practice sentences (see section 6).
 
-    var shuffleSequence      (default: see section 5)
+    var shuffleSequence        (default: see section 5)
         OBJECT
         See section 5.
 
-    var pageTitle            (default = "Experiment")
+    var pageTitle              (default = "Experiment")
         STRING
 	Changes the title of the webpage.
 
-    var showProgressBar      (default = true)
+    var showProgressBar        (default = true)
     	BOOLEAN
 	Whether or not to display a progress bar indicating how far
         the participant has progressed through the set of sentences.
 
 The following variable only applies to self-paced reading experiments:
 
-    var flagWrongAnswers     (default = true)
+    var flagWrongAnswers      (default = true)
         BOOLEAN
 	Whether or not to tell participants when they have answered a
         comprehension question incorrectly.
@@ -573,12 +583,13 @@ Differences between the current version (0.1.3.3) and 0.1.3.2:
 
     * New 'endsWith' predicate for shuffle sequences.
 
+    * New 'completionMessage' and 'completionErrorMessage'
+      configuration variables for data.js.
+
     * Alert now shown if a shuffle sequence fails to specify any
       sentences.
 
-    * Server can send email alerts when results are received.
-
-    * Improved appearence of "sending results to server" message.
+    * Improved appearance of "sending results to server" message.
 
 Differences between 0.1.3.2 and 0.1.3.1:
 
