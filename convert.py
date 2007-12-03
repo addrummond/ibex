@@ -20,11 +20,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#
-# This module allows safe generation of data.js files. It defines
-# classes for representing datasets as Python data structures and a
-# function for outputting a data.js file given such a data structure.
-#
+"""This module allows safe generation of data.js files. It defines
+   classes for representing datasets as Python data structures and a
+   function for outputting a data.js file given such a data structure.
+"""
 
 import types
 import StringIO
@@ -119,6 +118,8 @@ CONF_VARS = [
 ]
 
 def string_to_js_literal(s):
+    """Converts a string to a JS string literal. Escapes all unicode
+       characters."""
     ALLOWED = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\
 0123456789!@#$%^&*()_+-={}[]|:;\?/>.<,~`"
     PRETTY = { "\n" : "\\n", "\r" : "\\r", "\t" : "\\t", "'" : "\\'", '"' : '\\"' }
@@ -140,6 +141,7 @@ def string_to_js_literal(s):
     return o.getvalue()
 
 def pyval_to_jsval(x):
+    """Converts a Python value to a string representation of a JavaScript value."""
     if type(x) == types.IntType or type(x) == types.LongType:
         return "%i" % x
     elif type(x) == types.StringType or type(x) == types.UnicodeType:
@@ -161,6 +163,7 @@ def pyval_to_jsval(x):
         raise BadDatasetError("Unable to convert Python value to JavaScript value")
 
 def output_dataset(dataset, writer):
+    """Given a dataset and an object with a 'write' method, output a data.js."""
     writer.write("//\n// Configuration variables.\n//\n")
     for k,v in dataset.conf.iteritems():
         writer.write("var %s = %s;\n" % (k, pyval_to_jsval(v)))

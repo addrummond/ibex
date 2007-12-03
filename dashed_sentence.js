@@ -41,7 +41,7 @@ function DashedSentence(sentence) {
             // Did we go onto a new line?
             return (w > 0)
                    &&
-                   (this.wordDivs[w].offsetTop !=
+                   (this.wordDivs[w - 1].offsetTop !=
                     this.wordDivs[w].offsetTop);
         }
     };
