@@ -39,7 +39,6 @@ function evenShuffle(arrayOfArrays) {
     }
 
     var shuffledArray = new Array(totalLength);
-    var breakOuter = false;
     for (var idx = 0; idx < totalLength;) {
         for (var j = 0; j < arrayOfArrays.length; ++j) {
             var oldi = indexArray[j];
@@ -49,7 +48,6 @@ function evenShuffle(arrayOfArrays) {
                     shuffledArray[idx] = arrayOfArrays[j][Math.floor(oldi)];
                     ++idx;
                     if (! (idx < totalLength)) {
-                        breakOuter = true;
                         break; // The outer loop will now exit too.
                     }
                 }
