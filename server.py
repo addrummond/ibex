@@ -204,35 +204,32 @@ def rearrange(parsed_json, ip):
     times          = None
     answers        = None
     newlines       = None
-    user_agent     = None
     random_counter = None
     design         = None
 
     # Are these the results of a self-paced reading experiment
     # or of a speeded accpetability experiment?
     if parsed_json[0] == "self-paced reading":
-        if len(parsed_json) != 8:
+        if len(parsed_json) != 7:
             raise HighLevelParseError()
 
         sentences      = parsed_json[1]
         times          = parsed_json[2]
         answers        = parsed_json[3]
         newlines       = parsed_json[4]
-        user_agent     = parsed_json[5]
-        random_counter = parsed_json[6]
-        design         = parsed_json[7]
+        random_counter = parsed_json[5]
+        design         = parsed_json[6]
         if len(sentences) != len(times):
             raise HighLevelParseError()
     elif parsed_json[0] == "speeded acceptability":
-        if len(parsed_json) != 7:
+        if len(parsed_json) != 6:
             raise HighLevelParseError()
 
         sentences      = parsed_json[1]
         answers        = parsed_json[2]
         newlines       = parsed_json[3]
-        user_agent     = parsed_json[4]
-        random_counter = parsed_json[5]
-        design         = parsed_json[6]
+        random_counter = parsed_json[4]
+        design         = parsed_json[5]
     else:
         raise HighLevelParseError()
 
@@ -251,9 +248,9 @@ def rearrange(parsed_json, ip):
         rows.append(new_row)
 
     if parsed_json[0] == "self-paced reading":
-        return SPRResultSet(rows), user_agent, random_counter, design
+        return SPRResultSet(rows), random_counter, design
     elif parsed_json[0] == "speeded acceptability":
-        return SpeededResultSet(rows), user_agent, random_counter, design
+        return SpeededResultSet(rows), random_counter, design
     else:
         raise HighLevelParseError()
 
@@ -283,6 +280,9 @@ STATIC_FILES = [
 ]
 
 def control(env, start_response):
+    # Save the time the results were received.
+    thetime = time_module.time()
+
     def cc_start_response(status, headers):
         c = get_counter()
         start_response(status, headers + [counter_cookie_header(c)])
@@ -293,6 +293,12 @@ def control(env, start_response):
         ip = env['HTTP_X_FORWARDED_FOR']
     else:
         ip = env['REMOTE_ADDR']
+
+    user_agent = "Unknown user agent"
+    if env.has_key('USER_AGENT'):
+        user_agent = env['USER_AGENT']
+    elif env.has_key('HTTP_USER_AGENT'):
+        user_agent = env['HTTP_USER_AGENT']
 
     base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
     # Currently, we're ignoring the QS.
@@ -327,37 +333,47 @@ def control(env, start_response):
 
         post_data = env['wsgi.input'].read(content_length)
 
-        # Keep a backup of the raw post data.
-        bf = None
-        try:
-            bf = lock_and_open(os.path.join(PWD, RAW_RESULT_FILE_NAME), "a")
-            bf.write(post_data)
-        except:
-            pass
-        finally:
-            if bf: unlock_and_close(bf)
+        # This will be called in the normal course of events, and if
+        # there is an error parsing the JSON.
+        def backup_raw_post_data(header=None):
+            bf = None
+            try:
+                bf = lock_and_open(os.path.join(PWD, RAW_RESULT_FILE_NAME), "a")
+                if header:
+                    bf.write("\n")
+                    bf.write(header)
+                bf.write(post_data)
+            except:
+                pass
+            finally:
+                if bf: unlock_and_close(bf)
 
         rf = None
         try:
             parsed_json = json.read(post_data)
-            rf = lock_and_open(RESULT_FILE_NAME, "a")
-            thetime = time_module.time()
-            main_results, user_agent, random_counter, design = rearrange(parsed_json, ip)
-            csv_results = main_results.to_csv(thetime)
+            main_results, random_counter, design = rearrange(parsed_json, ip)
             header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n# %s\n#\n' % \
-                     (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
-                                           time_module.gmtime(thetime)),
-                      parsed_json[0],
-                      user_agent,
-                      "Design number was " + (random_counter and "random = " or "non-random = " + str(design)))
+                (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
+                                      time_module.gmtime(thetime)),
+                 parsed_json[0],
+                 user_agent,
+                 "Design number was " + (random_counter and "random = " or "non-random = " + str(design)))
+            rf = lock_and_open(RESULT_FILE_NAME, "a")
+            backup_raw_post_data(header)
+            csv_results = main_results.to_csv(thetime)
             rf.write(header)
             rf.write(csv_results)
 
             start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
             return ["OK"]
-        except (json.ReadException, HighLevelParseError), e:
+        except json.ReadException:
+            backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
-            return ["<html><body><h1>400 Bad Request</h1></body></html>"]
+            return ["<html><body><1>400 Bad Request</h1></body></html>"]
+        except HighLevelParseError:
+            backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
+            start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+            return ["<html><body><1>400 Bad Request</h1></body></html>"]
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]

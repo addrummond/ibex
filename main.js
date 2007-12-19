@@ -626,7 +626,7 @@ function sendResults(address, port)
 
     // Prepare the POST data.
     if (conf_experimentType == "self-paced reading") {
-        data = ["self-paced reading", sentences, times, answers, newlines, navigator.userAgent, randomCounter, counter % groupSize].toJSONString();
+        data = ["self-paced reading", sentences, times, answers, newlines, randomCounter, counter % groupSize].toJSONString();
     }
     else if (conf_experimentType == "speeded acceptability") {
         var answerValues = new Array(answers.length);
@@ -635,7 +635,7 @@ function sendResults(address, port)
                 answerValues[i] = answers[i][0];
             else answerValues[i] = answers[i];
         }
-        data = ["speeded acceptability", sentences, answerValues, newlines, navigator.userAgent, randomCounter, counter % groupSize].toJSONString();
+        data = ["speeded acceptability", sentences, answerValues, newlines, randomCounter, counter % groupSize].toJSONString();
     }
 
     xmlhttp.onreadystatechange = function() {

@@ -626,10 +626,18 @@ setting up the server, etc.
 
 11. Release notes
 -----------------------------------------------------------------------
+- ???
 Differences between the current version (0.1.3.5) and 0.1.3.4:
 
     * Now easy to define custom shuffle sequence operators.
 
+    * Raw results file now includes headers like those in the main
+      results file.
+
+    * Fixed minor bug in server.py where an exception was not handled
+      properly.
+
+- 03 Dec 2007
 Differences between 0.1.3.4 and 0.1.3.3:
 
     * Fixed bad example shuffle sequence in this README.
@@ -643,6 +651,7 @@ Differences between 0.1.3.4 and 0.1.3.3:
     * Some more detailed documentation for the convert.py module in
       this README.
 
+- 29 Nov 2007
 Differences between 0.1.3.3 and 0.1.3.2:
 
     * Server mode can now be set using the "-m" command line option.
@@ -659,6 +668,7 @@ Differences between 0.1.3.3 and 0.1.3.2:
 
     * Improved appearance of "sending results to server" message.
 
+- 22 Nov 2007
 Differences between 0.1.3.2 and 0.1.3.1:
 
     * Server's working directory can be set in server_conf.py as as an
@@ -677,6 +687,7 @@ Differences between 0.1.3.2 and 0.1.3.1:
 
     * Important new information in section 8.
 
+- 16 Nov 2007
 Differences between 0.1.3.1 and 0.1.3:
 
     * Fixed bug which caused some shuffle sequences with 'shuffle' to
@@ -695,6 +706,7 @@ Differences between 0.1.3.1 and 0.1.3:
     * Added convert.py module to ease automatic generation of data.js
       files.
 
+- 13 Nov 2007
 Differences between 0.1.3 and 0.1.3-beta-4:
 
     * Server now uses file locking for server state on UNIX/Linux/OS
@@ -704,6 +716,7 @@ Differences between 0.1.3 and 0.1.3-beta-4:
 
     * example_data.js included.
 
+- 09 Nov 2007
 Differences between the 0.1.3-beta-4 version and 0.1.3-beta-3:
 
     * Can now be deployed as a CGI process as well as a stand-alone
@@ -723,11 +736,13 @@ Differences between the 0.1.3-beta-4 version and 0.1.3-beta-3:
       send their results to the server successfully, and speeded
       acceptability experiments to fail to record sentence numbers.
 
+- 03 Nov 2007
 Differences between 0.1.3-beta-3 and 0.1.3-beta1/0.1.3-beta2:
 
     * Fixed bug which prevented newlines from being recorded in
       results (this was introduced in 0.1.3).
 
+- 01 Nov 2007
 Differences between 0.1.3beta-1/0.1.3-beta-2 and 0.1.2:
 
     * Support for latin square designs.
