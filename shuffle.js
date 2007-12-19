@@ -151,7 +151,6 @@ function not(pred) {
 }
 
 function Seq(args) {
-    this.ssType = "Seq";
     this.args = args;
 
     this.run = function(arrays) {
@@ -171,7 +170,6 @@ function Seq(args) {
 }
 function seq() { return new Seq(seq.arguments); }
 function Randomize(x) {
-    this.ssType = "Randomize";
     this.args = [x];
 
     this.run = function(arrays) {
@@ -181,7 +179,6 @@ function Randomize(x) {
 }
 function randomize(x) { return new Randomize(x); }
 function Shuffle(args) {
-    this.ssType = "Shuffle";
     this.args = args;
 
     this.run = function(arrays) {
@@ -213,7 +210,7 @@ function toPredicate(v) {
 }
 
 function runShuffleSequence(masterArray, ss) {
-    if (typeof(ss) != "object" || ss.ssType == undefined) {
+    if (typeof(ss) != "object") {
         alert("Bad shuffle sequence");
         return 1/0;
     }
