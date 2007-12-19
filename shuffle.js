@@ -153,16 +153,40 @@ function not(pred) {
 function Seq(args) {
     this.ssType = "Seq";
     this.args = args;
+
+    this.run = function(arrays) {
+        var totLength = 0;
+        for (var i = 0; i < arrays.length; ++i)
+            totLength += arrays[i].length;
+        var a = new Array(totLength);
+        var count = 0;
+        for (var i = 0; i < arrays.length; ++i) {
+            for (var j = 0; j < arrays[i].length; ++j) {
+                a[count] = arrays[i][j];
+                ++count;
+            }
+        }
+        return a;
+    }
 }
 function seq() { return new Seq(seq.arguments); }
 function Randomize(x) {
     this.ssType = "Randomize";
     this.args = [x];
+
+    this.run = function(arrays) {
+        fisherYates(arrays[0]);
+        return arrays[0];
+    }
 }
 function randomize(x) { return new Randomize(x); }
 function Shuffle(args) {
     this.ssType = "Shuffle";
     this.args = args;
+
+    this.run = function(arrays) {
+        return evenShuffle(arrays);
+    }
 }
 function shuffle() { return new Shuffle(shuffle.arguments); }
 function rshuffle() { return new Shuffle(map(randomize, rshuffle.arguments)); }
@@ -211,26 +235,6 @@ function runShuffleSequence(masterArray, ss) {
     if (arrays.length == 0)
         return []
 
-    if (ss.ssType == "Randomize") {
-        fisherYates(arrays[0]);
-        return arrays[0];
-    }
-    else if (ss.ssType == "Seq") {
-        var totLength = 0;
-        for (var i = 0; i < arrays.length; ++i)
-            totLength += arrays[i].length;
-        var a = new Array(totLength);
-        var count = 0;
-        for (var i = 0; i < arrays.length; ++i) {
-            for (var j = 0; j < arrays[i].length; ++j) {
-                a[count] = arrays[i][j];
-                ++count;
-            }
-        }
-        return a;
-    }
-    else if (ss.ssType == "Shuffle") {
-        return evenShuffle(arrays);
-    }
+    return ss.run(arrays);
 }
 
