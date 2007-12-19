@@ -1,5 +1,5 @@
 =======================================================================
-Webspr 0.1.3.4
+Webspr 0.1.3.5
 =======================================================================
 
 See the end of this README for release notes.
@@ -153,8 +153,8 @@ the results file. Each set of results is preceded by a header giving
 the time, date, browser user agent string and other information. Each
 line of the header is preceded by a "#".
 
-** Each row corresponds to a single instance of a spacebar pressing **
-** by a single participant.                                         **
+IMPORTANT: Each row corresponds to a single instance of a spacebar
+pressing by a single participant.
 
 In order, the columns are as follows:
 
@@ -402,6 +402,10 @@ sequence. For example, seq("foo", "foo") would include every sentence
 of type "foo" twice. For this reason, it is possible to accidentally
 include duplicate sentences if a number of your predicates overlap.
 
+You can define your own shuffle sequence operators quite easily; see
+shuffle.js for the definitions of the 'seq', 'shuffle' and 'randomize'
+operators.
+
 
 6. Speeded acceptability judgment tasks.
 -----------------------------------------------------------------------
@@ -622,7 +626,11 @@ setting up the server, etc.
 
 11. Release notes
 -----------------------------------------------------------------------
-Differences between the current version (0.1.3.4) and 0.1.3.3:
+Differences between the current version (0.1.3.5) and 0.1.3.4:
+
+    * Now easy to define custom shuffle sequence operators.
+
+Differences between 0.1.3.4 and 0.1.3.3:
 
     * Fixed bad example shuffle sequence in this README.
 
