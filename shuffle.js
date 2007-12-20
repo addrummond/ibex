@@ -217,7 +217,7 @@ function runShuffleSequence(masterArray, ss) {
 
     var arrays = new Array();
     for (var i = 0; i < ss.args.length; ++i) {
-        if (typeof(ss.args[i]) == "object" && ss.ssType != undefined) {
+        if (typeof(ss.args[i]) == "object") {
             arrays.push(runShuffleSequence(masterArray, ss.args[i]));
         }
         else {
@@ -234,4 +234,3 @@ function runShuffleSequence(masterArray, ss) {
 
     return ss.run(arrays);
 }
-
