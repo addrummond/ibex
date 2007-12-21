@@ -66,8 +66,7 @@ function latinSquare(arrayOfArrays, counter, extras) {
             groupSize = arrayOfArrays[i].length;
         }
         else if (groupSize != arrayOfArrays[i].length) {
-            alert("Inconsistent group sizes.");
-            return 1/0;
+            assert(false, "Inconsistent group sizes.");
         }
     }
 
@@ -205,15 +204,12 @@ function toPredicate(v) {
         return function(x) { return x == v; }
     }
     else {
-        return 1/0;
+        assert(false, "Bad type for predicate in shuffle sequence");
     }
 }
 
 function runShuffleSequence(masterArray, ss) {
-    if (typeof(ss) != "object") {
-        alert("Bad shuffle sequence");
-        return 1/0;
-    }
+    assert(typeof(ss) == "object", "Bad shuffle sequence");
 
     var arrays = new Array();
     for (var i = 0; i < ss.args.length; ++i) {

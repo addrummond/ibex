@@ -68,10 +68,7 @@ var extras = {};
 var mungedSentencesArray = mungGroups(initialSentencesArray, counter, extras);
 var groupSize = extras['groupSize'];
 var sentences = runShuffleSequence(mungedSentencesArray, conf_shuffleSequence);
-if (sentences.length == 0) {
-    alert("ERROR: No sentences were specified by the shuffle sequence.");
-    var dummy = 1/0;
-}
+assert(sentences.length > 0, "No sentences were specified by the shuffle sequence.");
 
 var progressBarHeight;
 var progressBarWidth;
