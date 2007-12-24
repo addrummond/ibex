@@ -15,6 +15,19 @@ function assert_class(klass, expr, message) {
     ;
 }
 
+function getXMLHttpRequest()
+{
+    if (window.XMLHttpRequest) {
+        return new XMLHttpRequest()
+    }
+    else if (window.ActiveXObject) {
+        return new ActiveXObject("Microsoft.XMLHTTP")
+    }
+    else {
+        return null;
+    }
+}
+
 function filter(f, a, initialLength) {
     if (initialLength != null && initialLength != undefined)
         initialLength = Math.floor(a.length / 3);
