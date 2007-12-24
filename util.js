@@ -36,6 +36,12 @@ function map(f, a) {
     return na;
 }
 
+function iter(a, f) {
+    for (var i = 0; i < a.length; ++i) {
+        f(a[i]);
+    }
+}
+
 // See http://www.quirksmode.org/js/cookies.html
 function readCookie(name) {
         var nameEQ = name + "=";
@@ -95,6 +101,14 @@ Hashtable.prototype.put = function (key, value){
  */
 Hashtable.prototype.get = function (key){
                 return this.hash[key];
+}
+
+Hashtable.prototype.dget = function(key, default) {
+    var x = this.hash[key];
+    if (x == null)
+        return default;
+    else
+        return x;
 }
 
 /**
