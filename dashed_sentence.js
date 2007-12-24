@@ -1,3 +1,5 @@
+function boolToInt(x) { if (x) return 1; else return 0; }
+
 DashedSentence.obligatory = ["s"];
 
 function DashedSentence(div, options, finishedCallback) {
@@ -14,7 +16,8 @@ function DashedSentence(div, options, finishedCallback) {
     this.shownWordColor = options.dget("shownWordColor", "black");
 
     // Precalculate MD5 of sentence.
-    //this.md5 = BLAH BLAH;
+    var canonicalSentence = this.words.join(' ');
+    var sentenceMD5 = hex_md5(canonicalSentence);
 
     this.div = div;
     this.div.className = "sentence";
@@ -33,28 +36,27 @@ function DashedSentence(div, options, finishedCallback) {
     this.handleKey = function(code, time) {
         if (this.mode == "spr") {
             if (code == 32) {
-                this.recordSprResult(time);
+                this.recordSprResult(time, this.currentWord);
 
-                if (this.currentWord < this.words.length - 1) {
-                    this.blankWord(this.currentWord);
-                    ++(this.currentWord);
+                if (this.currentWord - 1 >= 0)
+                    this.blankWord(this.currentWord - 1);
+                if (this.currentWord < this.words.length)
                     this.showWord(this.currentWord);
-                }
-                else {
-                    this.finishedCallback();
-                }
+                ++(this.currentWord);
+                if (this.currentWord >= this.words.length)
+                    this.finishedCallback(this.resultsLines);
             }
         }
     };
 
-    this.recordSprResult = function(time) {
-        if (this.currentWord > 0) {
+    this.recordSprResult = function(time, word) {
+        if (word > 0) {
             this.resultsLines.push([
-                this.current_word,
+                word,
                 time - this.previous_time,
-                (this.currentWord > 0) && (this.wordDivs[this.currentWord - 1].offsetTop !=
-                                           this.wordDivs[this.currentWord].offsetTop)//,
-                //SENTENCE_HASH
+                boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
+                                         this.wordDivs[word].offsetTop)),
+                sentenceMD5
             ]);
 
             this.previous_time = time;
@@ -62,12 +64,14 @@ function DashedSentence(div, options, finishedCallback) {
     };
 
     this.blankWord = function(w) {
-        assert(w < this.wordDivs.length, "Attempt to blank non-existent word.");
+        //assert(w > 0);
+        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.");
         this.wordDivs[w].style.borderColor = this.unshownBorderColor;
         this.wordDivs[w].style.color = this.unshownWordColor;
     };
     this.showWord = function(w) {
-        assert(w < this.wordDivs.length, "Attempt to blank non-existent word.")
+        //assert(w > 0);
+        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.")
         this.wordDivs[w].style.borderColor = this.shownBorderColor;
         this.wordDivs[w].style.color = this.shownWordColor;
     }
