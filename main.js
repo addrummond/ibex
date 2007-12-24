@@ -24,8 +24,10 @@ if (typeof(defaults) != "undefined") {
 // here's a utility function for traversing the ht_defaults alist.
 function get_defaults_for(obj) {
     for (var i = 0; i < ht_defaults.length; ++i) {
-        if (ht_defaults[i][0] == obj)
-            return ht_defaults[i][1];
+        if (ht_defaults[i][0] == obj) {
+            // Copy the hashtable (had a nasty bug from not doing this...)
+            return (new Hashtable()).add(ht_defaults[i][1]);
+        }
     }
     return new Hashtable();
 }
@@ -68,6 +70,15 @@ iter(items, function(it) {
     for (var i = 0; i < options.length; i += 2) {
         assert(typeof(options[i]) == "string", "The name of each options for an item must be a string.");
         opts.put(options[i], options[i + 1]);
+    }
+
+    // Check that all obligatory options have been specified.
+    if (controller.obligatory) {
+        assert_class(controller.obligatory, "Array", "The 'obligatory' field must be an Array of strings.");
+        iter(controller.obligatory, function(o) {
+            assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
+            assert(opts.get(o) != null, "The obligatory option '" + o + "' was not specified.");
+        });
     }
 
     listOfItems.push(new Item(type, group, itemNumber, controller, opts)); 
