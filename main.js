@@ -94,7 +94,7 @@ body.appendChild(mainDiv);
 
 var currentControllerInstance = null;
 
-function finishedCallback() {
+function finishedCallback(resultsLines) {
     ++posInRunningOrder;
     if (posInRunningOrder >= runningOrder.length)
         alert("DONE!");
