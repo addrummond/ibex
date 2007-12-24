@@ -5,6 +5,7 @@ AssertException.prototype.toString = function () {
 }
 function assert(exp, message) {
     if (!exp) {
+        alert("ERROR: " + message);
         throw new AssertException(message);
     }
 }
