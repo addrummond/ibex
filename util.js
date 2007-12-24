@@ -9,6 +9,10 @@ function assert(exp, message) {
     }
 }
 
+function assert_class(klass, expr, message) {
+    ;
+}
+
 function filter(f, a, initialLength) {
     if (initialLength != null && initialLength != undefined)
         initialLength = Math.floor(a.length / 3);
@@ -103,10 +107,10 @@ Hashtable.prototype.get = function (key){
                 return this.hash[key];
 }
 
-Hashtable.prototype.dget = function(key, default) {
+Hashtable.prototype.dget = function(key, default_) {
     var x = this.hash[key];
     if (x == null)
-        return default;
+        return default_;
     else
         return x;
 }
