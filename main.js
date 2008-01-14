@@ -25,91 +25,111 @@ if (typeof(defaults) != "undefined") {
 function get_defaults_for(obj) {
     for (var i = 0; i < ht_defaults.length; ++i) {
         if (ht_defaults[i][0] == obj) {
-            // Copy the hashtable (had a nasty bug from not doing this...)
+            // Copy the hashtable (had a nasty bug from not doing this...).
             return (new Hashtable()).add(ht_defaults[i][1]);
         }
     }
     return new Hashtable();
 }
 
-function Item(type, group, num, controller, options) {
+function Item(type, group, itemNumber, elementNumber, controller, options) {
     this.type = type
     this.group = group;
-    this.num = num;
+    this.itemNumber = itemNumber;
+    this.elementNumber = elementNumber;
     this.controller = controller;
     this.options = options;
 }
 
-// Now create our initial list of Items, merging in default options.
+// Now create our initial list of item sets (lists of Items), merging in default options.
 assert(typeof(items) != "undefined", "You must define the 'items' variable.");
 assert_class(items, "Array", "The 'items' variable must be set to an Array.");
-var listOfItems = [];
+var listOfItemSets = [];
 var itemNumber = 0;
 iter(items, function(it) {
     assert_class(it, "Array", "Every element in the 'items' Array must be an Array.");
-    assert(it.length == 3, "Every element in the 'items' Array must be an Array of length 3.");
+
+
+    assert(((it.length - 1) % 2) == 0, "Following the item/group specifier, each element of the 'items' array must contain an even number of elements.")
     var typeAndGroup = it[0];
-    var controller = it[1];
-    var options = it[2];
+    var currentItemSet = [];
+    for (var setIndex = 1, elementNumber = 0; setIndex < it.length; setIndex += 2, ++elementNumber) {
+        var controller = it[setIndex];
+        var options = it[setIndex + 1];
 
-    var type;
-    var group = null;
-    assert(typeof(typeAndGroup) == "object" || typeof(typeAndGroup) == "number" || typeof(typeAndGroup) == "string",
-           "Type and group specifier must be an Array, number or string");
-    if (typeof(typeAndGroup) == "object") {
-        assert(typeAndGroup.length == 2, "Type and group specifier must have two elements");
-        type = typeAndGroup[0];
-        group = typeAndGroup[1];
-    }
-    else {
-        type = typeAndGroup;
-    }
+        var type;
+        var group = null;
+        assert(typeof(typeAndGroup) == "object" || typeof(typeAndGroup) == "number" || typeof(typeAndGroup) == "string",
+               "Type and group specifier must be an Array, number or string");
+        if (typeof(typeAndGroup) == "object") {
+            assert(typeAndGroup.length == 2, "Type and group specifier must have two elements");
+            type = typeAndGroup[0];
+            group = typeAndGroup[1];
+        }
+        else {
+            type = typeAndGroup;
+        }
+        
+        var opts = get_defaults_for(controller);
+        assert(options.length % 2 == 0, "The list of options for each item must have an even number of elements.");
+        for (var i = 0; i < options.length; i += 2) {
+            assert(typeof(options[i]) == "string", "The name of each options for an item must be a string.");
+            opts.put(options[i], options[i + 1]);
+        }
+        
+        // Check that all obligatory options have been specified.
+        if (controller.obligatory) {
+            assert_class(controller.obligatory, "Array", "The 'obligatory' field must be an Array of strings.");
+            iter(controller.obligatory, function(o) {
+                assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
+                assert(opts.get(o) != null, "The obligatory option '" + o + "' was not specified.");
+            });
+        }
 
-    var opts = get_defaults_for(controller);
-    assert(options.length % 2 == 0, "The list of options for each item must have an even number of elements.");
-    for (var i = 0; i < options.length; i += 2) {
-        assert(typeof(options[i]) == "string", "The name of each options for an item must be a string.");
-        opts.put(options[i], options[i + 1]);
+        currentItemSet.push(new Item(type, group, itemNumber, elementNumber, controller, opts));
     }
-
-    // Check that all obligatory options have been specified.
-    if (controller.obligatory) {
-        assert_class(controller.obligatory, "Array", "The 'obligatory' field must be an Array of strings.");
-        iter(controller.obligatory, function(o) {
-            assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
-            assert(opts.get(o) != null, "The obligatory option '" + o + "' was not specified.");
-        });
-    }
-
-    listOfItems.push(new Item(type, group, itemNumber, controller, opts)); 
+    listOfItemSets.push(currentItemSet); 
 
     ++itemNumber;
  });
 
-var runningOrder = listOfItems;
-var posInRunningOrder = 0;
-
 var mainDiv = document.createElement("div");
 body.appendChild(mainDiv);
 
+var runningOrder = listOfItemSets;
+assert(runningOrder.length > 0 && runningOrder[0].length > 0,
+       "There must be some items in the running order!");
+
+var posInRunningOrder = 0;
+var posInCurrentItemSet = 0;
 var currentControllerInstance = null;
+// A list of lists of lines (the list will be flattened on the server side,
+// since we don't want to do too many expensive array operations over here).
+var allResults = [];
 
 function finishedCallback(resultsLines) {
-    ++posInRunningOrder;
-    if (posInRunningOrder >= runningOrder.length)
-        alert("DONE!");
+    if (resultsLines != null && resultsLines.length && resultsLines.length > 0)
+        allResults.push(resultsLines);
+
+    ++posInCurrentItemSet;
+    if (posInCurrentItemSet >= runningOrder[posInRunningOrder].length) {
+        ++posInRunningOrder;
+        if (posInRunningOrder >= runningOrder.length)
+            alert("DONE!");
+        posInCurrentItemSet = 0;
+    }
 
     var newMainDiv = document.createElement("div");
     body.replaceChild(newMainDiv, mainDiv);
     mainDiv = newMainDiv;
 
     currentControllerInstance =
-        new (runningOrder[posInRunningOrder].controller)
-            (mainDiv,runningOrder[posInRunningOrder].options, finishedCallback);
+        new (runningOrder[posInRunningOrder][posInCurrentItemSet].controller)
+            (mainDiv,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback);
 }
 currentControllerInstance =
-    new (runningOrder[0].controller)
-        (mainDiv, runningOrder[0].options, finishedCallback);
+    new (runningOrder[0][0].controller)
+        (mainDiv, runningOrder[0][0].options, finishedCallback);
 
 document.onkeydown = function(e) {
     // Record the time ASAP.
@@ -122,4 +142,32 @@ document.onkeydown = function(e) {
 
     if (currentControllerInstance.handleKey)
         currentControllerInstance.handleKey(e.keyCode, time);
+}
+
+// Make a post request to a given address. Address may either be a domain
+// or an IP.
+function sendResults(address, port, rowsOfRows, success, failure)
+{
+    var xmlhttp = getXMLHttpRequest();
+    if (! xmlhttp) {
+        failure();
+    }
+
+    // Prepare the post data.
+    var data = "";
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+                // Great, we successfully sent the results to the server.
+                success();
+            }
+            else {
+                // There was an error sending the results to the server.
+                failure();
+            }
+        }
+    };
+    xmlhttp.open("POST", conf_serverURI, true);
+    xmlhttp.send(data);
 }
