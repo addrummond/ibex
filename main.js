@@ -119,13 +119,23 @@ function finishedCallback(resultsLines) {
         posInCurrentItemSet = 0;
     }
 
-    var newMainDiv = document.createElement("div");
-    body.replaceChild(newMainDiv, mainDiv);
-    mainDiv = newMainDiv;
+    var pForItem;
+    if (runningOrder[posInRunningOrder][posInCurrentItemSet].options.dget("displayMode", "overwrite") != "append") {
+        var newMainDiv = document.createElement("div");
+        body.replaceChild(newMainDiv, mainDiv);
+        mainDiv = newMainDiv;
+        pForItem = document.createElement("p");
+        mainDiv.appendChild(pForItem);
+    }
+    else {
+        // Append the Item instead of overwriting the previous one.
+        pForItem = document.createElement("p");
+        mainDiv.appendChild(pForItem);
+    }
 
     currentControllerInstance =
         new (runningOrder[posInRunningOrder][posInCurrentItemSet].controller)
-            (mainDiv,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback);
+            (pForItem,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback);
 }
 currentControllerInstance =
     new (runningOrder[0][0].controller)
