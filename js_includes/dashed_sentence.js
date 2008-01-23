@@ -45,14 +45,14 @@ function DashedSentence(div, options, finishedCallback) {
                 if (this.currentWord < this.words.length)
                     this.showWord(this.currentWord);
                 ++(this.currentWord);
-                if (this.currentWord >= this.words.length)
+                if (this.currentWord > this.words.length)
                     this.finishedCallback(this.resultsLines);
             }
         }
     };
 
     this.recordSprResult = function(time, word) {
-        if (word > 0) {
+        if (word > 0 && word < this.wordDivs.length) {
             this.resultsLines.push([
                 word,
                 time - this.previous_time,
