@@ -1,5 +1,19 @@
 var body = document.getElementsByTagName("body")[0];
 
+var sendingResults = document.createElement("p")
+sendingResults.className = "sending-results"
+var spinSpan = document.createElement("div");
+spinSpan.appendChild(document.createTextNode(""));
+spinSpan.style.width = "1.5em";
+spinSpan.style.cssFloat = "left";
+spinSpan.style.styleFloat = "left";
+sendingResults.appendChild(spinSpan);
+var sendingResultsMessage = document.createElement("div");
+sendingResultsMessage.appendChild(document.createTextNode(" Sending results to server..."));
+sendingResultsMessage.style.cssFloat = "left";
+sendingResultsMessage.style.styleFloat = "left";
+sendingResults.appendChild(sendingResultsMessage);
+
 // Convert the "defaults" variable to a list of [item, hashtable] pairs.
 var ht_defaults = [];
 if (typeof(defaults) != "undefined") {
@@ -58,7 +72,7 @@ iter(items, function(it) {
         var options = it[setIndex + 1];
 
         var type;
-        var group = null;
+        var group = "NULL";
         assert(typeof(typeAndGroup) == "object" || typeof(typeAndGroup) == "number" || typeof(typeAndGroup) == "string",
                "Type and group specifier must be an Array, number or string");
         if (typeof(typeAndGroup) == "object") {
@@ -96,26 +110,44 @@ iter(items, function(it) {
 var mainDiv = document.createElement("div");
 body.appendChild(mainDiv);
 
-var runningOrder = listOfItemSets;
+var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
+
+/*for (var i = 0; i < runningOrder.length; ++i) {
+    for (var j = 0; j < runningOrder[i].length; ++j) {
+        document.write(runningOrder[i][j].elementNumber);
+        document.write('<br>');
+    }
+}*/
 
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
 var currentControllerInstance = null;
-// A list of lists of lines (the list will be flattened on the server side,
-// since we don't want to do too many expensive array operations over here).
+// A list of lines.
 var allResults = [];
 
 function finishedCallback(resultsLines) {
-    if (resultsLines != null && resultsLines.length && resultsLines.length > 0)
-        allResults.push(resultsLines);
+    if (resultsLines != null && resultsLines.length && resultsLines.length > 0) {
+        var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
+        for (var i = 0; i < resultsLines.length; ++i) {
+            var preamble = [ it.itemNumber, it.elementNumber, it.type, it.group ];
+            for (var j = 0; j < resultsLines[i].length; ++j) {
+                preamble.push(resultsLines[i][j]);
+            }
+            allResults.push(preamble);
+        }
+    }
 
     ++posInCurrentItemSet;
     if (posInCurrentItemSet >= runningOrder[posInRunningOrder].length) {
         ++posInRunningOrder;
-        if (posInRunningOrder >= runningOrder.length)
-            alert("DONE!");
+        if (posInRunningOrder >= runningOrder.length) {
+            indicateThatResultsAreBeingSent();
+            sendResults(allResults,
+                        function() { indicateThatResultsWereSent(true); },
+                        function() { indicateThatResultsWereSent(false); });
+        }
         posInCurrentItemSet = 0;
     }
 
@@ -154,9 +186,47 @@ document.onkeydown = function(e) {
         currentControllerInstance.handleKey(e.keyCode, time);
 }
 
+function indicateThatResultsAreBeingSent()
+{
+    body.replaceChild(sendingResults, mainDiv);
+    var spinChars = ["\u2013", "\\", "|", "/"]
+    var spinCharsPos = 0
+    function timerCallback()
+    {
+        // Stop the callback if spinSpan no longer has any children.
+        if (spinSpan.childNodes.length == 0) { return; }
+
+        spinSpan.replaceChild(document.createTextNode(spinChars[spinCharsPos]),
+                              spinSpan.firstChild);
+        ++spinCharsPos;
+        if (spinCharsPos == spinChars.length) {
+            spinCharsPos = 0;
+        }
+        setTimeout(timerCallback, 200);
+    }
+    timerCallback();
+}
+
+function indicateThatResultsWereSent(success)
+{
+    spinSpan.removeChild(spinSpan.firstChild); // This will cause the callback to stop.
+    if (success) {
+        sendingResultsMessage.replaceChild(
+            document.createTextNode(conf_completionMessage),
+            sendingResultsMessage.firstChild
+        );
+    }
+    else {
+        sendingResultsMessage.replaceChild(
+            document.createTextNode(conf_completionErrorMessage),
+            sendingResultsMessage.firstChild
+        );
+    }
+}
+
 // Make a post request to a given address. Address may either be a domain
 // or an IP.
-function sendResults(address, port, rowsOfRows, success, failure)
+function sendResults(resultsLines, success, failure)
 {
     var xmlhttp = getXMLHttpRequest();
     if (! xmlhttp) {
@@ -164,7 +234,7 @@ function sendResults(address, port, rowsOfRows, success, failure)
     }
 
     // Prepare the post data.
-    var data = "";
+    var data = resultsLines.toJSONString();
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {

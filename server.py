@@ -280,6 +280,8 @@ STATIC_FILES = [
 ]
 
 def control(env, start_response):
+    print env
+
     # Save the time the results were received.
     thetime = time_module.time()
 
@@ -332,6 +334,7 @@ def control(env, start_response):
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
 
         post_data = env['wsgi.input'].read(content_length)
+        print post_data
 
         # This will be called in the normal course of events, and if
         # there is an error parsing the JSON.
