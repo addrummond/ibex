@@ -124,7 +124,7 @@ assert(runningOrder.length > 0 && runningOrder[0].length > 0,
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
 var currentControllerInstance = null;
-// A list of lines.
+// A list of result lines.
 var allResults = [];
 
 function finishedCallback(resultsLines) {
