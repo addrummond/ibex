@@ -23,6 +23,9 @@ SERVER_STATE_DIR = "server_state"
 # "-m" command line option.
 SERVER_MODE = "paste"
 
+# The name of the directory where Javascript includes are stored.
+JS_INCLUDES_DIR = "js_includes"
+
 # Optionally define this variable to set the working directory
 # of the server. You can also define the environment variable of
 # the same name (the value of the environment variable takes

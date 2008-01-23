@@ -46,7 +46,8 @@ logger.addHandler(logging.StreamHandler())
 # Check that all conf variables have been defined
 # (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
 for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
-          'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR', 'SERVER_MODE']:
+          'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
+          'SERVER_MODE', 'JS_INCLUDES_DIR']:
     if not globals().has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -143,12 +144,6 @@ def set_counter(n):
 class HighLevelParseError(Exception):
     def __init__(self, *args):
         Exception.__init__(self, *args)
-
-class Row(object):
-    __slots__ = ['words', 'times', 'newlines', 'type', 'group', 'sentence', 'ip_hash', 'answer']
-    def __init__(self, **args):
-        for k, v in args.iteritems():
-            setattr(self, k, v)
 
 def get_group(g):
     if g is None:
