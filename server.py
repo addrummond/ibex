@@ -219,13 +219,11 @@ def create_js_monster_string():
 # Not used when this module is run as a CGI process.
 STATIC_FILES = [
     'spr.html',
-    'data.js',
     'json.js',
     'main.js',
     'conf.js',
     'shuffle.js',
     'util.js',
-    'dashed_sentence.js'
 ]
 
 def control(env, start_response):
