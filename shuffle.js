@@ -186,12 +186,38 @@ function Shuffle(args) {
 }
 function shuffle() { return new Shuffle(shuffle.arguments); }
 function rshuffle() { return new Shuffle(map(randomize, rshuffle.arguments)); }
+function SepWith(sep, main) {
+    this.args = [sep,main];
+
+    this.run = function(arrays) {
+        assert(arrays.length == 2, "Error in SepWith");
+        var sep = arrays[0];
+        var main = arrays[1];
+
+        if (main.length <= 1)
+            return main
+        else {
+            var newArray = [];
+            var i;
+            for (i = 0; i < main.length - 1; ++i) {
+                newArray.push(main[i]);
+                for (var j = 0; j < sep.length; ++j) {
+                    newArray.push(sep[j]);
+                }
+            }
+            newArray.push(main[i]);
+
+            return newArray;
+        }
+    }
+}
+function sepWith(sep, main) { return new SepWith(sep, main); }
 
 function toPredicate(v) {
     if (typeof(v) == "function") {
         return v;
     }
-    else if (typeof(v) == "object") {
+    /*else if (typeof(v) == "object") {
         return function(x) {
             for (var i = 0; i < v.length; ++i) {
                 if (v[i] == x)
@@ -199,7 +225,7 @@ function toPredicate(v) {
             }
             return false;
         }
-    }
+    }*/
     else if (typeof(v) == "string" || typeof(v) == "number") {
         return function(x) { return x == v; }
     }
@@ -218,7 +244,9 @@ function runShuffleSequence(masterArray, ss) {
         }
         else {
             var pred = toPredicate(ss.args[i]);
-            var elems = filter(function (s) { return pred(s.type); }, masterArray);
+            // [0] here because it's an item set, not an item (but all items
+            // in the set will have the same type).
+            var elems = filter(function (s) { return pred(s[0].type); }, masterArray);
 
             if (elems.length > 0)
                 arrays.push(elems);

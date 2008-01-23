@@ -117,6 +117,12 @@ iter(items, function(it) {
 var mainDiv = document.createElement("div");
 body.appendChild(mainDiv);
 
+/*iter(listOfItemSets, function(is) {
+    iter(is, function(it) {
+        document.write(it.type + "<br>");
+    });
+});*/
+
 var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
