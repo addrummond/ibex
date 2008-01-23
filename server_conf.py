@@ -25,6 +25,8 @@ SERVER_MODE = "paste"
 
 # The name of the directory where Javascript includes are stored.
 JS_INCLUDES_DIR = "js_includes"
+# The name of the directory where CSS includes are stored.
+CSS_INCLUDES_DIR = "css_includes"
 
 # Optionally define this variable to set the working directory
 # of the server. You can also define the environment variable of

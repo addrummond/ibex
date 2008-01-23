@@ -47,7 +47,8 @@ logger.addHandler(logging.StreamHandler())
 # (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
 for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
-          'SERVER_MODE', 'JS_INCLUDES_DIR']:
+          'SERVER_MODE', 'JS_INCLUDES_DIR',
+          'CSS_INCLUDES_DIR']:
     if not globals().has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -191,15 +192,15 @@ def counter_cookie_header(c):
          nice_time(time_module.time() + 60 * 60))
     )
 
-def create_js_monster_string():
+def create_monster_string(dir, extension):
     js_filenames = []
     try:
-        for path in os.listdir(JS_INCLUDES_DIR):
-            fullpath = os.path.join(JS_INCLUDES_DIR, path)
-            if os.path.isfile(fullpath) and path.endswith('.js'):
+        for path in os.listdir(dir):
+            fullpath = os.path.join(dir, path)
+            if os.path.isfile(fullpath) and path.endswith(extension):
                 js_filenames.append(fullpath)
     except:
-        logger.error("Error getting directory listing for Javascript include directory '%s'" % JS_INCLUDES_DIR)
+        logger.error("Error getting directory listing for Javascript include directory '%s'" % dir)
         sys.exit(1)
 
     s = StringIO.StringIO()
@@ -208,10 +209,10 @@ def create_js_monster_string():
         for fn in js_filenames:
             f = open(fn)
             s.write(f.read())
-            s.write('\n\n// -----\n\n')
+            s.write('\n\n')
             f.close()
     except Exception, e:
-        logger.error("Error reading Javascript files in '%s'" % JS_INCLUDES_DIR)
+        logger.error("Error reading Javascript files in '%s'" % dir)
         sys.exit(1)
     finally:
         if f: f.close()
@@ -255,8 +256,12 @@ def control(env, start_response):
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
     if last == "js_includes.js":
-        m = create_js_monster_string()
+        m = create_monster_string(JS_INCLUDES_DIR, '.js')
         start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8')])
+        return [m]
+    elif last == "css_includes.css":
+        m = create_monster_string(CSS_INCLUDES_DIR, '.css')
+        start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8')])
         return [m]
     elif last in STATIC_FILES:
         contents = None
