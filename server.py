@@ -156,103 +156,30 @@ def get_group(g):
     else:
         return str(g)
 
-class SPRResultSet(object):
-    def __init__(self, rows):
-        self.rows = rows
-
-    def __repr__(self):
-        return "SPRResultSet(%s)" % str(self.rows)
-
-    def to_csv(self, thetime):
-        out = StringIO.StringIO()
-        for row in self.rows:
-            sentence = ' '.join(row.words)
-            sentence_md5 = md5.md5(sentence).hexdigest()
-            for j, time, word, nl in itertools.izip(itertools.count(1), row.times, row.words, row.newlines):
-                out.write(
-                    "%i,%i,%i,%s,%i,%i,%i,%i,%s,%s,%s\n" % \
-                    (thetime, row.sentence, j, str(row.type), time, nl, row.answer, len(word), row.ip_hash, sentence_md5, get_group(row.group))
-                )
-        return out.getvalue()
-
-class SpeededResultSet(object):
-    def __init__(self, rows):
-        self.rows = rows
-
-    def __repr__(self): 
-        return "SpeededResultSet(%s)" % str(self.rows)
-
-    def to_csv(self, thetime):
-        out = StringIO.StringIO()
-        for row in self.rows:
-            # Where were newlines crossed?
-            newline_words = []
-            for nl, i in itertools.izip(row.newlines, itertools.count(1)):
-                if nl:
-                    newline_words.append(str(i))
-
-            sentence = ' '.join(row.words)
-            sentence_md5 = md5.md5(sentence).hexdigest()
-            out.write("%i,%i,%s,%s,%s,%s,%s,%s\n" % (thetime, row.sentence, str(row.type), '(' + '-'.join(newline_words) + ')', row.answer, row.ip_hash, sentence_md5, get_group(row.group)))
-        return out.getvalue()
-
-def rearrange(parsed_json, ip):
-    if len(parsed_json) < 2:
+def rearrange(parsed_json, thetime, ip):
+    if type(parsed_json) != types.ListType or len(parsed_json) != 2:
         raise HighLevelParseError()
 
-    sentences      = None
-    times          = None
-    answers        = None
-    newlines       = None
     random_counter = None
-    design         = None
-
-    # Are these the results of a self-paced reading experiment
-    # or of a speeded accpetability experiment?
-    if parsed_json[0] == "self-paced reading":
-        if len(parsed_json) != 7:
-            raise HighLevelParseError()
-
-        sentences      = parsed_json[1]
-        times          = parsed_json[2]
-        answers        = parsed_json[3]
-        newlines       = parsed_json[4]
-        random_counter = parsed_json[5]
-        design         = parsed_json[6]
-        if len(sentences) != len(times):
-            raise HighLevelParseError()
-    elif parsed_json[0] == "speeded acceptability":
-        if len(parsed_json) != 6:
-            raise HighLevelParseError()
-
-        sentences      = parsed_json[1]
-        answers        = parsed_json[2]
-        newlines       = parsed_json[3]
-        random_counter = parsed_json[4]
-        design         = parsed_json[5]
-    else:
+    try:
+        random_counter = int(parsed_json[0])
+    except ValueError:
         raise HighLevelParseError()
+    if random_counter == -1:
+        random_counter = None
+    
+    new_results = []
+    for line in parsed_json[1]:
+        new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + line)
 
-    rows = []
-    for s, t, a, nl in itertools.izip(sentences, times and times or itertools.repeat(None), answers, newlines):
-        if not (type(s) == types.DictType and s.has_key('words') and s.has_key('type') and s.has_key('group') and s.has_key('num')):
-            raise HighLevelParseError()
-        if t and (len(s['words']) - 1 != len(t)):
-            raise HighLevelParseError()
-        if parsed_json[0] == "self-paced reading" and (not (a == 0 or a == 1 or a == -1)):
-            raise HighLevelParseError()
+    return random_counter, new_results
 
-        new_row = Row(words=s['words'], newlines=nl, type=s['type'], group=s['group'], sentence=s['num'], ip_hash=md5.md5(ip).hexdigest(), answer=a)
-        if t:
-            new_row.times = t
-        rows.append(new_row)
-
-    if parsed_json[0] == "self-paced reading":
-        return SPRResultSet(rows), random_counter, design
-    elif parsed_json[0] == "speeded acceptability":
-        return SpeededResultSet(rows), random_counter, design
-    else:
-        raise HighLevelParseError()
+def to_csv(lines):
+    s = StringIO.StringIO()
+    for l in lines:
+        s.write(','.join(map(str, l)))
+        s.write('\n')
+    return s.getvalue()
 
 
 #
@@ -280,8 +207,6 @@ STATIC_FILES = [
 ]
 
 def control(env, start_response):
-    print env
-
     # Save the time the results were received.
     thetime = time_module.time()
 
@@ -334,7 +259,6 @@ def control(env, start_response):
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
 
         post_data = env['wsgi.input'].read(content_length)
-        print post_data
 
         # This will be called in the normal course of events, and if
         # there is an error parsing the JSON.
@@ -354,7 +278,7 @@ def control(env, start_response):
         rf = None
         try:
             parsed_json = json.read(post_data)
-            main_results, random_counter, design = rearrange(parsed_json, ip)
+            random_counter, main_results = rearrange(parsed_json, thetime, ip)
             header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                 (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                       time_module.gmtime(thetime)),
@@ -363,7 +287,7 @@ def control(env, start_response):
                  "Design number was " + (random_counter and "random = " or "non-random = " + str(design)))
             rf = lock_and_open(RESULT_FILE_NAME, "a")
             backup_raw_post_data(header)
-            csv_results = main_results.to_csv(thetime)
+            csv_results = to_csv(main_results)
             rf.write(header)
             rf.write(csv_results)
 

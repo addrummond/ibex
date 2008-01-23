@@ -1,5 +1,12 @@
 var body = document.getElementsByTagName("body")[0];
 
+var counter = readCookie("counter");
+var randomCounter = false;
+if (parseInt(counter) == NaN) {
+    counter = Math.floor(Math.random() * 10000);
+    randomCounter = true;
+}
+
 var sendingResults = document.createElement("p")
 sendingResults.className = "sending-results"
 var spinSpan = document.createElement("div");
@@ -114,13 +121,6 @@ var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
-/*for (var i = 0; i < runningOrder.length; ++i) {
-    for (var j = 0; j < runningOrder[i].length; ++j) {
-        document.write(runningOrder[i][j].elementNumber);
-        document.write('<br>');
-    }
-}*/
-
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
 var currentControllerInstance = null;
@@ -131,7 +131,8 @@ function finishedCallback(resultsLines) {
     if (resultsLines != null && resultsLines.length && resultsLines.length > 0) {
         var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
         for (var i = 0; i < resultsLines.length; ++i) {
-            var preamble = [ it.itemNumber, it.elementNumber, it.type, it.group ];
+            var preamble = [ it.controller.name ? it.controller.name : "UNKNOWN",
+                             it.itemNumber, it.elementNumber, it.type, it.group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }
@@ -234,7 +235,7 @@ function sendResults(resultsLines, success, failure)
     }
 
     // Prepare the post data.
-    var data = resultsLines.toJSONString();
+    var data = [randomCounter ? -1 : counter, resultsLines].toJSONString();
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {

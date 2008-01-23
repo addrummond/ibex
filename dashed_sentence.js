@@ -3,6 +3,8 @@ function boolToInt(x) { if (x) return 1; else return 0; }
 DashedSentence.obligatory = ["s"];
 
 function DashedSentence(div, options, finishedCallback) {
+    this.name = "DashedSentence";
+
     this.finishedCallback = finishedCallback;
     this.options = options;
     this.words = options.get("s").split(/\s+/);
