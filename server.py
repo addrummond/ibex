@@ -189,6 +189,33 @@ def counter_cookie_header(c):
          nice_time(time_module.time() + 60 * 60))
     )
 
+def create_js_monster_string():
+    js_filenames = []
+    try:
+        for path in os.listdir(JS_INCLUDES_DIR):
+            fullpath = os.path.join(JS_INCLUDES_DIR, path)
+            if os.path.isfile(fullpath) and path.endswith('.js'):
+                js_filenames.append(fullpath)
+    except:
+        logger.error("Error getting directory listing for Javascript include directory '%s'" % JS_INCLUDES_DIR)
+        sys.exit(1)
+
+    s = StringIO.StringIO()
+    f = None
+    try:
+        for fn in js_filenames:
+            f = open(fn)
+            s.write(f.read())
+            s.write('\n\n// -----\n\n')
+            f.close()
+    except Exception, e:
+        logger.error("Error reading Javascript files in '%s'" % JS_INCLUDES_DIR)
+        sys.exit(1)
+    finally:
+        if f: f.close()
+
+    return s.getvalue()
+
 # Not used when this module is run as a CGI process.
 STATIC_FILES = [
     'spr.html',
@@ -227,7 +254,11 @@ def control(env, start_response):
     # qs = ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
-    if last in STATIC_FILES:
+    if last == "js_includes.js":
+        m = create_js_monster_string()
+        start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8')])
+        return [m]
+    elif last in STATIC_FILES:
         contents = None
         f = None
         try:
