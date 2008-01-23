@@ -241,7 +241,7 @@ function sendResults(resultsLines, success, failure)
     }
 
     // Prepare the post data.
-    var data = [randomCounter ? -1 : counter, resultsLines].toJSONString();
+    var data = [randomCounter ? true : false, counter, resultsLines].toJSONString();
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {

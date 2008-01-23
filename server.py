@@ -152,22 +152,24 @@ def get_group(g):
         return str(g)
 
 def rearrange(parsed_json, thetime, ip):
-    if type(parsed_json) != types.ListType or len(parsed_json) != 2:
+    if type(parsed_json) != types.ListType or len(parsed_json) != 3:
         raise HighLevelParseError()
 
-    random_counter = None
+    random_counter = parsed_json[0]
+    if type(random_counter) != types.BooleanType:
+        raise HighLevelParseError()
+
+    counter = None
     try:
-        random_counter = int(parsed_json[0])
+        counter = int(parsed_json[1])
     except ValueError:
         raise HighLevelParseError()
-    if random_counter == -1:
-        random_counter = None
     
     new_results = []
-    for line in parsed_json[1]:
+    for line in parsed_json[2]:
         new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + line)
 
-    return random_counter, new_results
+    return random_counter, counter, new_results
 
 def to_csv(lines):
     s = StringIO.StringIO()
@@ -302,13 +304,12 @@ def control(env, start_response):
         rf = None
         try:
             parsed_json = json.read(post_data)
-            random_counter, main_results = rearrange(parsed_json, thetime, ip)
-            header = '#\n# Results on %s; %s.\n# USER AGENT: %s\n# %s\n#\n' % \
+            random_counter, counter, main_results = rearrange(parsed_json, thetime, ip)
+            header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                 (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                       time_module.gmtime(thetime)),
-                 parsed_json[0],
                  user_agent,
-                 "Design number was " + (random_counter and "random = " or "non-random = " + str(design)))
+                 "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
             rf = lock_and_open(RESULT_FILE_NAME, "a")
             backup_raw_post_data(header)
             csv_results = to_csv(main_results)
