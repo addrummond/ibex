@@ -48,7 +48,8 @@ logger.addHandler(logging.StreamHandler())
 for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR',
-          'CSS_INCLUDES_DIR']:
+          'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST',
+          'CSS_INCLUDES_LIST']:
     if not globals().has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -74,6 +75,12 @@ except ValueError:
 # Check values of (some) conf variables.
 if type(PORT) != types.IntType:
     logger.error("Bad value (or no value) for server port.")
+    sys.exit(1)
+if type(JS_INCLUDES_LIST) != types.ListType or len(JS_INCLUDES_LIST) < 1 or (JS_INCLUDES_LIST[0] not in ["block", "allow"]):
+    logger.error("Bad value for 'JS_INCLUDES_LIST' conf variable.")
+    sys.exit(1)
+if type(CSS_INCLUDES_LIST) != types.ListType or len(CSS_INCLUDES_LIST) < 1 or (CSS_INCLUDES_LIST[0] not in ["block", "allow"]):
+    logger.error("Bad value for 'CSS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
 
 # File locking on UNIX/Linux/OS X
@@ -192,13 +199,16 @@ def counter_cookie_header(c):
          nice_time(time_module.time() + 60 * 60))
     )
 
-def create_monster_string(dir, extension):
-    js_filenames = []
+def create_monster_string(dir, extension, block_allow):
+    filenames = []
     try:
         for path in os.listdir(dir):
             fullpath = os.path.join(dir, path)
             if os.path.isfile(fullpath) and path.endswith(extension):
-                js_filenames.append(fullpath)
+                if block_allow[0] == "block" and path not in block_allow[1:]:
+                    filenames.append(fullpath)
+                elif block_allow[0] == "allow" and path in block_allow[1:]:
+                    filenames.append(fullpath)
     except:
         logger.error("Error getting directory listing for Javascript include directory '%s'" % dir)
         sys.exit(1)
@@ -206,7 +216,7 @@ def create_monster_string(dir, extension):
     s = StringIO.StringIO()
     f = None
     try:
-        for fn in js_filenames:
+        for fn in filenames:
             f = open(fn)
             s.write(f.read())
             s.write('\n\n')
@@ -256,11 +266,11 @@ def control(env, start_response):
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
     if last == "js_includes.js":
-        m = create_monster_string(JS_INCLUDES_DIR, '.js')
+        m = create_monster_string(JS_INCLUDES_DIR, '.js', JS_INCLUDES_LIST)
         start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8')])
         return [m]
     elif last == "css_includes.css":
-        m = create_monster_string(CSS_INCLUDES_DIR, '.css')
+        m = create_monster_string(CSS_INCLUDES_DIR, '.css', CSS_INCLUDES_LIST)
         start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8')])
         return [m]
     elif last in STATIC_FILES:

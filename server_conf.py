@@ -35,3 +35,11 @@ CSS_INCLUDES_DIR = "css_includes"
 #
 # WEBSPR_WORKING_DIR = "foo"
 
+# These variables specify which of the files in the js_includes
+# and css_includes directories should actually be included.
+# The value of each variable should be a list whose first element
+# is either the string "block" or the string "allow". The remainder
+# of the list gives the filenames of those js/css files which should
+# be allowed/blocked.
+JS_INCLUDES_LIST = ["block"]
+CSS_INCLUDES_LIST = ["block"]
