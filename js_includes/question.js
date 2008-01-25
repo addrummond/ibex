@@ -32,7 +32,8 @@ function Question(div, options, finishedCallback) {
         var li = document.createElement("li")
         var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
         var a = document.createElement("a");
-        var t = this;
+        var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
+                      // captured in the closure defined below.
         a.href = "javascript:__Question_callback__();";
         __Question_callback__ = function () {
             var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
