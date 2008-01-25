@@ -42,6 +42,7 @@ function Question(div, options, finishedCallback) {
     div.appendChild(this.qp);
     div.appendChild(this.xl);
 
+    // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
         if (this.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
@@ -55,6 +56,31 @@ function Question(div, options, finishedCallback) {
                     correct = correct_ans == ans ? 1 : 0;
                 }
                 this.finishedCallback([[htmlencode(ans), correct]]);
+            }
+        }
+        // Letters.
+        else if ((code >= 97 && code <= 120) || (code >= 65 && code <= 90)) {
+            if (code >= 97)
+                code -= (97 - 65);
+            for (var i = 0; i < this.answers.length; ++i) {
+                var ans = null;
+                if (typeof(this.answers[i]) == "string") {
+                    if (code == this.answers[i].toUpperCase().charCodeAt(0))
+                        ans = this.answers[i];
+                }
+                else {
+                    if (code == this.answers[i][0].toUpperCase().charCodeAt(0))
+                        ans = this.answers[i][1];
+                }
+
+                if (ans) {
+                    var correct = "NULL";
+                    if (this.hasCorrect) {
+                        var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
+                        correct = correct_ans == ans ? 1 : 0;
+                    }
+                    this.finishedCallback([[htmlencode(ans), correct]]);
+                }
             }
         }
     }
