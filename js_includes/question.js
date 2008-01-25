@@ -44,6 +44,7 @@ function Question(div, options, finishedCallback) {
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
+        alert(code);
         if (this.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
             // Convert numeric keypad codes to ordinary keypad codes.
@@ -59,9 +60,7 @@ function Question(div, options, finishedCallback) {
             }
         }
         // Letters.
-        else if ((code >= 97 && code <= 120) || (code >= 65 && code <= 90)) {
-            if (code >= 97)
-                code -= (97 - 65);
+        else if (code >= 65 && code <= 90) {
             for (var i = 0; i < this.answers.length; ++i) {
                 var ans = null;
                 if (typeof(this.answers[i]) == "string") {
