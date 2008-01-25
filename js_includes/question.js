@@ -1,5 +1,7 @@
 Question.obligatory = ["q", "as"];
 
+__callback__ = null;
+
 function Question(div, options, finishedCallback) {
     this.name = "Question";
 
@@ -28,19 +30,23 @@ function Question(div, options, finishedCallback) {
     this.xl = document.createElement(this.showNumbers ? "ol" : "ul");
     for (var i = 0; i < this.orderedAnswers.length; ++i) {
         var li = document.createElement("li")
-        if (typeof(this.orderedAnswers[i]) == "string") {
-            li.appendChild(document.createTextNode(this.orderedAnswers[i]));
+        var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
+        var a = document.createElement("a");
+        var t = this;
+        a.href = "javascript:__Question_callback__();";
+        __Question_callback__ = function () {
+            var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
+            var correct = ans == correct_ans ? 1 : 0;
+            t.finishedCallback([[htmlencode(ans), correct]]);
         }
-        else if (this.orderedAnswers[i].length == 2) {
-            li.appendChild(document.createTextNode(this.orderedAnswers[i][1]));
-        }
-        else {
-            assert(false, "Badly formatted 'as' array");
-        }
+        a.appendChild(document.createTextNode(ans));
+        li.appendChild(a);
         this.xl.appendChild(li);
     }
     div.appendChild(this.qp);
     div.appendChild(this.xl);
+
+    this.alertfoo = function() { alert("foo"); }
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
