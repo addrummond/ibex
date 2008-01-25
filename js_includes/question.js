@@ -44,7 +44,6 @@ function Question(div, options, finishedCallback) {
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
-        alert(code);
         if (this.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
             // Convert numeric keypad codes to ordinary keypad codes.
