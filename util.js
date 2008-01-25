@@ -1,4 +1,4 @@
-function Rope(array, nodeLength) {
+/*function Rope(array, nodeLength) {
     if (! nodeLength)
         this.nodeLength = 10;
 
@@ -16,7 +16,7 @@ function Rope(array, nodeLength) {
     this.append = function(x) {
         
     }
-}
+}*/
 
 // Taken from http://aymanh.com/9-javascript-tips-you-may-not-know
 function AssertException(message) { this.message = message; }
@@ -34,6 +34,11 @@ function assert(exp, message) {
 function assert_class(klass, expr, message) {
     // TODO!
     ;
+}
+
+function htmlencode(s) {
+    // TODO!
+    return s;
 }
 
 function getXMLHttpRequest()
@@ -102,9 +107,9 @@ function readCookie(name) {
  *******************************************************************************************/
 
 //======================================= Properties ========================================
-Hashtable.prototype.hash                = null;
-Hashtable.prototype.keys                = null;
-Hashtable.prototype.location    = null;
+Hashtable.prototype.hash     = null;
+Hashtable.prototype.keys     = null;
+Hashtable.prototype.location = null;
 
 /**
  * Hashtable - Constructor
