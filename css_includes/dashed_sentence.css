@@ -8,9 +8,6 @@
  .rating {
      padding-left: 0.6em;
  }
- .rating-choice {
-     margin-top: 1em;
- }
  .sentence div {
       background-color: white;
       border-bottom: 1px solid;
@@ -23,10 +20,4 @@
  .practice-text {
      color: blue; 
      font-weight: bold;
- }
- .sending-results {
-     margin-left: 0.5em;
-     margin-top: 2em;
-     font-weight: bold;
-     font-size: medium;
  }
