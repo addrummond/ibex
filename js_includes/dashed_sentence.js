@@ -2,13 +2,15 @@ function boolToInt(x) { if (x) return 1; else return 0; }
 
 DashedSentence.obligatory = ["s"];
 
-function DashedSentence(div, options, finishedCallback) {
+function DashedSentence(div, options, finishedCallback, utils) {
     this.name = "DashedSentence";
 
     this.finishedCallback = finishedCallback;
     this.options = options;
     this.words = options.get("s").split(/\s+/);
-    this.mode = options.dget("mode", "spr");
+    this.mode = options.dget("mode", "self-paced reading");
+    this.wordTime = options.dget("word time", 300); // Only for speeded accpetability.
+    this.wordPauseTime = options.dget("word pause time", 100); // Ditto.
     this.currentWord = 0;
 
     // Defaults.
@@ -34,9 +36,40 @@ function DashedSentence(div, options, finishedCallback) {
         this.div.appendChild(div);
         this.wordDivs[j] = div;
     }
+
+    this.blankWord = function(w) {
+        //assert(w > 0);
+        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.");
+        this.wordDivs[w].style.borderColor = this.unshownBorderColor;
+        this.wordDivs[w].style.color = this.unshownWordColor;
+    };
+    this.showWord = function(w) {
+        //assert(w > 0);
+        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.")
+        this.wordDivs[w].style.borderColor = this.shownBorderColor;
+        this.wordDivs[w].style.color = this.shownWordColor;
+    }
+
+    if (this.mode == "speeded acceptability") {
+        this.showWord(0);
+        var t = this;
+        function wordTimeout() {
+            t.blankWord(t.currentWord);
+            ++(t.currentWord);
+            if (t.currentWord >= t.words.length)
+                t.finishedCallback(null);
+            utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
+        }
+        function wordPauseTimeout() {
+            t.showWord(t.currentWord);
+            utils.clearTimeout(wordPauseTimeout);
+            utils.setTimeout(wordTimeout, t.wordTime);
+        }
+        utils.setTimeout(wordTimeout, this.wordTime);
+    }
     
     this.handleKey = function(code, time) {
-        if (this.mode == "spr") {
+        if (this.mode == "self-paced reading") {
             if (code == 32) {
                 this.recordSprResult(time, this.currentWord);
 
@@ -64,17 +97,4 @@ function DashedSentence(div, options, finishedCallback) {
             this.previous_time = time;
         }
     };
-
-    this.blankWord = function(w) {
-        //assert(w > 0);
-        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.");
-        this.wordDivs[w].style.borderColor = this.unshownBorderColor;
-        this.wordDivs[w].style.color = this.unshownWordColor;
-    };
-    this.showWord = function(w) {
-        //assert(w > 0);
-        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.")
-        this.wordDivs[w].style.borderColor = this.shownBorderColor;
-        this.wordDivs[w].style.color = this.shownWordColor;
-    }
 }

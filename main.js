@@ -127,9 +127,47 @@ var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
+function Utils() {
+    this.timeoutIds = [];
+
+    this.setTimeout = function(func, time) {
+        var id = setTimeout(func, time);
+        this.timeoutIds.push(id);
+        return id;
+    }
+
+    this.clearTimeout = function(id) {
+        // Check that this is an id from a timeout set with the
+        // setTimeout method of this object.
+        var foundIt = false;
+        for (i = 0; i < this.timeoutIds; ++i) {
+            if (this.timeoutIds[i] == id) {
+                foundIt = this.timeoutIds[i];
+                break;
+            }
+        }
+        if (foundIt == null)
+            assert(false, "Attempt to clear timer that wasn't set propetly");
+        var newArray = new Array(this.timeoutIds.length - 1);
+        for (var j = 0; j < this.timeoutIds.length; ++j) {
+            if (j != i)
+                newArray.push(this.timeoutIds[i]);
+        }
+        this.timeoutIds = newArray;
+        clearTimeout(foundIt);
+    }
+
+    this.gc = function() {
+        for (var i = 0; i < this.timeoutIds.length; ++i) {
+            clearTimeout(this.timeoutIds[i]);
+        }
+    }
+}
+
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
 var currentControllerInstance = null;
+var currentUtilsInstance = null;
 // A list of result lines.
 var allResults = [];
 
@@ -172,13 +210,16 @@ function finishedCallback(resultsLines) {
         mainDiv.appendChild(pForItem);
     }
 
+    currentUtilsInstance.gc();
+    currentUtilsInstance = new Utils();
     currentControllerInstance =
         new (runningOrder[posInRunningOrder][posInCurrentItemSet].controller)
-            (pForItem,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback);
+    (pForItem,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback, currentUtilsInstance);
 }
+currentUtilsInstance = new Utils();
 currentControllerInstance =
     new (runningOrder[0][0].controller)
-        (mainDiv, runningOrder[0][0].options, finishedCallback);
+(mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
 
 document.onkeydown = function(e) {
     // Record the time ASAP.
