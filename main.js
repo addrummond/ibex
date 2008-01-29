@@ -203,7 +203,7 @@ function finishedCallback(resultsLines) {
     }
 
     var pForItem;
-    if (runningOrder[posInRunningOrder][posInCurrentItemSet].options.dget("displayMode", "overwrite") != "append") {
+    if (runningOrder[posInRunningOrder][posInCurrentItemSet].options.dget("display mode", "overwrite") != "append") {
         var newMainDiv = document.createElement("div");
         body.replaceChild(newMainDiv, mainDiv);
         mainDiv = newMainDiv;

@@ -12,9 +12,9 @@ function Question(div, options, finishedCallback, utils) {
 
     this.question = options.get("q");
     this.answers = options.get("as");
-    this.hasCorrect = options.dget("hasCorrect", false);
-    this.showNumbers = options.dget("showNumbers", true);
-    this.randomOrder = options.dget("randomOrder", this.hasCorrect);
+    this.hasCorrect = options.dget("has correct", false);
+    this.showNumbers = options.dget("show numbers", true);
+    this.randomOrder = options.dget("random order", this.hasCorrect);
 
     if (this.randomOrder) {
         this.orderedAnswers = new Array(this.answers.length);
