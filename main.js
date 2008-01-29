@@ -127,7 +127,7 @@ var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
-function Utils() {
+function Utils(valuesFromPreviousItem) {
     this.timeoutIds = [];
 
     this.setTimeout = function(func, time) {
@@ -161,6 +161,17 @@ function Utils() {
         for (var i = 0; i < this.timeoutIds.length; ++i) {
             clearTimeout(this.timeoutIds[i]);
         }
+    }
+
+    this.valuesForNextItem = new Hashtable();
+
+    this.setValueForNextElement = function(key, value) {
+        assert(typeof(key) == "string", "First argument to 'setValueForNextElement' must be a string");
+        this.valuesForNextItem.put(key, value);
+    }
+
+    this.getValueFromPreviousItem = function(key) {
+        return valuesFromPreviousItem.get(key);
     }
 }
 
@@ -211,12 +222,12 @@ function finishedCallback(resultsLines) {
     }
 
     currentUtilsInstance.gc();
-    currentUtilsInstance = new Utils();
+    currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextItem);
     currentControllerInstance =
         new (runningOrder[posInRunningOrder][posInCurrentItemSet].controller)
     (pForItem,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback, currentUtilsInstance);
 }
-currentUtilsInstance = new Utils();
+currentUtilsInstance = new Utils(null);
 currentControllerInstance =
     new (runningOrder[0][0].controller)
 (mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);

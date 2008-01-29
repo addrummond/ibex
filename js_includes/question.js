@@ -3,7 +3,7 @@ Question.obligatory = ["q", "as"];
 __Question_callback__ = null;
 __Questions_answers__ = null;
 
-function Question(div, options, finishedCallback) {
+function Question(div, options, finishedCallback, utils) {
     this.name = "Question";
 
     this.finishedCallback = finishedCallback;
@@ -26,6 +26,11 @@ function Question(div, options, finishedCallback) {
         this.orderedAnswers = this.answers;
     }
 
+    this.setFlag = function(correct) {
+        if (! correct)
+            utils.setValueForNextElement("failed", true);
+    }
+
     this.qp = document.createElement("p");
     this.qp.appendChild(document.createTextNode(this.question));
     this.xl = document.createElement(this.showNumbers ? "ol" : "ul");
@@ -42,6 +47,7 @@ function Question(div, options, finishedCallback) {
             var ans = __Question_answers__[i];
             var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
             var correct = ans == correct_ans ? 1 : 0;
+            t.setFlag(correct);
             t.finishedCallback([[htmlencode(ans), correct]]);
         };
         a.appendChild(document.createTextNode(ans));
@@ -63,6 +69,7 @@ function Question(div, options, finishedCallback) {
                 if (this.hasCorrect) {
                     var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
                     correct = correct_ans == ans ? 1 : 0;
+                    this.setFlag(correct);
                 }
                 this.finishedCallback([[htmlencode(ans), correct]]);
             }
@@ -85,6 +92,7 @@ function Question(div, options, finishedCallback) {
                     if (this.hasCorrect) {
                         var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
                         correct = correct_ans == ans ? 1 : 0;
+                        this.setFlag(correct);
                     }
                     this.finishedCallback([[htmlencode(ans), correct]]);
                 }

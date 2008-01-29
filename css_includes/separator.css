@@ -1,3 +1,6 @@
- .next-item-message {
-     font-style: italic;
- }
+.next-item-message {
+    font-style: italic;
+}
+.next-item-failure-message {
+    color: red;
+}
