@@ -14,7 +14,7 @@ function Question(div, options, finishedCallback, utils) {
     this.answers = options.get("as");
     this.hasCorrect = options.dget("hasCorrect", false);
     this.showNumbers = options.dget("showNumbers", true);
-    this.randomOrder = options.dget("randomOrder", true);
+    this.randomOrder = options.dget("randomOrder", this.hasCorrect);
 
     if (this.randomOrder) {
         this.orderedAnswers = new Array(this.answers.length);
