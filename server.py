@@ -9,10 +9,10 @@
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
 #
-# THIS SOFTWARE IS PROVIDED BY Alex Drummond ``AS IS'' AND ANY
+# THIS SOFTWARE IS PROVIDED BY ALEX DRUMMOND ``AS IS'' AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL Alex Drummond BE LIABLE FOR ANY
+# DISCLAIMED. IN NO EVENT SHALL ALEX DRUMMOND BE LIABLE FOR ANY
 # DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 # LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -267,11 +267,11 @@ def control(env, start_response):
     last = filter(lambda x: x != [], base.split('/'))[-1];
     if last == "js_includes.js":
         m = create_monster_string(JS_INCLUDES_DIR, '.js', JS_INCLUDES_LIST)
-        start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8')])
+        start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
         return [m]
     elif last == "css_includes.css":
         m = create_monster_string(CSS_INCLUDES_DIR, '.css', CSS_INCLUDES_LIST)
-        start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8')])
+        start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
         return [m]
     elif last in STATIC_FILES:
         contents = None
