@@ -2,6 +2,7 @@ Separator.obligatory = [];
 
 function Separator(div, options, finishedCallback, utils) {
     this.name = "Separator";
+    this.options = options;
 
     this.flagIncorrect = options.dget("flag incorrect", true);
 

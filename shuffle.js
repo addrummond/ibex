@@ -190,7 +190,7 @@ function SepWith(sep, main) {
     this.args = [sep,main];
 
     this.run = function(arrays) {
-        assert(arrays.length == 2, "Error in SepWith");
+        assert(arrays.length == 2, "Wrong number of arguments to SepWith");
         var sep = arrays[0];
         var main = arrays[1];
 
@@ -212,6 +212,42 @@ function SepWith(sep, main) {
     }
 }
 function sepWith(sep, main) { return new SepWith(sep, main); }
+
+function PrecedeEachWith(prec, main, precede) {
+    this.args = [prec,main];
+
+    this.run = function(arrays) {
+        assert(arrays.length == 2, "Wrong number of arguments to PrecedeEachWith or FollowEachWith");
+        var prec = arrays[0];
+        var main = arrays[1];
+        
+        // Flatten prec.
+        var flattenedPrec = [];
+        for (var i = 0; i < prec.length; ++i) {
+            for (var j = 0; j < prec[i].length; ++j) {
+                flattenedPrec.push(prec[i][j]);
+            }
+        }
+
+        for (var i = 0; i < main.length; ++i) {
+            if (! precede) {
+                for (var j = 0; j < flattenedPrec.length; ++j)
+                    main[i].push(flattenedPrec[j]);
+            }
+            else {
+                var old = main[i];
+                main[i] = [];
+                for (var j = 0; j < flattenedPrec.length; ++j)
+                    main[i].push(flattenedPrec[j]);
+                for (var j = 0; j < old.length; ++j)
+                    main[i].push(old[j]);
+            }
+        }
+        return main;
+    }
+}
+function precedeEachWith(prec, main) { return new PrecedeEachWith(prec, main, true); }
+function followEachWith(prec, main) { return new PrecedeEachWith(prec, main, false); }
 
 function toPredicate(v) {
     if (typeof(v) == "function") {

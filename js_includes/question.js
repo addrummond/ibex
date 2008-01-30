@@ -5,6 +5,7 @@ __Questions_answers__ = null;
 
 function Question(div, options, finishedCallback, utils) {
     this.name = "Question";
+    this.options = options;
 
     this.finishedCallback = finishedCallback;
 

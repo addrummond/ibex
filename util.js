@@ -41,6 +41,13 @@ function htmlencode(s) {
     return s;
 }
 
+function objectKeys(o) {
+    var a = [];
+    for (var k in o)
+        a.push(k);
+    return a;
+}
+
 function getXMLHttpRequest()
 {
     if (window.XMLHttpRequest) {
