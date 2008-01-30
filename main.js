@@ -178,7 +178,7 @@ var currentUtilsInstance = null;
 var allResults = [];
 
 function finishedCallback(resultsLines) {
-    if (resultsLines != null && resultsLines.length && resultsLines.length > 0) {
+    if (resultsLines != null) {
         var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
         for (var i = 0; i < resultsLines.length; ++i) {
             var preamble = [ it.controller.name ? it.controller.name : "UNKNOWN",
