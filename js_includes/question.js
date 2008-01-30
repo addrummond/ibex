@@ -16,6 +16,7 @@ function Question(div, options, finishedCallback, utils) {
     this.hasCorrect = options.dget("has correct", false);
     this.showNumbers = options.dget("show numbers", true);
     this.randomOrder = options.dget("random order", this.hasCorrect);
+    this.timeout = options.dget("timeout", null);
 
     if (this.randomOrder) {
         this.orderedAnswers = new Array(this.answers.length);
@@ -57,6 +58,13 @@ function Question(div, options, finishedCallback, utils) {
     }
     div.appendChild(this.qp);
     div.appendChild(this.xl);
+
+    if (this.timeout) {
+        utils.setTimeout(function () {
+            t.setFlag(false);
+            t.finishedCallback([["NULL", false]]);
+        }, this.timeout);
+    }
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {

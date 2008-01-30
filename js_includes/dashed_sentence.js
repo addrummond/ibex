@@ -58,7 +58,8 @@ function DashedSentence(div, options, finishedCallback, utils) {
             ++(t.currentWord);
             if (t.currentWord >= t.words.length)
                 t.finishedCallback([[sentenceMD5]]);
-            utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
+            else
+                utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
         function wordPauseTimeout() {
             t.showWord(t.currentWord);
