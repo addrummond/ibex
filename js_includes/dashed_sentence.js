@@ -20,7 +20,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
 
     // Precalculate MD5 of sentence.
     var canonicalSentence = this.words.join(' ');
-    var sentenceMD5 = hex_md5(canonicalSentence);
+    this.sentenceMD5 = hex_md5(canonicalSentence);
 
     this.div = div;
     this.div.className = "sentence";
@@ -56,7 +56,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
             if (t.currentWord >= t.words.length)
-                finishedCallback([[sentenceMD5]]);
+                finishedCallback([[t.sentenceMD5]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
@@ -91,7 +91,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
                 time - this.previous_time,
                 boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
                                          this.wordDivs[word].offsetTop)),
-                sentenceMD5
+                this.sentenceMD5
             ]);
 
             this.previous_time = time;
