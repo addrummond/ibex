@@ -9,6 +9,10 @@ function Separator(div, options, finishedCallback, utils) {
     if (x) this.style = x;
     assert(this.style == "normal" || this.style == "error", "'style' property of Separator must either be 'normal' or 'error'");
 
+    this.transfer = options.dget("transfer", "keypress");
+    assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
+           "Value of 'transfer' option of Separator must either be the string 'keypress' or a number");
+
     var normal_message = options.dget("normal message", "Press any key to continue");
     var x = utils.getValueFromPreviousItem("normal message");
     if (x) normal_message = x;
@@ -28,7 +32,14 @@ function Separator(div, options, finishedCallback, utils) {
         p.appendChild(document.createTextNode(normal_message));
     }
 
-    this.handleKey = function(code, time) {
-        finishedCallback(null);
+    if (this.transfer == "keypress") {
+        this.handleKey = function(code, time) {
+            finishedCallback(null);
+        }
+    }
+    else {
+        utils.setTimeout(function () {
+            finishedCallback(null);
+        }, this.transfer);
     }
 }
