@@ -29,7 +29,7 @@ function Question(div, options, finishedCallback, utils) {
     }
 
     this.setFlag = function(correct) {
-        if (this.hasCorrect && (! correct)) {
+        if (! correct) {
             utils.setValueForNextElement("failed", true);
         }
     }
@@ -50,7 +50,7 @@ function Question(div, options, finishedCallback, utils) {
             var ans = __Question_answers__[i];
             var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
             var correct = ans == correct_ans ? 1 : 0;
-            t.setFlag(correct);
+            if (this.hasCorrect) t.setFlag(correct);
             t.finishedCallback([[htmlencode(ans), correct]]);
         };
         a.appendChild(document.createTextNode(ans));
@@ -61,6 +61,7 @@ function Question(div, options, finishedCallback, utils) {
     div.appendChild(this.xl);
 
     if (this.timeout) {
+        var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
             t.finishedCallback([["NULL", false]]);
@@ -79,7 +80,7 @@ function Question(div, options, finishedCallback, utils) {
                 if (this.hasCorrect) {
                     var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
                     correct = correct_ans == ans ? 1 : 0;
-                    this.setFlag(correct);
+                    if (this.hasCorrect) this.setFlag(correct);
                 }
                 this.finishedCallback([[htmlencode(ans), correct]]);
             }

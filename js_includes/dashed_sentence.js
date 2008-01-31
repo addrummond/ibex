@@ -5,7 +5,6 @@ DashedSentence.obligatory = ["s"];
 function DashedSentence(div, options, finishedCallback, utils) {
     this.name = "DashedSentence";
 
-    this.finishedCallback = finishedCallback;
     this.options = options;
     this.words = options.get("s").split(/\s+/);
     this.mode = options.dget("mode", "self-paced reading");
@@ -57,7 +56,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
             if (t.currentWord >= t.words.length)
-                t.finishedCallback([[sentenceMD5]]);
+                finishedCallback([[sentenceMD5]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
@@ -80,7 +79,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
                     this.showWord(this.currentWord);
                 ++(this.currentWord);
                 if (this.currentWord > this.words.length)
-                    this.finishedCallback(this.resultsLines);
+                    finishedCallback(this.resultsLines);
             }
         }
     };
