@@ -2,6 +2,8 @@
      color: black;
      background-color: white;
      font-size: small;
+     margin-left: 5em;
+     margin-top: 5em;
  }
  .sending-results {
      margin-left: 0.5em;
