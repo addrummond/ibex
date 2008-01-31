@@ -64,7 +64,7 @@ function Question(div, options, finishedCallback, utils) {
         var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
-            t.finishedCallback([["NULL", false]]);
+            t.finishedCallback([["NULL", "NULL"]]);
         }, this.timeout);
     }
 
