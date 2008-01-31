@@ -29,8 +29,9 @@ function Question(div, options, finishedCallback, utils) {
     }
 
     this.setFlag = function(correct) {
-        if (! correct)
+        if (this.hasCorrect && (! correct)) {
             utils.setValueForNextElement("failed", true);
+        }
     }
 
     this.qp = document.createElement("p");
