@@ -67,9 +67,9 @@ function DashedSentence(div, options, finishedCallback, utils) {
         }
         utils.setTimeout(wordTimeout, this.wordTime);
     }
-    
-    this.handleKey = function(code, time) {
-        if (this.mode == "self-paced reading") {
+
+    if (this.mode == "self-paced reading") {    
+        this.handleKey = function(code, time) {
             if (code == 32) {
                 this.recordSprResult(time, this.currentWord);
 
@@ -81,8 +81,8 @@ function DashedSentence(div, options, finishedCallback, utils) {
                 if (this.currentWord > this.words.length)
                     finishedCallback(this.resultsLines);
             }
-        }
-    };
+        };
+    }
 
     this.recordSprResult = function(time, word) {
         if (word > 0 && word < this.wordDivs.length) {
