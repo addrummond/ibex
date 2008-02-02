@@ -180,9 +180,7 @@ var allResults = [];
 function finishedCallback(resultsLines) {
 //    alert(resultsLines);
     if (resultsLines != null) {
-//        var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
         for (var i = 0; i < resultsLines.length; ++i) {
-            //alert(currentControllerInstance.name);
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
                              currentControllerInstance.itemNumber,
                              currentControllerInstance.elementNumber,
