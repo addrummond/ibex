@@ -58,13 +58,17 @@ PORT = globals().has_key('PORT') and PORT or None
 WEBSPR_WORKING_DIR = globals().has_key('WEBSPR_WORKING_DIR') and WEBSPR_WORKING_DIR or None
 
 # Check for "-m" and "-p" options (sets server mode and port respectively).
+# Also check for "-r" option (resest counter on startup).
+COUNTER_SHOULD_BE_RESET = False
 try:
-    opts, _ = getopt.getopt(sys.argv[1:], "m:p:")
+    opts, _ = getopt.getopt(sys.argv[1:], "m:p:r")
     for k,v in opts:
         if k == "-m":
             SERVER_MODE = v
         elif k == "-p":
             PORT = int(v)
+        elif k == "-r":
+            COUNTER_SHOULD_BE_RESET = True
 except getopt.GetoptError:
     logger.error("Bad arguments")
     sys.exit(1)
@@ -368,6 +372,9 @@ try:
 except os.error, IOError:
     logger.error("Could not create server state directory at %s" % os.path.join(PWD, SERVER_STATE_DIR))
     sys.exit(1)
+
+if COUNTER_SHOULD_BE_RESET:
+    set_counter(0)
 
 if SERVER_MODE == "paste":
     httpserver.serve(control, port=PORT)
