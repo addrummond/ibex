@@ -36,9 +36,12 @@ function assert_class(klass, expr, message) {
     ;
 }
 
-function htmlencode(s) {
-    // TODO!
-    return s;
+function url_encode_removing_commas(s) {
+    // Note sure if all implementations will escape commas, so
+    // do it manually.
+    var x = escape(s);
+    x.replace(",", "%2C");
+    return x;
 }
 
 function getXMLHttpRequest()

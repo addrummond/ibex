@@ -51,7 +51,9 @@ function Question(div, options, finishedCallback, utils) {
             var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
             var correct = ans == correct_ans ? 1 : 0;
             if (this.hasCorrect) t.setFlag(correct);
-            t.finishedCallback([[htmlencode(ans), correct]]);
+            t.finishedCallback([[url_encode_removing_commas(t.question),
+                                 url_encode_removing_commas(ans),
+                                 correct]]);
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
@@ -64,7 +66,7 @@ function Question(div, options, finishedCallback, utils) {
         var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
-            t.finishedCallback([["NULL", "NULL"]]);
+            t.finishedCallback([[url_encode_removing_commas(t.question), "NULL", "NULL"]]);
         }, this.timeout);
     }
 
@@ -82,7 +84,9 @@ function Question(div, options, finishedCallback, utils) {
                     correct = correct_ans == ans ? 1 : 0;
                     if (this.hasCorrect) this.setFlag(correct);
                 }
-                this.finishedCallback([[htmlencode(ans), correct]]);
+                this.finishedCallback([[url_encode_removing_commas(this.question),
+                                        url_encode_removing_commas(ans),
+                                        correct]]);
             }
         }
         // Letters.
@@ -105,7 +109,9 @@ function Question(div, options, finishedCallback, utils) {
                         correct = correct_ans == ans ? 1 : 0;
                         this.setFlag(correct);
                     }
-                    this.finishedCallback([[htmlencode(ans), correct]]);
+                    this.finishedCallback([[url_encode_removing_commas(this.question),
+                                            url_encode_removing_commas(ans),
+                                            correct]]);
                 }
             }
         }
