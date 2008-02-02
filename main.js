@@ -178,11 +178,16 @@ var currentUtilsInstance = null;
 var allResults = [];
 
 function finishedCallback(resultsLines) {
+//    alert(resultsLines);
     if (resultsLines != null) {
-        var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
+//        var it = runningOrder[posInRunningOrder][posInCurrentItemSet];
         for (var i = 0; i < resultsLines.length; ++i) {
-            var preamble = [ it.controller.name ? it.controller.name : "UNKNOWN",
-                             it.itemNumber, it.elementNumber, it.type, it.group ];
+            //alert(currentControllerInstance.name);
+            var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
+                             currentControllerInstance.itemNumber,
+                             currentControllerInstance.elementNumber,
+                             currentControllerInstance.type,
+                             currentControllerInstance.group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }
