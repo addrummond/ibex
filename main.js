@@ -178,7 +178,6 @@ var currentUtilsInstance = null;
 var allResults = [];
 
 function finishedCallback(resultsLines) {
-//    alert(resultsLines);
     if (resultsLines != null) {
         for (var i = 0; i < resultsLines.length; ++i) {
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
