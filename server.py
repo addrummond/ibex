@@ -368,6 +368,7 @@ except os.error, IOError:
     sys.exit(1)
 
 if COUNTER_SHOULD_BE_RESET:
+    print "Counter for latin square designs has been reset.\n"
     set_counter(0)
 
 if SERVER_MODE == "paste":
