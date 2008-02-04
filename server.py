@@ -157,12 +157,6 @@ class HighLevelParseError(Exception):
     def __init__(self, *args):
         Exception.__init__(self, *args)
 
-def get_group(g):
-    if g is None:
-        return "NULL"
-    else:
-        return str(g)
-
 def rearrange(parsed_json, thetime, ip):
     if type(parsed_json) != types.ListType or len(parsed_json) != 3:
         raise HighLevelParseError()
