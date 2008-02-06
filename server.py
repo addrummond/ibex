@@ -32,6 +32,7 @@ import time as time_module
 import types
 import os
 import os.path
+import cgi
 from util import *
 from server_conf import *
 
@@ -259,19 +260,10 @@ def control(env, start_response):
         user_agent = env['HTTP_USER_AGENT']
 
     base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
-    # Currently, we're ignoring the QS.
-    # qs = ((env.has_key('QUERY_STRING') and env['QUERY_STRING']) and '?' + env['QUERY_STRING'] or '')
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
-    if last == "js_includes.js":
-        m = create_monster_string(JS_INCLUDES_DIR, '.js', JS_INCLUDES_LIST)
-        start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
-        return [m]
-    elif last == "css_includes.css":
-        m = create_monster_string(CSS_INCLUDES_DIR, '.css', CSS_INCLUDES_LIST)
-        start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
-        return [m]
-    elif last in STATIC_FILES:
+
+    if last in STATIC_FILES:
         contents = None
         f = None
         try:
@@ -286,6 +278,22 @@ def control(env, start_response):
         rr('200 OK', [('Content-Type', (last == 'spr.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
     elif last == PY_SCRIPT_NAME:
+        qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''
+        qs_hash = cgi.parse_qs(qs)
+
+        # Is it a request for a JS/CSS include file?
+        if qs_hash.has_key('include'): 
+            if qs_hash['include'][0] == 'js':
+                m = create_monster_string(JS_INCLUDES_DIR, '.js', JS_INCLUDES_LIST)
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
+                return [m]
+            elif qs_hash['include'][0] == 'css':
+                m = create_monster_string(CSS_INCLUDES_DIR, '.css', CSS_INCLUDES_LIST)
+                start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
+                return [m]
+
+        # ...if not, it's some results.
+
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]

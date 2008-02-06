@@ -3,14 +3,29 @@
 <head>
     <!-- General utilities (map, filter, hashtables, ...) -->
     <script type="text/javascript" src="util.js"></script>
+    <!-- Set up configuration variables. -->
+    <script type="text/javascript" src="conf.js"></script>
     <!-- Code for executing shuffle sequences. -->
     <script type="text/javascript" src="shuffle.js"></script>
     <!-- JSON serialization code. -->
     <script type="text/javascript" src="json.js"></script>
-    <script type="text/javascript" src="js_includes.js"></script>
-    <!-- Set up configuration variables. (Note that this follows
-         js_includes.js for good reasons!) -->
-    <script type="text/javascript" src="conf.js"></script>
+    <script type="text/javascript">
+    <!--
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = conf_serverURI + "?include=js";
+    document.getElementsByTagName("head")[0].appendChild(script);
+    -->
+    </script>
+    <script type="text/javascript">
+    <!--
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = conf_serverURI + "?include=css"
+    document.getElementsByTagName("head")[0].appendChild(link);
+    -->
+    </script>
 
     <!-- To be reset by JavaScript. -->
     <title>Experiment</title>
@@ -19,8 +34,6 @@
     document.title = conf_pageTitle;
     -->
     </script>
-
-    <link rel="stylesheet" type="text/css" href="css_includes.css" />
 </head>
 <body id="bod">
 
