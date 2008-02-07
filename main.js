@@ -1,3 +1,5 @@
+var serverURI = "server.py";
+
 var body = document.getElementsByTagName("body")[0];
 
 var counter = readCookie("counter");
@@ -69,7 +71,6 @@ var listOfItemSets = [];
 var itemNumber = 0;
 iter(items, function(it) {
     assert_class(it, "Array", "Every element in the 'items' Array must be an Array.");
-
 
     assert(((it.length - 1) % 2) == 0, "Following the item/group specifier, each element of the 'items' array must contain an even number of elements.")
     var typeAndGroup = it[0];
@@ -170,21 +171,67 @@ var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
+var progressBarHeight;
+var progressBarMaxWidth;
+var currentProgressBarWidth = 0;
+var showProgress;
+var barContainer;
+var nPoints = 0;
+if (conf_showProgressBar) {
+    for (var i = 0; i < runningOrder.length; ++i) {
+        for (var j = 0; j < runningOrder[i].length; ++j) {
+            if (runningOrder[i][j].controller.countsForProgressBar === undefined ||
+                runningOrder[i][j].controller.countsForProgressBar) {
+                ++nPoints;
+            }
+        }
+    }
+
+    progressBarHeight = "0.8em";
+    progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
+    showProgress = document.createElement("div");
+    showProgress.className = "lpad";
+    showProgress.style.marginTop = "2em";
+    barContainer = document.createElement("div");
+    barContainer.className = "bar-container"
+    barContainer.style.height = progressBarHeight;
+    barContainer.style.width = progressBarMaxWidth;
+    var bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.width = "0px";
+    bar.style.height = progressBarHeight;
+    barContainer.appendChild(bar);
+    var p = document.createElement("p");
+    p.className = "progress-text"
+    p.appendChild(document.createTextNode("progress"));
+    showProgress.appendChild(barContainer);
+    showProgress.appendChild(p);
+    body.insertBefore(showProgress, body.firstChild);
+}
+function updateProgressBar() {
+    if (conf_showProgressBar) {
+        currentProgressBarWidth += Math.floor(progressBarMaxWidth / nPoints);
+        bar.style.width = currentProgressBarWidth + "px";
+    }
+}
+
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
-var currentControllerInstance = null;
 var currentUtilsInstance = null;
+var currentControllerInstance = null;
 // A list of result lines.
 var allResults = [];
 
 function finishedCallback(resultsLines) {
+    var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
+
     if (resultsLines != null) {
         for (var i = 0; i < resultsLines.length; ++i) {
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
-                             currentControllerInstance.itemNumber,
-                             currentControllerInstance.elementNumber,
-                             currentControllerInstance.type,
-                             currentControllerInstance.group ];
+                             currentItem.itemNumber,
+                             currentItem.elementNumber,
+                             currentItem.type,
+                             currentItem.group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }
@@ -192,20 +239,30 @@ function finishedCallback(resultsLines) {
         }
     }
 
+    // Update progress bar if applicable.
+    if (currentItem.controller.countsForProgressBar === undefined ||
+        currentItem.controller.countsForProgressBar) {
+        updateProgressBar();
+    }
+
     ++posInCurrentItemSet;
     if (posInCurrentItemSet >= runningOrder[posInRunningOrder].length) {
         ++posInRunningOrder;
         if (posInRunningOrder >= runningOrder.length) {
+            // We've finished the experiment.
             indicateThatResultsAreBeingSent();
             sendResults(allResults,
                         function() { indicateThatResultsWereSent(true); },
                         function() { indicateThatResultsWereSent(false); });
+            return;
         }
         posInCurrentItemSet = 0;
     }
 
+    currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
+
     var pForItem;
-    if (runningOrder[posInRunningOrder][posInCurrentItemSet].options.dget("display mode", "overwrite") != "append") {
+    if (currentControllerInstance.options.dget("display mode", "overwrite") != "append") {
         var newMainDiv = document.createElement("div");
         body.replaceChild(newMainDiv, mainDiv);
         mainDiv = newMainDiv;
@@ -222,8 +279,8 @@ function finishedCallback(resultsLines) {
     currentUtilsInstance.gc();
     currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextItem);
     currentControllerInstance =
-        new (runningOrder[posInRunningOrder][posInCurrentItemSet].controller)
-    (pForItem,runningOrder[posInRunningOrder][posInCurrentItemSet].options, finishedCallback, currentUtilsInstance);
+        new (currentItem.controller)
+    (pForItem, currentItem.options, finishedCallback, currentUtilsInstance);
 }
 currentUtilsInstance = new Utils(null);
 currentControllerInstance =
@@ -305,6 +362,6 @@ function sendResults(resultsLines, success, failure)
             }
         }
     };
-    xmlhttp.open("POST", conf_serverURI, true);
+    xmlhttp.open("POST", serverURI, true);
     xmlhttp.send(data);
 }

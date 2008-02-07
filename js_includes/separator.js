@@ -1,4 +1,5 @@
 Separator.obligatory = [];
+Separator.countsForProgressBar = false;
 
 function Separator(div, options, finishedCallback, utils) {
     this.name = "Separator";

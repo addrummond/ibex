@@ -7,6 +7,7 @@ var conf_completionMessage = "The results were successfully sent to the server. 
 var conf_completionErrorMessage = "There was an error sending the results to the server.";
 var conf_pageTitle = "Experiment";
 var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
+var conf_showProgressBar = true;
 
 if (typeof(serverURI) != "undefined")
     conf_serverURI = serverURI;
@@ -19,3 +20,5 @@ if (typeof(pageTitle) != "undefined")
     conf_pageTitle = pageTitle;
 if (typeof(shuffleSequence) != "undefined")
     conf_shuffleSequence = shuffleSequence;
+if (typeof(showProgressBar) != "undefined")
+    conf_showProgressBar = showProgressBar;

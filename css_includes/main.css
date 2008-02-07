@@ -11,3 +11,17 @@
      font-weight: bold;
      font-size: medium;
  }
+ div.bar-container {
+     border: 1px solid;
+     border-color: #9ea4b1;
+     background-color: white;
+ }
+ div.bar {
+     background-color: blue;
+ }
+ p.progress-text {
+     padding-top: 0.5em;
+     margin-top: 0;
+     margin-bottom: 2em;
+     font-style: italic;
+ }

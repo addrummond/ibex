@@ -1,7 +1,3 @@
-# The URI for sending results to the server.
-# Keep this in sync with the value of the 'serverURI'
-# variable in your data.js.
-PY_SCRIPT_NAME = "server.py"
 # The port the server will run on if running in stand-alone
 # mode.
 PORT = 3000

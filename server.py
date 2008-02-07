@@ -36,6 +36,8 @@ import cgi
 from util import *
 from server_conf import *
 
+PY_SCRIPT_NAME = "server.py"
+
 #
 # Logging and configuration variables.
 #
@@ -46,7 +48,7 @@ logger.addHandler(logging.StreamHandler())
 
 # Check that all conf variables have been defined
 # (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
-for k in ['PY_SCRIPT_NAME', 'RESULT_FILE_NAME',
+for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST',
