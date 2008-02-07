@@ -1,8 +1,3 @@
-// Can't be in conf.js for boring reasons.
-var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
-if (typeof(shuffleSequence) != "undefined")
-    conf_shuffleSequence = shuffleSequence;
-
 var body = document.getElementsByTagName("body")[0];
 
 var counter = readCookie("counter");
