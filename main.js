@@ -32,14 +32,13 @@ if (typeof(defaults) != "undefined") {
     for (var i = 0; i < defaults.length; i += 2) {
         assert(typeof(defaults[i]) == "function", "Odd members of the 'defaults' array must be object constructor functions.");
         assert_class(defaults[i + 1], "Array", "Even members of the 'defaults' array must be Arrays.");
-        assert(defaults[i + 1].length % 2 == 0, "Default property specifications must have even numbers of elements.");
 
-        ht_defaults.push([defaults[i], new Hashtable()]);
+        var h = flat_alist_to_hash(
+            "Default property specifications must have even numbers of elements",
+            defaults[i + 1]
+        );
 
-        for (var j = 0; j < defaults[i + 1].length; j += 2) {
-            assert(typeof(defaults[i + 1][j] == "string", "Property names must be strings."));
-            ht_defaults[ht_defaults.length - 1][1].put(defaults[i + 1][j], defaults[i + 1][j + 1]);
-        }
+        ht_defaults.push([defaults[i], h]);
     }
 }
 
@@ -93,12 +92,11 @@ iter(items, function(it) {
         }
         
         var opts = get_defaults_for(controller);
-        assert(options.length % 2 == 0, "The list of options for each item must have an even number of elements.");
-        for (var i = 0; i < options.length; i += 2) {
-            assert(typeof(options[i]) == "string", "The name of each options for an item must be a string.");
-            opts.put(options[i], options[i + 1]);
-        }
-        
+        var customs = flat_alist_to_hash(
+            "The list of options for each item must have an even number of elements",
+            options);
+        opts.add(customs);
+
         // Check that all obligatory options have been specified.
         if (controller.obligatory) {
             assert_class(controller.obligatory, "Array", "The 'obligatory' field must be an Array of strings.");

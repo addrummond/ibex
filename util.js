@@ -90,6 +90,18 @@ function iter(a, f) {
     }
 }
 
+function flat_alist_to_hash(error_message, list) {
+    if (list.length % 2 != 0)
+        assert(false, error_message);
+
+    var hash = new Hashtable();
+    for (var i = 0; i < list.length; i += 2) {
+        assert(typeof(list[i]) == "string", "Association list must have string keys");
+        hash.put(list[i], list[i + 1]);
+    }
+    return hash;
+}
+
 // See http://www.quirksmode.org/js/cookies.html
 function readCookie(name) {
         var nameEQ = name + "=";
