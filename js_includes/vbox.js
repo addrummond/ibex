@@ -1,13 +1,24 @@
-VBox.obligatory = ["children"]
+VBox.obligatory = ["children", "triggers"]
 
 function VBox(div, options, finishedCallback, utils) {
     this.name = "VBox";
 
     this.options = options;
     this.children = options.get("children");
+    this.triggers = options.get("triggers");
 
     assert_is_arraylike(this.children, "The 'children' option of VBox must be an array");
     assert(this.children.length % 2 == 0, "The 'children' array for VBox must contain an even number of elements");
+
+    assert_is_arraylike(this.triggers, "The 'triggers' option of VBox must be an array");
+    assert(this.triggers.length > 0, "The 'triggers' array for VBox must be an array of length > 0");
+
+    var t = this;
+    iter(this.triggers, function (tr) {
+        assert(typeof(tr) == "number", "The 'triggers' array for VBox must be an array of integers");
+        assert(tr >= 0 && tr < t.children.length / 2,
+               "Numbers in the 'triggers' array must be indices into the 'children' array starting from 0");
+    });
 
     this.childInstances = [];
     this.childUtils = [];
@@ -23,21 +34,24 @@ function VBox(div, options, finishedCallback, utils) {
         var d = document.createElement("p");
         d.style.clear = "both";
         div.appendChild(d);
-        var t = this;
         var u = new Utils(utils.getValuesFromPreviousItem());
         this.childUtils.push(u);
-        var lastIndex = this.childUtils.length - 1;
-        this.childInstances.push(
-            new controllerClass(
-                d,
-                childOptionsHash,
-                function (r) { t.myFinishedCallback(lastIndex, r); },
-                u
-            )
-        );
+        var l = this.childUtils.length - 1;
+        var t = this;
+        // Get around Java's silly closure capture behavior (deriving
+        // from weird variable scoping rules).
+        // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
+        (function(l) {
+            t.childInstances.push(
+                new controllerClass(
+                    d,
+                    childOptionsHash,
+                    function (r) { t.myFinishedCallback(l, r); },
+                    u
+                )
+            );
+        })(l);
     }
-
-    this.indicesAndResultsOfThingsThatHaveFinished = [];
 
     this.handleKey = function(code, time) {
         iter(this.childInstances, function (c) {
@@ -46,11 +60,28 @@ function VBox(div, options, finishedCallback, utils) {
         });
     }
 
+    this.indicesAndResultsOfThingsThatHaveFinished = [];
+
     this.myFinishedCallback = function(index, results) {
         this.childUtils[index].gc();
         this.indicesAndResultsOfThingsThatHaveFinished.push([index, results]);
 
-        if (this.indicesAndResultsOfThingsThatHaveFinished.length == this.childInstances.length) {
+        var satisfied = true;
+        for (var i = 0; i < this.triggers.length; ++i) {
+            var foundIt = false;
+            for (var j = 0; j < this.indicesAndResultsOfThingsThatHaveFinished.length; ++j) {
+                if (this.indicesAndResultsOfThingsThatHaveFinished[j][0] == this.triggers[i]) {
+                    foundIt = true;
+                    break;
+                }
+            }
+            if (! foundIt) {
+                satisfied = false;
+                break;
+            }
+        }
+
+        if (satisfied) {
             finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
     }
