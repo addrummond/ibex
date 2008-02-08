@@ -26,12 +26,12 @@ sendingResults.appendChild(sendingResultsMessage);
 // Convert the "defaults" variable to a list of [item, hashtable] pairs.
 var ht_defaults = [];
 if (typeof(defaults) != "undefined") {
-    assert_class(defaults, "Array", "'defaults' variable must be set to an Array.");
+    assert_is_arraylike(defaults, "'defaults' variable must be set to an Array.");
     assert(defaults.length % 2 == 0, "'defaults' Array must have an even number of elements.");
     
     for (var i = 0; i < defaults.length; i += 2) {
         assert(typeof(defaults[i]) == "function", "Odd members of the 'defaults' array must be object constructor functions.");
-        assert_class(defaults[i + 1], "Array", "Even members of the 'defaults' array must be Arrays.");
+        assert_is_arraylike(defaults[i + 1], "Even members of the 'defaults' array must be Arrays.");
 
         var h = flat_alist_to_hash(
             "Default property specifications must have even numbers of elements",
@@ -65,11 +65,11 @@ function Item(type, group, itemNumber, elementNumber, controller, options) {
 
 // Now create our initial list of item sets (lists of Items), merging in default options.
 assert(typeof(items) != "undefined", "You must define the 'items' variable.");
-assert_class(items, "Array", "The 'items' variable must be set to an Array.");
+assert_is_arraylike(items, "The 'items' variable must be set to an Array.");
 var listOfItemSets = [];
 var itemNumber = 0;
 iter(items, function(it) {
-    assert_class(it, "Array", "Every element in the 'items' Array must be an Array.");
+    assert_is_arraylike(it, "Every element in the 'items' Array must be an Array.");
 
     assert(((it.length - 1) % 2) == 0, "Following the item/group specifier, each element of the 'items' array must contain an even number of elements.")
     var typeAndGroup = it[0];
@@ -99,7 +99,7 @@ iter(items, function(it) {
 
         // Check that all obligatory options have been specified.
         if (controller.obligatory) {
-            assert_class(controller.obligatory, "Array", "The 'obligatory' field must be an Array of strings.");
+            assert_is_arraylike(controller.obligatory, "The 'obligatory' field must be an Array of strings.");
             iter(controller.obligatory, function(o) {
                 assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
                 assert(opts.get(o) != null, "The obligatory option '" + o + "' was not specified.");

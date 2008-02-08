@@ -31,9 +31,8 @@ function assert(exp, message) {
     }
 }
 
-function assert_class(klass, expr, message) {
-    // TODO!
-    ;
+function assert_is_arraylike(expr, message) {
+    assert(! (expr.length === null || expr.length === undefined), message)
 }
 
 function url_encode_removing_commas(s) {
