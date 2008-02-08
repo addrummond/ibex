@@ -16,6 +16,16 @@ function Question(div, options, finishedCallback, utils) {
     this.randomOrder = options.dget("random order", this.hasCorrect);
     this.timeout = options.dget("timeout", null);
 
+    // hasCorrect is either false, indicating that there is no correct answer,
+    // true, indicating that the first answer is correct, or an integer giving
+    // the index of the correct answer.
+    // Now we change it to either false or an index.
+    if (this.hasCorrect === true)
+        this.hasCorrect = 0;
+
+    if (! (this.hasCorrect === false))
+        assert(this.hasCorrect < this.answers.length, "Bad index for correct answer in Question");
+
     if (this.randomOrder) {
         this.orderedAnswers = new Array(this.answers.length);
         for (var i = 0; i < this.answers.length; ++i)
@@ -46,9 +56,12 @@ function Question(div, options, finishedCallback, utils) {
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
             var ans = __Question_answers__[i];
-            var correct_ans = typeof(t.answers[0]) == "string" ? t.answers[0] : t.answers[0][1];
-            var correct = ans == correct_ans ? 1 : 0;
-            if (this.hasCorrect) t.setFlag(correct);
+            var correct = "NULL";
+            if (! (this.hasCorrect === false)) {
+                var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
+                correct = ans == correct_ans ? 1 : 0;
+                t.setFlag(correct);
+            }
             finishedCallback([[url_encode_removing_commas(t.question),
                                url_encode_removing_commas(ans),
                                correct]]);
@@ -77,10 +90,10 @@ function Question(div, options, finishedCallback, utils) {
             if (n > 0 && n <= this.orderedAnswers.length) {
                 var ans = typeof(this.orderedAnswers[n-1]) == "string" ? this.orderedAnswers[n-1] : this.orderedAnswers[n-1][1];
                 var correct = "NULL";
-                if (this.hasCorrect) {
-                    var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
+                if (! (this.hasCorrect === false)) {
+                    var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
                     correct = correct_ans == ans ? 1 : 0;
-                    if (this.hasCorrect) this.setFlag(correct);
+                    this.setFlag(correct);
                 }
                 finishedCallback([[url_encode_removing_commas(this.question),
                                    url_encode_removing_commas(ans),
@@ -102,8 +115,8 @@ function Question(div, options, finishedCallback, utils) {
 
                 if (ans) {
                     var correct = "NULL";
-                    if (this.hasCorrect) {
-                        var correct_ans = typeof(this.answers[0]) == "string" ? this.answers[0] : this.answers[0][1];
+                    if (! (this.hasCorrect === false)) {
+                        var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
                         correct = correct_ans == ans ? 1 : 0;
                         this.setFlag(correct);
                     }
