@@ -24,7 +24,8 @@ function Question(div, options, finishedCallback, utils) {
         this.hasCorrect = 0;
 
     if (! (this.hasCorrect === false))
-        assert(this.hasCorrect < this.answers.length, "Bad index for correct answer in Question");
+        assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
+               "Bad index for correct answer in Question");
 
     if (this.randomOrder) {
         this.orderedAnswers = new Array(this.answers.length);
