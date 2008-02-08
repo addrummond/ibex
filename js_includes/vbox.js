@@ -89,13 +89,14 @@ function VBox(div, options, finishedCallback, utils) {
     this.concatResults = function(iar) {
         iar.sort(function(x, y) { return x[0] < y[0]; });
         var res = [];
-        iter(iar, function(r) {
-            var r = r[1];
-            if (r) {
-                res.push("*");
-                iter(r, function(x) { res.push(x); })
+        for (var i = 0; i < iar.length; ++i) {
+            for (var j = 0; j < iar[i][1].length; ++j) {
+                var line = ["XX" + i];
+                for (var k = 0; k < iar[i][1][j].length; ++k)
+                    line.push(iar[i][1][j][k]);
+                res.push(line);
             }
-        });
+        }
         return res;
     }
 }
