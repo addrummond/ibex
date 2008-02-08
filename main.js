@@ -159,6 +159,10 @@ function Utils(valuesFromPreviousItem) {
     this.getValueFromPreviousItem = function(key) {
         return valuesFromPreviousItem.get(key);
     }
+
+    this.getValuesFromPreviousItem = function() {
+        return (new Hashtable()).add(valuesFromPreviousItem);
+    }
 }
 
 var mainDiv = document.createElement("div");

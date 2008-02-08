@@ -37,16 +37,16 @@ function DashedSentence(div, options, finishedCallback, utils) {
     }
 
     this.blankWord = function(w) {
-        //assert(w > 0);
-        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.");
-        this.wordDivs[w].style.borderColor = this.unshownBorderColor;
-        this.wordDivs[w].style.color = this.unshownWordColor;
+        if (this.currentWord <= this.words.length) {
+            this.wordDivs[w].style.borderColor = this.unshownBorderColor;
+            this.wordDivs[w].style.color = this.unshownWordColor;
+        }
     };
     this.showWord = function(w) {
-        //assert(w > 0);
-        //assert(w < this.wordDivs.length, "Attempt to blank non-existent word.")
-        this.wordDivs[w].style.borderColor = this.shownBorderColor;
-        this.wordDivs[w].style.color = this.shownWordColor;
+        if (this.currentWord < this.words.length) {
+            this.wordDivs[w].style.borderColor = this.shownBorderColor;
+            this.wordDivs[w].style.color = this.shownWordColor;
+        }
     }
 
     if (this.mode == "speeded acceptability") {
