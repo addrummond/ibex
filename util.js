@@ -101,6 +101,15 @@ function flat_alist_to_hash(error_message, list) {
     return hash;
 }
 
+function hash_to_flat_alist(h) {
+    var l = [];
+    for (var i = 0; i < h.keys.length; ++i) {
+        l.push(h.keys[i]);
+        l.push(h.get(h.keys[i]));
+    }
+    return l;
+}
+
 // See http://www.quirksmode.org/js/cookies.html
 function readCookie(name) {
         var nameEQ = name + "=";
