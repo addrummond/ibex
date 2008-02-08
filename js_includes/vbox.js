@@ -51,18 +51,20 @@ function VBox(div, options, finishedCallback, utils) {
         this.indicesAndResultsOfThingsThatHaveFinished.push([index, results]);
 
         if (this.indicesAndResultsOfThingsThatHaveFinished.length == this.childInstances.length) {
-            finishedCallback(concatResults(indicesAndResultsOfThingsThatHaveFinished));
+            finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
     }
 
     this.concatResults = function(iar) {
         iar.sort(function(x, y) { return x[0] < y[0]; });
-        var res;
+        var res = [];
         iter(iar, function(r) {
+            var r = r[1];
             if (r) {
                 res.push("*");
-                iter(r, function() { res.append(r); })
+                iter(r, function(x) { res.push(x); })
             }
         });
+        return res;
     }
 }
