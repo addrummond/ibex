@@ -1,11 +1,12 @@
 VBox.obligatory = ["children", "triggers"]
 
 function VBox(div, options, finishedCallback, utils) {
-    this.name = "VBox";
+    this.name = options.dget("name", "VBox");
 
     this.options = options;
     this.children = options.get("children");
     this.triggers = options.get("triggers");
+    this.padding = options.dget("padding", "2em");
 
     assert_is_arraylike(this.children, "The 'children' option of VBox must be an array");
     assert(this.children.length % 2 == 0, "The 'children' array for VBox must contain an even number of elements");
@@ -33,7 +34,20 @@ function VBox(div, options, finishedCallback, utils) {
 
         var d = document.createElement("p");
         d.style.clear = "both";
-        div.appendChild(d);
+
+        // Add padding if requested.
+        if (this.padding && i > 0) {
+            var dd = d;
+            dd = document.createElement("div");
+            dd.style.height = this.padding;
+            dd.style.marginTop = 0;
+            dd.style.marginBottom = 0;
+            div.appendChild(dd);
+        }
+
+        // Add the actual child.
+        div.appendChild(d);    
+
         var u = new Utils(utils.getValuesFromPreviousItem());
         this.childUtils.push(u);
         var l = this.childUtils.length - 1;

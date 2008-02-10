@@ -12,16 +12,15 @@ function Question(div, options, finishedCallback, utils) {
     this.question = options.get("q");
     this.answers = options.get("as");
     this.hasCorrect = options.dget("has correct", false);
-    this.showNumbers = options.dget("show numbers", true);
-    this.randomOrder = options.dget("random order", this.hasCorrect);
-    this.timeout = options.dget("timeout", null);
-
     // hasCorrect is either false, indicating that there is no correct answer,
     // true, indicating that the first answer is correct, or an integer giving
     // the index of the correct answer.
     // Now we change it to either false or an index.
     if (this.hasCorrect === true)
         this.hasCorrect = 0;
+    this.showNumbers = options.dget("show numbers", true);
+    this.randomOrder = options.dget("random order", ! (this.hasCorrect === false));
+    this.timeout = options.dget("timeout", null);
 
     if (! (this.hasCorrect === false))
         assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
