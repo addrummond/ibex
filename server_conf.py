@@ -2,6 +2,12 @@
 # mode.
 PORT = 3000
 
+# The name of the directory where result files will be stored.
+# The directory will automatically be created if it doesn't exist
+# (but if it is itself contained within a non-existent directory,
+# this won't happen).
+RESULT_FILES_DIR = "results"
+
 # The name of the file where results will be stored.
 RESULT_FILE_NAME = "results"
 # The name of the file where raw results will be stored.

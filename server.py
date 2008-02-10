@@ -314,7 +314,7 @@ def control(env, start_response):
         def backup_raw_post_data(header=None):
             bf = None
             try:
-                bf = lock_and_open(os.path.join(PWD, RAW_RESULT_FILE_NAME), "a")
+                bf = lock_and_open(os.path.join(PWD, RESULT_FILES_DIR, RAW_RESULT_FILE_NAME), "a")
                 if header:
                     bf.write("\n")
                     bf.write(header)
@@ -333,7 +333,7 @@ def control(env, start_response):
                                       time_module.gmtime(thetime)),
                  user_agent,
                  "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
-            rf = lock_and_open(RESULT_FILE_NAME, "a")
+            rf = lock_and_open(os.path.join(PWD, RESULT_FILES_DIR, RESULT_FILE_NAME), "a")
             backup_raw_post_data(header)
             csv_results = to_csv(main_results)
             rf.write(header)
@@ -357,6 +357,18 @@ def control(env, start_response):
     else:
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=utf-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
+
+# Create a directory for storing results (if it doesn't already exist).
+try:
+    # Create the directory.
+    if os.path.isfile(os.path.join(PWD, RESULT_FILES_DIR)):
+        logger.error("'%s' is a file, so could not create results directory" % RESULT_FILES_DIR)
+        sys.exit(1)
+    elif not os.path.isdir(os.path.join(PWD, RESULT_FILES_DIR)):
+        os.mkdir(os.path.join(PWD, RESULT_FILES_DIR))
+except os.error, IOError:
+    logger.error("Could not create results directory at %s" % os.path.join(PWD, RESULT_FILES_DIR))
+    sys.exit(1)
 
 # Create a directory for storing the server state
 # (if it doesn't already exist), and initialize the counter.
