@@ -2,9 +2,9 @@ var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
 
-var counter = readCookie("counter");
+var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
-if (parseInt(counter) == NaN) {
+if (counter == NaN) {
     counter = Math.floor(Math.random() * 10000);
     randomCounter = true;
 }
