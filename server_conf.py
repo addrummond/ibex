@@ -8,9 +8,11 @@ PORT = 3000
 # this won't happen).
 RESULT_FILES_DIR = "results"
 
-# The name of the file where results will be stored.
+# The name of the file where results will be stored (within
+# the RESULT_FILES_DIR directory).
 RESULT_FILE_NAME = "results"
-# The name of the file where raw results will be stored.
+# The name of the file where raw results will be stored (within
+# the RESULT_FILES_DIR directory).
 RAW_RESULT_FILE_NAME = "raw_results"
 # The name of the directory where server state will be stored.
 # (This is relative to the working directory of the server;
@@ -25,9 +27,11 @@ SERVER_STATE_DIR = "server_state"
 # "-m" command line option.
 SERVER_MODE = "paste"
 
-# The name of the directory where Javascript includes are stored.
+# The name of the directory where Javascript includes are stored
+# (relative to the working directory of the server).
 JS_INCLUDES_DIR = "js_includes"
-# The name of the directory where CSS includes are stored.
+# The name of the directory where CSS includes are stored
+# (relative to the working directory of the server).
 CSS_INCLUDES_DIR = "css_includes"
 
 # Optionally define this variable to set the working directory
@@ -43,5 +47,5 @@ CSS_INCLUDES_DIR = "css_includes"
 # is either the string "block" or the string "allow". The remainder
 # of the list gives the filenames of those js/css files which should
 # be allowed/blocked.
-JS_INCLUDES_LIST = ["block"]
-CSS_INCLUDES_LIST = ["block"]
+JS_INCLUDES_LIST = ["block"]  # Block nothing (i.e. allow everything)
+CSS_INCLUDES_LIST = ["block"] # Ditto.
