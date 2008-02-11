@@ -165,6 +165,14 @@ function Utils(valuesFromPreviousItem) {
     }
 }
 
+var practiceBox;
+if (conf_practiceItems && conf_practiceItems != []) {
+    practiceBox = document.createElement("p");
+    practiceBox.className = "practice-box";
+    practiceBox.appendChild(document.createTextNode(""));
+    body.appendChild(practiceBox);
+}
+
 var mainDiv = document.createElement("div");
 mainDiv.style.clear = "both";
 body.appendChild(mainDiv);
@@ -277,6 +285,16 @@ function finishedCallback(resultsLines) {
         mainDiv.appendChild(pForItem);
     }
     pForItem.style.clear = "both";
+
+    // Is this a practice item?
+    if (practiceBox) {
+        if (list_contains(currentItem.type, conf_practiceItems)) {
+            practiceBox.replaceChild(document.createTextNode(conf_practiceMessage), practiceBox.firstChild);
+        }
+        else {
+            practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
+        }
+    }
 
     currentUtilsInstance.gc();
     currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextItem);

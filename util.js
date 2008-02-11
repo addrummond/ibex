@@ -89,6 +89,14 @@ function iter(a, f) {
     }
 }
 
+function list_contains(x, l) {
+    for (var i = 0; i < l.length; ++i) {
+        if (x == l[i])
+            return true;
+    }
+    return false;
+}
+
 function flat_alist_to_hash(error_message, list) {
     if (list.length % 2 != 0)
         assert(false, error_message);

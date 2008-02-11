@@ -1,27 +1,30 @@
- body {
-     color: black;
-     background-color: white;
-     font-size: small;
-     margin-left: 5em;
-     margin-top: 5em;
- }
- .sending-results {
-     margin-left: 0.5em;
-     margin-top: 2em;
-     font-weight: bold;
-     font-size: medium;
- }
- div.bar-container {
-     border: 1px solid;
-     border-color: #9ea4b1;
-     background-color: white;
- }
- div.bar {
-     background-color: blue;
- }
- p.progress-text {
-     padding-top: 0.5em;
-     margin-top: 0;
-     margin-bottom: 2em;
-     font-style: italic;
- }
+body {
+    color: black;
+    background-color: white;
+    font-size: small;
+    margin-left: 5em;
+    margin-top: 5em;
+}
+.sending-results {
+    margin-left: 0.5em;
+    margin-top: 2em;
+    font-weight: bold;
+    font-size: medium;
+}
+div.bar-container {
+    border: 1px solid;
+    border-color: #9ea4b1;
+    background-color: white;
+}
+div.bar {
+    background-color: blue;
+}
+p.progress-text {
+    padding-top: 0.5em;
+    margin-top: 0;
+    margin-bottom: 2em;
+    font-style: italic;
+}
+p.practice-box {
+    color: red;
+}

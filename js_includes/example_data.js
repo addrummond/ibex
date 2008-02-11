@@ -1,5 +1,6 @@
 var showProgressBar = false;
 var shuffleSequence = seq("instructions", sepWith("sep", rshuffle("filler", /*followEachWith("question",*/ rshuffle(1, 2, 3)/*)*/)));
+var practiceItems = [1,2];
 
 var defaults = [
     Separator, ["normal message", "Wait for the next sentence",
