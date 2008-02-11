@@ -36,17 +36,16 @@ function VBox(div, options, finishedCallback, utils) {
         d.style.clear = "both";
 
         // Add padding if requested.
+        var dd = null;
         if (this.padding && i > 0) {
-            var dd = d;
             dd = document.createElement("div");
-            dd.style.height = this.padding;
-            dd.style.marginTop = 0;
+            dd.style.marginTop = this.padding;
             dd.style.marginBottom = 0;
-            div.appendChild(dd);
+            dd.appendChild(d);
         }
 
         // Add the actual child.
-        div.appendChild(d);    
+        div.appendChild(dd ? dd : d);    
 
         var u = new Utils(utils.getValuesFromPreviousItem());
         this.childUtils.push(u);
