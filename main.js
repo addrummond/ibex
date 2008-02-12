@@ -294,7 +294,7 @@ function finishedCallback(resultsLines) {
         new (currentItem.controller)
     (pForItem, currentItem.options, finishedCallback, currentUtilsInstance);
 }
-currentUtilsInstance = new Utils(null);
+currentUtilsInstance = new Utils({});
 currentControllerInstance =
     new (runningOrder[0][0].controller)
 (mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);

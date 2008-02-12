@@ -60,7 +60,7 @@ function Question(div, options, finishedCallback, utils) {
             var correct = "NULL";
             if (! (this.hasCorrect === false)) {
                 var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
-                correct = ans == correct_ans ? 1 : 0;
+                correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
             }
             finishedCallback([[url_encode_removing_commas(t.question),
@@ -93,7 +93,7 @@ function Question(div, options, finishedCallback, utils) {
                 var correct = "NULL";
                 if (! (this.hasCorrect === false)) {
                     var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
-                    correct = correct_ans == ans ? 1 : 0;
+                    correct = (correct_ans == ans ? 1 : 0);
                     this.setFlag(correct);
                 }
                 finishedCallback([[url_encode_removing_commas(this.question),
@@ -118,7 +118,7 @@ function Question(div, options, finishedCallback, utils) {
                     var correct = "NULL";
                     if (! (this.hasCorrect === false)) {
                         var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
-                        correct = correct_ans == ans ? 1 : 0;
+                        correct = (correct_ans == ans ? 1 : 0);
                         this.setFlag(correct);
                     }
                     finishedCallback([[url_encode_removing_commas(this.question),
