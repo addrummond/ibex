@@ -15,10 +15,21 @@ function Question(div, options, finishedCallback, utils) {
     this.hasCorrect = dget(options, "hasCorrect", false);
     // hasCorrect is either false, indicating that there is no correct answer,
     // true, indicating that the first answer is correct, or an integer giving
-    // the index of the correct answer.
+    // the index of the correct answer, OR a string giving the correct answer.
     // Now we change it to either false or an index.
     if (this.hasCorrect === true)
         this.hasCorrect = 0;
+    if (typeof(this.hasCorrect) == "string") {
+        var foundIt = false;
+        for (var i = 0; i < this.answers.length; ++i) {
+            if (this.answers[i].toLowerCase() == this.hasCorrect.toLowerCase()) {
+                this.hasCorrect = i;
+                foundIt = true;
+                break;
+            }
+        }
+        assert(foundIt, "Value of 'hasCorrect' option not recognized in Question");
+    }
     this.showNumbers = dget(options, "showNumbers", true);
     this.randomOrder = dget(options, "randomOrder", ! (this.hasCorrect === false));
     this.timeout = dget(options, "timeout", null);
