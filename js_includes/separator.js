@@ -5,8 +5,8 @@ function Separator(div, options, finishedCallback, utils) {
     this.name = "Separator";
     this.options = options;
 
-    this.style = utils.getValueFromPreviousItem("failed") ? "error" : "normal";
-    var x = utils.getValueFromPreviousItem("style");
+    this.style = utils.getValueFromPreviousElement("failed") ? "error" : "normal";
+    var x = utils.getValueFromPreviousElement("style");
     if (x) this.style = x;
     assert(this.style == "normal" || this.style == "error", "'style' property of Separator must either be 'normal' or 'error'");
 
@@ -15,11 +15,11 @@ function Separator(div, options, finishedCallback, utils) {
            "Value of 'transfer' option of Separator must either be the string 'keypress' or a number");
 
     var normal_message = dget(options, "normalMessage", "Press any key to continue");
-    var x = utils.getValueFromPreviousItem("normalMessage");
+    var x = utils.getValueFromPreviousElement("normalMessage");
     if (x) normal_message = x;
 
     var error_message = dget(options, "errorMessage", "You answered incorrectly. Press any key to continue");
-    var x = utils.getValueFromPreviousItem("errorMessage");
+    var x = utils.getValueFromPreviousElement("errorMessage");
     if (x) error_message = x;
 
     var p = document.createElement("p");

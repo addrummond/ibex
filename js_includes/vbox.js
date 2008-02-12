@@ -43,7 +43,7 @@ function VBox(div, options, finishedCallback, utils) {
         // Add the actual child.
         div.appendChild(dd ? dd : d);    
 
-        var u = new Utils(utils.getValuesFromPreviousItem());
+        var u = new Utils(utils.getValuesFromPreviousElement());
         this.childUtils.push(u);
         var l = this.childUtils.length - 1;
         var t = this;
@@ -91,6 +91,11 @@ function VBox(div, options, finishedCallback, utils) {
         }
 
         if (satisfied) {
+            // Merge values for next element.
+            var merged = merge_list_of_dicts(map(function (x) { return x.valuesForNextElement; },
+                                                 this.childUtils));
+            utils.valuesForNextElement = merged;
+
             finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
     }

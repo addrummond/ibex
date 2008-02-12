@@ -133,6 +133,15 @@ function merge_dicts(d1, d2) {
     return newd;
 }
 
+function merge_list_of_dicts(ds) {
+    var newd = {};
+    for (var i = 0; i < ds.length; ++i) {
+        for (k in ds[i])
+            newd[k] = ds[i][k];
+    }
+    return newd;
+}
+
 function dget(d1, k, default_) {
     var v = d1[k];
     if (v === undefined)

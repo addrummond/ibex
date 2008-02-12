@@ -105,7 +105,7 @@ iter(items, function(it) {
     ++itemNumber;
  });
 
-function Utils(valuesFromPreviousItem) {
+function Utils(valuesFromPreviousElement) {
     this.timeoutIds = [];
 
     this.setTimeout = function(func, time) {
@@ -141,19 +141,19 @@ function Utils(valuesFromPreviousItem) {
         }
     }
 
-    this.valuesForNextItem = {}
+    this.valuesForNextElement = {};
 
     this.setValueForNextElement = function(key, value) {
         assert(typeof(key) == "string", "First argument to 'setValueForNextElement' must be a string");
-        this.valuesForNextItem[key] = value;
+        this.valuesForNextElement[key] = value;
     }
 
-    this.getValueFromPreviousItem = function(key) {
-        return valuesFromPreviousItem[key];
+    this.getValueFromPreviousElement = function(key) {
+        return valuesFromPreviousElement[key];
     }
 
-    this.getValuesFromPreviousItem = function() {
-        return copy_dict(valuesFromPreviousItem);
+    this.getValuesFromPreviousElement = function() {
+        return copy_dict(valuesFromPreviousElement);
     }
 }
 
@@ -289,7 +289,7 @@ function finishedCallback(resultsLines) {
     }
 
     currentUtilsInstance.gc();
-    currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextItem);
+    currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextElement);
     currentControllerInstance =
         new (currentItem.controller)
     (pForItem, currentItem.options, finishedCallback, currentUtilsInstance);
