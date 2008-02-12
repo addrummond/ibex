@@ -87,20 +87,18 @@ function mungGroups(sentenceArray, counter, extras) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
     var grouped = filter(function (e) { return e.group != null; }, sentenceArray);
 
-    var hash = new Hashtable();
+    var hash = {}
     for (var i = 0; i < grouped.length; ++i) {
-        if (hash.get(grouped[i].group) == undefined) {
-            hash.put(grouped[i].group, [grouped[i]]);
+        if (hash[grouped[i].group] === undefined) {
+            hash[grouped[i].group] = [grouped[i]];
         }
         else
-            hash.get(grouped[i].group).push(grouped[i]);
+            hash[grouped[i].group].push(grouped[i]);
     }
     // Flatten the hash.
     var flat = new Array();
-    hash.moveFirst();
-    while (hash.next()) {
-        flat.push(hash.getValue());
-    }
+    for (k in hash)
+        flat.push(hash[k]);
     var es = {};
     var ls = flat.length > 0 ? latinSquare(flat, counter, es) : [];
     if (extras != null) { extras['groupSize'] = es['groupSize']; }

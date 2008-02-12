@@ -141,19 +141,19 @@ function Utils(valuesFromPreviousItem) {
         }
     }
 
-    this.valuesForNextItem = new Hashtable();
+    this.valuesForNextItem = {}
 
     this.setValueForNextElement = function(key, value) {
         assert(typeof(key) == "string", "First argument to 'setValueForNextElement' must be a string");
-        this.valuesForNextItem.put(key, value);
+        this.valuesForNextItem[key] = value;
     }
 
     this.getValueFromPreviousItem = function(key) {
-        return valuesFromPreviousItem.get(key);
+        return valuesFromPreviousItem[key];
     }
 
     this.getValuesFromPreviousItem = function() {
-        return (new Hashtable()).add(valuesFromPreviousItem);
+        return copy_dict(valuesFromPreviousItem);
     }
 }
 
