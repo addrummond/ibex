@@ -11,6 +11,7 @@ function Question(div, options, finishedCallback, utils) {
 
     this.question = options.q;
     this.answers = options.as;
+
     this.hasCorrect = dget(options, "hasCorrect", false);
     // hasCorrect is either false, indicating that there is no correct answer,
     // true, indicating that the first answer is correct, or an integer giving

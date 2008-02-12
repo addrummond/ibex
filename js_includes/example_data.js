@@ -12,7 +12,7 @@ var defaults = [
     FlashSentence, {"timeout" : 500},
 //    Question, ["hasCorrect", false,
 //               "timeout",     3000],
-    AcceptabilityJudgment, {"q" : "Was that an acceptable sentence?", "showNumbers" : false, "as" : ["Yes", "No"]}
+    AcceptabilityJudgment, {"q" : "Was that an acceptable sentence?", "showNumbers" : false, "as" : ["Yes", "No"], randomOrder: false}
 ];
 
 var items = [
@@ -20,8 +20,8 @@ var items = [
     ["sep", Separator, {}],
     ["question", Question, {"q" : "Was this an acceptable sentence?", "as" : ["Yes", "No"]}],
 
-    [1, AcceptabilityJudgment, {"s" : "Here's a sentence to judge", "hasCorrect" : 0}],
-    [2, AcceptabilityJudgment, {"s" : "Here's another sentence to judge", "hasCorrect" : 1}]
+    [1, AcceptabilityJudgment, {"s" : "Here's a sentence to judge", hasCorrect : 0}],
+    [2, AcceptabilityJudgment, {"s" : "Here's another sentence to judge", hasCorrect : 1}]
     /*[1, VBox, ["children", [FlashSentence, ["s", "A sentence which has a relative clause"],
                             DashedSentence, ["s", "foo bar bloo blah amp fug"]],
                "triggers", [0,1]]],
