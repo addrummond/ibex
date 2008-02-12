@@ -1,12 +1,12 @@
 VBox.obligatory = ["children", "triggers"]
 
 function VBox(div, options, finishedCallback, utils) {
-    this.name = options.dget("name", "VBox");
+    this.name = dget(options, "name", "VBox");
 
     this.options = options;
-    this.children = options.get("children");
-    this.triggers = options.get("triggers");
-    this.padding = options.dget("padding", "2em");
+    this.children = options.children;
+    this.triggers = options.triggers;
+    this.padding = dget(options, "padding", "2em");
 
     assert_is_arraylike(this.children, "The 'children' option of VBox must be an array");
     assert(this.children.length % 2 == 0, "The 'children' array for VBox must contain an even number of elements");
@@ -26,11 +26,7 @@ function VBox(div, options, finishedCallback, utils) {
     for (var i = 0; i < this.children.length; i += 2) {
         var controllerClass = this.children[i];
         var childOptions = this.children[i + 1];
-        var childOptionsHash = flat_alist_to_hash(
-            "Error: options array containing an odd number of elements in VBox",
-            childOptions
-        );
-        childOptionsHash.add(get_defaults_for(controllerClass));
+        childOptions = merge_dicts(get_defaults_for(controllerClass), childOptions);
 
         var d = document.createElement("p");
         d.style.clear = "both";
@@ -58,7 +54,7 @@ function VBox(div, options, finishedCallback, utils) {
             t.childInstances.push(
                 new controllerClass(
                     d,
-                    childOptionsHash,
+                    childOptions,
                     function (r) { t.myFinishedCallback(l, r); },
                     u
                 )

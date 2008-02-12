@@ -4,8 +4,8 @@ function FlashSentence(div, options, finishedCallback, utils) {
     this.name = "FlashSentence";
 
     this.options = options;
-    this.sentence = options.get("s");
-    this.timeout = options.dget("timeout", 2000);
+    this.sentence = options.s;
+    this.timeout = dget(options, "timeout", 2000);
 
     // Precalculate MD5 of sentence.
     var canonicalSentence = this.sentence.split('/\s/').join(' ');

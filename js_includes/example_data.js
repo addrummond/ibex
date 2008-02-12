@@ -3,25 +3,25 @@ var shuffleSequence = seq("instructions", sepWith("sep", rshuffle("filler", /*fo
 var practiceItems = [1,2];
 
 var defaults = [
-    Separator, ["normal message", "Wait for the next sentence",
-                "error message",  "Timeout. Wait for the next sentence.",
-                "display mode",   "overwrite",  // "overwrite" is the default; could also use "append"
-                "transfer",       2000], // Could also set to "keypress" (press any key to continue).
-    DashedSentence, ["mode",         "speeded acceptability" /*"self-paced reading"*/,
-                     "display mode", "replace"],
-    FlashSentence, ["timeout", 500],
-//    Question, ["has correct", false,
+    Separator, {"normalMessage" : "Wait for the next sentence",
+                "errorMessage" :  "Timeout. Wait for the next sentence.",
+                "displayMode" :   "overwrite",  // "overwrite" is the default; could also use "append"
+                "transfer" :       2000}, // Could also set to "keypress" (press any key to continue).
+    DashedSentence, {"mode" :         "speeded acceptability" /*"self-paced reading"*/,
+                     "displayMode" : "replace"},
+    FlashSentence, {"timeout" : 500},
+//    Question, ["hasCorrect", false,
 //               "timeout",     3000],
-    AcceptabilityJudgment, ["q", "Was that an acceptable sentence?", "show numbers", false, "as", ["Yes", "No"]]
+    AcceptabilityJudgment, {"q" : "Was that an acceptable sentence?", "showNumbers" : false, "as" : ["Yes", "No"]}
 ];
 
 var items = [
-    ["instructions", Message, ["html", "<p>[Insert instructions here].</p><p>Press any key to start.</p>"]],
-    ["sep", Separator, []],
-    ["question", Question, ["q", "Was this an acceptable sentence?", "as", ["Yes", "No"]]],
+    ["instructions", Message, {"html" : "<p>[Insert instructions here].</p><p>Press any key to start.</p>"}],
+    ["sep", Separator, {}],
+    ["question", Question, {"q" : "Was this an acceptable sentence?", "as" : ["Yes", "No"]}],
 
-    [1, AcceptabilityJudgment, ["s", "Here's a sentence to judge", "has correct", 0]],
-    [2, AcceptabilityJudgment, ["s", "Here's another sentence to judge", "has correct", 1]]
+    [1, AcceptabilityJudgment, {"s" : "Here's a sentence to judge", "hasCorrect" : 0}],
+    [2, AcceptabilityJudgment, {"s" : "Here's another sentence to judge", "hasCorrect" : 1}]
     /*[1, VBox, ["children", [FlashSentence, ["s", "A sentence which has a relative clause"],
                             DashedSentence, ["s", "foo bar bloo blah amp fug"]],
                "triggers", [0,1]]],

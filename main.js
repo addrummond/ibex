@@ -31,14 +31,9 @@ if (typeof(defaults) != "undefined") {
     
     for (var i = 0; i < defaults.length; i += 2) {
         assert(typeof(defaults[i]) == "function", "Odd members of the 'defaults' array must be object constructor functions.");
-        assert_is_arraylike(defaults[i + 1], "Even members of the 'defaults' array must be Arrays.");
+        assert_is_dict(defaults[i + 1], "Even members of the 'defaults' array must be dictionaries.");
 
-        var h = flat_alist_to_hash(
-            "Default property specifications must have even numbers of elements",
-            defaults[i + 1]
-        );
-
-        ht_defaults.push([defaults[i], h]);
+        ht_defaults.push([defaults[i], defaults[i + 1]]);
     }
 }
 
@@ -47,11 +42,11 @@ if (typeof(defaults) != "undefined") {
 function get_defaults_for(obj) {
     for (var i = 0; i < ht_defaults.length; ++i) {
         if (ht_defaults[i][0] == obj) {
-            // Copy the hashtable (had a nasty bug from not doing this...).
-            return (new Hashtable()).add(ht_defaults[i][1]);
+            // Copy the dictionary (had a nasty bug from not doing this...).
+            return copy_dict(ht_defaults[i][1]);
         }
     }
-    return new Hashtable();
+    return {}
 }
 
 function Item(type, group, itemNumber, elementNumber, controller, options) {
@@ -92,17 +87,14 @@ iter(items, function(it) {
         }
         
         var opts = get_defaults_for(controller);
-        var customs = flat_alist_to_hash(
-            "The list of options for each item must have an even number of elements",
-            options);
-        opts.add(customs);
+        opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
         if (controller.obligatory) {
             assert_is_arraylike(controller.obligatory, "The 'obligatory' field must be an Array of strings.");
             iter(controller.obligatory, function(o) {
                 assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
-                assert(opts.get(o) != null, "The obligatory option '" + o + "' was not specified.");
+                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified.");
             });
         }
 
@@ -272,7 +264,7 @@ function finishedCallback(resultsLines) {
     currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
     var pForItem;
-    if (currentControllerInstance.options.dget("display mode", "overwrite") != "append") {
+    if (dget(currentControllerInstance.options, "displayMode", "overwrite") != "append") {
         var newMainDiv = document.createElement("div");
         body.replaceChild(newMainDiv, mainDiv);
         mainDiv = newMainDiv;

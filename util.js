@@ -32,7 +32,14 @@ function assert(exp, message) {
 }
 
 function assert_is_arraylike(expr, message) {
-    assert(! (expr.length === null || expr.length === undefined), message)
+    assert((! (expr == null)) && (! (expr.length === null || expr.length === undefined)), message)
+}
+
+function assert_is_dict(expr, message) {
+    for (var _ in expr) {
+        return;
+    }
+    assert(false, message);
 }
 
 function url_encode_removing_commas(s) {
@@ -129,6 +136,32 @@ function readCookie(name) {
         }
         return null;
 }
+
+function copy_dict(d) {
+    var newd = {};
+    for (var k in d) {
+        newd[k] = d[k];
+    }
+    return newd;
+}
+
+function merge_dicts(d1, d2) {
+    var newd = {};
+    for (var k in d1)
+        newd[k] = d1[k];
+    for (var k in d2)
+        newd[k] = d2[k];
+    return newd;
+}
+
+function dget(d1, k, default_) {
+    var v = d1[k];
+    if (v === undefined)
+        return default_;
+    else
+        return v;
+}
+
 
 // See http://www.comet.co.il/en/articles/hash/article.html
 /*******************************************************************************************

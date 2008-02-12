@@ -6,17 +6,17 @@ function DashedSentence(div, options, finishedCallback, utils) {
     this.name = "DashedSentence";
 
     this.options = options;
-    this.words = options.get("s").split(/\s+/);
-    this.mode = options.dget("mode", "self-paced reading");
-    this.wordTime = options.dget("word time", 300); // Only for speeded accpetability.
-    this.wordPauseTime = options.dget("word pause time", 100); // Ditto.
+    this.words = options.s.split(/\s+/);
+    this.mode = dget(options, "mode", "self-paced reading");
+    this.wordTime = dget(options, "wordTime", 300); // Only for speeded accpetability.
+    this.wordPauseTime = dget(options, "wordPauseTime", 100); // Ditto.
     this.currentWord = 0;
 
     // Defaults.
-    this.unshownBorderColor = options.dget("unshownBorderColor", "#9ea4b1");
-    this.shownBorderColor = options.dget("shownBorderColor", "black");
-    this.unshownWordColor = options.dget("unshownWordColor", "white");
-    this.shownWordColor = options.dget("shownWordColor", "black");
+    this.unshownBorderColor = dget(options, "unshownBorderColor", "#9ea4b1");
+    this.shownBorderColor = dget(options, "shownBorderColor", "black");
+    this.unshownWordColor = dget(options, "unshownWordColor", "white");
+    this.shownWordColor = dget(options, "shownWordColor", "black");
 
     // Precalculate MD5 of sentence.
     var canonicalSentence = this.words.join(' ');
