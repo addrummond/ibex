@@ -72,7 +72,7 @@ iter(items, function(it) {
         var options = it[setIndex + 1];
 
         var type;
-        var group = "NULL";
+        var group = null;
         assert(typeof(typeAndGroup) == "object" || typeof(typeAndGroup) == "number" || typeof(typeAndGroup) == "string",
                "Type and group specifier must be an Array, number or string");
         if (typeof(typeAndGroup) == "object") {
@@ -234,7 +234,8 @@ function finishedCallback(resultsLines) {
                              currentItem.itemNumber,
                              currentItem.elementNumber,
                              runningOrder[posInRunningOrder].type,
-                             runningOrder[posInRunningOrder].group ];
+                             runningOrder[posInRunningOrder].group == null ? "NULL" :
+                                                                             runningOrder[posInRunningOrder].group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }

@@ -282,7 +282,7 @@ function runShuffleSequence(masterArray, ss) {
             var pred = toPredicate(ss.args[i]);
             // [0] here because it's an item set, not an item (but all items
             // in the set will have the same type).
-            var elems = filter(function (s) { return pred(s[0].type); }, masterArray);
+            var elems = filter(function (s) { return pred(s.type); }, masterArray);
 
             if (elems.length > 0)
                 arrays.push(elems);

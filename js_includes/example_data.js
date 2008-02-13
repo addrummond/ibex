@@ -1,5 +1,3 @@
-//var groupChains = [[odd,even]];
-
 var shuffleSequence = seq(anyType);
 
 var ds = DashedSentence;
