@@ -69,7 +69,7 @@ function Question(div, options, finishedCallback, utils) {
         __Question_callback__ = function (i) {
             var ans = __Question_answers__[i];
             var correct = "NULL";
-            if (! (this.hasCorrect === false)) {
+            if (! (t.hasCorrect === false)) {
                 var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
                 correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
