@@ -116,7 +116,13 @@ function regularizeGroup(g) {
 function mungGroups(sentenceArray, counter, extras) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
     // NOTE: May need to change to a for loop for efficiency reasons.
-    var grouped = map(regularizeGroup, filter(function (e) { return e.group != null; }, sentenceArray));
+    //var grouped = map(regularizeGroup, filter(function (e) { return e.group != null; }, sentenceArray));
+    var grouped = [];
+    for (var i = 0; i < sentenceArray.length; ++i) {
+        var k = sentenceArray[i];
+        if (k.group != null)
+            grouped.push(regularizeGroup(k));
+    }
 
     var hash = { };
     for (var i = 0; i < grouped.length; ++i) {
