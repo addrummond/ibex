@@ -169,7 +169,8 @@ var mainDiv = document.createElement("div");
 mainDiv.style.clear = "both";
 body.appendChild(mainDiv);
 
-var runningOrder = runShuffleSequence(listOfItemSets, conf_shuffleSequence);
+var mungGroupsExtras = { };
+var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter, mungGroupsExtras), conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
@@ -363,7 +364,7 @@ function sendResults(resultsLines, success, failure)
     }
 
     // Prepare the post data.
-    var data = [randomCounter ? true : false, counter, resultsLines].toJSONString();
+    var data = JSON.stringify([randomCounter ? true : false, counter, resultsLines]);
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
