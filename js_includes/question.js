@@ -31,6 +31,7 @@ function Question(div, options, finishedCallback, utils) {
         assert(foundIt, "Value of 'hasCorrect' option not recognized in Question");
     }
     this.showNumbers = dget(options, "showNumbers", true);
+    this.presentAsScale = dget(options, "presentAsScale", false);
     this.randomOrder = dget(options, "randomOrder", ! (this.hasCorrect === false));
     this.timeout = dget(options, "timeout", null);
 
@@ -56,10 +57,18 @@ function Question(div, options, finishedCallback, utils) {
 
     this.qp = document.createElement("p");
     this.qp.appendChild(document.createTextNode(this.question));
-    this.xl = document.createElement(this.showNumbers ? "ol" : "ul");
+    this.xl;
+    if (! this.presentAsScale)
+        this.xl = document.createElement(this.showNumbers ? "ol" : "ul");
+    else
+        this.xl = document.createElement("p");
     __Question_answers__ = new Array(this.answers.length);
     for (var i = 0; i < this.orderedAnswers.length; ++i) {
-        var li = document.createElement("li")
+        var li;
+        if (! this.presentAsScale)
+            li = document.createElement("li")
+        else
+            li = document.createElement("span");
         var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
         var a = document.createElement("a");
         var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
@@ -81,6 +90,8 @@ function Question(div, options, finishedCallback, utils) {
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
         this.xl.appendChild(li);
+        if (this.presentAsScale && i < this.orderedAnswers.length - 1)
+            this.xl.appendChild(document.createTextNode(" | "));
     }
     div.appendChild(this.qp);
     div.appendChild(this.xl);
@@ -95,7 +106,7 @@ function Question(div, options, finishedCallback, utils) {
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
-        if (this.showNumbers &&
+        if ((! this.presentAsScale) && this.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
             // Convert numeric keypad codes to ordinary keypad codes.
             var n = code >= 96 ? code - 96 : code - 48;
@@ -112,8 +123,8 @@ function Question(div, options, finishedCallback, utils) {
                                    correct]]);
             }
         }
-        // Letters.
-        else if (code >= 65 && code <= 90) {
+        // Letters (and numbers in the case of scales).
+        else if ((code >= 65 && code <= 90) || (this.presentAsScale && code >= 48 && code <= 57)) {
             for (var i = 0; i < this.answers.length; ++i) {
                 var ans = null;
                 if (typeof(this.answers[i]) == "string") {
