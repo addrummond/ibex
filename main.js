@@ -233,8 +233,8 @@ function finishedCallback(resultsLines) {
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
                              currentItem.itemNumber,
                              currentItem.elementNumber,
-                             currentItem.type,
-                             currentItem.group ];
+                             runningOrder[posInRunningOrder].type,
+                             runningOrder[posInRunningOrder].group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }
