@@ -1,42 +1,44 @@
-var showProgressBar = false;
-var shuffleSequence = seq("instructions", sepWith("sep", rshuffle("filler", /*followEachWith("question",*/ rshuffle(1, 2, 3)/*)*/)));
-var practiceItems = [1,2];
+//var groupChains = [[odd,even]];
+
+var shuffleSequence = seq(anyType);
+
+var ds = DashedSentence;
+var q = AcceptabilityJudgment;
 
 var defaults = [
-    Separator, {"normalMessage" : "Wait for the next sentence",
-                "errorMessage" :  "Timeout. Wait for the next sentence.",
-                "displayMode" :   "overwrite",  // "overwrite" is the default; could also use "append"
-                "transfer" :       2000}, // Could also set to "keypress" (press any key to continue).
-    DashedSentence, {"mode" :         "speeded acceptability" /*"self-paced reading"*/,
-                     "displayMode" : "replace"},
-    FlashSentence, {"timeout" : 500},
-//    Question, ["hasCorrect", false,
-//               "timeout",     3000],
-    AcceptabilityJudgment, {"q" : "Was that an acceptable sentence?", "showNumbers" : false, "as" : ["Yes", "No"], randomOrder: false}
-];
+    AcceptabilityJudgment, {q: "How was it?", as: ["Good", "Bad"]}
+]
 
 var items = [
-    ["instructions", Message, {"html" : "<p>[Insert instructions here].</p><p>Press any key to start.</p>"}],
-    ["sep", Separator, {}],
-    ["question", Question, {"q" : "Was this an acceptable sentence?", "as" : ["Yes", "No"]}],
 
-    [1, AcceptabilityJudgment, {"s" : "Here's a sentence to judge", hasCorrect : "yes"}],
-    [2, AcceptabilityJudgment, {"s" : "Here's another sentence to judge", hasCorrect : "yes"}]
-    /*[1, VBox, ["children", [FlashSentence, ["s", "A sentence which has a relative clause"],
-                            DashedSentence, ["s", "foo bar bloo blah amp fug"]],
-               "triggers", [0,1]]],
-    [1, DashedSentence, ["s", "A sentence which has a relative clause"]],
-    [1, DashedSentence, ["s", "Another sentence which has a relative clause"]],
-    [1, DashedSentence, ["s", "Yet another one with a relative clause"]],
-    [2, DashedSentence, ["s", "A sentence without a (non-reduced) relative clause"]],
-    [2, DashedSentence, ["s", "The second sentence without a (non-reduced) relative clause"]],
-    [2, DashedSentence, ["s", "The third sentence without a (non-reduced) relative clause"]],
+[["s1",1], ds, {s: "The journalist interviewed an actress who he knew to be shy of publicity after meeting on a previous occasion"}],
+[["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity"}],
+[["q1",2], q, {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
+[["q2",2], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}],
 
-    ["filler", DashedSentence, ["s", "A filler sentence"]],
-    ["filler", DashedSentence, ["s", "Foo bar another sentence filler"]],
-    ["filler", DashedSentence, ["s", "More grist to the mill"]],
-    ["filler", DashedSentence, ["s", "Fill fill fill fill fill"]],
-    ["filler", DashedSentence, ["s", "Not an interesting sentence"]],
-    ["filler", DashedSentence, ["s", "Foo bar blah blah blah"]]
-*/
+[["s1",2], ds, {s: "The teacher helped struggling students who he encouraged to succeed without treating like idiots"}],
+[["s2",2], ds, {s: "The teacher helped struggling students who without treating like idiots he encouraged to succeed"}],
+[["q1",3], q, {s: "Which struggling students did the teacher encourage to succeed without treating their friends like idiots?"}],
+[["q2",3], q, {s: "Which struggling students did the teacher encourage their friends to succeed without treating like idiots?"}],
+
+[["s1",4], ds, {s: "The geologist photographed a fossil which he found to be older than expected after submitting for analysis"}],
+[["s2",4], ds, {s: "The geologist photographed a fossil which after submitting for analysis he found to be older than expected"}],
+[["q1",5], q, {s: "Which fossil did the geologist discover its age after photographing?"}],
+[["q2",5], q, {s: "Which fossil did the geologist discover after photographing its surroundings?"}],
+
+[["s1",6], ds, {s: "The President proposed secret plans which generals agreed to fast-track for implementation without divulging to Congress"}],
+[["s2",6], ds, {s: "The President proposed secret plans which without divulging to Congress the generals agreed to fast-track for implementation"}],
+[["q1",7], ds, {s: "Which secret plans did the President propose without divulging their  contents to Congress?"}],
+[["q2",7], ds, {s: "Which secret plans did the President propose BLAH BLAH BLAH?"}],
+
+[["s1",8], ds, {s: "Airport officials searched some men who they allowed to get on the plane despite thinking rather suspicious"}],
+[["s2",8], ds, {s: "Airport officials searched some men who despite thinking rather suspicious they allowed to get on the plane"}],
+[["q1",9], ds, {s: "Which men did airport officials allow to get on the plane despite thinking their demenour rather suspicous?"}],
+[["q2",9], ds, {s: "Which men did airport officials allow their bags to go on the plane despite thinking rather suspicous?"}],
+
+[["s1",10], ds, {s: "The carpenter made a chair which designers thought to be really rather trendy after painting turquoise"}],
+[["s2",10], ds, {s: "The carpenter made a chair which after painting turquoise designers thought to be really rather trendy"}],
+[["q1",11], ds, {s: "Which chair did designers think to be really rather trendy after painting its legs turquoise?"}],
+[["q2",11], ds, {s: "Which chair did designers think its appearence to be really rather trendy after painting turquoise?"}],
+
 ];

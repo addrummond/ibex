@@ -94,7 +94,7 @@ iter(items, function(it) {
             assert_is_arraylike(controller.obligatory, "The 'obligatory' field must be an Array of strings.");
             iter(controller.obligatory, function(o) {
                 assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
-                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified.");
+                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for " + controller.name);
             });
         }
 

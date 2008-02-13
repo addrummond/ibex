@@ -73,13 +73,18 @@ function latinSquare(arrayOfArrays, counter, extras) {
     var idx = counter % groupSize;
     var a = new Array(arrayOfArrays.length);
     for (var i = 0; i < arrayOfArrays.length; ++i) {
-        a[i] = arrayOfArrays[i][idx];
-        ++idx;
+        if (true) {
+            a[i] = arrayOfArrays[i][idx][1];
+            ++idx;
+        }
+        else {
+            // blah blah blah...
+        }
         if (idx >= groupSize)
             idx = 0;
     }
 
-    if (extras != null) { extras['groupSize'] = groupSize; }
+    if (extras != null) { extras.groupSize = groupSize; }
     return a;
 }
 
@@ -98,10 +103,10 @@ function mungGroups(sentenceArray, counter, extras) {
     // Flatten the hash.
     var flat = new Array();
     for (k in hash)
-        flat.push(hash[k]);
+        flat.push([k, hash[k]]);
     var es = {};
     var ls = flat.length > 0 ? latinSquare(flat, counter, es) : [];
-    if (extras != null) { extras['groupSize'] = es['groupSize']; }
+    if (extras != null) { extras.groupSize = es.groupSize; }
     return nulls.concat(ls);
 }
 
