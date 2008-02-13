@@ -1,248 +1,273 @@
 /*
-    This is some copy/pasted public domain code for serializing Javascript
-    data structures in the JSON format; nothing to do with the main
-    functionality.
+    json2.js
+    2008-01-17
+
+    Public Domain
+
+    No warranty expressed or implied. Use at your own risk.
+
+    See http://www.JSON.org/js.html
+
+    This file creates a global JSON object containing two methods:
+
+        JSON.stringify(value, whitelist)
+            value       any JavaScript value, usually an object or array.
+
+            whitelist   an optional array parameter that determines how object
+                        values are stringified.
+
+            This method produces a JSON text from a JavaScript value.
+            There are three possible ways to stringify an object, depending
+            on the optional whitelist parameter.
+
+            If an object has a toJSON method, then the toJSON() method will be
+            called. The value returned from the toJSON method will be
+            stringified.
+
+            Otherwise, if the optional whitelist parameter is an array, then
+            the elements of the array will be used to select members of the
+            object for stringification.
+
+            Otherwise, if there is no whitelist parameter, then all of the
+            members of the object will be stringified.
+
+            Values that do not have JSON representaions, such as undefined or
+            functions, will not be serialized. Such values in objects will be
+            dropped; in arrays will be replaced with null.
+            JSON.stringify(undefined) returns undefined. Dates will be
+            stringified as quoted ISO dates.
+
+            Example:
+
+            var text = JSON.stringify(['e', {pluribus: 'unum'}]);
+            // text is '["e",{"pluribus":"unum"}]'
+
+        JSON.parse(text, filter)
+            This method parses a JSON text to produce an object or
+            array. It can throw a SyntaxError exception.
+
+            The optional filter parameter is a function that can filter and
+            transform the results. It receives each of the keys and values, and
+            its return value is used instead of the original value. If it
+            returns what it received, then structure is not modified. If it
+            returns undefined then the member is deleted.
+
+            Example:
+
+            // Parse the text. If a key contains the string 'date' then
+            // convert the value to a date.
+
+            myData = JSON.parse(text, function (key, value) {
+                return key.indexOf('date') >= 0 ? new Date(value) : value;
+            });
+
+    This is a reference implementation. You are free to copy, modify, or
+    redistribute.
+
+    Use your own copy. It is extremely unwise to load third party
+    code into your pages.
 */
 
-// Augment the basic prototypes if they have not already been augmented.
+/*jslint evil: true */
 
-if (!Object.prototype.toJSONString) {
+/*global JSON */
 
-    Array.prototype.toJSONString = function () {
-        var a = ["["],  // The array holding the text fragments.
-            b,          // A boolean indicating that a comma is required.
-            i,          // Loop counter.
-            l = this.length,
-            v;          // The value to be stringified.
+/*members "\b", "\t", "\n", "\f", "\r", "\"", JSON, "\\", apply,
+    charCodeAt, floor, getUTCDate, getUTCFullYear, getUTCHours,
+    getUTCMinutes, getUTCMonth, getUTCSeconds, hasOwnProperty, join, length,
+    parse, propertyIsEnumerable, prototype, push, replace, stringify, test,
+    toJSON, toString
+*/
 
-        function p(s) {
+if (!this.JSON) {
 
-// p accumulates text fragments in an array. It inserts a comma before all
-// except the first fragment.
+    JSON = function () {
 
-            if (b) {
-                a.push(",");
-            }
-            a.push(s);
-            b = true;
+        function f(n) {    // Format integers to have at least two digits.
+            return n < 10 ? '0' + n : n;
         }
 
-// For each value in this array...
+        Date.prototype.toJSON = function () {
 
-        for (i = 0; i < l; i += 1) {
-            v = this[i];
-            switch (typeof v) {
+// Eventually, this method will be based on the date.toISOString method.
 
-// Serialize a JavaScript object value. Ignore objects thats lack the
-// toJSONString method. Due to a specification error in ECMAScript,
-// typeof null is "object", so watch out for that case.
-
-            case "object":
-                if (v) {
-                    if (typeof v.toJSONString === "function") {
-                        p(v.toJSONString());
-                    }
-                } else {
-                    p("null");
-                }
-                break;
-
-// Otherwise, serialize the value.
-
-            case "string":
-            case "number":
-            case "boolean":
-                p(v.toJSONString());
-
-// Values without a JSON representation are ignored.
-
-            }
-        }
-
-// Join all of the fragments together and return.
-
-        a.push("]");
-        return a.join("");
-    };
-
-
-    Boolean.prototype.toJSONString = function () {
-        return String(this);
-    };
-
-
-    Date.prototype.toJSONString = function () {
-
-// Ultimately, this method will be equivalent to the date.toISOString method.
-
-        function f(n) {
-
-// Format integers to have at least two digits.
-
-            return n < 10 ? "0" + n : n;
-        }
-
-        return "\"" + this.getFullYear() + "-" +
-                f(this.getMonth() + 1) + "-" +
-                f(this.getDate()) + "T" +
-                f(this.getHours()) + ":" +
-                f(this.getMinutes()) + ":" +
-                f(this.getSeconds()) + "\"";
-    };
-
-
-    Number.prototype.toJSONString = function () {
-
-// JSON numbers must be finite. Encode non-finite numbers as null.
-
-        return isFinite(this) ? String(this) : "null";
-    };
-
-
-    Object.prototype.toJSONString = function () {
-        var a = ["{"],  // The array holding the text fragments.
-            b,          // A boolean indicating that a comma is required.
-            k,          // The current key.
-            v;          // The current value.
-
-        function p(s) {
-
-// p accumulates text fragment pairs in an array. It inserts a comma before all
-// except the first fragment pair.
-
-            if (b) {
-                a.push(",");
-            }
-            a.push(k.toJSONString(), ":", s);
-            b = true;
-        }
-
-// Iterate through all of the keys in the object, ignoring the proto chain.
-
-        for (k in this) {
-            if (this.hasOwnProperty(k)) {
-                v = this[k];
-                switch (typeof v) {
-
-// Serialize a JavaScript object value. Ignore objects that lack the
-// toJSONString method. Due to a specification error in ECMAScript,
-// typeof null is "object", so watch out for that case.
-
-                case "object":
-                    if (v) {
-                        if (typeof v.toJSONString === "function") {
-                            p(v.toJSONString());
-                        }
-                    } else {
-                        p("null");
-                    }
-                    break;
-
-            case "string":
-            case "number":
-            case "boolean":
-                    p(v.toJSONString());
-
-// Values without a JSON representation are ignored.
-
-                }
-            }
-        }
-
-// Join all of the fragments together and return.
-
-        a.push("}");
-        return a.join("");
-    };
-
-
-    (function (s) {
-
-// Augment String.prototype. We do this in an immediate anonymous function to
-// avoid defining global variables.
-
-// m is a table of character substitutions.
-
-        var m = {
-            "\b": "\\b",
-            "\t": "\\t",
-            "\n": "\\n",
-            "\f": "\\f",
-            "\r": "\\r",
-            "\"" : "\\\"",
-            "\\": "\\\\"
+            return this.getUTCFullYear()   + '-' +
+                 f(this.getUTCMonth() + 1) + '-' +
+                 f(this.getUTCDate())      + 'T' +
+                 f(this.getUTCHours())     + ':' +
+                 f(this.getUTCMinutes())   + ':' +
+                 f(this.getUTCSeconds())   + 'Z';
         };
 
 
-        s.parseJSON = function (filter) {
+        var m = {    // table of character substitutions
+            '\b': '\\b',
+            '\t': '\\t',
+            '\n': '\\n',
+            '\f': '\\f',
+            '\r': '\\r',
+            '"' : '\\"',
+            '\\': '\\\\'
+        };
+
+        function stringify(value, whitelist) {
+            var a,          // The array holding the partial texts.
+                i,          // The loop counter.
+                k,          // The member key.
+                l,          // Length.
+                r = /["\\\x00-\x1f\x7f-\x9f]/g,
+                v;          // The member value.
+
+            switch (typeof value) {
+            case 'string':
+
+// If the string contains no control characters, no quote characters, and no
+// backslash characters, then we can safely slap some quotes around it.
+// Otherwise we must also replace the offending characters with safe sequences.
+
+                return r.test(value) ?
+                    '"' + value.replace(r, function (a) {
+                        var c = m[a];
+                        if (c) {
+                            return c;
+                        }
+                        c = a.charCodeAt();
+                        return '\\u00' + Math.floor(c / 16).toString(16) +
+                                                   (c % 16).toString(16);
+                    }) + '"' :
+                    '"' + value + '"';
+
+            case 'number':
+
+// JSON numbers must be finite. Encode non-finite numbers as null.
+
+                return isFinite(value) ? String(value) : 'null';
+
+            case 'boolean':
+            case 'null':
+                return String(value);
+
+            case 'object':
+
+// Due to a specification blunder in ECMAScript,
+// typeof null is 'object', so watch out for that case.
+
+                if (!value) {
+                    return 'null';
+                }
+
+// If the object has a toJSON method, call it, and stringify the result.
+
+                if (typeof value.toJSON === 'function') {
+                    return stringify(value.toJSON());
+                }
+                a = [];
+                if (typeof value.length === 'number' &&
+                        !(value.propertyIsEnumerable('length'))) {
+
+// The object is an array. Stringify every element. Use null as a placeholder
+// for non-JSON values.
+
+                    l = value.length;
+                    for (i = 0; i < l; i += 1) {
+                        a.push(stringify(value[i], whitelist) || 'null');
+                    }
+
+// Join all of the elements together and wrap them in brackets.
+
+                    return '[' + a.join(',') + ']';
+                }
+                if (whitelist) {
+
+// If a whitelist (array of keys) is provided, use it to select the components
+// of the object.
+
+                    l = whitelist.length;
+                    for (i = 0; i < l; i += 1) {
+                        k = whitelist[i];
+                        if (typeof k === 'string') {
+                            v = stringify(value[k], whitelist);
+                            if (v) {
+                                a.push(stringify(k) + ':' + v);
+                            }
+                        }
+                    }
+                } else {
+
+// Otherwise, iterate through all of the keys in the object.
+
+                    for (k in value) {
+                        if (typeof k === 'string') {
+                            v = stringify(value[k], whitelist);
+                            if (v) {
+                                a.push(stringify(k) + ':' + v);
+                            }
+                        }
+                    }
+                }
+
+// Join all of the member texts together and wrap them in braces.
+
+                return '{' + a.join(',') + '}';
+            }
+        }
+
+        return {
+            stringify: stringify,
+            parse: function (text, filter) {
+                var j;
+
+                function walk(k, v) {
+                    var i, n;
+                    if (v && typeof v === 'object') {
+                        for (i in v) {
+                            if (Object.prototype.hasOwnProperty.apply(v, [i])) {
+                                n = walk(i, v[i]);
+                                if (n !== undefined) {
+                                    v[i] = n;
+                                }
+                            }
+                        }
+                    }
+                    return filter(k, v);
+                }
+
 
 // Parsing happens in three stages. In the first stage, we run the text against
-// a regular expression which looks for non-JSON characters. We are especially
-// concerned with "()" and "new" because they can cause invocation, and "="
-// because it can cause mutation. But just to be safe, we will reject all
-// unexpected characters.
+// regular expressions that look for non-JSON patterns. We are especially
+// concerned with '()' and 'new' because they can cause invocation, and '='
+// because it can cause mutation. But just to be safe, we want to reject all
+// unexpected forms.
 
-            try {
-                if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.
-                        test(this)) {
+// We split the first stage into 4 regexp operations in order to work around
+// crippling inefficiencies in IE's and Safari's regexp engines. First we
+// replace all backslash pairs with '@' (a non-JSON character). Second, we
+// replace all simple value tokens with ']' characters. Third, we delete all
+// open brackets that follow a colon or comma or that begin the text. Finally,
+// we look to see that the remaining characters are only whitespace or ']' or
+// ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.
+
+                if (/^[\],:{}\s]*$/.test(text.replace(/\\./g, '@').
+replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
 // In the second stage we use the eval function to compile the text into a
-// JavaScript structure. The "{" operator is subject to a syntactic ambiguity
+// JavaScript structure. The '{' operator is subject to a syntactic ambiguity
 // in JavaScript: it can begin a block or an object literal. We wrap the text
 // in parens to eliminate the ambiguity.
 
-                    var j = eval("(" + this + ")");
+                    j = eval('(' + text + ')');
 
 // In the optional third stage, we recursively walk the new structure, passing
 // each name/value pair to a filter function for possible transformation.
 
-                    if (typeof filter === "function") {
-
-                        function walk(k, v) {
-                            if (v && typeof v === "object") {
-                                for (var i in v) {
-                                    if (v.hasOwnProperty(i)) {
-                                        v[i] = walk(i, v[i]);
-                                    }
-                                }
-                            }
-                            return filter(k, v);
-                        }
-
-                        j = walk("", j);
-                    }
-                    return j;
+                    return typeof filter === 'function' ? walk('', j) : j;
                 }
-            } catch (e) {
 
-// Fall through if the regexp test fails.
+// If the text is not JSON parseable, then a SyntaxError is thrown.
 
+                throw new SyntaxError('parseJSON');
             }
-            throw new SyntaxError("parseJSON");
         };
-
-
-        s.toJSONString = function () {
-
-// If the string contains no control characters, no quote characters, and no
-// backslash characters, then we can simply slap some quotes around it.
-// Otherwise we must also replace the offending characters with safe
-// sequences.
-
-            if (/["\\\x00-\x1f]/.test(this)) {
-                return "\"" + this.replace(/([\x00-\x1f\\"])/g, function(a, b) {
-                    var c = m[b];
-                    if (c) {
-                        return c;
-                    }
-                    c = b.charCodeAt();
-                    return "\\u00" +
-                        Math.floor(c / 16).toString(16) +
-                        (c % 16).toString(16);
-                }) + "\"";
-            }
-            return "\"" + this + "\"";
-        };
-    })(String.prototype);
+    }();
 }
-
