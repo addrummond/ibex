@@ -6,7 +6,7 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
         as:          options.as,
         name:        "AcceptabilityJudgment",
         triggers:    [1],
-        children:    [FlashSentence, {s: options.s},
+        children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
                       Question, { q:           options.q,
                                   as:          options.as,
                                   hasCorrect:  options.hasCorrect,

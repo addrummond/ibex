@@ -15,8 +15,10 @@ function FlashSentence(div, options, finishedCallback, utils) {
     this.div.className = "flashed-sentence";
     this.div.appendChild(document.createTextNode(this.sentence));
 
-    var t = this;
-    utils.setTimeout(function() {
-        finishedCallback([[t.sentenceMD5]]);
-    }, this.timeout);
+    if (this.timeout) {
+        var t = this;
+        utils.setTimeout(function() {
+            finishedCallback([[t.sentenceMD5]]);
+        }, this.timeout);
+    }
 }
