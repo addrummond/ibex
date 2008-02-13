@@ -70,30 +70,61 @@ function latinSquare(arrayOfArrays, counter, extras) {
         }
     }
 
+    var record = { };
     var idx = counter % groupSize;
     var a = new Array(arrayOfArrays.length);
     for (var i = 0; i < arrayOfArrays.length; ++i) {
-        a[i] = arrayOfArrays[i][idx];
-        ++idx;
-        if (idx >= groupSize)
-            idx = 0;
+        // Are we using the bare idx or a chain thingy?
+        if (arrayOfArrays[i][0].group[1] == null) { // Get group of first element of subarray (will be same for
+                                                    // all other subelements.
+            // We aren't.
+            a[i] = arrayOfArrays[i][idx];
+            record[arrayOfArrays[i][0].group[0]] = idx;
+            ++idx;
+            if (idx >= groupSize)
+                idx = 0;
+        }
+        else {
+            var group = arrayOfArrays[i][0].group[0];
+            var groupchain = arrayOfArrays[i][0].group[1];
+            // We are.
+            if (record[groupchain] === undefined) {
+                assert(false, "Oh deary me");
+            }
+            else {
+                a[i] = arrayOfArrays[i][record[groupchain]];
+                record[group] = record[groupchain];
+            }
+        }
     }
 
     if (extras != null) { extras.groupSize = groupSize; }
     return a;
 }
 
+function regularizeGroup(g) {
+    if (typeof(g.group) == "object") {
+        assert(g.group.length == 2, "Groups must either be single values or two-member lists");
+        return g;
+    }
+    else {
+        g.group = [g.group, null];
+        return g;
+    }
+}
+
 function mungGroups(sentenceArray, counter, extras) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
-    var grouped = filter(function (e) { return e.group != null; }, sentenceArray);
+    // NOTE: May need to change to a for loop for efficiency reasons.
+    var grouped = map(regularizeGroup, filter(function (e) { return e.group != null; }, sentenceArray));
 
     var hash = { };
     for (var i = 0; i < grouped.length; ++i) {
-        if (hash[grouped[i].group] === undefined) {
-            hash[grouped[i].group] = [grouped[i]];
+        if (hash[grouped[i].group[0]] === undefined) {
+            hash[grouped[i].group[0]] = [grouped[i]];
         }
         else {
-            hash[grouped[i].group].push(grouped[i]);
+            hash[grouped[i].group[0]].push(grouped[i]);
         }
     }
     // Flatten the hash.
