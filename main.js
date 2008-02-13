@@ -49,9 +49,7 @@ function get_defaults_for(obj) {
     return {}
 }
 
-function Item(type, group, itemNumber, elementNumber, controller, options) {
-    this.type = type
-    this.group = group;
+function Item(itemNumber, elementNumber, controller, options) {
     this.itemNumber = itemNumber;
     this.elementNumber = elementNumber;
     this.controller = controller;
@@ -98,8 +96,10 @@ iter(items, function(it) {
             });
         }
 
-        currentItemSet.push(new Item(type, group, itemNumber, elementNumber, controller, opts));
+        currentItemSet.push(new Item(itemNumber, elementNumber, controller, opts));
     }
+    currentItemSet.type = type;
+    currentItemSet.group = group;
     listOfItemSets.push(currentItemSet); 
 
     ++itemNumber;
