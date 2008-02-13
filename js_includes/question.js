@@ -124,7 +124,9 @@ function Question(div, options, finishedCallback, utils) {
             }
         }
         // Letters (and numbers in the case of scales).
-        else if ((code >= 65 && code <= 90) || (this.presentAsScale && code >= 48 && code <= 57)) {
+        else if ((code >= 65 && code <= 90) || (this.presentAsScale && ((code >= 48 && code <= 57) || (code >= 96 && code <= 105)))) {
+            // Convert numeric keypad codes to ordinary keypad codes.
+            code = (code >= 96 && code <= 105) ? code - 48 : code;
             for (var i = 0; i < this.answers.length; ++i) {
                 var ans = null;
                 if (typeof(this.answers[i]) == "string") {
