@@ -290,15 +290,6 @@ function toPredicate(v) {
     if (typeof(v) == "function") {
         return v;
     }
-    else if (! (v.length === undefined)) {
-        return function(x) {
-            for (var i = 0; i < v.length; ++i) {
-                if (v[i] == x)
-                    return true;
-            }
-            return false;
-        }
-    }
     else if (typeof(v) == "string" || typeof(v) == "number") {
         return function(x) { return x == v; }
     }
