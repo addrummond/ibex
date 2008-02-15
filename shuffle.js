@@ -1,7 +1,8 @@
 // Shuffle an array.
 function fisherYates(myArray) {
     var i = myArray.length;
-    if (i == 0) { return false; }
+    if (i == 0)
+        return false;
     while (--i) {
         var j = Math.floor(Math.random() * (i + 1));
         var tempi = myArray[i];
