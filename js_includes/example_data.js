@@ -1,4 +1,4 @@
-var shuffleSequence = seq("intro", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("f", rshuffle("q1", "q2")));
+var shuffleSequence = seq("intro", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2"));
 
 var ds = DashedSentence;
 var q = AcceptabilityJudgment;

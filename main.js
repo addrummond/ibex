@@ -217,6 +217,16 @@ function updateProgressBar() {
         bar.style.width = currentProgressBarWidth + "px";
     }
 }
+function hideProgressBar() {
+    if (conf_showProgressBar) {
+        showProgress.style.visibility = "hidden";
+    }
+}
+function showProgressBar() {
+    if (conf_showProgressBar) {
+        showProgress.style.visibility = "visible";
+    }
+}
 
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
@@ -295,11 +305,20 @@ function finishedCallback(resultsLines) {
     currentControllerInstance =
         new (currentItem.controller)
     (pForItem, currentItem.options, finishedCallback, currentUtilsInstance);
+
+    // Should we show the progress bar with this item?
+    if (currentControllerInstance.hideProgressBar)
+        hideProgressBar();
+    else
+        showProgressBar();
 }
 currentUtilsInstance = new Utils({});
 currentControllerInstance =
     new (runningOrder[0][0].controller)
-(mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
+        (mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
+// Should we show the progress bar with the first item?
+if (currentControllerInstance.hideProgressBar)
+    hideProgressBar();
 
 document.onkeydown = function(e) {
     // Record the time ASAP.
