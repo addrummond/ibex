@@ -320,8 +320,6 @@ function runShuffleSequence(masterArray, ss) {
         }
         else {
             var pred = toPredicate(ss.args[i]);
-            // [0] here because it's an item set, not an item (but all items
-            // in the set will have the same type).
             var elems = filter(function (s) { return pred(s.type); }, masterArray);
 
             if (elems.length > 0)
