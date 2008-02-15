@@ -144,6 +144,18 @@ function mungGroups(sentenceArray, counter, extras) {
     return nulls.concat(ls);
 }
 
+function toPredicate(v) {
+    if (typeof(v) == "function") {
+        return v;
+    }
+    else if (typeof(v) == "string" || typeof(v) == "number") {
+        return function(x) { return x == v; }
+    }
+    else {
+        assert(false, "Bad type for predicate in shuffle sequence");
+    }
+}
+
 function anyType(x) { return true; }
 function lessThan0(x) { return typeof(x) == "number" && x < 0 ;}
 function greaterThan0(x) { return typeof(x) == "number" && x > 0; }
@@ -183,7 +195,18 @@ function endsWith(k) {
     }
 }
 function not(pred) {
-    return function(k) { return ! pred(k); }
+    var pred_ = toPredicate(pred);
+    return function(k) { return ! pred_(k); }
+}
+function anyOf() {
+    var ps = map(toPredicate, anyOf.arguments);
+    return function(k) {
+        for (var i = 0; i < ps.length; ++i) {
+            if (ps[i](k))
+                return true;
+        }
+        return false;
+    }
 }
 
 function Seq(args) {
@@ -285,18 +308,6 @@ function PrecedeEachWith(prec, main, precede) {
 }
 function precedeEachWith(prec, main) { return new PrecedeEachWith(prec, main, true); }
 function followEachWith(prec, main) { return new PrecedeEachWith(prec, main, false); }
-
-function toPredicate(v) {
-    if (typeof(v) == "function") {
-        return v;
-    }
-    else if (typeof(v) == "string" || typeof(v) == "number") {
-        return function(x) { return x == v; }
-    }
-    else {
-        assert(false, "Bad type for predicate in shuffle sequence");
-    }
-}
 
 function runShuffleSequence(masterArray, ss) {
     assert(typeof(ss) == "object", "Bad shuffle sequence");
