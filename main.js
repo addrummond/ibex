@@ -19,8 +19,6 @@ spinSpan.style.styleFloat = "left";
 sendingResults.appendChild(spinSpan);
 var sendingResultsMessage = document.createElement("div");
 sendingResultsMessage.appendChild(document.createTextNode(" Sending results to server..."));
-sendingResultsMessage.style.cssFloat = "left";
-sendingResultsMessage.style.styleFloat = "left";
 sendingResults.appendChild(sendingResultsMessage);
 
 // Convert the "defaults" variable to a list of [item, hashtable] pairs.
