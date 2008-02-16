@@ -9,8 +9,8 @@ if (counter == NaN) {
     randomCounter = true;
 }
 
-var sendingResults = document.createElement("p")
-sendingResults.className = "sending-results"
+var sendingResults = document.createElement("p");
+sendingResults.className = "sending-results";
 var spinSpan = document.createElement("div");
 spinSpan.appendChild(document.createTextNode(""));
 spinSpan.style.width = "1.5em";
