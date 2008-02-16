@@ -238,12 +238,14 @@ function finishedCallback(resultsLines) {
 
     if (resultsLines != null) {
         for (var i = 0; i < resultsLines.length; ++i) {
+            var group = runningOrder[posInRunningOrder].group;
+            if (group.length)
+                group = group[0]
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
                              currentItem.itemNumber,
                              currentItem.elementNumber,
                              runningOrder[posInRunningOrder].type,
-                             runningOrder[posInRunningOrder].group == null ? "NULL" :
-                                                                             runningOrder[posInRunningOrder].group ];
+                             group == null ? "NULL" : group ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
             }
