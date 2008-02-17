@@ -16,6 +16,7 @@ var items = [
 [["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity"}],
 [["q1", 2], q, {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
 [["q2", 2], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}],
+
 [["s1",3], ds, {s: "The teacher helped struggling students who he encouraged to succeed without treating like idiots"}],
 [["s2",3], ds, {s: "The teacher helped struggling students who without treating like idiots he encouraged to succeed"}],
 [["q1",4], q, {s: "Which struggling students did the teacher encourage to succeed without treating their friends like idiots?"}],
@@ -39,6 +40,7 @@ var items = [
 [["s2",11], ds, {s: "The carpenter made a chair which after painting turquoise designers thought to be really rather trendy"}],
 [["q1",12], q, {s: "Which chair did designers think to be really rather trendy after painting its legs turquoise?"}],
 [["q2",12], q, {s: "Which chair did designers think its appearence to be really rather trendy after painting turquoise?"}],
+
 
 ["f", ds, {s: "The foreign spy that encoded the top-secret messages was given a new mission that required going to Japan."}],
 ["f", ds, {s: "The receptionist that the real estate company just hired immediately familiarized herself with all the phone numbers of their clients."}],
@@ -117,5 +119,6 @@ var items = [
 ["f", ds, {s: "The freshmen that complain too much about their toughest class has always failed the final exam."}],
 ["f", ds, {s: "The little girl that played a ghost with a bed sheet on Halloween scared himself in the mirror."}],
 ["f", ds, {s: "The child that chases the neighbor's dogs around the yard likes playing games."}]
+
 
 ];
