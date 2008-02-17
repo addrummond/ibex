@@ -239,7 +239,7 @@ function finishedCallback(resultsLines) {
     if (resultsLines != null) {
         for (var i = 0; i < resultsLines.length; ++i) {
             var group = runningOrder[posInRunningOrder].group;
-            if (group.length)
+            if (group && group.length)
                 group = group[0]
             var preamble = [ currentControllerInstance.name ? currentControllerInstance.name : "UNKNOWN",
                              currentItem.itemNumber,
