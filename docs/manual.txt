@@ -232,12 +232,12 @@ the "as" option for each Question element.
 =Shuffle sequences=
 A "shuffle sequence" is a JavaScript data structure describing a
 series of "shuffling", randomizing and sequencing operations over an
-array of sentences.  A variable called 'shuffleSequence' should be
+array of sentences.  A variable called `shuffleSequence` should be
 defined in your data file with a data structure of this sort as its
 value.
 
-Shuffle sequences are composed of three basic operations, 'seq',
-'randomize' and 'shuffle'. Both take a series of "type predicates" as
+Shuffle sequences are composed of three basic operations, `seq`,
+`randomize` and `shuffle`. Both take a series of "type predicates" as
 arguments, where each type predicate is the characteristic function of
 a set of sentence types. A type predicate may be one of the following:
 
@@ -247,7 +247,7 @@ a set of sentence types. A type predicate may be one of the following:
 
 The basic operations work as follows:
 
-    * A statement of the form seq(pred1, pred2, pred3, ...) specifies a sequence where all sentences matching pred1 precede all sentences matching pred2, all sentences matching pred2 precede all sentences matching pred3, and so on. The original relative ordering between sentences of the same type is preserved. A 'seq' with only one argument is permissible.
+    * A statement of the form seq(pred1, pred2, pred3, ...) specifies a sequence where all sentences matching pred1 precede all sentences matching pred2, all sentences matching pred2 precede all sentences matching pred3, and so on. The original relative ordering between sentences of the same type is preserved. A `seq` with only one argument is permissible.
 
     * A statement of the form randomize(pred1) specifies a randomly ordered sequence of all sentences matching pred1.
 
@@ -275,46 +275,46 @@ all practice sentences in their original order followed by evenly
 spaced real and filler sentences in random order. Assuming the types
 "practice", "real" and "filler", we could use the following shuffle
 sequence:
-
+{{{
     seq("practice", shuffle(randomize("real"), randomize("filler")))
-
+}}}
 Now suppose that there are two types of real sentence ("real1" and
 "real2"), and we wish to order the sentences the same way as before:
-
+{{{
     seq("practice", shuffle(randomize(["real1", "real2"]),
                     randomize("filler")))
-
+}}}
 What if we also want the two types of real sentence to be evenly
 spaced?  The following formula will do the trick:
-
+{{{
     seq("practice", shuffle(randomize("filler"),
                             shuffle(randomize("real1"),
                                     randomize("real2"))))
-
+}}}
 This first shuffles sentences of type "real1" and sentences of type
 "real2" and then shuffles filler sentences into the mix.  Finally,
 practice sentences are prepended in the order they were given in
 data.js.
 
-Since it is often useful to apply 'randomize' to every argument of
-'shuffle', there is a utility function, 'rshuffle', which automates
+Since it is often useful to apply `randomize` to every argument of
+`shuffle`, there is a utility function, `rshuffle`, which automates
 this. The following equivalence holds:
-
+{{{
     rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
-
+}}}
 If no shuffle sequence is specified, Webspr uses the following default
 sequence:
-
+{{{
     seq(equalTo0, rshuffle(greaterThan0, lessThan0))
-
+}}}
 This will seem rather cryptic to anyone not familiar with the behavior
 of earlier versions of Webspr, where this ordering specification was
 built in and unchangeable. In short, it works well if practice
 sentences have type 0, filler sentences have integer types < 0, and
 real sentences have integer types > 0.
 
-*Important*: A shuffle sequence must always have one of 'seq',
-'shuffle', 'randomize' or 'rshuffle' as its outer element. A single
+*Important*: A shuffle sequence must always have one of `seq`,
+`shuffle`, `randomize` or `rshuffle` as its outer element. A single
 string or integer is _not_ a valid shuffle sequence, and neither is
 not("foo"). Thus, one must use seq("foo"), not just "foo", and
 seq(not("foo")), not just not("foo").
@@ -325,5 +325,5 @@ of type "foo" twice. For this reason, it is possible to accidentally
 include duplicate sentences if a number of your predicates overlap.
 
 You can define your own shuffle sequence operators and predicates
-quite easily; see shuffle.js for the definitions of the 'seq',
+quite easily; see shuffle.js for the definitions of the `seq`,
 'shuffle' and 'randomize' operators.
