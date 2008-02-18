@@ -2,13 +2,13 @@
 This documentation is for Webspr 0.2 (currently in alpha).  Earlier
 versions of Webspr come with a README containing full documentation.
 The latest version of this document is at
-http://code.google.com/p/webspr/w/Documentation
+http://code.google.com/p/webspr/wiki/Documentation
 
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment
 online. (Originally only self-paced reading was supported, hence the
 name.)  The system is modular, and the range of possible experiments
-is steadily growing. Webspr uses JavaScript and HTML only, and
+is steadily growing. Webspr uses !JavaScript and HTML only, and
 doesn't require the use of plugins such as Java or Flash.
 
 =Setting up the server=
@@ -28,43 +28,43 @@ so it is unlikely to be useful for real work (unless you hide it
 behind a proxy). However, it is useful for testing experimental
 designs without setting up a real HTTP server.
 
-The directories "js_includes" and "css_includes" contain JavaScript
+The directories `js_includes` and `css_includes` contain !JavaScript
 and CSS files required for particular kinds of experiment. When an
-HTTP request is made for the virtual files "js_includes.js" and
-"css_includes.css", the server concatenates all the files in the
+HTTP request is made for the virtual files `js_includes.js` and
+`css_includes.css`, the server concatenates all the files in the
 directory and serves up the result. Your data file(s) will live in
-"js_includes".
+`js_includes`.
 
 The server can be configured by editing server_conf.py. Each of the
-options is commented. Change the "SERVER_MODE" variable to determne
+options is commented. Change the `SERVER_MODE` variable to determine
 whether the server runs in stand-alone mode or as a CGI process. When
-"SERVER_MODE" is set to "cgi", server.py will work as a standard CGI
+`SERVER_MODE` is set to "cgi", server.py will work as a standard CGI
 program; when it is set to "paste", the server will run in stand-alone
-mode. You can change the value of "PORT" to determine the port the
-server will listen on when operating in stand-alone mode. The "-m"
-and "-p" command-line options can also be used to set the server mode
+mode. You can change the value of `PORT` to determine the port the
+server will listen on when operating in stand-alone mode. The `-m`
+and `-p` command-line options can also be used to set the server mode
 and port respectively. These options override those set in
-server_conf.py.
+`server_conf.py`.
 
 In theory, using the software is as simple as running the server by
 either of the methods described above, constructing a suitable data
 file, and pointing your subjects to http://your.server/spr.html.
 
-The server stores some state in the "server_state" directory. This
+The server stores some state in the `server_state` directory. This
 directory is automatically created by the server if it does not
 already exist, and in order to start the server from a fresh state you
 may simply delete this directory and/or its contents. Currently, the
 directory just contains the counter used to alternate latin square
-designs. This counter can be reset on server startup using the "-r"
+designs. This counter can be reset on server startup using the `-r`
 option.
 
-The server logs messages in the file server.log in the same directory
-as server.py. The default is to store all files in the same directory
-as server.py (i.e. logs, results, etc.), but the working directory of
+The server logs messages in the file `server.log` in the same directory
+as `server.py`. The default is to store all files in the same directory
+as `server.py` (i.e. logs, results, etc.), but the working directory of
 the server can be modified by setting the variable
-"WEBSPR_WORKING_DIR" in server_conf.py. You can also set the
+`WEBSPR_WORKING_DIR` in `server_conf.py`. You can also set the
 environment variable of the same name. (The value of the environment
-variable overrides the value of the variable in server_conf.py.)
+variable overrides the value of the variable in `server_conf.py`.)
 
 On Linux/Unix/OS X, the server uses file locking to ensure that the
 results file and server state remain consistent. Currently, it does
@@ -75,7 +75,7 @@ purely theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will
 almost certainly work on any system with Python 2.5, so long as the
-&lsquo;paste&rsquo; module is installed). The CGI server has been
+`paste` module is installed). The CGI server has been
 tested on OS X using the lighttpd web server.
 
 =Basic concepts=
@@ -88,7 +88,7 @@ other items and entities would also be present under most
 circumstances. For example, there would probably be a "separator"
 entity between each sentence/question pair in order to provide a pause
 between sentences. Schematically, the sequence of items would be as
-follows (the wiki insists on displaying this in pretty colors):
+follows (the Wiki insists on displaying this in pretty colors):
 {{{
     ITEM 1:
         ENTITY 1: Sentence
@@ -109,17 +109,17 @@ entities manually. Webspr provides tools for ordering items in various
 ways (e.g. for inserting a pause between each item) and for
 implementing latin square designs. More on these soon.
 
-Webspr has a modular design, where each entity is a JavaScript object
+Webspr has a modular design, where each entity is a !JavaScript object
 that follows a standard interface. This makes it quite easy to add
-new entities if you are familiar with JavaScript/DHTML programming.
+new entities if you are familiar with !JavaScript/DHTML programming.
 
 Each entity is an instance of a _controller_, which determines
-the kind of epxerimental task that the entity will present.
-For example, there is a "DashedSentence" controller useful for
+the kind of experimental task that the entity will present.
+For example, there is a `DashedSentence` controller useful for
 self-paced reading a speeded acceptability judgment tasks.
-Webspr has a modular design, where each controller is a JavaScript object
+Webspr has a modular design, where each controller is a !JavaScript object
 that follows a standard interface. This makes it quite easy to add
-new contollers if you are familiar with JavaScript/DHTML programming.
+new controllers if you are familiar with !JavaScript/DHTML programming.
 
 Webspr stores results in CSV format. This makes it easy to import
 results into spreadsheets, Matlab, R, etc. Each entity may contribute
@@ -129,14 +129,14 @@ of the subject's IP address), and the rest give information specific
 to the particular element (e.g. word reading times, comprehension
 question answers). The first seven columns are as follows:
 
-|| *Column* || *Information*                                         ||
-|| 1        || Time results were received (seconds since Jan 1 1970) ||
-|| 2        || MD5 hash of subject's IP address                      ||
-|| 3        || Name of the controller for the entity (e.g. "DashedSentence") ||
-|| 4        || Item number                                           ||
-|| 5        || Element number                                        ||
-|| 6        || Type                                                  ||
-|| 7        || Group                                                 ||
+|| *Column* || *Information*                                                  ||
+|| 1        || Time results were received (seconds since Jan 1 1970)          ||
+|| 2        || MD5 hash of subject's IP address                               ||
+|| 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
+|| 4        || Item number                                                    ||
+|| 5        || Element number                                                 ||
+|| 6        || Type                                                           ||
+|| 7        || Group                                                          ||
 
 Note that some information pertaining to an entire experiment
 (e.g. the time that the server received the results, the MD5 hash of
@@ -153,8 +153,8 @@ the format of the subsequent columns. All of the controllers that are
 bundled with the Webspr distribution are fully documented here.
 
 =Format of a data file=
-Data files for Webspr are JavaScript source files, but it is not
-really necessary to know JavaScript in order to write one.  The most
+Data files for Webspr are !JavaScript source files, but it is not
+really necessary to know !JavaScript in order to write one.  The most
 important part of a data file is the declaration of the "items" array,
 as in the following example:
 {{{
@@ -182,7 +182,7 @@ The second member specifies the controller.
 The third member is an associative array of key/value pairs. This
 array is passed to the controller and is used to customize its
 behavior. In this case, we pass only one option ("s"), which tells the
-DashedSentence controller which sentence it should display.
+`DashedSentence` controller which sentence it should display.
 
 Once the items array has been created, Webspr must be told the order
 in which the items should be displayed. There are some moderately
@@ -193,8 +193,8 @@ the following definition (which won't make much sense yet):
 {{{
 var shuffleSequence = seq(anyType);
 }}}
-You are free to define "shuffleSequence" either before or after the
-"items" array.
+You are free to define `shuffleSequence` either before or after the
+`items` array.
 
 Suppose we wanted to pair each sentence with a comprehension question.
 The easiest way to do this is to add a second element to each item:
@@ -214,10 +214,10 @@ var items = [
 }}}
 As shown above, this is done simply by adding to each item further
 pairs of controllers and associative arrays of options. It is rather
-tiresome to have to set the "as" option to ["Yes", "No"] every time,
+tiresome to have to set the `as` option to ["Yes", "No"] every time,
 but this can easily be avoided by specifying this as the default for
 the Question controller. To give an example of how defaults for multiple
-controllers are specified, let's also set the "mode" option of DashedSentence
+controllers are specified, let's also set the `mode` option of `DashedSentence`
 to "speeded acceptability":
 {{{
 var defaults = [
@@ -226,75 +226,74 @@ var defaults = [
 ];
 }}}
 This definition can go either before or after the definition of the
-"items" array.  Once it is in place, we can drop the specification of
-the "as" option for each Question element.
+`items` array.  Once it is in place, we can drop the specification of
+the `as` option for each Question element.
 
 =Shuffle sequences=
-A "shuffle sequence" is a JavaScript data structure describing a
+A "shuffle sequence" is a !JavaScript data structure describing a
 series of "shuffling", randomizing and sequencing operations over an
-array of sentences.  A variable called `shuffleSequence` should be
-defined in your data file with a data structure of this sort as its
-value.
+array of items.  A variable called `shuffleSequence` should be defined
+in your data file with a data structure of this sort as its value.
 
 Shuffle sequences are composed of three basic operations, `seq`,
 `randomize` and `shuffle`. Both take a series of "type predicates" as
 arguments, where each type predicate is the characteristic function of
-a set of sentence types. A type predicate may be one of the following:
+a set of types. A type predicate may be one of the following:
 
-    * A string or integer, denoting the characteristic function of all sentences of the given type.
+    * A string or integer, denoting the characteristic function of all items of the given type.
 
-    * A JavaScript function, returning a boolean value when given a type (either a string or integer).
+    * A !JavaScript function, returning a boolean value when given a type (either a string or integer).
 
 The basic operations work as follows:
 
-    * A statement of the form seq(pred1, pred2, pred3, ...) specifies a sequence where all sentences matching pred1 precede all sentences matching pred2, all sentences matching pred2 precede all sentences matching pred3, and so on. The original relative ordering between sentences of the same type is preserved. A `seq` with only one argument is permissible.
+    * A statement of the form `seq(pred1, pred2, pred3, ...)` specifies a sequence where all items matching `pred1` precede all items matching `pred2`, all items matching `pred2` precede all items matching `pred3`, and so on. The original relative ordering between items of the same type is preserved. A `seq` with only one argument is permissible.
 
-    * A statement of the form randomize(pred1) specifies a randomly ordered sequence of all sentences matching pred1.
+    * A statement of the form `randomize(pred1)` specifies a randomly ordered sequence of all items matching pred1.
 
-    * A statement of the form shuffle(pred1, pred2, pred3, ...) specifies that sentences matching the given predicates should be shuffled together in such a way that sentences matching each predicate are evenly spaced. The original relative ordering between sentences of the same type is preserved.
+    * A statement of the form `shuffle(pred1, pred2, pred3, ...)` specifies that items matching the given predicates should be shuffled together in such a way that items matching each predicate are evenly spaced. The original relative ordering between items of the same type is preserved.
 
-The following type predicates are predefined as JavaScript functions:
+The following type predicates are predefined as !JavaScript functions:
 
-    || *Function*         || *Description*                                           ||
-    || anyType            || Matches any type.                                       ||
-    || lessThan0          || Matches any integer type < 0.                           ||
-    || greaterThan0       || Matches any integer type > 0.                           ||
-    || equalTo0           || Matches any integer type = 0.                          ||
-    || startsWith(s)      || Matches any string type starting with s.                ||
-    || endsWith(s)        || Matches any string type ending with s.                  ||
-    || not(pred)          || Matches anything that is not of a type matched by pred. ||
-    || anyOf(p1, p2, ...) || Matches anything matching one of its arguments.         ||
+|| *Function*           || *Description*                                           ||
+|| `anyType`            || Matches any type.                                       ||
+|| `lessThan0`          || Matches any integer type < 0.                           ||
+|| `greaterThan0`       || Matches any integer type > 0.                           ||
+|| `equalTo0`           || Matches any integer type = 0.                           ||
+|| `startsWith(s)`      || Matches any string type starting with s.                ||
+|| `endsWith(s)`        || Matches any string type ending with s.                  ||
+|| `not(pred)`          || Matches anything that is not of a type matched by pred. ||
+|| `anyOf(p1, p2, ...)` || Matches anything matching one of its arguments.         ||
 
 If you define your own predicates, be careful to test that they are
 cross-browser compatible. See section 7 for some pertinent advice.
-The predicates above are defined in shuffle.js.
+The predicates above are defined in `shuffle.js`.
 
 The power of shuffle sequences derives from the possibility of
 composing them without limit. Suppose we want the following order:
-all practice sentences in their original order followed by evenly
-spaced real and filler sentences in random order. Assuming the types
+all practice items in their original order followed by evenly
+spaced real and filler items in random order. Assuming the types
 "practice", "real" and "filler", we could use the following shuffle
 sequence:
 {{{
     seq("practice", shuffle(randomize("real"), randomize("filler")))
 }}}
-Now suppose that there are two types of real sentence ("real1" and
-"real2"), and we wish to order the sentences the same way as before:
+Now suppose that there are two types of real item ("real1" and
+"real2"), and we wish to order the items the same way as before:
 {{{
     seq("practice", shuffle(randomize(["real1", "real2"]),
                     randomize("filler")))
 }}}
-What if we also want the two types of real sentence to be evenly
+What if we also want the two types of real item to be evenly
 spaced?  The following formula will do the trick:
 {{{
     seq("practice", shuffle(randomize("filler"),
                             shuffle(randomize("real1"),
                                     randomize("real2"))))
 }}}
-This first shuffles sentences of type "real1" and sentences of type
-"real2" and then shuffles filler sentences into the mix.  Finally,
-practice sentences are prepended in the order they were given in
-data.js.
+This first shuffles items of type "real1" and items of type
+"real2" and then shuffles filler items into the mix.  Finally,
+practice items are prepended in the order they were given in
+`data.js`.
 
 Since it is often useful to apply `randomize` to every argument of
 `shuffle`, there is a utility function, `rshuffle`, which automates
@@ -310,20 +309,21 @@ sequence:
 This will seem rather cryptic to anyone not familiar with the behavior
 of earlier versions of Webspr, where this ordering specification was
 built in and unchangeable. In short, it works well if practice
-sentences have type 0, filler sentences have integer types < 0, and
-real sentences have integer types > 0.
+items have type 0, filler items have integer types < 0, and
+real items have integer types > 0.
 
 *Important*: A shuffle sequence must always have one of `seq`,
 `shuffle`, `randomize` or `rshuffle` as its outer element. A single
-string or integer is _not_ a valid shuffle sequence, and neither is
-not("foo"). Thus, one must use seq("foo"), not just "foo", and
-seq(not("foo")), not just not("foo").
+string or integer is _not_ a valid shuffle sequence, and neither is a
+predicate expression such as `not("foo")`. Thus, one must use
+`seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just
+`not("foo")`.
 
-Note that it is possible to include duplicate sentences in the final
-sequence. For example, seq("foo", "foo") would include every sentence
+Note that it is possible to include duplicate items in the final
+sequence. For example, `seq("foo", "foo")` would include every item
 of type "foo" twice. For this reason, it is possible to accidentally
-include duplicate sentences if a number of your predicates overlap.
+include duplicate items if a number of your predicates overlap.
 
 You can define your own shuffle sequence operators and predicates
-quite easily; see shuffle.js for the definitions of the `seq`,
+quite easily; see `shuffle.js` for the definitions of the `seq`,
 'shuffle' and 'randomize' operators.

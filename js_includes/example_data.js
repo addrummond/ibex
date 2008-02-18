@@ -4,6 +4,7 @@ var ds = DashedSentence;
 var q = AcceptabilityJudgment;
 
 var defaults = [
+    DashedSentence, {mode: "speeded acceptability"},
     AcceptabilityJudgment, {q: "How was it?", as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true}
 ]
 

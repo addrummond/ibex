@@ -124,10 +124,10 @@ function Utils(valuesFromPreviousElement) {
         }
         if (foundIt == null)
             assert(false, "Attempt to clear timer that wasn't set propetly");
-        var newArray = new Array(this.timeoutIds.length - 1);
+        var newArray = [];
         for (var j = 0; j < this.timeoutIds.length; ++j) {
             if (j != i)
-                newArray.push(this.timeoutIds[i]);
+                newArray.push(this.timeoutIds[j]);
         }
         this.timeoutIds = newArray;
         clearTimeout(foundIt);
