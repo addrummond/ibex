@@ -174,7 +174,7 @@ assert(runningOrder.length > 0 && runningOrder[0].length > 0,
 
 var progressBarHeight;
 var progressBarMaxWidth;
-var currentProgressBarWidth = 0;
+var currentProgressBarWidth = 0.0;
 var showProgress;
 var barContainer;
 var nPoints = 0;
@@ -211,8 +211,8 @@ if (conf_showProgressBar) {
 }
 function updateProgressBar() {
     if (conf_showProgressBar) {
-        currentProgressBarWidth += Math.floor(progressBarMaxWidth / nPoints);
-        bar.style.width = currentProgressBarWidth + "px";
+        currentProgressBarWidth += progressBarMaxWidth / nPoints;
+        bar.style.width = Math.round(currentProgressBarWidth) + "px";
     }
 }
 function hideProgressBar() {
