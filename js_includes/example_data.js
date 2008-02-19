@@ -1,4 +1,21 @@
-var shuffleSequence = seq("intro", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2"));
+var shuffleSequence = precedeEachWith("question", seq(not("question")));
+
+var defaults = [
+    DashedSentence, {mode: "speeded acceptability"}
+];
+
+var items = [
+
+["question", Question, {q: "Was that a good sentence?", as: ["Yes", "No"]}],
+
+["filler", DashedSentence, {s: "Here's a silly filler sentence"}],
+["filler", DashedSentence, {s: "And another silly filler sentence"}],
+["relclause", DashedSentence, {s: "A sentence that has a relative clause"}],
+["relclause", DashedSentence, {s: "Another sentence that has a relative clause"}]
+
+];
+
+/*var shuffleSequence = followEachWith("intro", seq("intro", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2")));
 
 var ds = DashedSentence;
 var q = AcceptabilityJudgment;
@@ -123,3 +140,4 @@ var items = [
 
 
 ];
+*/

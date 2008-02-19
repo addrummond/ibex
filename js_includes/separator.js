@@ -14,11 +14,11 @@ function Separator(div, options, finishedCallback, utils) {
     assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
            "Value of 'transfer' option of Separator must either be the string 'keypress' or a number");
 
-    var normal_message = dget(options, "normalMessage", "Press any key to continue");
+    var normal_message = dget(options, "normalMessage", "Press any key to continue.");
     var x = utils.getValueFromPreviousElement("normalMessage");
     if (x) normal_message = x;
 
-    var error_message = dget(options, "errorMessage", "You answered incorrectly. Press any key to continue");
+    var error_message = dget(options, "errorMessage", "Wrong. Press any key to continue.");
     var x = utils.getValueFromPreviousElement("errorMessage");
     if (x) error_message = x;
 

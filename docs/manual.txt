@@ -4,6 +4,12 @@ versions of Webspr come with a README containing full documentation.
 The latest version of this document is at
 http://code.google.com/p/webspr/wiki/Documentation
 
+=Docs TODO=
+    * Example of how to start up paste server and connect to the experiment.
+    * Full documentation for every controller.
+    * Explanation of VBox.
+    * Document reporting of wrong answers.
+
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment
 online. (Originally only self-paced reading was supported, hence the
@@ -227,9 +233,32 @@ var defaults = [
 }}}
 This definition can go either before or after the definition of the
 `items` array.  Once it is in place, we can drop the specification of
-the `as` option for each Question element.
+the `as` option for each Question element. The final data file looks
+like this:
+{{{
+var shuffleSequence = seq(anyType);
+
+var defaults = [
+    Question, {as: ["Yes", "No"]},
+    DashedSentence, {mode: "speeded acceptability"}
+];
+
+var items = [
+
+["filler", DashedSentence, {s: "Here's a silly filler sentence"},
+           Question, {q: "Is this a filler sentence?"}],
+["filler", DashedSentence, {s: "And another silly filler sentence"},
+           Question, {q: "Does this sentence have a relative clause?"}],
+["relclause", DashedSentence, {s: "A sentence that has a relative clause"},
+              Question, {q: "Was there movement through [Spec,CP]?"}],
+["relclause", DashedSentence, {s: "Another sentence that has a relative clause"},
+              Question, {q: "Was the first word of that sentence 'frog'?"}]
+
+];
+}}}
 
 =Shuffle sequences=
+==`seq`, `randomize` and `shuffle`==
 A "shuffle sequence" is a !JavaScript data structure describing a
 series of "shuffling", randomizing and sequencing operations over an
 array of items.  A variable called `shuffleSequence` should be defined
@@ -319,11 +348,100 @@ predicate expression such as `not("foo")`. Thus, one must use
 `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just
 `not("foo")`.
 
-Note that it is possible to include duplicate items in the final
-sequence. For example, `seq("foo", "foo")` would include every item
-of type "foo" twice. For this reason, it is possible to accidentally
-include duplicate items if a number of your predicates overlap.
+It is possible to include duplicate items in the final sequence. For
+example, `seq("foo", "foo")` would include every item of type "foo"
+twice. For this reason, it is possible to accidentally include
+duplicate items if a number of your predicates overlap.  You can
+define your own shuffle sequence operators and predicates quite
+easily; see `shuffle.js` for the definitions of the `seq`, 'shuffle'
+and 'randomize' operators.
 
-You can define your own shuffle sequence operators and predicates
-quite easily; see `shuffle.js` for the definitions of the `seq`,
-'shuffle' and 'randomize' operators.
+==Manipulating individual items==
+So far, we've been treating items as atoms for the purposes of shuffle
+sequences. Although an item might be composed of several elements, the
+operations `seq`, `randomize` and `shuffle` ignore this internal
+structure. However, it is sometimes useful to be able to append or
+prepend a particular sequence of elements to every item.  For example,
+if you are doing a speeded acceptability judgment task, you might want
+every sentence to be followed by exactly the same question ("Was this
+a good sentence?"). To this end, webspr provides the `precedeEachWith`
+and `followEachWith` operations.
+
+Both functions take two arguments, each of which should be either a
+shuffle sequence.  The first argument specifies the sequence of items
+which (when flattened to a sequence of elements) is to be
+appended/prepended to every item in the second argument.  Returning to
+the previous example of a data file, let's modify it so that every
+sentence is followed by the same acceptability question.  We'll also
+ensure that the sentences are randomly ordered, with the fillers and
+"real" sentences evenly spaced:
+{{{
+var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
+
+var defaults = [
+    DashedSentence, {mode: "speeded acceptability"}
+];
+
+var items = [
+
+["question", Question, {q: "Was that a good sentence?", as: ["Yes", "No"]}],
+
+["filler", DashedSentence, {s: "Here's a silly filler sentence"}],
+["filler", DashedSentence, {s: "And another silly filler sentence"}],
+
+["relclause", DashedSentence, {s: "A sentence that has a relative clause"}],
+["relclause", DashedSentence, {s: "Another sentence that has a relative clause"}]
+
+];
+}}}
+
+=Controllers=
+==`Message`==
+
+|| *Option*        || *Default*    || *Description*                                                       ||
+|| html            || _obligatory_ || The HTML for the message to display.                                ||
+|| hideProgressBar || `true`       || Whether the progress bar should be shown together with the message. ||
+
+==`Separator`==
+
+|| *Option*        || *Default*    || *Description* ||
+|| transfer        || `"keypress"` || Must be either `"keypress"` or a number. If the former, participant goes to the next item by pressing any key. If the latter, specifies number of ms to wait before the next item. ||
+|| normalMessage   || `"Press any key to continue."` || Message to display if the previous item was completed normally. ||
+|| errorMessage    || `"Wrong. Press any key to continue."` || Message to display (in red) if the previous item was no completed normally (e.g. timeout, incorrect answer). ||
+
+==`DashedSentence`==
+
+|| *Option*      || *Default*              || *Description*                                               ||
+|| s             || _obligatory_           || The sentence.                                               ||
+|| mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
+|| wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
+|| wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
+
+==`FlashSentence`==
+
+|| *Option* || *Default*    || *Description*                 ||
+|| s        || _obligatory_ || The sentence to be displayed. ||
+|| timeout  || 2000         || If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence. ||
+
+==`Question`==
+
+|| *Option*       || *Default*    || *Description*                                                     ||
+|| q              || _obligatory_ || The question to pose.                                             ||
+|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
+|| hasCorrect     || `false`      || If `false`, indicates that none of the answers is privaledged as correct. Othwerise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
+|| showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
+|| randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
+|| presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings, for example). ||
+|| timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
+
+==`AcceptabilityJudgment`==
+
+|| *Option*       || *Default*           || *Description*                ||
+|| s              || _obligatory_        || The sentence.                ||
+|| q              || _obligatory_        || The question.                ||
+|| as             || _obligatory_        || Answers (as for `Question`). ||
+|| hasCorrect     || `false`             || As for `Question`            ||
+|| showNumbers    || `true`              || As for `Question`            ||
+|| randomOrder    || _as for `Question`_ || As for `Question`            ||
+|| presentAsScale || `false`             || As for `Question`            ||
+|| timeout        || `null`              || As for `Question`            ||
