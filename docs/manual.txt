@@ -395,6 +395,20 @@ var items = [
 ];
 }}}
 
+=Communication between elements=
+
+Webspr allows for a limited amount of communication between elements.
+Each element may set keys in a hashtable which is passed to the next
+element.  The hashtable is cleared between elements, so there is no
+possibility of long-distance communication (unless you just use
+!JavaScript global variables).
+
+Currently, this system is used to provide feedback to participants when
+they (for example) answer a comprehension question incorrectly.
+Controllers such as `Question` set the key "failed" if something goes wrong,
+and the next `Separator` item is then able to display a message warning
+the participant that they answered incorrectly.
+
 =Controllers=
 ==`Message`==
 
@@ -407,7 +421,7 @@ var items = [
 || *Option*        || *Default*    || *Description* ||
 || transfer        || `"keypress"` || Must be either `"keypress"` or a number. If the former, participant goes to the next item by pressing any key. If the latter, specifies number of ms to wait before the next item. ||
 || normalMessage   || `"Press any key to continue."` || Message to display if the previous item was completed normally. ||
-|| errorMessage    || `"Wrong. Press any key to continue."` || Message to display (in red) if the previous item was no completed normally (e.g. timeout, incorrect answer). ||
+|| errorMessage    || `"Wrong. Press any key to continue."` || Message to display (in red) if the previous item was not completed normally (e.g. timeout, incorrect answer). ||
 
 ==`DashedSentence`==
 
@@ -445,3 +459,16 @@ var items = [
 || randomOrder    || _as for `Question`_ || As for `Question`            ||
 || presentAsScale || `false`             || As for `Question`            ||
 || timeout        || `null`              || As for `Question`            ||
+
+==`VBox`==
+
+The `VBox` controller makes it possible to combine multiple
+controllers to form a single controller. This allows the functionality
+of simple controllers to be reused in the construction of more complex
+controllers. For an example of a controller constructed using a VBox,
+see `js_includes/acceptability_judgment.js`.
+
+|| *Option*  || *Default*    || *Description* ||
+|| children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
+|| triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must specify the indices of those of its children which are "triggers" (indeces start from 0). When each of the trigger elements is complete, the VBox is complete. ||
+|| padding   || `"2em"`      || The amount of vertical padding to place between the children. ||
