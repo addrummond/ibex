@@ -396,7 +396,6 @@ var items = [
 }}}
 
 =Communication between elements=
-
 Webspr allows for a limited amount of communication between elements.
 Each element may set keys in a hashtable which is passed to the next
 element.  The hashtable is cleared between elements, so there is no
