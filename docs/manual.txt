@@ -381,7 +381,7 @@ every sentence to be followed by exactly the same question ("Was this
 a good sentence?"). To this end, webspr provides the `precedeEachWith`
 and `followEachWith` operations.
 
-Both functions take two arguments, each of which should be either a
+Both functions take two arguments, each of which should be a
 shuffle sequence.  The first argument specifies the sequence of items
 which (when flattened to a sequence of elements) is to be
 appended/prepended to every item in the second argument.  Returning to
