@@ -8,7 +8,6 @@ http://code.google.com/p/webspr/wiki/Documentation
     * Example of how to start up paste server and connect to the experiment.
     * Full documentation for every controller.
     * Explanation of VBox.
-    * Document reporting of wrong answers.
 
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment
@@ -178,17 +177,18 @@ The "items" array is an array of arrays, where each subarray specifies
 a single item. In the example above, every item contains a single
 element (multiple element items will be covered shortly).
 
-The first member of each subarray specifies the _type_ of the item.
-Types can either be numbers or strings. Although the types in the
-example above have descriptive names, Webspr does not interpret these
-names in any way.
+    * The first member of each subarray specifies the _type_ of the
+      item.  Types can either be numbers or strings. Although the
+      types in the example above have descriptive names, Webspr does
+      not interpret these names in any way.
 
-The second member specifies the controller.
+    * The second member specifies the controller.
 
-The third member is an associative array of key/value pairs. This
-array is passed to the controller and is used to customize its
-behavior. In this case, we pass only one option ("s"), which tells the
-`DashedSentence` controller which sentence it should display.
+    * The third member is an associative array of key/value
+      pairs. This array is passed to the controller and is used to
+      customize its behavior. In this case, we pass only one option
+      ("s"), which tells the `DashedSentence` controller which
+      sentence it should display.
 
 Once the items array has been created, Webspr must be told the order
 in which the items should be displayed. There are some moderately
@@ -256,6 +256,14 @@ var items = [
 
 ];
 }}}
+
+*Where to put your data file*: Data files live in the `js_includes`
+directory, and must have a `.js` extension. You can only have one file
+in the directory at any one time, since if you have multilple files,
+they will just overwrite the definitions for `shuffleSequence`,
+`items` and `defaults`.  However, you can tell the server to ignore
+some of the files in `js_includes` (see the section "Configuring
+`js_includes` and `css_includes`").
 
 =Shuffle sequences=
 ==`seq`, `randomize` and `shuffle`==
@@ -371,10 +379,10 @@ Both functions take two arguments, each of which should be either a
 shuffle sequence.  The first argument specifies the sequence of items
 which (when flattened to a sequence of elements) is to be
 appended/prepended to every item in the second argument.  Returning to
-the previous example of a data file, let's modify it so that every
-sentence is followed by the same acceptability question.  We'll also
-ensure that the sentences are randomly ordered, with the fillers and
-"real" sentences evenly spaced:
+the previous example data file, let's modify it so that every sentence
+is followed by the same acceptability question.  We'll also ensure
+that the sentences are randomly ordered, with the fillers and "real"
+sentences evenly spaced:
 {{{
 var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
 
@@ -441,14 +449,13 @@ the participant that they answered incorrectly.
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || _obligatory_ || The question to pose.                                             ||
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
-|| hasCorrect     || `false`      || If `false`, indicates that none of the answers is privaledged as correct. Othwerise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
+|| hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings, for example). ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
 
 ==`AcceptabilityJudgment`==
-
 || *Option*       || *Default*           || *Description*                ||
 || s              || _obligatory_        || The sentence.                ||
 || q              || _obligatory_        || The question.                ||
@@ -460,7 +467,6 @@ the participant that they answered incorrectly.
 || timeout        || `null`              || As for `Question`            ||
 
 ==`VBox`==
-
 The `VBox` controller makes it possible to combine multiple
 controllers to form a single controller. This allows the functionality
 of simple controllers to be reused in the construction of more complex
@@ -469,5 +475,47 @@ see `js_includes/acceptability_judgment.js`.
 
 || *Option*  || *Default*    || *Description* ||
 || children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
-|| triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must specify the indices of those of its children which are "triggers" (indeces start from 0). When each of the trigger elements is complete, the VBox is complete. ||
+|| triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must specify the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. ||
 || padding   || `"2em"`      || The amount of vertical padding to place between the children. ||
+
+=Further configuration=
+==Miscelaneous options==
+
+    * Turn off the progress bar by adding the declaration `var
+      showProgressBar = false;` to your data file.
+
+    * Change the tile of the page by adding a declaration such as
+      `var pageTitle = "My Experiment";` to your data file.
+
+    * Change the message shown when results were successfully sent to
+      the server by adding a declaration such as `var
+      completionMessage = "Completed.";` to your data file.
+
+    * Change the message shown when there was an error sending results to
+      the server by adding a declaration such as `var completionErrorMessage = "Error.";`
+      to your data file.
+
+==Configuring `js_includes` and `css_includes`==
+The `js_includes` and `css_includes` directories contain !JavaScript
+and CSS files that are necessary for the running of an experiment.
+The most important of these is the data file in `js_includes`
+containing the list of items for the experiment, but each controller
+also has its own file in `js_includes` (for example, the
+`DashedSentence` controller lives in `dashed_sentence.js`).  Many
+controllers also define some CSS classes in corresponding files in
+`css_includes` (e.g. `dashed_sentence.css`). If you write your own
+controllers, you need to put the !JavaScript and CSS files in these
+directories.
+
+When the webpage for an experiment is accessed, the server
+concatenates all the files in `js_includes` and serves them up as a
+single file (ditto for `css_includes`). You can tell the server to
+ignore some of the files in `js_includes` and `css_includes` by
+editing the variables `JS_INCLUDES_LIST` and `CSS_INCLUDES_LIST` in
+`server_conf.py`.  (There is a comment documenting how to do this.)
+You may wish to exclude !JavaScript and CSS files which are not used
+by your experiment in order to reduce the size of the file that needs
+to be downloaded. Since the files in both directories are named after
+the controllers with which they are associated, it is easy to see
+which files are superflous. However, note that the file `main.css` is
+required by all controllers.
