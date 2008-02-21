@@ -1,21 +1,5 @@
-var shuffleSequence = precedeEachWith("question", seq(not("question")));
-
-var defaults = [
-    DashedSentence, {mode: "speeded acceptability"}
-];
-
-var items = [
-
-["question", Question, {q: "Was that a good sentence?", as: ["Yes", "No"]}],
-
-["filler", DashedSentence, {s: "Here's a silly filler sentence"}],
-["filler", DashedSentence, {s: "And another silly filler sentence"}],
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"}]
-
-];
-
-/*var shuffleSequence = followEachWith("intro", seq("intro", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2")));
+var shuffleSequence = seq("intro", "practice", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2"));
+var practiceItemTypes = ["practice"];
 
 var ds = DashedSentence;
 var q = AcceptabilityJudgment;
@@ -29,6 +13,10 @@ var items = [
 
 ["intro", Message, {html: "Blah blah blah..."}],
 ["break", Message, {html: "Foo blah blah blah..."}],
+
+["practice", ds, {s: "Here's a practice sentence."}],
+["practice", ds, {s: "Here's another practice sentence."}],
+["practice", ds, {s: "Yet another practice sentence."}],
 
 [["s1",1], ds, {s: "The journalist interviewed an actress who he knew to be shy of publicity after meeting on a previous occasion"}],
 [["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity"}],
@@ -140,4 +128,3 @@ var items = [
 
 
 ];
-*/

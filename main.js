@@ -156,7 +156,8 @@ function Utils(valuesFromPreviousElement) {
 }
 
 var practiceBox;
-if (conf_practiceItems && conf_practiceItems != []) {
+if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
+    alert("FOO!")
     practiceBox = document.createElement("p");
     practiceBox.className = "practice-box";
     practiceBox.appendChild(document.createTextNode(""));
@@ -292,7 +293,9 @@ function finishedCallback(resultsLines) {
 
     // Is this a practice item?
     if (practiceBox) {
-        if (list_contains(currentItem.type, conf_practiceItems)) {
+//        alert(currentItem.type + ":" + conf_practiceItemTypes);
+        if (list_contains(runningOrder[posInRunningOrder].type, conf_practiceItemTypes)) {
+//            alert("PB2");
             practiceBox.replaceChild(document.createTextNode(conf_practiceMessage), practiceBox.firstChild);
         }
         else {

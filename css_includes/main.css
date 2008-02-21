@@ -25,4 +25,6 @@ p.progress-text {
 }
 p.practice-box {
     color: blue;
+    height: 1.5em;
+    padding-bottom: 1em;
 }
