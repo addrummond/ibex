@@ -409,6 +409,39 @@ var items = [
 ];
 }}}
 
+==Latin square designs==
+Webspr has built-in support for latin square designs. These are
+implemented by assigning each item a _group_ in addition to its
+type. Each participant sees only one item out of all the items in any
+given group. To give an example, we could place both of the
+"relclause" sentences from the previous example in the same group
+using the following code:
+{{{
+[["relclause", 1], DashedSentence, {s: "A sentence that has a relative clause"}],
+[["relcluase", 1], DashedSentence, {s: "Another sentence that has a relative clause"}]
+}}}
+Now, any given participant will see only one of these
+sentences. Designs are rotated using a counter stored on the
+server. Like types, groups may either be strings or numbers. Webspr
+checks that all groups contain the same number of items, and will
+raise an error if this condition is not met.
+
+A new (and not very well tested) feature allows for more complex
+designs where selection of an item from one group is dependent on
+selection of an item from another. For example, you can specify that
+the item chosen from group 3 should be the same as the item chosen
+from group 2 (i.e. if the first item is chosen from group 2, the first
+item will also be chosen from group 3, etc.) To use this feature, just
+add another group specifier after the group for the item itself.  For
+example, suppose that we have another group (group 2), and we want
+choices from this group to be linked to choices from group 1 in the
+example above.  The following code will do the trick:
+{{{
+[["relclause", 2, 1], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
+[["relclause", 2, 1], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
+}}}
+Note that the third number must be the same for all items in the group.
+
 =Communication between elements=
 Webspr allows for a limited amount of communication between elements.
 Each element may set keys in a hashtable which is passed to the next
