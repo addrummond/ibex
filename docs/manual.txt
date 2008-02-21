@@ -157,6 +157,12 @@ consult the documentation for the relevant controllers to determine
 the format of the subsequent columns. All of the controllers that are
 bundled with the Webspr distribution are fully documented here.
 
+*Important*: A single element my contribute multiple lines to the
+results file.  For example, if the `DashedSentence` element is in
+"self-paced reading" mode, it will add one line for every word
+time. Thus, there is not a one-to-one correspondence between
+itemes/elements and lines.
+
 =Format of a data file=
 Data files for Webspr are !JavaScript source files, but it is not
 really necessary to know !JavaScript in order to write one.  The most
@@ -317,7 +323,7 @@ sequence:
 Now suppose that there are two types of real item ("real1" and
 "real2"), and we wish to order the items the same way as before:
 {{{
-    seq("practice", shuffle(randomize(["real1", "real2"]),
+    seq("practice", shuffle(randomize(anyOf("real1", "real2")),
                     randomize("filler")))
 }}}
 What if we also want the two types of real item to be evenly
@@ -366,8 +372,8 @@ and 'randomize' operators.
 
 ==Manipulating individual items==
 So far, we've been treating items as atoms for the purposes of shuffle
-sequences. Although an item might be composed of several elements, the
-operations `seq`, `randomize` and `shuffle` ignore this internal
+sequences -- although an item might be composed of several elements,
+the operations `seq`, `randomize` and `shuffle` ignore this internal
 structure. However, it is sometimes useful to be able to append or
 prepend a particular sequence of elements to every item.  For example,
 if you are doing a speeded acceptability judgment task, you might want
@@ -417,20 +423,32 @@ and the next `Separator` item is then able to display a message warning
 the participant that they answered incorrectly.
 
 =Controllers=
-==`Message`==
+==Message==
+*Options*
 
 || *Option*        || *Default*    || *Description*                                                       ||
 || html            || _obligatory_ || The HTML for the message to display.                                ||
-|| hideProgressBar || `true`       || Whether the progress bar should be shown together with the message. ||
+|| hideProgressBar || `true`       || If true, the progress bar is hidden when the message is displayed.  ||
 
-==`Separator`==
+*Results*
+
+`Message` does not add any lines to the results file.
+
+==Separator==
+*Options*
 
 || *Option*        || *Default*    || *Description* ||
 || transfer        || `"keypress"` || Must be either `"keypress"` or a number. If the former, participant goes to the next item by pressing any key. If the latter, specifies number of ms to wait before the next item. ||
 || normalMessage   || `"Press any key to continue."` || Message to display if the previous item was completed normally. ||
 || errorMessage    || `"Wrong. Press any key to continue."` || Message to display (in red) if the previous item was not completed normally (e.g. timeout, incorrect answer). ||
+|| ignoreFailures  || `false`      || If true, never displays an error message. ||
 
-==`DashedSentence`==
+*Results*
+
+`Options` does not add any lines to the results file.
+
+==!DashedSentence==
+*Options*
 
 || *Option*      || *Default*              || *Description*                                               ||
 || s             || _obligatory_           || The sentence.                                               ||
@@ -438,13 +456,34 @@ the participant that they answered incorrectly.
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
 
-==`FlashSentence`==
+*Results*
+
+The format of the results depends on the setting of the "mode" option. If it is set to "speeded acceptability", results have the following format:
+
+|| *Column* || *Description* ||
+|| 1        || MD5 hash of sentence. ||
+
+If it is set to "self-paced reading", they look like this:
+
+|| *Column* || *Description* ||
+|| 1        || Word number. For example, "1" indicates that this line gives the time it took to read the first word (i.e. the difference between (the time at which the first word appeared) and (the time at which it disappeared and the second word appeared). ||
+|| 2        || The reading time in ms. ||
+|| 3        || Either 1 or 0. Indicates whether or not there was a line break between word n and word n + 1 (where reading time is for word n). ||
+|| 4        || MD5 hash of the sentence. ||
+
+==!FlashSentence==
+*Options*
 
 || *Option* || *Default*    || *Description*                 ||
 || s        || _obligatory_ || The sentence to be displayed. ||
-|| timeout  || 2000         || If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence. ||
+|| timeout  || 2000         || If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence.    ||
 
-==`Question`==
+*Results*
+
+`FlashSentence` does not add any lines to the results file.
+
+==Question==
+*Options*
 
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || _obligatory_ || The question to pose.                                             ||
@@ -455,7 +494,14 @@ the participant that they answered incorrectly.
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings, for example). ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
 
-==`AcceptabilityJudgment`==
+*Results*
+
+|| *Column* || *Description* ||
+|| 1        || The question that was posed (encoded as a URL with %XX escapes). ||
+|| 2        || The answer that the participant gave (also encoded as a URL).    ||
+|| 3        || "NULL" if the question as no correct answer. Otherwise, 1 if the participant answered correctly, or 0 if they didn't. ||
+
+==!AcceptabilityJudgment==
 || *Option*       || *Default*           || *Description*                ||
 || s              || _obligatory_        || The sentence.                ||
 || q              || _obligatory_        || The question.                ||
@@ -466,7 +512,7 @@ the participant that they answered incorrectly.
 || presentAsScale || `false`             || As for `Question`            ||
 || timeout        || `null`              || As for `Question`            ||
 
-==`VBox`==
+==VBox==
 The `VBox` controller makes it possible to combine multiple
 controllers to form a single controller. This allows the functionality
 of simple controllers to be reused in the construction of more complex
@@ -480,20 +526,17 @@ see `js_includes/acceptability_judgment.js`.
 
 =Further configuration=
 ==Miscelaneous options==
+    * Turn off the progress bar by adding the declaration `var showProgressBar = false;` to your data file.
 
-    * Turn off the progress bar by adding the declaration `var
-      showProgressBar = false;` to your data file.
+    * Change the tile of the page by adding a declaration such as `var pageTitle = "My Experiment";` to your data file.
 
-    * Change the tile of the page by adding a declaration such as
-      `var pageTitle = "My Experiment";` to your data file.
+    * Change the message shown when results were successfully sent to the server by adding a declaration such as `var completionMessage = "Completed.";` to your data file.
 
-    * Change the message shown when results were successfully sent to
-      the server by adding a declaration such as `var
-      completionMessage = "Completed.";` to your data file.
+    * Change the message shown when there was an error sending results to the server by adding a declaration such as `var completionErrorMessage = "Error.";` to your data file.
 
-    * Change the message shown when there was an error sending results to
-      the server by adding a declaration such as `var completionErrorMessage = "Error.";`
-      to your data file.
+    * Mark items as practice items by setting the value of the `practiceItemTypes` variable. For example, if all your practice sentences have types "practice1" and "practice2", add the declaration `var practiceItemTypes = ["practice1", "practice2"];` Note that even if there is only one type, you must still use an array. A blue "practice" heading is placed above practice items.
+
+    * Change the heading displayed above practice items by adding a declaration such as `var practiceMessage = "foo";` to your data file.
 
 ==Configuring `js_includes` and `css_includes`==
 The `js_includes` and `css_includes` directories contain !JavaScript
