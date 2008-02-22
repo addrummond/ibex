@@ -2,6 +2,7 @@ Message.obligatory = ["html"];
 
 function Message(div, options, finishedCallback, utils) {
     this.name = "Message";
+    this.div = div;
     this.options = options;
     this.countsForProgressBar = false;
     this.hideProgressBar = dget(options, "hideProgressBar", true);

@@ -3,6 +3,7 @@ Separator.countsForProgressBar = false;
 
 function Separator(div, options, finishedCallback, utils) {
     this.name = "Separator";
+    this.div = div;
     this.options = options;
 
     this.ignoreFailures = dget(options, "ignoreFailures", false);
