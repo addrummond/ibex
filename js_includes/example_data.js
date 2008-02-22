@@ -40,8 +40,9 @@ var items = [
 
 [["s1",9], ds, {s: "Airport officials searched some men who they allowed to get on the plane despite thinking rather suspicious"}],
 [["s2",9], ds, {s: "Airport officials searched some men who despite thinking rather suspicious they allowed to get on the plane"}],
-[["q1",10], q, {s: "Which men did airport officials allow to get on the plane despite thinking their demenour rather suspicous?"}],
-[["q2",10], q, {s: "Which men did airport officials allow their bags to go on the plane despite thinking rather suspicous?"}],
+[["q1",10], q, {s: "Which men did airport officials allow to get on the plane despite thinking their demenour rather suspicious?"}],
+[["q2",10], q, {s: "Which men did airport officials allow their bags to go on the plane despite thinking rather suspicious?"}],
+
 [["s1",11], ds, {s: "The carpenter made a chair which designers thought to be really rather trendy after painting turquoise"}],
 [["s2",11], ds, {s: "The carpenter made a chair which after painting turquoise designers thought to be really rather trendy"}],
 [["q1",12], q, {s: "Which chair did designers think to be really rather trendy after painting its legs turquoise?"}],
