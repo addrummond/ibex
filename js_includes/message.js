@@ -1,6 +1,6 @@
 Message.obligatory = ["html"];
 
-function Message(div, options, finishedCallback) {
+function Message(div, options, finishedCallback, utils) {
     this.name = "Message";
     this.options = options;
     this.countsForProgressBar = false;
@@ -10,7 +10,17 @@ function Message(div, options, finishedCallback) {
     div.className = "message";
     div.innerHTML = this.html;
 
-    this.handleKey = function(code, time) {
-        finishedCallback(null);
+    // Bit of copy/pasting from 'Separator' here.
+    this.transfer = dget(options, "transfer", "keypress");
+    assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
+           "Value of 'transfer' option of Message must either be the string 'keypress' or a number");
+
+    if (this.transfer == "keypress") {
+        this.handleKey = function(code, time) {
+            finishedCallback(null);
+        }
+    }
+    else {
+        utils.setTimeout(finishedCallback, this.transfer);
     }
 }
