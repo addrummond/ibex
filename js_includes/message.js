@@ -7,6 +7,7 @@ function Message(div, options, finishedCallback) {
     this.hideProgressBar = dget(options, "hideProgressBar", true);
 
     this.html = options.html;
+    div.className = "message";
     div.innerHTML = this.html;
 
     this.handleKey = function(code, time) {
