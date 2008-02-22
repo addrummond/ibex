@@ -449,17 +449,6 @@ and the next `Separator` item is then able to display a message warning
 the participant that they answered incorrectly.
 
 =Controllers=
-==Message==
-*Options*
-
-|| *Option*        || *Default*    || *Description*                                                       ||
-|| html            || _obligatory_ || The HTML for the message to display.                                ||
-|| hideProgressBar || `true`       || If true, the progress bar is hidden when the message is displayed.  ||
-
-*Results*
-
-`Message` does not add any lines to the results file.
-
 ==Separator==
 *Options*
 
@@ -471,7 +460,19 @@ the participant that they answered incorrectly.
 
 *Results*
 
-`Options` does not add any lines to the results file.
+`Separator` does not add any lines to the results file.
+
+==Message==
+*Options*
+
+|| *Option*        || *Default*    || *Description*                                                       ||
+|| html            || _obligatory_ || The HTML for the message to display.                                ||
+|| hideProgressBar || `true`       || If true, the progress bar is hidden when the message is displayed.  ||
+|| transfer        || `"keypress"` || Same as for `Separator`.                                            ||
+
+*Results*
+
+`Message` does not add any lines to the results file.
 
 ==!DashedSentence==
 *Options*
