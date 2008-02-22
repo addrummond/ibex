@@ -1,23 +1,3 @@
-/*function Rope(array, nodeLength) {
-    if (! nodeLength)
-        this.nodeLength = 10;
-
-    if (! array)
-        this.root = [];
-    else {
-        
-    }
-
-    this.rebalance = function() {
-        var l = this.root[0].rebalance();
-        var r = this.root[0].rebalance();
-    }
-
-    this.append = function(x) {
-        
-    }
-}*/
-
 // Taken from http://aymanh.com/9-javascript-tips-you-may-not-know
 function AssertException(message) { this.message = message; }
 AssertException.prototype.toString = function () {
