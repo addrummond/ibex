@@ -157,7 +157,6 @@ function Utils(valuesFromPreviousElement) {
 
 var practiceBox;
 if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
-    alert("FOO!")
     practiceBox = document.createElement("p");
     practiceBox.className = "practice-box";
     practiceBox.appendChild(document.createTextNode(""));
