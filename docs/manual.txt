@@ -1,13 +1,8 @@
 =Versions=
-This documentation is for Webspr 0.2 (currently in alpha).  Earlier
+This documentation covers Webspr 0.2 (currently in alpha).  Earlier
 versions of Webspr come with a README containing full documentation.
 The latest version of this document is at
 http://code.google.com/p/webspr/wiki/Documentation
-
-=Docs TODO=
-    * Example of how to start up paste server and connect to the experiment.
-    * Full documentation for every controller.
-    * Explanation of VBox.
 
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment
@@ -183,18 +178,11 @@ The "items" array is an array of arrays, where each subarray specifies
 a single item. In the example above, every item contains a single
 element (multiple element items will be covered shortly).
 
-    * The first member of each subarray specifies the _type_ of the
-      item.  Types can either be numbers or strings. Although the
-      types in the example above have descriptive names, Webspr does
-      not interpret these names in any way.
+    * The first member of each subarray specifies the _type_ of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Webspr does not interpret these names in any way.
 
     * The second member specifies the controller.
 
-    * The third member is an associative array of key/value
-      pairs. This array is passed to the controller and is used to
-      customize its behavior. In this case, we pass only one option
-      ("s"), which tells the `DashedSentence` controller which
-      sentence it should display.
+    * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
 
 Once the items array has been created, Webspr must be told the order
 in which the items should be displayed. There are some moderately
@@ -494,15 +482,15 @@ the participant that they answered incorrectly.
 The format of the results depends on the setting of the "mode" option. If it is set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
-|| 1        || MD5 hash of sentence. ||
+|| 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
 
 If it is set to "self-paced reading", they look like this:
 
 || *Column* || *Description* ||
-|| 1        || Word number. For example, "1" indicates that this line gives the time it took to read the first word (i.e. the difference between (the time at which the first word appeared) and (the time at which it disappeared and the second word appeared). ||
+|| 1        || Word number. For example, "1" indicates that this line gives the time it took to read the first word (i.e. the difference between <the time at which the first word appeared> and <the time at which it disappeared and the second word appeared>). ||
 || 2        || The reading time in ms. ||
 || 3        || Either 1 or 0. Indicates whether or not there was a line break between word n and word n + 1 (where reading time is for word n). ||
-|| 4        || MD5 hash of the sentence. ||
+|| 4        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
 
 ==!FlashSentence==
 *Options*
@@ -595,3 +583,31 @@ to be downloaded. Since the files in both directories are named after
 the controllers with which they are associated, it is easy to see
 which files are superflous. However, note that the file `main.css` is
 required by all controllers.
+
+
+=Debugging data files and some common gotchas=
+The following are some subtle problems which can often arise when
+writing a data file:
+
+    * A missing comma in the list of sentences in data.js can cause highly obscure !JavaScript errors with no obvious relation to their source.
+
+    * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities.
+
+Setting the value of HTML options (for example the `html` option of
+the `Message` controller) can be a bit of a pain, since writing HTML
+code inside !JavaScript string literals is a bit finicky. Remember to
+escape singe/double quotes with a "\" (depending on whether you
+enclose the string in single/double quotes) and to escape newlines
+with a "\" also (by making "\" the last character of the line). Some
+browsers may accept !JavaScript string literals containing unescaped
+newlines, but most will not, so make sure you don't use them.
+
+Most browsers allow strings to be indexed using square brackets
+(i.e. `"foo"[1] == "f"`). Internet Explorer, however, requires the use
+of the string's 'charAt' method.
+
+For debugging, I recommend using Firefox's !JavaScript console. Most
+syntax errors in a data file will result in an alert popping up
+warning that the `items` array has not been defined. You can usually
+get a much more informative error message by looking at the
+!JavaScript console.
