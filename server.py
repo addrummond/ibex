@@ -232,7 +232,7 @@ def create_monster_string(dir, extension, block_allow):
 
 # Not used when this module is run as a CGI process.
 STATIC_FILES = [
-    'spr.html',
+    'experiment.html',
     'json.js',
     'main.js',
     'conf.js',
@@ -277,7 +277,7 @@ def control(env, start_response):
         finally:
             if f: f.close()
         rr = last == 'main.js' and cc_start_response or start_response
-        rr('200 OK', [('Content-Type', (last == 'spr.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
+        rr('200 OK', [('Content-Type', (last == 'experiment.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
     elif last == PY_SCRIPT_NAME:
         qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''
