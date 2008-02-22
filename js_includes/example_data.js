@@ -5,18 +5,18 @@ var ds = DashedSentence;
 var q = AcceptabilityJudgment;
 
 var defaults = [
-    DashedSentence, {mode: "speeded acceptability"},
-    AcceptabilityJudgment, {q: "How was it?", as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true}
+    DashedSentence, {mode: "self-paced reading"},
+    AcceptabilityJudgment, {q: "How would you rate that sentence? Use number keys to answer.", as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true}
 ]
 
 var items = [
 
-["intro", Message, {html: "Blah blah blah..."}],
-["break", Message, {html: "Foo blah blah blah..."}],
+["intro", Message, {html: "<p>This experiment has two parts. In the first part, you will be required to read a number of English sentence one word at a time. You can advance to the next word by pressing the space bar.</p><p>In the second part, you will be asked to &ldquo;rate&rdquo; the sentences on a scale of 1-7 (with 1 bad and 7 good).</p><p><b>Press any key to continue.</b></p>"}],
+["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
 
-["practice", ds, {s: "Here's a practice sentence."}],
-["practice", ds, {s: "Here's another practice sentence."}],
-["practice", ds, {s: "Yet another practice sentence."}],
+["practice", ds, {s: "This is a practice sentence to get you used to reading sentences like this."}],
+["practice", ds, {s: "This is another practice sentence."}],
+["practice", ds, {s: "This is the last practice sentence before the experiment begins."}],
 
 [["s1",1], ds, {s: "The journalist interviewed an actress who he knew to be shy of publicity after meeting on a previous occasion"}],
 [["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity"}],
@@ -60,7 +60,7 @@ var items = [
 ["f", ds, {s: "The patient that was admitted to the hospital last month still suffers severe pain in his left leg."}],
 ["f", ds, {s: "Very few economists that work in downtown DC will traveling to Russia this year."}],
 ["f", ds, {s: "The warm weather that everyone had been waiting patiently for melted the frost on the fields in two weeks."}],
-["f", ds, {s: "The basketball player that had just signed a million dollar contract bounced the new ball with great skill in twenty minutes."}],
+/*["f", ds, {s: "The basketball player that had just signed a million dollar contract bounced the new ball with great skill in twenty minutes."}],
 ["f", ds, {s: "The girls that rode the elephants at the beginning of the parade was from Africa."}],
 ["f", ds, {s: "If the spoiled toddler had stopped shouting when the baby sitter asked, he would have gotten a piece of candy."}],
 ["f", ds, {s: "The brave detective that had just been put on a new case searched for the dangerous criminals at the docks in ten hours."}],
@@ -125,6 +125,6 @@ var items = [
 ["f", ds, {s: "The freshmen that complain too much about their toughest class has always failed the final exam."}],
 ["f", ds, {s: "The little girl that played a ghost with a bed sheet on Halloween scared himself in the mirror."}],
 ["f", ds, {s: "The child that chases the neighbor's dogs around the yard likes playing games."}]
-
+*/
 
 ];
