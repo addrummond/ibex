@@ -1,5 +1,7 @@
 .question {
   margin-left: 0;
   padding-left: 0;
+}
+.question-text {
   font-style: italic;
 }

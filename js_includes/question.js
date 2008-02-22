@@ -57,6 +57,7 @@ function Question(div, options, finishedCallback, utils) {
     }
 
     this.qp = document.createElement("p");
+    this.qp.className = "question-text";
     this.qp.appendChild(document.createTextNode(this.question));
     this.xl;
     if (! this.presentAsScale)
