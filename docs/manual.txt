@@ -617,3 +617,9 @@ syntax errors in a data file will result in an alert popping up
 warning that the `items` array has not been defined. You can usually
 get a much more informative error message by looking at the
 !JavaScript console.
+
+=Known problems and issues=
+   * Pressing '6' and '7' in Opera affects text size; this interacts
+     badly with acceptability judgements on scales including 6 and
+     7. I have not yet found a way of preventing Opera from
+     interpreting these keypresses.
