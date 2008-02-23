@@ -1,15 +1,18 @@
-var shuffleSequence = seq("intro", "practice", rshuffle("f", rshuffle("s1", "s2")), "break", rshuffle("q1", "q2"));
+var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var ds = DashedSentence;
 var q = AcceptabilityJudgment;
 
 var defaults = [
+    Separator, { transfer: 1000, normalMessage: "Please wait for the next sentence." },
     DashedSentence, {mode: "self-paced reading"},
     AcceptabilityJudgment, {q: "How would you rate that sentence? Use number keys to answer.", as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true}
 ]
 
 var items = [
+
+["sep", Separator, { }],
 
 ["intro", Message, {html: "<p>This experiment has two parts. In the first part, you will be required to read a number of English sentence one word at a time. You can advance to the next word by pressing the space bar.</p><p>In the second part, you will be asked to &ldquo;rate&rdquo; the sentences on a scale of 1-7 (with 1 bad and 7 good).</p><p><b>Press any key to continue.</b></p>"}],
 ["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
