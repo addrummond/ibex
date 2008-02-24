@@ -1,138 +1,130 @@
 =Versions=
-This documentation covers Webspr 0.2 (currently in alpha).  Earlier
-versions of Webspr come with a README containing full documentation.
-The latest version of this document can be found at
+This documentation covers Webspr 0.2 (currently in alpha).  Earlier versions of
+Webspr come with a README containing full documentation.  The latest version of
+this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation
 
 =Introduction=
-Webspr allows you to run various kinds of psycholinguistic experiment
-online. (Originally only self-paced reading was supported, hence the
-name.)  The system is modular, and the range of possible experiments
-is steadily growing. Webspr uses !JavaScript and HTML only, and
-doesn't require the use of plugins such as Java or Flash.
+Webspr allows you to run various kinds of psycholinguistic experiment online.
+(Originally only self-paced reading was supported, hence the name.)  The system
+is modular, and the range of possible experiments is steadily growing. Webspr
+uses !JavaScript and HTML only, and doesn't require the use of plugins such as
+Java or Flash.
 
 =Setting up the server=
-There are two ways of running the server: either as a stand-alone
-server or as a CGI process. By default, the server runs in
-stand-alone mode; to start it, simply execute server.py:
+There are two ways of running the server: either as a stand-alone server or as
+a CGI process. By default, the server runs in stand-alone mode; to start it,
+simply execute server.py:
 {{{
     python server.py
 }}}
-This will start the server on port 3000 by default
-(so you can find the experiment at http://localhost:3000/experiment.html).
-*Note:* you will need to have the `paste` module installed for
-Python in order for stand-alone mode to work (see
-http://pythonpaste.org). The CGI mode requires only modules that come
+This will start the server on port 3000 by default (so you can find the
+experiment at http://localhost:3000/experiment.html).  *Note:* you will need to
+have the `paste` module installed for Python in order for stand-alone mode to
+work (see http://pythonpaste.org). The CGI mode requires only modules that come
 with the standard Python 2.5 distribution.
 
-The stand-alone server is limited to serving files relating to Webspr,
-so it is unlikely to be useful for real work (unless you hide it
-behind a proxy). However, it is useful for testing experimental
-designs without setting up a real HTTP server, or for running
-experiments offline.
+The stand-alone server is limited to serving files relating to Webspr, so it is
+unlikely to be useful for real work (unless you hide it behind a proxy).
+However, it is useful for testing experimental designs without setting up a
+real HTTP server, or for running experiments offline.
 
-The server can be configured by editing `server_conf.py`. Each of the
-options is commented. Change the `SERVER_MODE` variable to determine
-whether the server runs in stand-alone mode or as a CGI process. When
-`SERVER_MODE` is set to "cgi", server.py will work as a standard CGI
-program; when it is set to "paste", the server will run in stand-alone
-mode. You can change the value of `PORT` to determine the port the
-server will listen on when operating in stand-alone mode. The `-m`
-and `-p` command-line options can also be used to set the server mode
-and port respectively. These options override those set in
+The server can be configured by editing `server_conf.py`. Each of the options
+is commented. Change the `SERVER_MODE` variable to determine whether the server
+runs in stand-alone mode or as a CGI process. When `SERVER_MODE` is set to
+"cgi", server.py will work as a standard CGI program; when it is set to
+"paste", the server will run in stand-alone mode. You can change the value of
+`PORT` to determine the port the server will listen on when operating in
+stand-alone mode. The `-m` and `-p` command-line options can also be used to
+set the server mode and port respectively. These options override those set in
 `server_conf.py`.
 
-If you are running the server as a CGI process, make sure that the
-webserver you are using can serve up `experiment.html` as a static
-file. All dynamic requests go through `server.py`, so as long as
-`experiment.html` can be accessed, and the server recognizes
-`server.py` as a CGI process, everything should be fine.
+If you are running the server as a CGI process, make sure that the webserver
+you are using can serve up `experiment.html` as a static file. All dynamic
+requests go through `server.py`, so as long as `experiment.html` can be
+accessed, and the server recognizes `server.py` as a CGI process, everything
+should be fine.
 
-The directories `js_includes` and `css_includes` contain !JavaScript
-and CSS files required for particular kinds of experiment. When an
-HTTP request is made for the virtual files `js_includes.js` and
-`css_includes.css`, the server concatenates all the files in the
-directory and serves up the result. Your data file(s) will live in
-`js_includes`.
+The directories `js_includes` and `css_includes` contain !JavaScript and CSS
+files required for particular kinds of experiment. When an HTTP request is made
+for the virtual files `js_includes.js` and `css_includes.css`, the server
+concatenates all the files in the directory and serves up the result. Your data
+file(s) will live in `js_includes`.
 
-The server stores some state in the `server_state` directory. This
-directory is automatically created by the server if it does not
-already exist, and in order to start the server from a fresh state you
-may simply delete this directory and/or its contents. Currently, the
-directory just contains the counter used to alternate latin square
-designs. This counter can be reset on server startup using the `-r`
-option.
+The server stores some state in the `server_state` directory. This directory is
+automatically created by the server if it does not already exist, and in order
+to start the server from a fresh state you may simply delete this directory
+and/or its contents. Currently, the directory just contains the counter used to
+alternate latin square designs. This counter can be reset on server startup
+using the `-r` option.
 
-The server logs messages in the file `server.log` in the same directory
-as `server.py`. The default is to store all files in the same directory
-as `server.py` (i.e. logs, results, etc.), but the working directory of
-the server can be modified by setting the variable
-`WEBSPR_WORKING_DIR` in `server_conf.py`. You can also set the
-environment variable of the same name. (The value of the environment
-variable overrides the value of the variable in `server_conf.py`.)
+The server logs messages in the file `server.log` in the same directory as
+`server.py`. The default is to store all files in the same directory as
+`server.py` (i.e. logs, results, etc.), but the working directory of the server
+can be modified by setting the variable `WEBSPR_WORKING_DIR` in
+`server_conf.py`. You can also set the environment variable of the same name.
+(The value of the environment variable overrides the value of the variable in
+`server_conf.py`.)
 
-On Linux/Unix/OS X, the server uses file locking to ensure that the
-results file and server state remain consistent. Currently, it does
-not do so on Windows, so there is a theoretical possibility of the
-state or the results being corrupted if you run the server in a
-Windows environment (but unless you have very high traffic, it's
-purely theoretical).
+On Linux/Unix/OS X, the server uses file locking to ensure that the results
+file and server state remain consistent. Currently, it does not do so on
+Windows, so there is a theoretical possibility of the state or the results
+being corrupted if you run the server in a Windows environment (but unless you
+have very high traffic, it's purely theoretical).
 
-The stand-alone server has been tested on Windows and OS X (but will
-almost certainly work on any system with Python 2.5, so long as the
-`paste` module is installed). The CGI server has been
-tested on OS X using the lighttpd web server.
+The stand-alone server has been tested on Windows and OS X (but will almost
+certainly work on any system with Python 2.5, so long as the `paste` module is
+installed). The CGI server has been tested on OS X using the lighttpd web
+server.
 
-=Basic concepts=
-An Webspr experiment is essentially a sequence of _items_. Each item
-is itself a sequence of _entities_. To give a concrete example, each
-item in a self-paced reading experiment might consist of two entities:
-an entity providing a sentence for the subject to step through word by
-word, followed by an entity posing a comprehension question. Some
-other items and entities would also be present under most
-circumstances. For example, there would probably be a "separator"
-entity between each sentence/question pair in order to provide a pause
-between sentences. Schematically, the sequence of items would be as
-follows (the Wiki insists on displaying this in pretty colors):
+=Basic concepts= An Webspr experiment is essentially a sequence of _items_.
+Each item is itself a sequence of _entities_. To give a concrete example, each
+item in a self-paced reading experiment might consist of two entities: an
+entity providing a sentence for the subject to step through word by word,
+followed by an entity posing a comprehension question. Some other items and
+entities would also be present under most circumstances. For example, there
+would probably be a "separator" entity between each sentence/question pair in
+order to provide a pause between sentences. Schematically, the sequence of
+items would be as follows (the Wiki insists on displaying this in pretty
+colors):
 {{{
-    ITEM 1:
-        ENTITY 1: Sentence
-        ENTITY 2: Comprehension question
-    ITEM 2:
-        ENTITY 1: Pause for two seconds
-    ITEM 3:
-        ENTITY 1: Sentence
-        ENTITY 2: Comprehension question
-    ITEM 4:
-        ENTITY 1: Pause for two seconds
-    ITEM 5:
-        ENTITY 1: Sentence
-        ENTITY 2: Comprehension question
+ITEM 1:
+    ENTITY 1: Sentence
+    ENTITY 2: Comprehension question
+ITEM 2:
+    ENTITY 1: Pause for two seconds
+ITEM 3:
+    ENTITY 1: Sentence
+    ENTITY 2: Comprehension question
+ITEM 4:
+    ENTITY 1: Pause for two seconds
+ITEM 5:
+    ENTITY 1: Sentence
+    ENTITY 2: Comprehension question
 }}}
-It is not necessary to construct the full sequence of items and
-entities manually. Webspr provides tools for ordering items in various
-ways (e.g. for inserting a pause between each item) and for
-implementing latin square designs. More on these soon.
+It is not necessary to construct the full sequence of items and entities
+manually. Webspr provides tools for ordering items in various ways (e.g. for
+inserting a pause between each item) and for implementing latin square designs.
+More on these soon.
 
-Webspr has a modular design, where each entity is a !JavaScript object
-that follows a standard interface. This makes it quite easy to add
-new entities if you are familiar with !JavaScript/DHTML programming.
+Webspr has a modular design, where each entity is a !JavaScript object that
+follows a standard interface. This makes it quite easy to add new entities if
+you are familiar with !JavaScript/DHTML programming.
 
-Each entity is an instance of a _controller_, which determines
-the kind of experimental task that the entity will present.
-For example, there is a `DashedSentence` controller useful for
-self-paced reading a speeded acceptability judgment tasks.
-Webspr has a modular design, where each controller is a !JavaScript object
-that follows a standard interface. This makes it quite easy to add
-new controllers if you are familiar with !JavaScript/DHTML programming.
+Each entity is an instance of a _controller_, which determines the kind of
+experimental task that the entity will present.  For example, there is a
+`DashedSentence` controller useful for self-paced reading a speeded
+acceptability judgment tasks.  Webspr has a modular design, where each
+controller is a !JavaScript object that follows a standard interface. This
+makes it quite easy to add new controllers if you are familiar with
+!JavaScript/DHTML programming.
 
-Webspr stores results in CSV format. This makes it easy to import
-results into spreadsheets, Matlab, R, etc. Each entity may contribute
-zero or more lines to the results file. The first seven columns of
-each line give generic information about the result (e.g. the MD5 hash
-of the subject's IP address), and the rest give information specific
-to the particular element (e.g. word reading times, comprehension
-question answers). The first seven columns are as follows:
+Webspr stores results in CSV format. This makes it easy to import results into
+spreadsheets, Matlab, R, etc. Each entity may contribute zero or more lines to
+the results file. The first seven columns of each line give generic information
+about the result (e.g. the MD5 hash of the subject's IP address), and the rest
+give information specific to the particular element (e.g. word reading times,
+comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
@@ -143,31 +135,29 @@ question answers). The first seven columns are as follows:
 || 6        || Type                                                           ||
 || 7        || Group                                                          ||
 
-Note that some information pertaining to an entire experiment
-(e.g. the time that the server received the results, the MD5 hash of
-the IP address) is duplicated on each line of the results. This often
-makes it easier to parse the results, though it makes the format much
-more verbose.  The significance of the "type" and "group" columns will
-be explained later; they are involved in specifying the ordering of
-items.
+Note that some information pertaining to an entire experiment (e.g. the time
+that the server received the results, the MD5 hash of the IP address) is
+duplicated on each line of the results. This often makes it easier to parse the
+results, though it makes the format much more verbose.  The significance of the
+"type" and "group" columns will be explained later; they are involved in
+specifying the ordering of items.
 
-Currently, in order to make sense of a set of results, you must
-interpret the first seven columns of each line as specified above, and
-consult the documentation for the relevant controllers to determine
-the format of the subsequent columns. All of the controllers that are
-bundled with the Webspr distribution are fully documented here.
+Currently, in order to make sense of a set of results, you must interpret the
+first seven columns of each line as specified above, and consult the
+documentation for the relevant controllers to determine the format of the
+subsequent columns. All of the controllers that are bundled with the Webspr
+distribution are fully documented here.
 
-*Important*: A single element my contribute multiple lines to the
-results file.  For example, if the `DashedSentence` element is in
-"self-paced reading" mode, it will add one line for every word
-time. Thus, there is not a one-to-one correspondence between
-itemes/elements and lines.
+*Important*: A single element my contribute multiple lines to the results file.
+For example, if the `DashedSentence` element is in "self-paced reading" mode,
+it will add one line for every word time. Thus, there is not a one-to-one
+correspondence between itemes/elements and lines.
 
 =Format of a data file=
-Data files for Webspr are !JavaScript source files, but it is not
-really necessary to know !JavaScript in order to write one.  The most
-important part of a data file is the declaration of the "items" array,
-as in the following example:
+Data files for Webspr are !JavaScript source files, but it is not really
+necessary to know !JavaScript in order to write one.  The most important part
+of a data file is the declaration of the "items" array, as in the following
+example:
 {{{
 var items = [
 
@@ -178,10 +168,9 @@ var items = [
 
 ]; // NOTE SEMICOLON HERE
 }}}
-
-The "items" array is an array of arrays, where each subarray specifies
-a single item. In the example above, every item contains a single
-element (multiple element items will be covered shortly).
+The "items" array is an array of arrays, where each subarray specifies a single
+item. In the example above, every item contains a single element (multiple
+element items will be covered shortly).
 
     * The first member of each subarray specifies the _type_ of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Webspr does not interpret these names in any way.
 
@@ -189,20 +178,21 @@ element (multiple element items will be covered shortly).
 
     * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
 
-Once the items array has been created, Webspr must be told the order
-in which the items should be displayed. There are some moderately
-sophisticated facilities for creating random orderings and latin
-square designs, but for the moment, let's just display the items in
-the order we gave them in the array. This can be achieved by adding
-the following definition (which won't make much sense yet):
+Once the items array has been created, Webspr must be told the order in which
+the items should be displayed. There are some moderately sophisticated
+facilities for creating random orderings and latin square designs, but for the
+moment, let's just display the items in the order we gave them in the array.
+This can be achieved by adding the following definition (which won't make much
+sense yet):
 {{{
 var shuffleSequence = seq(anyType);
 }}}
-You are free to define `shuffleSequence` either before or after the
-`items` array.
 
-Suppose we wanted to pair each sentence with a comprehension question.
-The easiest way to do this is to add a second element to each item:
+You are free to define `shuffleSequence` either before or after the `items`
+array.
+
+Suppose we wanted to pair each sentence with a comprehension question.  The
+easiest way to do this is to add a second element to each item:
 {{{
 var items = [
 
@@ -217,23 +207,21 @@ var items = [
 
 ]; // NOTE SEMICOLON HERE
 }}}
-As shown above, this is done simply by adding to each item further
-pairs of controllers and associative arrays of options. It is rather
-tiresome to have to set the `as` option to ["Yes", "No"] every time,
-but this can easily be avoided by specifying this as the default for
-the Question controller. To give an example of how defaults for multiple
-controllers are specified, let's also set the `mode` option of `DashedSentence`
-to "speeded acceptability":
+As shown above, this is done simply by adding to each item further pairs of
+controllers and associative arrays of options. It is rather tiresome to have to
+set the `as` option to ["Yes", "No"] every time, but this can easily be avoided
+by specifying this as the default for the Question controller. To give an
+example of how defaults for multiple controllers are specified, let's also set
+the `mode` option of `DashedSentence` to "speeded acceptability":
 {{{
 var defaults = [
     Question, {as: ["Yes", "No"]},
     DashedSentence, {mode: "speeded acceptability"}
 ];
 }}}
-This definition can go either before or after the definition of the
-`items` array.  Once it is in place, we can drop the specification of
-the `as` option for each Question element. The final data file looks
-like this:
+This definition can go either before or after the definition of the `items`
+array.  Once it is in place, we can drop the specification of the `as` option
+for each Question element. The final data file looks like this:
 {{{
 var shuffleSequence = seq(anyType);
 
@@ -255,26 +243,25 @@ var items = [
 
 ];
 }}}
-
-*Where to put your data file*: Data files live in the `js_includes`
-directory, and must have a `.js` extension. You can only have one file
-in the directory at any one time, since if you have multilple files,
-they will just overwrite the definitions for `shuffleSequence`,
-`items` and `defaults`.  However, you can tell the server to ignore
-some of the files in `js_includes` (see the section "Configuring
-`js_includes` and `css_includes`").
+*Where to put your data file*: Data files live in the `js_includes` directory,
+and must have a `.js` extension. You can only have one file in the directory at
+any one time, since if you have multilple files, they will just overwrite the
+definitions for `shuffleSequence`, `items` and `defaults`.  However, you can
+tell the server to ignore some of the files in `js_includes` (see the section
+"Configuring `js_includes` and `css_includes`").
 
 =Shuffle sequences=
 ==`seq`, `randomize` and `shuffle`==
-A "shuffle sequence" is a !JavaScript data structure describing a
-series of "shuffling", randomizing and sequencing operations over an
-array of items.  A variable called `shuffleSequence` should be defined
-in your data file with a data structure of this sort as its value.
 
-Shuffle sequences are composed of three basic operations, `seq`,
-`randomize` and `shuffle`. Both take a series of "type predicates" as
-arguments, where each type predicate is the characteristic function of
-a set of types. A type predicate may be one of the following:
+A "shuffle sequence" is a !JavaScript data structure describing a series of
+"shuffling", randomizing and sequencing operations over an array of items.  A
+variable called `shuffleSequence` should be defined in your data file with a
+data structure of this sort as its value.
+
+Shuffle sequences are composed of three basic operations, `seq`, `randomize`
+and `shuffle`. Both take a series of "type predicates" as arguments, where each
+type predicate is the characteristic function of a set of types. A type
+predicate may be one of the following:
 
     * A string or integer, denoting the characteristic function of all items of the given type.
 
@@ -301,86 +288,103 @@ The following type predicates are predefined as !JavaScript functions:
 || `anyOf(p1, p2, ...)` || Matches anything matching one of its arguments.         ||
 
 If you define your own predicates, be careful to test that they are
-cross-browser compatible. See section 7 for some pertinent advice.
-The predicates above are defined in `shuffle.js`.
+cross-browser compatible. See section 7 for some pertinent advice.  The
+predicates above are defined in `shuffle.js`.
 
-The power of shuffle sequences derives from the possibility of
-composing them without limit. Suppose we want the following order:
-all practice items in their original order followed by evenly
-spaced real and filler items in random order. Assuming the types
-"practice", "real" and "filler", we could use the following shuffle
-sequence:
+The power of shuffle sequences derives from the possibility of composing them
+without limit. Suppose we want the following order: all practice items in their
+original order followed by evenly spaced real and filler items in random order.
+Assuming the types "practice", "real" and "filler", we could use the following
+shuffle sequence:
 {{{
-    seq("practice", shuffle(randomize("real"), randomize("filler")))
+seq("practice", shuffle(randomize("real"), randomize("filler")))
 }}}
-Now suppose that there are two types of real item ("real1" and
-"real2"), and we wish to order the items the same way as before:
+Now suppose that there are two types of real item ("real1" and "real2"), and we
+wish to order the items the same way as before:
 {{{
-    seq("practice", shuffle(randomize(anyOf("real1", "real2")),
-                    randomize("filler")))
+seq("practice", shuffle(randomize(anyOf("real1", "real2")),
+                randomize("filler")))
 }}}
-What if we also want the two types of real item to be evenly
-spaced?  The following formula will do the trick:
+What if we also want the two types of real item to be evenly spaced?  The
+following formula will do the trick:
 {{{
-    seq("practice", shuffle(randomize("filler"),
-                            shuffle(randomize("real1"),
-                                    randomize("real2"))))
+seq("practice", shuffle(randomize("filler"),
+                        shuffle(randomize("real1"),
+                                randomize("real2"))))
 }}}
-This first shuffles items of type "real1" and items of type
-"real2" and then shuffles filler items into the mix.  Finally,
-practice items are prepended in the order they were given in
-`data.js`.
 
-Since it is often useful to apply `randomize` to every argument of
-`shuffle`, there is a utility function, `rshuffle`, which automates
-this. The following equivalence holds:
+This first shuffles items of type "real1" and items of type "real2" and then
+shuffles filler items into the mix.  Finally, practice items are prepended in
+the order they were given in `data.js`.
+
+Since it is often useful to apply `randomize` to every argument of `shuffle`,
+there is a utility function, `rshuffle`, which automates this. The following
+equivalence holds:
 {{{
-    rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
+rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
 }}}
 If no shuffle sequence is specified, Webspr uses the following default
 sequence:
 {{{
-    seq(equalTo0, rshuffle(greaterThan0, lessThan0))
+seq(equalTo0, rshuffle(greaterThan0, lessThan0))
 }}}
-This will seem rather cryptic to anyone not familiar with the behavior
-of earlier versions of Webspr, where this ordering specification was
-built in and unchangeable. In short, it works well if practice
-items have type 0, filler items have integer types < 0, and
-real items have integer types > 0.
 
-*Important*: A shuffle sequence must always have one of `seq`,
-`shuffle`, `randomize` or `rshuffle` as its outer element. A single
-string or integer is _not_ a valid shuffle sequence, and neither is a
-predicate expression such as `not("foo")`. Thus, one must use
-`seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just
-`not("foo")`.
+This will seem rather cryptic to anyone not familiar with the behavior of
+earlier versions of Webspr, where this ordering specification was built in and
+unchangeable. In short, it works well if practice items have type 0, filler
+items have integer types < 0, and real items have integer types > 0.
 
-It is possible to include duplicate items in the final sequence. For
-example, `seq("foo", "foo")` would include every item of type "foo"
-twice. For this reason, it is possible to accidentally include
-duplicate items if a number of your predicates overlap.  You can
-define your own shuffle sequence operators and predicates quite
-easily; see `shuffle.js` for the definitions of the `seq`, 'shuffle'
-and 'randomize' operators.
+*Important*: A shuffle sequence must always have one of `seq`, `shuffle`,
+`randomize` or `rshuffle` as its outer element. A single string or integer is
+_not_ a valid shuffle sequence, and neither is a predicate expression such as
+`not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and
+`seq(not("foo"))`, not just `not("foo")`.
+
+It is possible to include duplicate items in the final sequence. For example,
+`seq("foo", "foo")` would include every item of type "foo" twice. For this
+reason, it is possible to accidentally include duplicate items if a number of
+your predicates overlap.  You can define your own shuffle sequence operators
+and predicates quite easily; see `shuffle.js` for the definitions of the `seq`,
+'shuffle' and 'randomize' operators.
+
+==Adding separators==
+
+Normally, it is a good idea to have some sort of padding in between items to
+warn participants that they have finished one item and are starting another.
+Webspr provides the `Separator` item for this purpose. It can either work on a
+timeout or prompt for a keypress. Here's an example:
+{{{
+["sep", Separator, {transfer: 1000, normalMessage: "Please wait for the next sentence."}] 
+}}}
+
+When the `transfer` option is set to 1000, this specifies that there should be
+a 1000ms wait before the next item. The `normalMessage` option gives the
+message that should be displayed if the participant didn't do anything wrong on
+the previous item (see the section "Communication between elements") for more
+details. If the other items have failure conditions, you should set the
+`errorMessage` option too. If you want the participant to proceed by pressing a
+key rather than waiting, set `transfer` to "keypress".
+
+The shuffle sequence operator `sepWith` is provided for the purpose of
+interpolating separators with other items.
 
 ==Manipulating individual items==
-So far, we've been treating items as atoms for the purposes of shuffle
-sequences -- although an item might be composed of several elements,
-the operations `seq`, `randomize` and `shuffle` ignore this internal
-structure. However, it is sometimes useful to be able to append or
-prepend a particular sequence of elements to every item.  For example,
-if you are doing a speeded acceptability judgment task, you might want
-every sentence to be followed by exactly the same question ("Was this
-a good sentence?"). To this end, webspr provides the `precedeEachWith`
-and `followEachWith` operations.
 
-Both functions take two arguments, each of which should be a
-shuffle sequence.  The first argument specifies the sequence of items
-which (when flattened to a sequence of elements) is to be
-appended/prepended to every item in the second argument.  Returning to
-the previous example data file, let's modify it so that every sentence
-is followed by the same acceptability question.  We'll also ensure
-that the sentences are randomly ordered, with the fillers and "real"
+So far, we've been treating items as atoms for the purposes of shuffle
+sequences -- although an item might be composed of several elements, the
+operations `seq`, `randomize` and `shuffle` ignore this internal structure.
+However, it is sometimes useful to be able to append or prepend a particular
+sequence of elements to every item.  For example, if you are doing a speeded
+acceptability judgment task, you might want every sentence to be followed by
+exactly the same question ("Was this a good sentence?"). To this end, webspr
+provides the `precedeEachWith` and `followEachWith` operations.
+
+Both functions take two arguments, each of which should be a shuffle sequence.
+The first argument specifies the sequence of items which (when flattened to a
+sequence of elements) is to be appended/prepended to every item in the second
+argument.  Returning to the previous example data file, let's modify it so that
+every sentence is followed by the same acceptability question.  We'll also
+ensure that the sentences are randomly ordered, with the fillers and "real"
 sentences evenly spaced:
 {{{
 var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
@@ -403,32 +407,29 @@ var items = [
 }}}
 
 ==Latin square designs==
-Webspr has built-in support for latin square designs. These are
-implemented by assigning each item a _group_ in addition to its
-type. Each participant sees only one item out of all the items in any
-given group. To give an example, we could place both of the
-"relclause" sentences from the previous example in the same group
-using the following code:
+Webspr has built-in support for latin square designs. These are implemented by
+assigning each item a _group_ in addition to its type. Each participant sees
+only one item out of all the items in any given group. To give an example, we
+could place both of the "relclause" sentences from the previous example in the
+same group using the following code:
 {{{
 [["relclause", 1], DashedSentence, {s: "A sentence that has a relative clause"}],
 [["relcluase", 1], DashedSentence, {s: "Another sentence that has a relative clause"}]
 }}}
-Now, any given participant will see only one of these
-sentences. Designs are rotated using a counter stored on the
-server. Like types, groups may either be strings or numbers. Webspr
-checks that all groups contain the same number of items, and will
-raise an error if this condition is not met.
+Now, any given participant will see only one of these sentences. Designs are
+rotated using a counter stored on the server. Like types, groups may either be
+strings or numbers. Webspr checks that all groups contain the same number of
+items, and will raise an error if this condition is not met.
 
-A new (and not very well tested) feature allows for more complex
-designs where selection of an item from one group is dependent on
-selection of an item from another. For example, you can specify that
-the item chosen from group 3 should be the same as the item chosen
-from group 2 (i.e. if the first item is chosen from group 2, the first
-item will also be chosen from group 3, etc.) To use this feature, just
-add another group specifier after the group for the item itself.  For
-example, suppose that we have another group (group 2), and we want
-choices from this group to be linked to choices from group 1 in the
-example above.  The following code will do the trick:
+A new (and not very well tested) feature allows for more complex designs where
+selection of an item from one group is dependent on selection of an item from
+another. For example, you can specify that the item chosen from group 3 should
+be the same as the item chosen from group 2 (i.e. if the first item is chosen
+from group 2, the first item will also be chosen from group 3, etc.) To use
+this feature, just add another group specifier after the group for the item
+itself.  For example, suppose that we have another group (group 2), and we want
+choices from this group to be linked to choices from group 1 in the example
+above.  The following code will do the trick:
 {{{
 [["relclause", 2, 1], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
 [["relclause", 2, 1], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
@@ -436,17 +437,16 @@ example above.  The following code will do the trick:
 Note that the third number must be the same for all items in the group.
 
 =Communication between elements=
-Webspr allows for a limited amount of communication between elements.
-Each element may set keys in a hashtable which is passed to the next
-element.  The hashtable is cleared between elements, so there is no
-possibility of long-distance communication (unless you just use
-!JavaScript global variables).
+Webspr allows for a limited amount of communication between elements.  Each
+element may set keys in a hashtable which is passed to the next element.  The
+hashtable is cleared between elements, so there is no possibility of
+long-distance communication (unless you just use !JavaScript global variables).
 
-Currently, this system is used to provide feedback to participants when
-they (for example) answer a comprehension question incorrectly.
-Controllers such as `Question` set the key "failed" if something goes wrong,
-and the next `Separator` item is then able to display a message warning
-the participant that they answered incorrectly.
+Currently, this system is used to provide feedback to participants when they
+(for example) answer a comprehension question incorrectly.  Controllers such as
+`Question` set the key "failed" if something goes wrong, and the next
+`Separator` item is then able to display a message warning the participant that
+they answered incorrectly.
 
 =Controllers=
 ==Separator==
@@ -485,7 +485,8 @@ the participant that they answered incorrectly.
 
 *Results*
 
-The format of the results depends on the setting of the "mode" option. If it is set to "speeded acceptability", results have the following format:
+The format of the results depends on the setting of the "mode" option. If it is
+set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
 || 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
@@ -540,11 +541,11 @@ If it is set to "self-paced reading", they look like this:
 || timeout        || `null`              || As for `Question`            ||
 
 ==VBox==
-The `VBox` controller makes it possible to combine multiple
-controllers to form a single controller. This allows the functionality
-of simple controllers to be reused in the construction of more complex
-controllers. For an example of a controller constructed using a VBox,
-see `js_includes/acceptability_judgment.js`.
+The `VBox` controller makes it possible to combine multiple controllers to form
+a single controller. This allows the functionality of simple controllers to be
+reused in the construction of more complex controllers. For an example of a
+controller constructed using a VBox, see
+`js_includes/acceptability_judgment.js`.
 
 || *Option*  || *Default*    || *Description* ||
 || children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
@@ -566,60 +567,55 @@ see `js_includes/acceptability_judgment.js`.
     * Change the heading displayed above practice items by adding a declaration such as `var practiceMessage = "foo";` to your data file.
 
 ==Configuring `js_includes` and `css_includes`==
-The `js_includes` and `css_includes` directories contain !JavaScript
-and CSS files that are necessary for the running of an experiment.
-The most important of these is the data file in `js_includes`
-containing the list of items for the experiment, but each controller
-also has its own file in `js_includes` (for example, the
-`DashedSentence` controller lives in `dashed_sentence.js`).  Many
+The `js_includes` and `css_includes` directories contain !JavaScript and CSS
+files that are necessary for the running of an experiment.  The most important
+of these is the data file in `js_includes` containing the list of items for the
+experiment, but each controller also has its own file in `js_includes` (for
+example, the `DashedSentence` controller lives in `dashed_sentence.js`).  Many
 controllers also define some CSS classes in corresponding files in
-`css_includes` (e.g. `dashed_sentence.css`). If you write your own
-controllers, you need to put the !JavaScript and CSS files in these
-directories.
+`css_includes` (e.g. `dashed_sentence.css`). If you write your own controllers,
+you need to put the !JavaScript and CSS files in these directories.
 
-When the webpage for an experiment is accessed, the server
-concatenates all the files in `js_includes` and serves them up as a
-single file (ditto for `css_includes`). You can tell the server to
-ignore some of the files in `js_includes` and `css_includes` by
-editing the variables `JS_INCLUDES_LIST` and `CSS_INCLUDES_LIST` in
-`server_conf.py`.  (There is a comment documenting how to do this.)
-You may wish to exclude !JavaScript and CSS files which are not used
-by your experiment in order to reduce the size of the file that needs
-to be downloaded. Since the files in both directories are named after
-the controllers with which they are associated, it is easy to see
-which files are superflous. However, note that the file `main.css` is
-required by all controllers.
+When the webpage for an experiment is accessed, the server concatenates all the
+files in `js_includes` and serves them up as a single file (ditto for
+`css_includes`). You can tell the server to ignore some of the files in
+`js_includes` and `css_includes` by editing the variables `JS_INCLUDES_LIST`
+and `CSS_INCLUDES_LIST` in `server_conf.py`.  (There is a comment documenting
+how to do this.) You may wish to exclude !JavaScript and CSS files which are
+not used by your experiment in order to reduce the size of the file that needs
+to be downloaded. Since the files in both directories are named after the
+controllers with which they are associated, it is easy to see which files are
+superflous. However, note that the file `main.css` is required by all
+controllers.
 
 
 =Debugging data files and some common gotchas=
-The following are some subtle problems which can often arise when
-writing a data file:
+The following are some subtle problems which can often arise when writing a
+data file:
 
     * A missing comma in the list of sentences in data.js can cause highly obscure !JavaScript errors with no obvious relation to their source.
 
     * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities.
 
-Setting the value of HTML options (for example the `html` option of
-the `Message` controller) can be a bit of a pain, since writing HTML
-code inside !JavaScript string literals is a bit finicky. Remember to
-escape singe/double quotes with a "\" (depending on whether you
-enclose the string in single/double quotes) and to escape newlines
-with a "\" also (by making "\" the last character of the line). Some
-browsers may accept !JavaScript string literals containing unescaped
-newlines, but most will not, so make sure you don't use them.
+Setting the value of HTML options (for example the `html` option of the
+`Message` controller) can be a bit of a pain, since writing HTML code inside
+!JavaScript string literals is a bit finicky. Remember to escape singe/double
+quotes with a "\" (depending on whether you enclose the string in single/double
+quotes) and to escape newlines with a "\" also (by making "\" the last
+character of the line). Some browsers may accept !JavaScript string literals
+containing unescaped newlines, but most will not, so make sure you don't use
+them.
 
-Most browsers allow strings to be indexed using square brackets
-(i.e. `"foo"[1] == "f"`). Internet Explorer, however, requires the use
-of the string's 'charAt' method.
+Most browsers allow strings to be indexed using square brackets (i.e. `"foo"[1]
+== "f"`). Internet Explorer, however, requires the use of the string's 'charAt'
+method.
 
-For debugging, I recommend using Firefox's !JavaScript console. Most
-syntax errors in a data file will result in an alert popping up
-warning that the `items` array has not been defined. You can usually
-get a much more informative error message by looking at the
-!JavaScript console.
+For debugging, I recommend using Firefox's !JavaScript console. Most syntax
+errors in a data file will result in an alert popping up warning that the
+`items` array has not been defined. You can usually get a much more informative
+error message by looking at the !JavaScript console.
 
 =Known problems and issues=
-   * Pressing '6' and '7' in Opera affects text size; this interacts
-     badly with acceptability judgements on scales including 6 and
-     7. I have not yet found a way of preventing Opera from
-     interpreting these keypresses.
+
+   * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgements on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
+
