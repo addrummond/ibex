@@ -121,7 +121,8 @@ function Utils(valuesFromPreviousElement) {
     this.clearTimeout = function(id) {
         // Check that this is an id from a timeout set with the
         // setTimeout method of this object.
-        var foundIt = false;
+        // COMMENTING THIS CHECK OUT FOR PERFORMANCE REASONS.
+        /*var foundIt = false;
         for (i = 0; i < this.timeoutIds; ++i) {
             if (this.timeoutIds[i] == id) {
                 foundIt = this.timeoutIds[i];
@@ -130,13 +131,17 @@ function Utils(valuesFromPreviousElement) {
         }
         if (foundIt == null)
             assert(false, "Attempt to clear timer that wasn't set propetly");
+        */
+
+
+        clearTimeout(id);
+
         var newArray = [];
         for (var j = 0; j < this.timeoutIds.length; ++j) {
-            if (j != i)
+            if (this.timeoutIds[j] != id)
                 newArray.push(this.timeoutIds[j]);
         }
         this.timeoutIds = newArray;
-        clearTimeout(foundIt);
     }
 
     this.gc = function() {
