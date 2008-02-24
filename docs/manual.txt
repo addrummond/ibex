@@ -62,11 +62,11 @@ using the `-r` option.
 
 The server logs messages in the file `server.log` in the same directory as
 `server.py`. The default is to store all files in the same directory as
-`server.py` (i.e. logs, results, etc.), but the working directory of the server
-can be modified by setting the variable `WEBSPR_WORKING_DIR` in
-`server_conf.py`. You can also set the environment variable of the same name.
-(The value of the environment variable overrides the value of the variable in
-`server_conf.py`.)
+`server.py` (i.e. logs, results, the `server_state` directory, etc.), but the
+working directory of the server can be modified by setting the variable
+`WEBSPR_WORKING_DIR` in `server_conf.py`. You can also set the environment
+variable of the same name.  (The value of the environment variable overrides
+the value of the variable in `server_conf.py`.)
 
 On Linux/Unix/OS X, the server uses file locking to ensure that the results
 file and server state remain consistent. Currently, it does not do so on
