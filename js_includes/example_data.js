@@ -14,7 +14,7 @@ var items = [
 
 ["sep", Separator, { }],
 
-["intro", Message, {html: "<p>This experiment has two parts. In the first part, you will be required to read a number of English sentence one word at a time. You can advance to the next word by pressing the space bar.</p><p>In the second part, you will be asked to &ldquo;rate&rdquo; the sentences on a scale of 1-7 (with 1 bad and 7 good).</p><p><b>Press any key to continue.</b></p>"}],
+["intro", Message, {html: "<p>This experiment has two parts. In the first part, you will be required to read a number of English sentences one word at a time. You can advance to the next word by pressing the space bar.</p><p>In the second part, you will be asked to &ldquo;rate&rdquo; the sentences on a scale of 1-7 (with 1 bad and 7 good).</p><p><b>Press any key to continue.</b></p>"}],
 ["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
 
 ["practice", ds, {s: "This is a practice sentence to get you used to reading sentences like this."}],
@@ -63,8 +63,8 @@ var items = [
 ["f", ds, {s: "The cowboy that the bulls tried to trample injured herself getting off a horse."}],
 ["f", ds, {s: "The patient that was admitted to the hospital last month still suffers severe pain in his left leg."}],
 ["f", ds, {s: "Very few economists that work in downtown DC will traveling to Russia this year."}],
-["f", ds, {s: "The warm weather that everyone had been waiting patiently for melted the frost on the fields in two weeks."}],
-/*["f", ds, {s: "The basketball player that had just signed a million dollar contract bounced the new ball with great skill in twenty minutes."}],
+["f", ds, {s: "The warm weather that everyone had been waiting patiently for melted the frost on the fields in two weeks."}]/*,
+["f", ds, {s: "The basketball player that had just signed a million dollar contract bounced the new ball with great skill in twenty minutes."}],
 ["f", ds, {s: "The girls that rode the elephants at the beginning of the parade was from Africa."}],
 ["f", ds, {s: "If the spoiled toddler had stopped shouting when the baby sitter asked, he would have gotten a piece of candy."}],
 ["f", ds, {s: "The brave detective that had just been put on a new case searched for the dangerous criminals at the docks in ten hours."}],
