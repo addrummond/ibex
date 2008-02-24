@@ -13,8 +13,8 @@ Java or Flash.
 
 =Setting up the server=
 There are two ways of running the server: either as a stand-alone server or as
-a CGI process. By default, the server runs in stand-alone mode; to start it,
-simply execute server.py:
+a CGI process. By default, the server runs in stand-alone mode. To start it,
+execute server.py:
 {{{
     python server.py
 }}}
