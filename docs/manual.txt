@@ -247,7 +247,7 @@ var items = [
 }}}
 *Where to put your data file*: Data files live in the `js_includes` directory,
 and must have a `.js` extension. You can only have one file in the directory at
-any one time, since if you have multilple files, they will just overwrite the
+any one time, since if you have multiple files, they will just overwrite the
 definitions for `shuffleSequence`, `items` and `defaults`.  However, you can
 tell the server to ignore some of the files in `js_includes` (see the section
 "Configuring `js_includes` and `css_includes`").
