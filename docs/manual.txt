@@ -460,11 +460,11 @@ A new (and not very well tested) feature allows for more complex designs where
 selection of an item from one group is dependent on selection of an item from
 another. For example, you can specify that the item chosen from group 3 should
 be the same as the item chosen from group 2 (i.e. if the first item is chosen
-from group 2, the first item will also be chosen from group 3, etc.) To use
-this feature, just add another group specifier after the group for the item
-itself.  For example, suppose that we have another group (group 2), and we want
-choices from this group to be linked to choices from group 1 in the example
-above.  The following code will do the trick:
+from group 2, the first item will also be chosen from group 3). To use this
+feature, just add another group specifier after the group for the item itself.
+For example, suppose that we have another group (group 2), and we want choices
+from this group to be linked to choices from group 1 in the example above.  The
+following code will do the trick:
 {{{
 [["relclause", 2, 1], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
 [["relclause", 2, 1], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
@@ -637,19 +637,19 @@ data file:
 
     * A missing comma in the list of sentences in data.js can cause highly obscure !JavaScript errors with no obvious relation to their source.
 
-    * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities.
+    * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
 Setting the value of HTML options (for example the `html` option of the
 `Message` controller) can be a bit of a pain, since writing HTML code inside
 !JavaScript string literals is a bit finicky. Remember to escape singe/double
-quotes with a "\" (depending on whether you enclose the string in single/double
-quotes) and to escape newlines with a "\" also (by making "\" the last
-character of the line). Some browsers may accept !JavaScript string literals
-containing unescaped newlines, but most will not, so make sure you don't use
-them.
+quotes with a backslash (depending on whether you enclose the string in
+single/double quotes) and to escape newlines with a backslash also (by making
+the backslash the last character of the line). Some browsers may accept
+!JavaScript string literals containing unescaped newlines, but most will not,
+so make sure you don't use them.
 
-Most browsers allow strings to be indexed using square brackets (i.e. `"foo"[1]
-== "f"`). Internet Explorer, however, requires the use of the string's 'charAt'
+Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]`
+`== "f"`). Internet Explorer, however, requires the use of the string's `charAt`
 method.
 
 For debugging, I recommend using Firefox's !JavaScript console. Most syntax
