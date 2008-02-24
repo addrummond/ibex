@@ -29,23 +29,23 @@ with the standard Python 2.5 distribution.
 The stand-alone server is limited to serving files relating to Webspr, so it is
 unlikely to be useful for real work (unless you hide it behind a proxy).
 However, it is useful for testing experimental designs without setting up a
-real HTTP server, or for running experiments offline.
+real HTTP server, and for running experiments offline.
 
 The server can be configured by editing `server_conf.py`. Each of the options
 is commented. Change the `SERVER_MODE` variable to determine whether the server
-runs in stand-alone mode or as a CGI process. When `SERVER_MODE` is set to
-"cgi", server.py will work as a standard CGI program; when it is set to
+runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to
+"cgi", `server.py` will work as a standard CGI program; when it is set to
 "paste", the server will run in stand-alone mode. You can change the value of
 `PORT` to determine the port the server will listen on when operating in
 stand-alone mode. The `-m` and `-p` command-line options can also be used to
 set the server mode and port respectively. These options override those set in
 `server_conf.py`.
 
-If you are running the server as a CGI process, make sure that the webserver
-you are using can serve up `experiment.html` as a static file. All dynamic
-requests go through `server.py`, so as long as `experiment.html` can be
-accessed, and the server recognizes `server.py` as a CGI process, everything
-should be fine.
+If you are running the server as a CGI application, make sure that the
+webserver you are using can serve up `experiment.html` as a static file. All
+dynamic requests go through `server.py`, so as long as `experiment.html` can be
+accessed, and the server recognizes `server.py` as a CGI application,
+everything should be fine.
 
 The directories `js_includes` and `css_includes` contain !JavaScript and CSS
 files required for particular kinds of experiment. When an HTTP request is made
@@ -107,7 +107,7 @@ ITEM 5:
 It is not necessary to construct the full sequence of items and entities
 manually. Webspr provides tools for ordering items in various ways (e.g. for
 inserting a pause between each item) and for implementing latin square designs.
-More on these soon.
+More on these shortly.
 
 Webspr has a modular design, where each entity is a !JavaScript object that
 follows a standard interface. This makes it quite easy to add new entities if
@@ -115,7 +115,7 @@ you are familiar with !JavaScript/DHTML programming.
 
 Each entity is an instance of a _controller_, which determines the kind of
 experimental task that the entity will present.  For example, there is a
-`DashedSentence` controller useful for self-paced reading a speeded
+`DashedSentence` controller useful for self-paced reading and speeded
 acceptability judgment tasks.  Webspr has a modular design, where each
 controller is a !JavaScript object that follows a standard interface. This
 makes it quite easy to add new controllers if you are familiar with
@@ -124,13 +124,13 @@ makes it quite easy to add new controllers if you are familiar with
 Webspr stores results in CSV format. This makes it easy to import results into
 spreadsheets, Matlab, R, etc. Each entity may contribute zero or more lines to
 the results file. The first seven columns of each line give generic information
-about the result (e.g. the MD5 hash of the subject's IP address), and the rest
+about the result (e.g. the MD5 hash of the subject's IP address) and the rest
 give information specific to the particular element (e.g. word reading times,
 comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
-|| 2        || MD5 hash of subject's IP address                               ||
+|| 2        || MD5 hash of parctipant's IP address                            ||
 || 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
 || 4        || Item number                                                    ||
 || 5        || Element number                                                 ||
@@ -152,8 +152,8 @@ distribution are fully documented here.
 
 *Important*: A single element my contribute multiple lines to the results file.
 For example, if the `DashedSentence` element is in "self-paced reading" mode,
-it will add one line for every word time. Thus, there is not a one-to-one
-correspondence between itemes/elements and lines.
+it will add to the results file for every word reading time it records. Thus,
+there is not a one-to-one correspondence between itemes/elements and lines.
 
 =Format of a data file=
 Data files for Webspr are !JavaScript source files, but it is not really
