@@ -1,3 +1,9 @@
+// Check that the object namespace hasn't been polluted by monkey patching (we
+// use objects as hashtables without conscience).
+for (var _ in { }) {
+    assert(false, "ERROR: The JavaScript object namespace has been polluted (perhaps by a library such as prototype.js?.");
+}
+
 var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
@@ -403,3 +409,4 @@ function sendResults(resultsLines, success, failure)
     xmlhttp.open("POST", serverURI, true);
     xmlhttp.send(data);
 }
+
