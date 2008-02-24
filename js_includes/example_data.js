@@ -6,7 +6,7 @@ var q = AcceptabilityJudgment;
 
 var defaults = [
     Separator, { transfer: 1000, normalMessage: "Please wait for the next sentence." },
-    DashedSentence, {mode: "speeded acceptability"},
+    DashedSentence, {mode: "self-paced reading"},
     AcceptabilityJudgment, {q: "How would you rate that sentence? Use number keys to answer.", as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true}
 ]
 
