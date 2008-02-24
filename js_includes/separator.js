@@ -6,8 +6,8 @@ function Separator(div, options, finishedCallback, utils) {
     this.div = div;
     this.options = options;
 
-    this.ignoreFailures = dget(options, "ignoreFailures", false);
-    this.style = this.ignoreFailures ? "normal" : (utils.getValueFromPreviousElement("failed") ? "error" : "normal");
+    this.ignoreFailure = dget(options, "ignoreFailure", false);
+    this.style = this.ignoreFailure ? "normal" : (utils.getValueFromPreviousElement("failed") ? "error" : "normal");
     var x = utils.getValueFromPreviousElement("style");
     if (x) this.style = x;
     assert(this.style == "normal" || this.style == "error", "'style' property of Separator must either be 'normal' or 'error'");

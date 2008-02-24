@@ -493,7 +493,7 @@ they answered incorrectly.
 || transfer        || `"keypress"` || Must be either `"keypress"` or a number. If the former, participant goes to the next item by pressing any key. If the latter, specifies number of ms to wait before the next item. ||
 || normalMessage   || `"Press any key to continue."` || Message to display if the previous item was completed normally. ||
 || errorMessage    || `"Wrong. Press any key to continue."` || Message to display (in red) if the previous item was not completed normally (e.g. timeout, incorrect answer). ||
-|| ignoreFailures  || `false`      || If true, never displays an error message. ||
+|| ignoreFailure   || `false`      || If true, never displays an error message. ||
 
 *Results*
 
