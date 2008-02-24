@@ -577,15 +577,22 @@ If it is set to "self-paced reading", they look like this:
 
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form
-a single controller. This allows the functionality of simple controllers to be
-reused in the construction of more complex controllers. For an example of a
-controller constructed using a VBox, see
+a single controller. Each controller in the VBox is displayed at the same time,
+one one top of the other. This allows the functionality of simple controllers
+to be reused in the construction of more complex controllers. For an example of
+a controller constructed using a VBox, see
 `js_includes/acceptability_judgment.js`.
+
+*Options*
 
 || *Option*  || *Default*    || *Description* ||
 || children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
 || triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must specify the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. ||
 || padding   || `"2em"`      || The amount of vertical padding to place between the children. ||
+
+*Results*
+
+The `VBox` controller simply concatenates the results of its children in the order that the children were given.
 
 =Further configuration=
 ==Miscelaneous options==
