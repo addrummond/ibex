@@ -348,28 +348,56 @@ and predicates quite easily; see `shuffle.js` for the definitions of the `seq`,
 'shuffle' and 'randomize' operators.
 
 ==Adding separators==
-
 Normally, it is a good idea to have some sort of padding in between items to
 warn participants that they have finished one item and are starting another.
 Webspr provides the `Separator` item for this purpose. It can either work on a
-timeout or prompt for a keypress. Here's an example:
-{{{
-["sep", Separator, {transfer: 1000, normalMessage: "Please wait for the next sentence."}] 
-}}}
+timeout or prompt for a keypress. Here's an example: {{{ ["sep", Separator,
+{transfer: 1000, normalMessage: "Please wait for the next sentence."}] }}}
 
 When the `transfer` option is set to 1000, this specifies that there should be
 a 1000ms wait before the next item. The `normalMessage` option gives the
 message that should be displayed if the participant didn't do anything wrong on
-the previous item (see the section "Communication between elements") for more
-details. If the other items have failure conditions, you should set the
+the previous item (see the section "Communication between elements" for more
+details). If the other items have failure conditions, you should set the
 `errorMessage` option too. If you want the participant to proceed by pressing a
 key rather than waiting, set `transfer` to "keypress".
 
 The shuffle sequence operator `sepWith` is provided for the purpose of
-interpolating separators with other items.
+interpolating separators with other items. It takes two arguments: the first is
+a shuffle sequence specifying the sequence of items which should be used to
+separate the other items; the second argument is a shuffle sequence specifying
+the other items.
+
+Let's take the example data file above and add timeout Separators between each
+item. There are no failure conditions in this experiment (since there is no
+"wrong" answer for an acceptability judgment") so we only need to specify the
+`normalMessage` option. For the moment, we'll still present the sentences in
+the order in which they appear. Here's the modified file:
+{{{
+var shuffleSequence = sepWith("sep", not("sep"));
+
+var defaults = [
+    Question, {as: ["Yes", "No"]},
+    DashedSentence, {mode: "speeded acceptability"}
+];
+
+var items = [
+
+["sep", Separator, {transfer: 1500, normalMessage: "Please wait for the next item."}],
+
+["filler", DashedSentence, {s: "Here's a silly filler sentence"},
+           Question, {q: "Is this a filler sentence?"}],
+["filler", DashedSentence, {s: "And another silly filler sentence"},
+           Question, {q: "Does this sentence have a relative clause?"}],
+["relclause", DashedSentence, {s: "A sentence that has a relative clause"},
+              Question, {q: "Was there movement through [Spec,CP]?"}],
+["relclause", DashedSentence, {s: "Another sentence that has a relative clause"},
+              Question, {q: "Was the first word of that sentence 'frog'?"}]
+
+];
+}}}
 
 ==Manipulating individual items==
-
 So far, we've been treating items as atoms for the purposes of shuffle
 sequences -- although an item might be composed of several elements, the
 operations `seq`, `randomize` and `shuffle` ignore this internal structure.
@@ -405,6 +433,13 @@ var items = [
 
 ];
 }}}
+*Important:* `precedeEachWith` and `followEachWith` have a somewhat confusing
+behavior with respect to the format of the results file. Although in effect,
+the first argument of `followEachWith` is appended to every item, the appended
+elements are not considered a part of the items they are appended to in the
+results file. Rather, every question in the preceding example will have the
+same item number and element number in the results file (that based on the
+position of the question item in the data file).
 
 ==Latin square designs==
 Webspr has built-in support for latin square designs. These are implemented by
