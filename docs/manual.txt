@@ -261,6 +261,8 @@ predicate may be one of the following:
 
     * A !JavaScript function, returning a boolean value when given a type (either a string or integer).
 
+    * Another shuffle sequence (shuffle sequences can be embedded inside bigger shuffle sequences).
+
 The basic operations work as follows:
 
     * A statement of the form `seq(pred1, pred2, pred3, ...)` specifies a sequence where all items matching `pred1` precede all items matching `pred2`, all items matching `pred2` precede all items matching `pred3`, and so on. The original relative ordering between items of the same type is preserved. A `seq` with only one argument is permissible.
