@@ -269,7 +269,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(os.path.join(os.path.join('.', last)))
+            f = open(os.path.join(last))
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
