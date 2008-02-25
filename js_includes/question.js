@@ -158,10 +158,9 @@ function Question(div, options, finishedCallback, utils) {
 
                     return false;
                 }
-                else {
-                    return true;
-                }
             }
         }
+
+        return true;
     }
 }
