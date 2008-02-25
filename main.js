@@ -135,7 +135,6 @@ function Utils(valuesFromPreviousElement) {
             assert(false, "Attempt to clear timer that wasn't set propetly");
         */
 
-
         clearTimeout(id);
 
         var newArray = [];
