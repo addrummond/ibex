@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 // Shuffle an array.
 function fisherYates(myArray) {
     var i = myArray.length;

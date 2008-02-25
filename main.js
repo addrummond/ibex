@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 // Check that the object namespace hasn't been polluted by monkey patching (we
 // use objects as hashtables without conscience).
 for (var _ in { }) {

@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 Message.obligatory = ["html"];
 Message.countsForProgressBar = false;
 

@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 VBox.obligatory = ["children", "triggers"]
 
 function VBox(div, options, finishedCallback, utils) {

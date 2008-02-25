@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 // Taken from http://aymanh.com/9-javascript-tips-you-may-not-know
 function AssertException(message) { this.message = message; }
 AssertException.prototype.toString = function () {

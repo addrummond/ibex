@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 Question.obligatory = ["q", "as"];
 
 __Question_callback__ = null;

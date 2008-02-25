@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 AcceptabilityJudgment.obligatory = ["s", "q", "as"];
 
 function AcceptabilityJudgment(div, options, finishedCallback, utils) {

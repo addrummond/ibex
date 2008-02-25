@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 function boolToInt(x) { if (x) return 1; else return 0; }
 
 DashedSentence.obligatory = ["s"];

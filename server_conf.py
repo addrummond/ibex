@@ -1,3 +1,5 @@
+# This software is licensed under a BSD license; see the LICENSE file for details.
+
 # The port the server will run on if running in stand-alone
 # mode.
 PORT = 3000

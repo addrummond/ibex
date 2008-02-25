@@ -1,3 +1,5 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 FlashSentence.obligatory = ["s"];
 
 function FlashSentence(div, options, finishedCallback, utils) {

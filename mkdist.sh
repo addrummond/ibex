@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# This software is licensed under a BSD license; see the LICENSE file for details.
+
 if [ ! -d dist ]; then
     mkdir dist
 fi
