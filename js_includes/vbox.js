@@ -49,7 +49,7 @@ function VBox(div, options, finishedCallback, utils) {
         this.childUtils.push(u);
         var l = this.childUtils.length - 1;
         var t = this;
-        // Get around Java's silly closure capture behavior (deriving
+        // Get around JavaScript's silly closure capture behavior (deriving
         // from weird variable scoping rules).
         // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
         (function(l) {
