@@ -7,14 +7,14 @@ http://code.google.com/p/webspr/wiki/Documentation
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment online.
 (Originally only self-paced reading was supported, hence the name.)  The system
-is modular, and the range of possible experiments is steadily growing. Webspr
+is modular and the range of possible experiments is steadily growing. Webspr
 uses !JavaScript and HTML only, and doesn't require the use of plugins such as
 Java or Flash.
 
 =Setting up the server=
-There are two ways of running the server: either as a stand-alone server or as
-a CGI process. By default, the server runs in stand-alone mode. To start it,
-execute server.py:
+There are two ways of running the server: either as a stand-alone HTTP server
+or as a CGI process. By default, the server runs in stand-alone mode. To start
+it, execute server.py:
 {{{
     python server.py
 }}}
@@ -60,13 +60,12 @@ and/or its contents. Currently, the directory just contains the counter used to
 alternate latin square designs. This counter can be reset on server startup
 using the `-r` option.
 
-The server logs messages in the file `server.log` in the same directory as
-`server.py`. The default is to store all files in the same directory as
-`server.py` (i.e. logs, results, the `server_state` directory, etc.), but the
-working directory of the server can be modified by setting the variable
-`WEBSPR_WORKING_DIR` in `server_conf.py`. You can also set the environment
-variable of the same name.  (The value of the environment variable overrides
-the value of the variable in `server_conf.py`.)
+The server logs messages in the file `server.log`. The default is to store all
+files in the same directory as `server.py` (i.e. logs, results, the
+`server_state` directory, etc.), but the working directory of the server can be
+modified by setting the variable `WEBSPR_WORKING_DIR` in `server_conf.py`. You
+can also set the environment variable of the same name.  (The value of the
+environment variable overrides the value of the variable in `server_conf.py`.)
 
 On Linux/Unix/OS X, the server uses file locking to ensure that the results
 file and server state remain consistent. Currently, it does not do so on
@@ -79,7 +78,8 @@ certainly work on any system with Python 2.5, so long as the `paste` module is
 installed). The CGI server has been tested on OS X using the lighttpd web
 server.
 
-=Basic concepts= An Webspr experiment is essentially a sequence of _items_.
+=Basic concepts=
+A Webspr experiment is essentially a sequence of _items_.
 Each item is itself a sequence of _entities_. To give a concrete example, each
 item in a self-paced reading experiment might consist of two entities: an
 entity providing a sentence for the subject to step through word by word,
@@ -108,10 +108,6 @@ It is not necessary to construct the full sequence of items and entities
 manually. Webspr provides tools for ordering items in various ways (e.g. for
 inserting a pause between each item) and for implementing latin square designs.
 More on these shortly.
-
-Webspr has a modular design, where each entity is a !JavaScript object that
-follows a standard interface. This makes it quite easy to add new entities if
-you are familiar with !JavaScript/DHTML programming.
 
 Each entity is an instance of a _controller_, which determines the kind of
 experimental task that the entity will present.  For example, there is a
@@ -190,9 +186,6 @@ sense yet):
 var shuffleSequence = seq(anyType);
 }}}
 
-You are free to define `shuffleSequence` either before or after the `items`
-array.
-
 Suppose we wanted to pair each sentence with a comprehension question.  The
 easiest way to do this is to add a second element to each item:
 {{{
@@ -221,9 +214,8 @@ var defaults = [
     DashedSentence, {mode: "speeded acceptability"}
 ];
 }}}
-This definition can go either before or after the definition of the `items`
-array.  Once it is in place, we can drop the specification of the `as` option
-for each Question element. The final data file looks like this:
+Once this definition is in place, we can drop the specification of the `as`
+option for each Question element. The final data file looks like this:
 {{{
 var shuffleSequence = seq(anyType);
 
@@ -246,7 +238,7 @@ var items = [
 ];
 }}}
 *Where to put your data file*: Data files live in the `js_includes` directory,
-and must have a `.js` extension. You can only have one file in the directory at
+and must have a `.js` extension. You can only have data one file in the directory at
 any one time, since if you have multiple files, they will just overwrite the
 definitions for `shuffleSequence`, `items` and `defaults`.  However, you can
 tell the server to ignore some of the files in `js_includes` (see the section
@@ -347,15 +339,16 @@ It is possible to include duplicate items in the final sequence. For example,
 reason, it is possible to accidentally include duplicate items if a number of
 your predicates overlap.  You can define your own shuffle sequence operators
 and predicates quite easily; see `shuffle.js` for the definitions of the `seq`,
-'shuffle' and 'randomize' operators.
+`shuffle` and `randomize` operators.
 
 ==Adding separators==
 Normally, it is a good idea to have some sort of padding in between items to
 warn participants that they have finished one item and are starting another.
 Webspr provides the `Separator` item for this purpose. It can either work on a
-timeout or prompt for a keypress. Here's an example: {{{ ["sep", Separator,
-{transfer: 1000, normalMessage: "Please wait for the next sentence."}] }}}
-
+timeout or prompt for a keypress. Here's an example:
+{{{
+["sep", Separator, {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
+}}}
 When the `transfer` option is set to 1000, this specifies that there should be
 a 1000ms wait before the next item. The `normalMessage` option gives the
 message that should be displayed if the participant didn't do anything wrong on
@@ -372,9 +365,9 @@ the other items.
 
 Let's take the example data file above and add timeout Separators between each
 item. There are no failure conditions in this experiment (since there is no
-"wrong" answer for an acceptability judgment") so we only need to specify the
+"wrong" answer for an acceptability judgment) so we only need to specify the
 `normalMessage` option. For the moment, we'll still present the sentences in
-the order in which they appear. Here's the modified file:
+the order in which they appear in the `items` array. Here's the modified file:
 {{{
 var shuffleSequence = sepWith("sep", not("sep"));
 
@@ -458,7 +451,7 @@ rotated using a counter stored on the server. Like types, groups may either be
 strings or numbers. Webspr checks that all groups contain the same number of
 items, and will raise an error if this condition is not met.
 
-A new (and not very well tested) feature allows for more complex designs where
+A new (and not very well-tested) feature allows for more complex designs where
 selection of an item from one group is dependent on selection of an item from
 another. For example, you can specify that the item chosen from group 3 should
 be the same as the item chosen from group 2 (i.e. if the first item is chosen
@@ -522,13 +515,13 @@ they answered incorrectly.
 
 *Results*
 
-The format of the results depends on the setting of the "mode" option. If it is
+The format of the results depends on the setting of the `mode` option. If it is
 set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
 || 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
 
-If it is set to "self-paced reading", they look like this:
+If `mode` is set to "self-paced reading", the results look like this:
 
 || *Column* || *Description* ||
 || 1        || Word number. For example, "1" indicates that this line gives the time it took to read the first word (i.e. the difference between <the time at which the first word appeared> and <the time at which it disappeared and the second word appeared>). ||
@@ -556,7 +549,7 @@ If it is set to "self-paced reading", they look like this:
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
-|| presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings, for example). ||
+|| presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
 
 *Results*
@@ -580,7 +573,7 @@ If it is set to "self-paced reading", they look like this:
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form
 a single controller. Each controller in the VBox is displayed at the same time,
-one one top of the other. This allows the functionality of simple controllers
+one on top of the other. This allows the functionality of simple controllers
 to be reused in the construction of more complex controllers. For an example of
 a controller constructed using a VBox, see
 `js_includes/acceptability_judgment.js`.
@@ -606,7 +599,7 @@ The `VBox` controller simply concatenates the results of its children in the ord
 
     * Change the message shown when there was an error sending results to the server by adding a declaration such as `var completionErrorMessage = "Error.";` to your data file.
 
-    * Mark items as practice items by setting the value of the `practiceItemTypes` variable. For example, if all your practice sentences have types "practice1" and "practice2", add the declaration `var practiceItemTypes = ["practice1", "practice2"];` Note that even if there is only one type, you must still use an array. A blue "practice" heading is placed above practice items.
+    * Mark items as practice items by setting the value of the `practiceItemTypes` variable. For example, if all your practice sentences have types "practice1" and "practice2", add the declaration `var practiceItemTypes = ["practice1", "practice2"];` Note that even if there is only one practice type, you must still use an array. A blue "practice" heading is placed above practice items.
 
     * Change the heading displayed above practice items by adding a declaration such as `var practiceMessage = "foo";` to your data file.
 
@@ -629,11 +622,12 @@ how to do this.) You may wish to exclude !JavaScript and CSS files which are
 not used by your experiment in order to reduce the size of the file that needs
 to be downloaded. Since the files in both directories are named after the
 controllers with which they are associated, it is easy to see which files are
-superflous. However, note that the file `main.css` is required by all
+superflous.
+
+*However:* note that the file `main.css` is required by all
 controllers.
 
-
-=Debugging data files and some common gotchas=
+=Known problems and issues=
 The following are some subtle problems which can often arise when writing a
 data file:
 
@@ -659,7 +653,7 @@ errors in a data file will result in an alert popping up warning that the
 `items` array has not been defined. You can usually get a much more informative
 error message by looking at the !JavaScript console.
 
-=Known problems and issues=
+Some further cross-browser issues:
 
    * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgements on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
 
