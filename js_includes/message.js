@@ -19,6 +19,7 @@ function Message(div, options, finishedCallback, utils) {
     if (this.transfer == "keypress") {
         this.handleKey = function(code, time) {
             finishedCallback(null);
+            return true;
         }
     }
     else {

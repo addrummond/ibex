@@ -342,8 +342,10 @@ document.onkeydown = function(e) {
         e = window.event;
     }
 
-    if (currentControllerInstance.handleKey)
-        currentControllerInstance.handleKey(e.keyCode, time);
+    if (currentControllerInstance.handleKey) {
+        // Should return false if they keypress wasn't handled.
+        return currentControllerInstance.handleKey(e.keyCode, time);
+    }
 }
 
 function indicateThatResultsAreBeingSent()

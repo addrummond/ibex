@@ -123,6 +123,11 @@ function Question(div, options, finishedCallback, utils) {
                 finishedCallback([[url_encode_removing_commas(this.question),
                                    url_encode_removing_commas(ans),
                                    correct]]);
+
+                return false;
+            }
+            else {
+                return true;
             }
         }
         // Letters (and numbers in the case of scales).
@@ -150,6 +155,11 @@ function Question(div, options, finishedCallback, utils) {
                     finishedCallback([[url_encode_removing_commas(this.question),
                                        url_encode_removing_commas(ans),
                                        correct]]);
+
+                    return false;
+                }
+                else {
+                    return true;
                 }
             }
         }

@@ -80,6 +80,11 @@ function DashedSentence(div, options, finishedCallback, utils) {
                 ++(this.currentWord);
                 if (this.currentWord > this.words.length)
                     finishedCallback(this.resultsLines);
+
+                return false;
+            }
+            else {
+                return true;
             }
         };
     }
