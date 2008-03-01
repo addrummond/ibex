@@ -1,8 +1,7 @@
 #
-# You may need to edit these.
+# You may need to edit this.
 #
 SERVER_CONF_PY_FILE = "server_conf.py"
-PY_SCRIPT_NAME = "server.py"
 
 
 # Copyright (c) 2007, Alex Drummond <a.d.drummond@gmail.com>
@@ -47,6 +46,8 @@ import os
 import os.path
 import cgi
 import string
+
+PY_SCRIPT_NAME = "server.py"
 
 
 #
@@ -392,7 +393,12 @@ __all__ = ['JSONDecoder']
 #
 
 
-c = __import__(SERVER_CONF_PY_FILE.rstrip(".py"), level=-1)
+c = { }
+try:
+    execfile(SERVER_CONF_PY_FILE, c)
+except Exception, e:
+    print "Could not open/load config file: %s" % e
+    sys.exit(1)
 
 
 #
@@ -417,12 +423,12 @@ for k in ['RESULT_FILE_NAME',
           'SERVER_MODE', 'JS_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR']:
-    if not k in dir(c):
+    if not c.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
 # Define optional variables if they are not already defined.
-c.PORT = 'PORT' in dir(c) and c.PORT or None
-c.WEBSPR_WORKING_DIR = 'WEBSPR_WORKING_DIR' in dir(c) and c.WEBSPR_WORKING_DIR or None
+c['PORT'] = c.has_key('PORT') and c['PORT'] or None
+c['WEBSPR_WORKING_DIR'] = c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or None
 
 # Check for "-m" and "-p" options (sets server mode and port respectively).
 # Also check for "-r" option (resest counter on startup).
@@ -431,9 +437,9 @@ try:
     opts, _ = getopt.getopt(sys.argv[1:], "m:p:r")
     for k,v in opts:
         if k == "-m":
-            c.SERVER_MODE = v
+            c['SERVER_MODE'] = v
         elif k == "-p":
-            c.PORT = int(v)
+            c['PORT'] = int(v)
         elif k == "-r":
             COUNTER_SHOULD_BE_RESET = True
 except getopt.GetoptError:
@@ -444,13 +450,13 @@ except ValueError:
     sys.exit(1)
 
 # Check values of (some) conf variables.
-if type(c.PORT) != types.IntType:
+if type(c['PORT']) != types.IntType:
     logger.error("Bad value (or no value) for server port.")
     sys.exit(1)
-if type(c.JS_INCLUDES_LIST) != types.ListType or len(c.JS_INCLUDES_LIST) < 1 or (c.JS_INCLUDES_LIST[0] not in ["block", "allow"]):
+if type(c['JS_INCLUDES_LIST']) != types.ListType or len(c['JS_INCLUDES_LIST']) < 1 or (c['JS_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'JS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
-if type(c.CSS_INCLUDES_LIST) != types.ListType or len(c.CSS_INCLUDES_LIST) < 1 or (c.CSS_INCLUDES_LIST[0] not in ["block", "allow"]):
+if type(c['CSS_INCLUDES_LIST']) != types.ListType or len(c['CSS_INCLUDES_LIST']) < 1 or (c['CSS_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'CSS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
 
@@ -465,9 +471,9 @@ except:
     pass
 
 # Configuration.
-if c.SERVER_MODE == "paste":
+if c['SERVER_MODE'] == "paste":
     from paste import httpserver
-elif c.SERVER_MODE == "cgi":
+elif c['SERVER_MODE'] == "cgi":
     import wsgiref.handlers
 else:
     logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
@@ -475,7 +481,7 @@ else:
 
 PWD = None
 if globals().has_key('WEBSPR_WORKING_DIR'):
-    PWD = c.WEBSPR_WORKING_DIR
+    PWD = c['WEBSPR_WORKING_DIR']
 if os.environ.get("WEBSPR_WORKING_DIR"):
     PWD = os.environ.get("WEBSPR_WORKING_DIR")
 if PWD is None: PWD = ''
@@ -504,7 +510,7 @@ def unlock_and_close(f):
 
 def get_counter():
     try:
-        f = lock_and_open(os.path.join(PWD, c.SERVER_STATE_DIR, 'counter'), "r")
+        f = lock_and_open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "r")
         n = int(f.read().strip())
         unlock_and_close(f)
         return n
@@ -513,7 +519,7 @@ def get_counter():
         sys.exit(1)
 def set_counter(n):
     try:
-        f = lock_and_open(os.path.join(PWD, c.SERVER_STATE_DIR, 'counter'), "w")
+        f = lock_and_open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
         f.write(str(n))
         unlock_and_close(f)
     except IOError:
@@ -633,7 +639,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(os.path.join(c.STATIC_FILES_DIR, last))
+            f = open(os.path.join(c['STATIC_FILES_DIR'], last))
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
@@ -650,11 +656,11 @@ def control(env, start_response):
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'): 
             if qs_hash['include'][0] == 'js':
-                m = create_monster_string(c.JS_INCLUDES_DIR, '.js', c.JS_INCLUDES_LIST)
+                m = create_monster_string(c['JS_INCLUDES_DIR'], '.js', c['JS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
-                m = create_monster_string(c.CSS_INCLUDES_DIR, '.css', c.CSS_INCLUDES_LIST)
+                m = create_monster_string(c['CSS_INCLUDES_DIR'], '.css', c['CSS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
 
@@ -678,7 +684,7 @@ def control(env, start_response):
         def backup_raw_post_data(header=None):
             bf = None
             try:
-                bf = lock_and_open(os.path.join(PWD, c.RESULT_FILES_DIR, c.RAW_RESULT_FILE_NAME), "a")
+                bf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RAW_RESULT_FILE_NAME']), "a")
                 if header:
                     bf.write("\n")
                     bf.write(header)
@@ -698,7 +704,7 @@ def control(env, start_response):
                                       time_module.gmtime(thetime)),
                  user_agent,
                  "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
-            rf = lock_and_open(os.path.join(PWD, c.RESULT_FILES_DIR, c.RESULT_FILE_NAME), "a")
+            rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
             backup_raw_post_data(header)
             csv_results = to_csv(main_results)
             rf.write(header)
@@ -726,39 +732,39 @@ def control(env, start_response):
 # Create a directory for storing results (if it doesn't already exist).
 try:
     # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c.RESULT_FILES_DIR)):
-        logger.error("'%s' is a file, so could not create results directory" % c.RESULT_FILES_DIR)
+    if os.path.isfile(os.path.join(PWD, c['RESULT_FILES_DIR'])):
+        logger.error("'%s' is a file, so could not create results directory" % c['RESULT_FILES_DIR'])
         sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c.RESULT_FILES_DIR)):
-        os.mkdir(os.path.join(PWD, c.RESULT_FILES_DIR))
+    elif not os.path.isdir(os.path.join(PWD, c['RESULT_FILES_DIR'])):
+        os.mkdir(os.path.join(PWD, c['RESULT_FILES_DIR']))
 except os.error, IOError:
-    logger.error("Could not create results directory at %s" % os.path.join(PWD, c.RESULT_FILES_DIR))
+    logger.error("Could not create results directory at %s" % os.path.join(PWD, c['RESULT_FILES_DIR']))
     sys.exit(1)
 
 # Create a directory for storing the server state
 # (if it doesn't already exist), and initialize the counter.
 try:
     # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c.SERVER_STATE_DIR)):
-        logger.error("'%s' is a file, so could not create server state directory" % c.SERVER_STATE_DIR)
+    if os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'])):
+        logger.error("'%s' is a file, so could not create server state directory" % c['SERVER_STATE_DIR'])
         sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c.SERVER_STATE_DIR)):
-        os.mkdir(os.path.join(PWD, c.SERVER_STATE_DIR))
+    elif not os.path.isdir(os.path.join(PWD, c['SERVER_STATE_DIR'])):
+        os.mkdir(os.path.join(PWD, c['SERVER_STATE_DIR']))
 
     # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(os.path.join(PWD, c.SERVER_STATE_DIR, 'counter')):
-        f = open(os.path.join(PWD, c.SERVER_STATE_DIR, 'counter'), "w")
+    if not os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter')):
+        f = open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
         f.write("0")
         f.close()
 except os.error, IOError:
-    logger.error("Could not create server state directory at %s" % os.path.join(PWD, c.SERVER_STATE_DIR))
+    logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
     sys.exit(1)
 
 if COUNTER_SHOULD_BE_RESET:
     print "Counter for latin square designs has been reset.\n"
     set_counter(0)
 
-if c.SERVER_MODE == "paste":
-    httpserver.serve(control, port=c.PORT)
-elif c.SERVER_MODE == "cgi":
+if c['SERVER_MODE'] == "paste":
+    httpserver.serve(control, port=c['PORT'])
+elif c['SERVER_MODE'] == "cgi":
     wsgiref.handlers.CGIHandler().run(control)
