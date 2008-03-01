@@ -412,7 +412,8 @@ def nice_time(t):
 # Logging and configuration variables.
 #
 
-logging.basicConfig(filename="server.log")
+logging.basicConfig(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
+                                          "server.log"))
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
 
