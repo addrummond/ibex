@@ -481,7 +481,7 @@ else:
     sys.exit(1)
 
 PWD = None
-if globals().has_key('WEBSPR_WORKING_DIR'):
+if c.has_key('WEBSPR_WORKING_DIR'):
     PWD = c['WEBSPR_WORKING_DIR']
 if os.environ.get("WEBSPR_WORKING_DIR"):
     PWD = os.environ.get("WEBSPR_WORKING_DIR")
