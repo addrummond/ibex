@@ -49,320 +49,347 @@ import cgi
 from server_conf import *
 import string
 
+
 #
-# ========== START OF json.py ==========
+# =========== START OF decoder.py AND scanner.py FROM simple_json PACKAGE ==========
 #
+# This package is license under the MIT license (which is compatible with the BSD
+# license used for webspr).
+#
+# http://pypi.python.org/pypi/simplejson
+#
+import re
 
-##    json.py implements a JSON (http://json.org) reader and writer.
-##    Copyright (C) 2005  Patrick D. Logan
-##    Contact mailto:patrickdlogan@stardecisions.com
-##
-##    This library is free software; you can redistribute it and/or
-##    modify it under the terms of the GNU Lesser General Public
-##    License as published by the Free Software Foundation; either
-##    version 2.1 of the License, or (at your option) any later version.
-##
-##    This library is distributed in the hope that it will be useful,
-##    but WITHOUT ANY WARRANTY; without even the implied warranty of
-##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-##    Lesser General Public License for more details.
-##
-##    You should have received a copy of the GNU Lesser General Public
-##    License along with this library; if not, write to the Free Software
-##    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# In the original code: from simplejson.scanner import Scanner, pattern
+import sre_parse, sre_compile, sre_constants
+from sre_constants import BRANCH, SUBPATTERN
+from re import VERBOSE, MULTILINE, DOTALL
+import re
 
+__all__ = ['Scanner', 'pattern']
 
-class _StringGenerator(object):
-	def __init__(self, string):
-		self.string = string
-		self.index = -1
-	def peek(self):
-		i = self.index + 1
-		if i < len(self.string):
-			return self.string[i]
-		else:
-			return None
-	def next(self):
-		self.index += 1
-		if self.index < len(self.string):
-			return self.string[self.index]
-		else:
-			raise StopIteration
-	def all(self):
-		return self.string
-
-class WriteException(Exception):
-    pass
-
-class ReadException(Exception):
-    pass
-
-class JsonReader(object):
-    hex_digits = {'A': 10,'B': 11,'C': 12,'D': 13,'E': 14,'F':15}
-    escapes = {'t':'\t','n':'\n','f':'\f','r':'\r','b':'\b'}
-
-    def read(self, s):
-        self._generator = _StringGenerator(s)
-        result = self._read()
-        return result
-
-    def _read(self):
-        self._eatWhitespace()
-        peek = self._peek()
-        if peek is None:
-            raise ReadException, "Nothing to read: '%s'" % self._generator.all()
-        if peek == '{':
-            return self._readObject()
-        elif peek == '[':
-            return self._readArray()            
-        elif peek == '"':
-            return self._readString()
-        elif peek == '-' or peek.isdigit():
-            return self._readNumber()
-        elif peek == 't':
-            return self._readTrue()
-        elif peek == 'f':
-            return self._readFalse()
-        elif peek == 'n':
-            return self._readNull()
-        elif peek == '/':
-            self._readComment()
-            return self._read()
-        else:
-            raise ReadException, "Input is not valid JSON: '%s'" % self._generator.all()
-
-    def _readTrue(self):
-        self._assertNext('t', "true")
-        self._assertNext('r', "true")
-        self._assertNext('u', "true")
-        self._assertNext('e', "true")
-        return True
-
-    def _readFalse(self):
-        self._assertNext('f', "false")
-        self._assertNext('a', "false")
-        self._assertNext('l', "false")
-        self._assertNext('s', "false")
-        self._assertNext('e', "false")
-        return False
-
-    def _readNull(self):
-        self._assertNext('n', "null")
-        self._assertNext('u', "null")
-        self._assertNext('l', "null")
-        self._assertNext('l', "null")
-        return None
-
-    def _assertNext(self, ch, target):
-        if self._next() != ch:
-            raise ReadException, "Trying to read %s: '%s'" % (target, self._generator.all())
-
-    def _readNumber(self):
-        isfloat = False
-        result = self._next()
-        peek = self._peek()
-        while peek is not None and (peek.isdigit() or peek == "."):
-            isfloat = isfloat or peek == "."
-            result = result + self._next()
-            peek = self._peek()
-        try:
-            if isfloat:
-                return float(result)
-            else:
-                return int(result)
-        except ValueError:
-            raise ReadException, "Not a valid JSON number: '%s'" % result
-
-    def _readString(self):
-        result = ""
-        assert self._next() == '"'
-        try:
-            while self._peek() != '"':
-                ch = self._next()
-                if ch == "\\":
-                    ch = self._next()
-                    if ch in 'brnft':
-                        ch = self.escapes[ch]
-                    elif ch == "u":
-		        ch4096 = self._next()
-			ch256  = self._next()
-			ch16   = self._next()
-			ch1    = self._next()
-			n = 4096 * self._hexDigitToInt(ch4096)
-			n += 256 * self._hexDigitToInt(ch256)
-			n += 16  * self._hexDigitToInt(ch16)
-			n += self._hexDigitToInt(ch1)
-			ch = unichr(n)
-                    elif ch not in '"/\\':
-                        raise ReadException, "Not a valid escaped JSON character: '%s' in %s" % (ch, self._generator.all())
-                result = result + ch
-        except StopIteration:
-            raise ReadException, "Not a valid JSON string: '%s'" % self._generator.all()
-        assert self._next() == '"'
-        return result
-
-    def _hexDigitToInt(self, ch):
-        try:
-            result = self.hex_digits[ch.upper()]
-        except KeyError:
+FLAGS = (VERBOSE | MULTILINE | DOTALL)
+class Scanner(object):
+    def __init__(self, lexicon, flags=FLAGS):
+        self.actions = [None]
+        # combine phrases into a compound pattern
+        s = sre_parse.Pattern()
+        s.flags = flags
+        p = []
+        for idx, token in enumerate(lexicon):
+            phrase = token.pattern
             try:
-                result = int(ch)
-	    except ValueError:
-	         raise ReadException, "The character %s is not a hex digit." % ch
-        return result
+                subpattern = sre_parse.SubPattern(s,
+                    [(SUBPATTERN, (idx + 1, sre_parse.parse(phrase, flags)))])
+            except sre_constants.error:
+                raise
+            p.append(subpattern)
+            self.actions.append(token)
 
-    def _readComment(self):
-        assert self._next() == "/"
-        second = self._next()
-        if second == "/":
-            self._readDoubleSolidusComment()
-        elif second == '*':
-            self._readCStyleComment()
+        p = sre_parse.SubPattern(s, [(BRANCH, (None, p))])
+        self.scanner = sre_compile.compile(p)
+
+
+    def iterscan(self, string, idx=0, context=None):
+        """
+        Yield match, end_idx for each match
+        """
+        match = self.scanner.scanner(string, idx).match
+        actions = self.actions
+        lastend = idx
+        end = len(string)
+        while True:
+            m = match()
+            if m is None:
+                break
+            matchbegin, matchend = m.span()
+            if lastend == matchend:
+                break
+            action = actions[m.lastindex]
+            if action is not None:
+                rval, next_pos = action(m, context)
+                if next_pos is not None and next_pos != matchend:
+                    # "fast forward" the scanner
+                    matchend = next_pos
+                    match = self.scanner.scanner(string, matchend).match
+                yield rval, matchend
+            lastend = matchend
+            
+def pattern(pattern, flags=FLAGS):
+    def decorator(fn):
+        fn.pattern = pattern
+        fn.regex = re.compile(pattern, flags)
+        return fn
+    return decorator
+
+FLAGS = re.VERBOSE | re.MULTILINE | re.DOTALL
+
+def _floatconstants():
+    import struct
+    import sys
+    _BYTES = '7FF80000000000007FF0000000000000'.decode('hex')
+    if sys.byteorder != 'big':
+        _BYTES = _BYTES[:8][::-1] + _BYTES[8:][::-1]
+    nan, inf = struct.unpack('dd', _BYTES)
+    return nan, inf, -inf
+
+NaN, PosInf, NegInf = _floatconstants()
+
+def linecol(doc, pos):
+    lineno = doc.count('\n', 0, pos) + 1
+    if lineno == 1:
+        colno = pos
+    else:
+        colno = pos - doc.rindex('\n', 0, pos)
+    return lineno, colno
+
+def errmsg(msg, doc, pos, end=None):
+    lineno, colno = linecol(doc, pos)
+    if end is None:
+        return '%s: line %d column %d (char %d)' % (msg, lineno, colno, pos)
+    endlineno, endcolno = linecol(doc, end)
+    return '%s: line %d column %d - line %d column %d (char %d - %d)' % (
+        msg, lineno, colno, endlineno, endcolno, pos, end)
+
+_CONSTANTS = {
+    '-Infinity': NegInf,
+    'Infinity': PosInf,
+    'NaN': NaN,
+    'true': True,
+    'false': False,
+    'null': None,
+}
+
+def JSONConstant(match, context, c=_CONSTANTS):
+    return c[match.group(0)], None
+pattern('(-?Infinity|NaN|true|false|null)')(JSONConstant)
+
+def JSONNumber(match, context):
+    match = JSONNumber.regex.match(match.string, *match.span())
+    integer, frac, exp = match.groups()
+    if frac or exp:
+        res = float(integer + (frac or '') + (exp or ''))
+    else:
+        res = int(integer)
+    return res, None
+pattern(r'(-?(?:0|[1-9]\d*))(\.\d+)?([eE][-+]?\d+)?')(JSONNumber)
+
+STRINGCHUNK = re.compile(r'(.*?)(["\\])', FLAGS)
+BACKSLASH = {
+    '"': u'"', '\\': u'\\', '/': u'/',
+    'b': u'\b', 'f': u'\f', 'n': u'\n', 'r': u'\r', 't': u'\t',
+}
+
+DEFAULT_ENCODING = "utf-8"
+
+def scanstring(s, end, encoding=None, _b=BACKSLASH, _m=STRINGCHUNK.match):
+    if encoding is None:
+        encoding = DEFAULT_ENCODING
+    chunks = []
+    _append = chunks.append
+    begin = end - 1
+    while 1:
+        chunk = _m(s, end)
+        if chunk is None:
+            raise ValueError(
+                errmsg("Unterminated string starting at", s, begin))
+        end = chunk.end()
+        content, terminator = chunk.groups()
+        if content:
+            if not isinstance(content, unicode):
+                content = unicode(content, encoding)
+            _append(content)
+        if terminator == '"':
+            break
+        try:
+            esc = s[end]
+        except IndexError:
+            raise ValueError(
+                errmsg("Unterminated string starting at", s, begin))
+        if esc != 'u':
+            try:
+                m = _b[esc]
+            except KeyError:
+                raise ValueError(
+                    errmsg("Invalid \\escape: %r" % (esc,), s, end))
+            end += 1
         else:
-            raise ReadException, "Not a valid JSON comment: %s" % self._generator.all()
+            esc = s[end + 1:end + 5]
+            try:
+                m = unichr(int(esc, 16))
+                if len(esc) != 4 or not esc.isalnum():
+                    raise ValueError
+            except ValueError:
+                raise ValueError(errmsg("Invalid \\uXXXX escape", s, end))
+            end += 5
+        _append(m)
+    return u''.join(chunks), end
 
-    def _readCStyleComment(self):
+def JSONString(match, context):
+    encoding = getattr(context, 'encoding', None)
+    return scanstring(match.string, match.end(), encoding)
+pattern(r'"')(JSONString)
+
+WHITESPACE = re.compile(r'\s*', FLAGS)
+
+def JSONObject(match, context, _w=WHITESPACE.match):
+    pairs = {}
+    s = match.string
+    end = _w(s, match.end()).end()
+    nextchar = s[end:end + 1]
+    # trivial empty object
+    if nextchar == '}':
+        return pairs, end + 1
+    if nextchar != '"':
+        raise ValueError(errmsg("Expecting property name", s, end))
+    end += 1
+    encoding = getattr(context, 'encoding', None)
+    iterscan = JSONScanner.iterscan
+    while True:
+        key, end = scanstring(s, end, encoding)
+        end = _w(s, end).end()
+        if s[end:end + 1] != ':':
+            raise ValueError(errmsg("Expecting : delimiter", s, end))
+        end = _w(s, end + 1).end()
         try:
-            done = False
-            while not done:
-                ch = self._next()
-                done = (ch == "*" and self._peek() == "/")
-                if not done and ch == "/" and self._peek() == "*":
-                    raise ReadException, "Not a valid JSON comment: %s, '/*' cannot be embedded in the comment." % self._generator.all()
-            self._next()
+            value, end = iterscan(s, idx=end, context=context).next()
         except StopIteration:
-            raise ReadException, "Not a valid JSON comment: %s, expected */" % self._generator.all()
-
-    def _readDoubleSolidusComment(self):
+            raise ValueError(errmsg("Expecting object", s, end))
+        pairs[key] = value
+        end = _w(s, end).end()
+        nextchar = s[end:end + 1]
+        end += 1
+        if nextchar == '}':
+            break
+        if nextchar != ',':
+            raise ValueError(errmsg("Expecting , delimiter", s, end - 1))
+        end = _w(s, end).end()
+        nextchar = s[end:end + 1]
+        end += 1
+        if nextchar != '"':
+            raise ValueError(errmsg("Expecting property name", s, end - 1))
+    object_hook = getattr(context, 'object_hook', None)
+    if object_hook is not None:
+        pairs = object_hook(pairs)
+    return pairs, end
+pattern(r'{')(JSONObject)
+            
+def JSONArray(match, context, _w=WHITESPACE.match):
+    values = []
+    s = match.string
+    end = _w(s, match.end()).end()
+    # look-ahead for trivial empty array
+    nextchar = s[end:end + 1]
+    if nextchar == ']':
+        return values, end + 1
+    iterscan = JSONScanner.iterscan
+    while True:
         try:
-            ch = self._next()
-            while ch != "\r" and ch != "\n":
-                ch = self._next()
+            value, end = iterscan(s, idx=end, context=context).next()
         except StopIteration:
-            pass
+            raise ValueError(errmsg("Expecting object", s, end))
+        values.append(value)
+        end = _w(s, end).end()
+        nextchar = s[end:end + 1]
+        end += 1
+        if nextchar == ']':
+            break
+        if nextchar != ',':
+            raise ValueError(errmsg("Expecting , delimiter", s, end))
+        end = _w(s, end).end()
+    return values, end
+pattern(r'\[')(JSONArray)
+ 
+ANYTHING = [
+    JSONObject,
+    JSONArray,
+    JSONString,
+    JSONConstant,
+    JSONNumber,
+]
 
-    def _readArray(self):
-        result = []
-        assert self._next() == '['
-        done = self._peek() == ']'
-        while not done:
-            item = self._read()
-            result.append(item)
-            self._eatWhitespace()
-            done = self._peek() == ']'
-            if not done:
-                ch = self._next()
-                if ch != ",":
-                    raise ReadException, "Not a valid JSON array: '%s' due to: '%s'" % (self._generator.all(), ch)
-        assert ']' == self._next()
-        return result
+JSONScanner = Scanner(ANYTHING)
 
-    def _readObject(self):
-        result = {}
-        assert self._next() == '{'
-        done = self._peek() == '}'
-        while not done:
-            key = self._read()
-            if type(key) is not types.StringType:
-                raise ReadException, "Not a valid JSON object key (should be a string): %s" % key
-            self._eatWhitespace()
-            ch = self._next()
-            if ch != ":":
-                raise ReadException, "Not a valid JSON object: '%s' due to: '%s'" % (self._generator.all(), ch)
-            self._eatWhitespace()
-            val = self._read()
-            result[key] = val
-            self._eatWhitespace()
-            done = self._peek() == '}'
-            if not done:
-                ch = self._next()
-                if ch != ",":
-                    raise ReadException, "Not a valid JSON array: '%s' due to: '%s'" % (self._generator.all(), ch)
-	assert self._next() == "}"
-        return result
+class JSONDecoder(object):
+    """
+    Simple JSON <http://json.org> decoder
 
-    def _eatWhitespace(self):
-        p = self._peek()
-        while p is not None and p in string.whitespace or p == '/':
-            if p == '/':
-                self._readComment()
-            else:
-                self._next()
-            p = self._peek()
+    Performs the following translations in decoding:
+    
+    +---------------+-------------------+
+    | JSON          | Python            |
+    +===============+===================+
+    | object        | dict              |
+    +---------------+-------------------+
+    | array         | list              |
+    +---------------+-------------------+
+    | string        | unicode           |
+    +---------------+-------------------+
+    | number (int)  | int, long         |
+    +---------------+-------------------+
+    | number (real) | float             |
+    +---------------+-------------------+
+    | true          | True              |
+    +---------------+-------------------+
+    | false         | False             |
+    +---------------+-------------------+
+    | null          | None              |
+    +---------------+-------------------+
 
-    def _peek(self):
-        return self._generator.peek()
+    It also understands ``NaN``, ``Infinity``, and ``-Infinity`` as
+    their corresponding ``float`` values, which is outside the JSON spec.
+    """
 
-    def _next(self):
-        return self._generator.next()
+    _scanner = Scanner(ANYTHING)
+    __all__ = ['__init__', 'decode', 'raw_decode']
 
-class JsonWriter(object):
+    def __init__(self, encoding=None, object_hook=None):
+        """
+        ``encoding`` determines the encoding used to interpret any ``str``
+        objects decoded by this instance (utf-8 by default).  It has no
+        effect when decoding ``unicode`` objects.
         
-    def _append(self, s):
-        self._results.append(s)
+        Note that currently only encodings that are a superset of ASCII work,
+        strings of other encodings should be passed in as ``unicode``.
 
-    def write(self, obj, escaped_forward_slash=False):
-        self._escaped_forward_slash = escaped_forward_slash
-        self._results = []
-        self._write(obj)
-        return "".join(self._results)
+        ``object_hook``, if specified, will be called with the result
+        of every JSON object decoded and its return value will be used in
+        place of the given ``dict``.  This can be used to provide custom
+        deserializations (e.g. to support JSON-RPC class hinting).
+        """
+        self.encoding = encoding
+        self.object_hook = object_hook
 
-    def _write(self, obj):
-        ty = type(obj)
-        if ty is types.DictType:
-            n = len(obj)
-            self._append("{")
-            for k, v in obj.items():
-                self._write(k)
-                self._append(":")
-                self._write(v)
-                n = n - 1
-                if n > 0:
-                    self._append(",")
-            self._append("}")
-        elif ty is types.ListType or ty is types.TupleType:
-            n = len(obj)
-            self._append("[")
-            for item in obj:
-                self._write(item)
-                n = n - 1
-                if n > 0:
-                    self._append(",")
-            self._append("]")
-        elif ty is types.StringType or ty is types.UnicodeType:
-            self._append('"')
-	    obj = obj.replace('\\', r'\\')
-            if self._escaped_forward_slash:
-                obj = obj.replace('/', r'\/')
-	    obj = obj.replace('"', r'\"')
-	    obj = obj.replace('\b', r'\b')
-	    obj = obj.replace('\f', r'\f')
-	    obj = obj.replace('\n', r'\n')
-	    obj = obj.replace('\r', r'\r')
-	    obj = obj.replace('\t', r'\t')
-            self._append(obj)
-            self._append('"')
-        elif ty is types.IntType or ty is types.LongType:
-            self._append(str(obj))
-        elif ty is types.FloatType:
-            self._append("%f" % obj)
-        elif obj is True:
-            self._append("true")
-        elif obj is False:
-            self._append("false")
-        elif obj is None:
-            self._append("null")
-        else:
-            raise WriteException, "Cannot write in JSON: %s" % repr(obj)
+    def decode(self, s, _w=WHITESPACE.match):
+        """
+        Return the Python representation of ``s`` (a ``str`` or ``unicode``
+        instance containing a JSON document)
+        """
+        obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+        end = _w(s, end).end()
+        if end != len(s):
+            raise ValueError(errmsg("Extra data", s, end, len(s)))
+        return obj
 
-def write(obj, escaped_forward_slash=False):
-    return JsonWriter().write(obj, escaped_forward_slash)
+    def raw_decode(self, s, **kw):
+        """
+        Decode a JSON document from ``s`` (a ``str`` or ``unicode`` beginning
+        with a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
 
-def read(s):
-    return JsonReader().read(s)
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+        """
+        kw.setdefault('context', self)
+        try:
+            obj, end = self._scanner.iterscan(s, **kw).next()
+        except StopIteration:
+            raise ValueError("No JSON object could be decoded")
+        return obj, end
 
+__all__ = ['JSONDecoder']
 #
-# ========== END OF json.py ==========
+# ========== END OF decoder.py AND scanner.py ==========
 #
 
 
@@ -664,7 +691,8 @@ def control(env, start_response):
 
         rf = None
         try:
-            parsed_json = read(post_data)
+            dec = JSONDecoder()
+            parsed_json = dec.decode(post_data)
             random_counter, counter, main_results = rearrange(parsed_json, thetime, ip)
             header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                 (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
@@ -679,7 +707,7 @@ def control(env, start_response):
 
             start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
             return ["OK"]
-        except json.ReadException:
+        except ValueError: # JSON parse failed.
             backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><1>400 Bad Request</h1></body></html>"]

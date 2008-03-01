@@ -1,6 +1,6 @@
-*** Note that the file json.py used by server.py is distributed ***
-*** under a separate license (the LGPL), and is therefore not   ***
-*** covered by the license below.                               ***
+*** Note that server.py includes code from the simple_json library  ***
+*** which is licensed under the MIT license. This code is therefore ***
+*** not restricted by the license below.                            ***
 
 Copyright (c) 2007, Alex Drummond <a.d.drummond@gmail.com>
 All rights reserved.
