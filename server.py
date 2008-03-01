@@ -60,7 +60,7 @@ for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST',
-          'CSS_INCLUDES_LIST']:
+          'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR']:
     if not globals().has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -277,7 +277,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(last)
+            f = open(os.path.join(STATIC_FILES_DIR, last))
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])

@@ -43,6 +43,10 @@ CSS_INCLUDES_DIR = "css_includes"
 #
 # WEBSPR_WORKING_DIR = "foo"
 
+# Define this variable to set the directory containing static
+# HTML/JavaScript files (e.g. 'experiment.html').
+STATIC_FILES_DIR = "static"
+
 # These variables specify which of the files in the js_includes
 # and css_includes directories should actually be included.
 # The value of each variable should be a list whose first element
