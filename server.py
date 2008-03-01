@@ -578,7 +578,9 @@ def counter_cookie_header(c):
 def create_monster_string(dir, extension, block_allow):
     filenames = []
     try:
-        for path in os.listdir(dir):
+        ds = os.listdir(dir)
+        ds.sort()
+        for path in ds:
             fullpath = os.path.join(dir, path)
             if os.path.isfile(fullpath) and path.endswith(extension):
                 if block_allow[0] == "block" and path not in block_allow[1:]:
