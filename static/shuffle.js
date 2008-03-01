@@ -322,7 +322,7 @@ function runShuffleSequence(masterArray, ss) {
         }
         else {
             var pred = toPredicate(ss.args[i]);
-            var elems = filter(function (s) { return pred(s.type); }, masterArray);
+            var elems = filter(function (s) { assert(s != null, "Bad array"); return pred(s.type); }, masterArray);
 
             if (elems.length > 0)
                 arrays.push(elems);
