@@ -44,7 +44,14 @@ import cgi
 from util import *
 from server_conf import *
 
+#
+# You may need to edit these.
+#
+SERVER_CONF_PY_FILE = "server_conf.py"
 PY_SCRIPT_NAME = "server.py"
+
+
+__import__(SERVER_CONF_PY_FILE.rstrip(".py"))
 
 #
 # Logging and configuration variables.
