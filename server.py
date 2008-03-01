@@ -392,7 +392,7 @@ __all__ = ['JSONDecoder']
 #
 
 
-c = __import__(SERVER_CONF_PY_FILE.rstrip(".py"))
+c = __import__(SERVER_CONF_PY_FILE.rstrip(".py"), level=-1)
 
 
 #
