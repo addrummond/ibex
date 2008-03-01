@@ -639,7 +639,7 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(os.path.join(c['STATIC_FILES_DIR'], last))
+            f = open(os.path.join(PWD, c['STATIC_FILES_DIR'], last))
             contents = f.read()
         except IOError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
@@ -656,11 +656,11 @@ def control(env, start_response):
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'): 
             if qs_hash['include'][0] == 'js':
-                m = create_monster_string(c['JS_INCLUDES_DIR'], '.js', c['JS_INCLUDES_LIST'])
+                m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
-                m = create_monster_string(c['CSS_INCLUDES_DIR'], '.css', c['CSS_INCLUDES_LIST'])
+                m = create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
 
