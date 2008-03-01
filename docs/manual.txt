@@ -458,15 +458,17 @@ selection of an item from one group is dependent on selection of an item from
 another. For example, you can specify that the item chosen from group 3 should
 be the same as the item chosen from group 2 (i.e. if the first item is chosen
 from group 2, the first item will also be chosen from group 3). To use this
-feature, just add another group specifier after the group for the item itself.
-For example, suppose that we have another group (group 2), and we want choices
-from this group to be linked to choices from group 1 in the example above.  The
+feature, just replace each group specifier with a pair of group specifiers,
+where the first member of the pair is the original group specifier, and the
+second is the group which governs selection from the original group.  For
+example, suppose that we have another group (group 2), and we want choices from
+this group to be linked to choices from group 1 in the example above.  The
 following code will do the trick:
 {{{
-[["relclause", 2, 1], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
-[["relclause", 2, 1], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
+[["relclause", [2, 1]], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
+[["relclause", [2, 1]], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
 }}}
-Note that the third number must be the same for all items in the group.
+Note that the second number in the pair must be the same for all items in the group.
 
 =Communication between elements=
 Webspr allows for a limited amount of communication between elements.  Each
