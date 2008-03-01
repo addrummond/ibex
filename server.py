@@ -421,8 +421,8 @@ logger.addHandler(logging.StreamHandler())
 # (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
 for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
-          'SERVER_MODE', 'JS_INCLUDES_DIR',
-          'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST',
+          'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
+          'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR']:
     if not c.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
@@ -460,6 +460,10 @@ if type(c['JS_INCLUDES_LIST']) != types.ListType or len(c['JS_INCLUDES_LIST']) <
 if type(c['CSS_INCLUDES_LIST']) != types.ListType or len(c['CSS_INCLUDES_LIST']) < 1 or (c['CSS_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'CSS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
+if type(c['DATA_INCLUDES_LIST']) != types.ListType or len(c['DATA_INCLUDES_LIST']) < 1 or (c['DATA_INCLUDES_LIST'][0] not in ["block", "allow"]):
+    logger.error("Bad value for 'DATA_INCLUDES_LIST' conf variable.")
+    sys.exit(1)
+
 
 # File locking on UNIX/Linux/OS X
 HAVE_FLOCK = False
@@ -665,6 +669,10 @@ def control(env, start_response):
             elif qs_hash['include'][0] == 'css':
                 m = create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
+                return [m]
+            elif qs_hash['include'][0] == 'data':
+                m = create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'])
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
 
         # ...if not, it's some results.

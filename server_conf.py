@@ -35,6 +35,9 @@ JS_INCLUDES_DIR = "js_includes"
 # The name of the directory where CSS includes are stored
 # (relative to the working directory of the server).
 CSS_INCLUDES_DIR = "css_includes"
+# The name of the directory where data files are stored
+# (relative to the working directory of the server).
+DATA_INCLUDES_DIR = "data_includes"
 
 # Optionally define this variable to set the working directory
 # of the server. You can also define the environment variable of
@@ -53,5 +56,7 @@ STATIC_FILES_DIR = "static"
 # is either the string "block" or the string "allow". The remainder
 # of the list gives the filenames of those js/css files which should
 # be allowed/blocked.
-JS_INCLUDES_LIST = ["block"]  # Block nothing (i.e. allow everything)
-CSS_INCLUDES_LIST = ["block"] # Ditto.
+JS_INCLUDES_LIST   = ["block"]  # Block nothing (i.e. allow everything)
+CSS_INCLUDES_LIST  = ["block"]  # Ditto.
+DATA_INCLUDES_LIST = ["block"]  # Ditto.
+
