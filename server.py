@@ -633,6 +633,8 @@ def control(env, start_response):
         user_agent = env['HTTP_USER_AGENT']
 
     base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
+    # Sometimes the query string likes to stick around.
+    base = base.split('?')[0]
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
 
