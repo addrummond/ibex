@@ -1,7 +1,7 @@
 #
 # You may need to edit this.
 #
-SERVER_CONF_PY_FILE = "server_conf.py"
+SERVER_CONF_PY_FILE = "../server_conf.py"
 
 
 # Copyright (c) 2007, Alex Drummond <a.d.drummond@gmail.com>
@@ -657,6 +657,7 @@ def control(env, start_response):
             if f: f.close()
         rr = last == 'main.js' and cc_start_response or start_response
         rr('200 OK', [('Content-Type', (last == 'experiment.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
+        print "THERE"
         return [contents]
     elif last == PY_SCRIPT_NAME:
         qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''

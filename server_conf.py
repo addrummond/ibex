@@ -44,11 +44,11 @@ DATA_INCLUDES_DIR = "data_includes"
 # the same name (the value of the environment variable takes
 # precedence over the value of this variable).
 #
-# WEBSPR_WORKING_DIR = "foo"
+WEBSPR_WORKING_DIR = "../"
 
 # Define this variable to set the directory containing static
 # HTML/JavaScript files (e.g. 'experiment.html').
-STATIC_FILES_DIR = "static"
+STATIC_FILES_DIR = "www"
 
 # These variables specify which of the files in the js_includes
 # and css_includes directories should actually be included.
