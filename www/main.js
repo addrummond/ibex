@@ -12,7 +12,7 @@ var body = document.getElementsByTagName("body")[0];
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
-if (counter == NaN) {
+if (isNaN(counter)) {
     counter = Math.floor(Math.random() * 10000);
     randomCounter = true;
 }
