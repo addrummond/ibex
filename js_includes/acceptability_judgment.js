@@ -15,7 +15,8 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
                                   presentAsScale: options.presentAsScale,
                                   randomOrder:    options.randomOrder,
                                   showNumbers:    options.showNumbers,
-                                  timeout:        options.timeout }]
+                                  timeout:        options.timeout,
+                                  instructions:   options.instructions }]
     };
 
     return new VBox(div, opts, finishedCallback, utils);

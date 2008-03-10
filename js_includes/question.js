@@ -37,6 +37,7 @@ function Question(div, options, finishedCallback, utils) {
     this.presentAsScale = dget(options, "presentAsScale", false);
     this.randomOrder = dget(options, "randomOrder", ! (this.hasCorrect === false));
     this.timeout = dget(options, "timeout", null);
+    this.instructions = dget(options, "instructions");
 
     if (! (this.hasCorrect === false))
         assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
@@ -99,6 +100,12 @@ function Question(div, options, finishedCallback, utils) {
     }
     div.appendChild(this.qp);
     div.appendChild(this.xl);
+    if (this.instructions) {
+        var p = document.createElement("p");
+        p.className = "instructions-text"
+        p.appendChild(document.createTextNode(this.instructions));
+        div.appendChild(p);
+    }
 
     if (this.timeout) {
         var t = this;

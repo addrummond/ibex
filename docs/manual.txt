@@ -551,6 +551,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || _obligatory_ || The question to pose.                                             ||
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
+|| instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
