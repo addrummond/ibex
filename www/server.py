@@ -418,11 +418,11 @@ logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
 
 # Check that all conf variables have been defined
-# (except the optional WEBSPR_WORKING_DIR, PORT and email variables).
+# (except the optional WEBSPR_WORKING_DIR and PORT variables).
 for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
-          'CSS_INCLUDES_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
+          'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR']:
     if not c.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
@@ -611,7 +611,6 @@ def create_monster_string(dir, extension, block_allow):
 STATIC_FILES = [
     'experiment.html',
     'json.js',
-    'main.js',
     'conf.js',
     'shuffle.js',
     'util.js',
@@ -655,8 +654,7 @@ def control(env, start_response):
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if f: f.close()
-        rr = last == 'main.js' and cc_start_response or start_response
-        rr('200 OK', [('Content-Type', (last == 'experiment.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
+        start_response('200 OK', [('Content-Type', (last == 'experiment.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
     elif last == PY_SCRIPT_NAME:
         qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''
@@ -676,6 +674,19 @@ def control(env, start_response):
                 m = create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
                 return [m]
+            elif qs_hash['include'][0] == 'main.js':
+                contents = None
+                f = None
+                try:
+                    f = open(os.path.join(PWD, c['OTHER_INCLUDES_DIR'], 'main.js'))
+                    contents = f.read()
+                except IOError:
+                    start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                    return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                finally:
+                    if f: f.close()
+                cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
+                return [contents]
 
         # ...if not, it's some results.
 

@@ -38,6 +38,8 @@ CSS_INCLUDES_DIR = "css_includes"
 # The name of the directory where data files are stored
 # (relative to the working directory of the server).
 DATA_INCLUDES_DIR = "data_includes"
+#
+OTHER_INCLUDES_DIR = "other_includes"
 
 # Optionally define this variable to set the working directory
 # of the server. You can also define the environment variable of
