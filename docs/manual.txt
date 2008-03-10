@@ -238,12 +238,12 @@ var items = [
 
 ];
 }}}
-*Where to put your data file*: Data files live in the `js_includes` directory,
-and must have a `.js` extension. You can only have data one file in the directory at
-any one time, since if you have multiple files, they will just overwrite the
-definitions for `shuffleSequence`, `items` and `defaults`.  However, you can
-tell the server to ignore some of the files in `js_includes` (see the section
-"Configuring `js_includes` and `css_includes`").
+*Where to put your data file*: Data files live in the `data_includes`
+directory, and must have a `.js` extension. You can only have data one file in
+the directory at any one time, since if you have multiple files, they will just
+overwrite the definitions for `shuffleSequence`, `items` and `defaults`.
+However, you can tell the server to ignore some of the files in `data_includes`
+(see the section "Configuring `js_includes`, `data_includes` and `css_includes`").
 
 =Shuffle sequences=
 ==`seq`, `randomize` and `shuffle`==
@@ -608,26 +608,27 @@ The `VBox` controller simply concatenates the results of its children in the ord
 
     * Change the heading displayed above practice items by adding a declaration such as `var practiceMessage = "foo";` to your data file.
 
-==Configuring `js_includes` and `css_includes`==
-The `js_includes` and `css_includes` directories contain !JavaScript and CSS
-files that are necessary for the running of an experiment.  The most important
-of these is the data file in `js_includes` containing the list of items for the
-experiment, but each controller also has its own file in `js_includes` (for
-example, the `DashedSentence` controller lives in `dashed_sentence.js`).  Many
-controllers also define some CSS classes in corresponding files in
-`css_includes` (e.g. `dashed_sentence.css`). If you write your own controllers,
-you need to put the !JavaScript and CSS files in these directories.
+==Configuring `js_includes`, `data_includes` and `css_includes`==
+The `js_includes` `data_includes` and `css_includes` directories contain
+!JavaScript and CSS files that are necessary for the running of an experiment.
+The most important of these is the data file in `data_includes` containing the
+list of items for the experiment, but each controller also has its own file in
+`js_includes` (for example, the `DashedSentence` controller lives in
+`dashed_sentence.js`).  Many controllers also define some CSS classes in
+corresponding files in `css_includes` (e.g. `dashed_sentence.css`). If you
+write your own controllers, you need to put the !JavaScript and CSS files in
+these directories.
 
 When the webpage for an experiment is accessed, the server concatenates all the
 files in `js_includes` and serves them up as a single file (ditto for
-`css_includes`). You can tell the server to ignore some of the files in
-`js_includes` and `css_includes` by editing the variables `JS_INCLUDES_LIST`
-and `CSS_INCLUDES_LIST` in `server_conf.py`.  (There is a comment documenting
-how to do this.) You may wish to exclude !JavaScript and CSS files which are
-not used by your experiment in order to reduce the size of the file that needs
-to be downloaded. Since the files in both directories are named after the
-controllers with which they are associated, it is easy to see which files are
-superflous.
+`data_includes` and `css_includes`). You can tell the server to ignore some of
+the files in `js_includes` and `css_includes` by editing the variables
+`JS_INCLUDES_LIST`, `DATA_INCLUDES_LIST` and `CSS_INCLUDES_LIST` in
+`server_conf.py`.  (There is a comment documenting how to do this.) You may
+wish to exclude !JavaScript and CSS files which are not used by your experiment
+in order to reduce the size of the file that needs to be downloaded. Since the
+files in both directories are named after the controllers with which they are
+associated, it is easy to see which files are superflous.
 
 *However:* note that the file `main.css` is required by all
 controllers.
