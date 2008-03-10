@@ -14,7 +14,7 @@ Java or Flash.
 =Setting up the server=
 There are two ways of running the server: either as a stand-alone HTTP server
 or as a CGI process. By default, the server runs in stand-alone mode. To start
-it, execute server.py:
+it, change to the `www` directory and execute server.py:
 {{{
     python server.py
 }}}
@@ -47,11 +47,12 @@ dynamic requests go through `server.py`, so as long as `experiment.html` can be
 accessed, and the server recognizes `server.py` as a CGI application,
 everything should be fine.
 
-The directories `js_includes` and `css_includes` contain !JavaScript and CSS
-files required for particular kinds of experiment. When an HTTP request is made
-for the virtual files `js_includes.js` and `css_includes.css`, the server
-concatenates all the files in the directory and serves up the result. Your data
-file(s) will live in `js_includes`.
+The directories `js_includes`, `data_includes` and `css_includes` contain
+!JavaScript (the first two) and CSS (the last one) files required for
+particular kinds of experiment. When an HTTP request is made for
+`server.py?include=js`, `server.py?include=data` or `server.py?include=css`,
+the server concatenates all the files in the specified directory and serves up
+the result. Your data file(s) will live in `data_includes`.
 
 The server stores some state in the `server_state` directory. This directory is
 automatically created by the server if it does not already exist, and in order
