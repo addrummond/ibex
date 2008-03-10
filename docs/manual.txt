@@ -1,3 +1,6 @@
+*Note:* Some of this documentation is out of date,
+and does not properly describe 0.2-beta2.
+
 =Versions=
 This documentation covers Webspr 0.2 (currently at 0.2-beta1).  Earlier
 versions of Webspr come with a README containing full documentation.  The
