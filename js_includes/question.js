@@ -173,3 +173,8 @@ function Question(div, options, finishedCallback, utils) {
         return true;
     }
 }
+
+Question.htmlDescription = function(opts) {
+    return document.createTextNode(opts.q);
+}
+

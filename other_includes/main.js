@@ -116,6 +116,31 @@ var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter, mungGr
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
+//conf_showOverview = true;
+if (conf_showOverview) {
+    var l = document.createElement("ol");
+    for (var i = 0; i < runningOrder.length; ++i) {
+        var sl = document.createElement("ol");
+        for (var j = 0; j < runningOrder[i].length; ++j) {
+            var li = document.createElement("li");
+            var b = document.createElement("b");
+            b.appendChild(document.createTextNode(runningOrder[i][j].controller.name));
+            li.appendChild(b);
+            var hd = runningOrder[i][j].controller.htmlDescription ? runningOrder[i][j].controller.htmlDescription(runningOrder[i][j].options) : null;
+            if (hd) {
+                li.appendChild(document.createTextNode(": "));
+                li.appendChild(hd);
+            }
+            sl.appendChild(li);
+        }
+        var li = document.createElement("li");
+        li.appendChild(sl);
+        l.appendChild(li);
+    }
+    body.appendChild(l);
+}
+else {
+
 function Utils(valuesFromPreviousElement) {
     this.timeoutIds = [];
 
@@ -417,4 +442,6 @@ function sendResults(resultsLines, success, failure)
     xmlhttp.open("POST", serverURI, true);
     xmlhttp.send(data);
 }
+
+} // End of else for if (conf_showOverview).
 

@@ -21,3 +21,8 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
 
     return new VBox(div, opts, finishedCallback, utils);
 }
+
+AcceptabilityJudgment.htmlDescription = function (opts) {
+    return Question.htmlDescription(opts);
+}
+

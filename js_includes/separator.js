@@ -49,3 +49,8 @@ function Separator(div, options, finishedCallback, utils) {
         }, this.transfer);
     }
 }
+
+Separator.htmlDescription = function (opts) {
+    return document.createTextNode(opts.normalMessage);
+}
+

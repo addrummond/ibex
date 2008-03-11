@@ -12,6 +12,7 @@ var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
 var conf_showProgressBar = true;
 var conf_practiceItemTypes = [];
 var conf_practiceMessage = "Practice";
+var conf_showOverview = false;
 
 if (typeof(serverURI) != "undefined")
     conf_serverURI = serverURI;
@@ -29,4 +30,6 @@ if (typeof(practiceItemTypes) != "undefined")
     conf_practiceItemTypes = practiceItemTypes;
 if (typeof(practiceMessage) != "undefined")
     conf_practiceMessage = practiceMessage;
+if (typeof(showOverview) != "undefined")
+    conf_showOverview = showOverview;
 

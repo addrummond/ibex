@@ -105,3 +105,8 @@ function DashedSentence(div, options, finishedCallback, utils) {
         }
     };
 }
+
+DashedSentence.htmlDescription = function (opts) {
+    return document.createTextNode(opts.s);
+}
+
