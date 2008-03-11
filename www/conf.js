@@ -24,7 +24,7 @@ if (! (pageTitle === undefined))
     conf_pageTitle = pageTitle;
 if (! (shuffleSequence === undefined))
     conf_shuffleSequence = shuffleSequence;
-if (! (showProgressBar === undefined)
+if (! (showProgressBar === undefined))
     conf_showProgressBar = showProgressBar;
 if (! (practiceItemTypes === undefined))
     conf_practiceItemTypes = practiceItemTypes;
