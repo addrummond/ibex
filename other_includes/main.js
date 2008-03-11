@@ -111,6 +111,11 @@ iter(items, function(it) {
     ++itemNumber;
  });
 
+var mungGroupsExtras = { };
+var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter, mungGroupsExtras), conf_shuffleSequence);
+assert(runningOrder.length > 0 && runningOrder[0].length > 0,
+       "There must be some items in the running order!");
+
 function Utils(valuesFromPreviousElement) {
     this.timeoutIds = [];
 
@@ -178,11 +183,6 @@ if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
 var mainDiv = document.createElement("div");
 mainDiv.style.clear = "both";
 body.appendChild(mainDiv);
-
-var mungGroupsExtras = { };
-var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter, mungGroupsExtras), conf_shuffleSequence);
-assert(runningOrder.length > 0 && runningOrder[0].length > 0,
-       "There must be some items in the running order!");
 
 var progressBarHeight;
 var progressBarMaxWidth;
