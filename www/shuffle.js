@@ -253,7 +253,7 @@ function SepWith(sep, main) {
     this.args = [sep,main];
 
     this.run = function(arrays) {
-        assert(arrays.length == 2, "Wrong number of arguments to SepWith");
+        assert(arrays.length == 2, "Wrong number of arguments (or bad argument) to SepWith");
         var sep = arrays[0];
         var main = arrays[1];
 
@@ -280,7 +280,7 @@ function PrecedeEachWith(prec, main, precede) {
     this.args = [prec,main];
 
     this.run = function(arrays) {
-        assert(arrays.length == 2, "Wrong number of arguments to PrecedeEachWith or FollowEachWith");
+        assert(arrays.length == 2, "Wrong number of arguments (or bad argument) to PrecedeEachWith or FollowEachWith");
         var prec = arrays[0];
         var main = arrays[1];
         
