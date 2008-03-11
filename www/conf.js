@@ -12,20 +12,24 @@ var conf_shuffleSequence = seq(equalTo0, rshuffle(lessThan0, greaterThan0));
 var conf_showProgressBar = true;
 var conf_practiceItemTypes = [];
 var conf_practiceMessage = "Practice";
+var conf_showOverview = false;
 
-if (typeof(serverURI) != "undefined")
+if (! (serverURI === undefined))
     conf_serverURI = serverURI;
-if (typeof(completionMessage) != "undefined")
+if (! (completionMessage === undefined))
     conf_completionMessage = completionMessage;
-if (typeof(completionErrorMessage) != "undefined")
+if (! (completionErrorMessage === undefined))
     conf_completionErrorMessage = completionErrorMessage;
-if (typeof(pageTitle) != "undefined")
+if (! (pageTitle === undefined))
     conf_pageTitle = pageTitle;
-if (typeof(shuffleSequence) != "undefined")
+if (! (shuffleSequence === undefined))
     conf_shuffleSequence = shuffleSequence;
-if (typeof(showProgressBar) != "undefined")
+if (! (showProgressBar === undefined)
     conf_showProgressBar = showProgressBar;
-if (typeof(practiceItemTypes) != "undefined")
+if (! (practiceItemTypes === undefined))
     conf_practiceItemTypes = practiceItemTypes;
-if (typeof(practiceMessage) != "undefined")
+if (! (practiceMessage === undefined))
     conf_practiceMessage = practiceMessage;
+if (! (showOverview === undefined))
+    conf_showOverview = showOverview;
+
