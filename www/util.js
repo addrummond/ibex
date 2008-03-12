@@ -132,6 +132,57 @@ function dget(d1, k, default_) {
         return v;
 }
 
+function flatten(html)
+{
+    var a = new Array();
+    var idx = 0;
+
+    function rec(nd)
+    {
+        a[idx++] = nd;
+        if (nd.childNodes && nd.childNodes.length > 0) {
+            for (var i = 0; i < nd.childNodes.length; ++i) {
+                rec(nd.childNodes[i]);
+            }
+        }
+    }
+    rec(html);
+
+    return a;
+}
+
+function truncateHTML(html, maxLength)
+{
+    var flat = flatten(html);
+    var length = 0;
+    var i = 0;
+    for (i = 0; i < flat.length && length < maxLength; ++i) {
+        if (flat[i].nodeType == 3 /* == a text node */ &&
+            ((! flat[i].parent) || (flat[i].parent.tagName != "SCRIPT"))) {
+            length += flat[i].data.length;
+        }
+    }
+    if (i > 0) --i;
+
+    if (flat[i].nodeType == 3 /* == a text node */ && length > maxLength) {
+        flat[i].textContent = flat[i].textContent.slice(0, flat[i].textContent.length - (length - maxLength));
+        flat[i].textContent += " [...]";
+    }
+
+    // Now we've truncated the flattened tree, we need to
+    // remove the necessary nodes at all levels of the original tree to get the
+    // correct result.
+    for (var nd = flat[i]; nd; nd = nd.parentNode) {
+        for (var sib = nd.nextSibling; sib;) {
+            var nextSib = sib.nextSibling;
+            sib.parentNode.removeChild(sib);
+            sib = nextSib;
+        }
+    }
+
+    return html;
+}
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

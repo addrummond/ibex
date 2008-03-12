@@ -28,3 +28,10 @@ function Message(div, options, finishedCallback, utils) {
         utils.setTimeout(finishedCallback, this.transfer);
     }
 }
+
+Message.htmlDescription = function (opts) {
+    var d = document.createElement("div");
+    d.innerHTML = opts.html;
+    return truncateHTML(d, 100);
+}
+
