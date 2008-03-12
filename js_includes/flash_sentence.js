@@ -24,3 +24,8 @@ function FlashSentence(div, options, finishedCallback, utils) {
         }, this.timeout);
     }
 }
+
+FlashSentence.htmlDescription = function (opts) {
+    return document.createTextNode(opts.s);
+}
+
