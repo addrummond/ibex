@@ -1,10 +1,10 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+Message.name = "Message";
 Message.obligatory = ["html"];
 Message.countsForProgressBar = false;
 
 function Message(div, options, finishedCallback, utils) {
-    this.name = "Message";
     this.div = div;
     this.options = options;
     this.hideProgressBar = dget(options, "hideProgressBar", true);

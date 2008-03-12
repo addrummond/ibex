@@ -1,12 +1,12 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+Question.name = "Question";
 Question.obligatory = ["q", "as"];
 
 __Question_callback__ = null;
 __Questions_answers__ = null;
 
 function Question(div, options, finishedCallback, utils) {
-    this.name = "Question";
     this.div = div;
     this.options = options;
 

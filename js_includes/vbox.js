@@ -1,10 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+VBox.name = "VBox";
 VBox.obligatory = ["children", "triggers"]
 
 function VBox(div, options, finishedCallback, utils) {
-    this.name = dget(options, "name", "VBox");
-
     this.options = options;
     this.children = options.children;
     this.triggers = options.triggers;

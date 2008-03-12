@@ -1,9 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+FlashSentence.name = "FlashSentence";
 FlashSentence.obligatory = ["s"];
 
 function FlashSentence(div, options, finishedCallback, utils) {
-    this.name = "FlashSentence";
 
     this.options = options;
     this.sentence = options.s;

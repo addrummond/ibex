@@ -2,11 +2,10 @@
 
 function boolToInt(x) { if (x) return 1; else return 0; }
 
+DashedSentence.name = "DashedSentence";
 DashedSentence.obligatory = ["s"];
 
 function DashedSentence(div, options, finishedCallback, utils) {
-    this.name = "DashedSentence";
-
     this.options = options;
     this.words = options.s.split(/\s+/);
     this.mode = dget(options, "mode", "self-paced reading");

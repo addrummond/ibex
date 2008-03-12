@@ -1,12 +1,12 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+AcceptabilityJudgment.name = "AcceptabilityJudgment";
 AcceptabilityJudgment.obligatory = ["s", "q", "as"];
 
 function AcceptabilityJudgment(div, options, finishedCallback, utils) {
     var opts = {
         q:           options.q,
         as:          options.as,
-        name:        "AcceptabilityJudgment",
         triggers:    [1],
         children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
                       Question, { q:              options.q,

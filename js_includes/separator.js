@@ -1,10 +1,10 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+Separator.name = "Separator";
 Separator.obligatory = [];
 Separator.countsForProgressBar = false;
 
 function Separator(div, options, finishedCallback, utils) {
-    this.name = "Separator";
     this.div = div;
     this.options = options;
 
