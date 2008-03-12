@@ -48,7 +48,8 @@ If you are running the server as a CGI application, make sure that the
 webserver you are using can serve up `experiment.html` as a static file. All
 dynamic requests go through `server.py`, so as long as `experiment.html` can be
 accessed, and the server recognizes `server.py` as a CGI application,
-everything should be fine.
+everything should be fine. The "Step-by-step CGI" section below goes through
+the process of setting up webspr as a CGI app in detail.
 
 The directories `js_includes`, `data_includes` and `css_includes` contain
 !JavaScript (the first two) and CSS (the last one) files required for
@@ -79,8 +80,35 @@ have very high traffic, it's purely theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will almost
 certainly work on any system with Python 2.5, so long as the `paste` module is
-installed). The CGI server has been tested on OS X using the lighttpd web
-server.
+installed). The CGI server has been tested on OS X and Linux using the lighttpd
+web server in both cases.
+
+==Step-by-step CGI==
+This subsection describes how to set up webspr as a CGI application from
+scratch.  Since the particulars of different web servers differ, some parts are
+of necessity rather vague. There are other ways of organizing the
+files/directories than the one described below, which is just the simplest
+option.
+
+*Step 1:* Copy the files in the `www` directory to somewhere within the root
+directory of your HTTP server. All of these files are ordinary static files
+except for `server.py`, which needs to be run as a CGI app.
+
+*Step 2:* Decide on a location for the main webspr directory. Depending on the
+details of your setup, you may be able to leave it in place, or you may need to
+copy it to a directory which the HTTP server has permission to access (so that
+`server.py` may access files in this directory when it is executed).
+
+*Step 3:* Edit `server.py` (in its new location) and change the value of
+`SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
+
+*Step 4:* Edit `server_conf.py` in its new location and change the value of
+`WEBSPR_WORKING_DIR` to the new location of the main `webspr` dir. Also, change
+the value of `SERVER_MODE` to `"cgi"`.
+
+Once these steps are complete, it's just a matter of configuring your HTTP
+server correctly. There is an example configuration file for lighttpd included
+in the distribution (`example_lighttpd.conf`).
 
 =Basic concepts=
 A Webspr experiment is essentially a sequence of _items_.
@@ -636,6 +664,13 @@ associated, it is easy to see which files are superflous.
 
 *However:* note that the file `main.css` is required by all
 controllers.
+
+=Overviews=
+Sometimes it's useful to get an overview of the sequence of items in an
+experiment without actually running through each item. There are two ways of
+getting webspr to display an overview of this sort. The first is to add the
+statement `var showOverview = true;` option to your data file.  The second is
+to go to the page `overview.html` instead of `experiment.html`.
 
 =Known problems and issues=
 The following are some subtle problems which can often arise when writing a
