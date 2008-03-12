@@ -610,6 +610,7 @@ def create_monster_string(dir, extension, block_allow):
 # Not used when this module is run as a CGI process.
 STATIC_FILES = [
     'experiment.html',
+    'overview.html',
     'json.js',
     'conf.js',
     'shuffle.js',
@@ -654,7 +655,7 @@ def control(env, start_response):
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if f: f.close()
-        start_response('200 OK', [('Content-Type', (last == 'experiment.html' and 'text/html' or 'text/javascript') +'; charset=utf-8')])
+        start_response('200 OK', [('Content-Type', (last.endswith('.html') and 'text/html' or 'text/javascript') +'; charset=utf-8')])
         return [contents]
     elif last == PY_SCRIPT_NAME:
         qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''
@@ -685,6 +686,9 @@ def control(env, start_response):
                     return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
                 finally:
                     if f: f.close()
+                # Do we set the 'overview' option?
+                if qs_hash.has_key('overview'):
+                    contents = "var conf_showOverview = true;\n\n" + contents
                 cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
                 return [contents]
 
