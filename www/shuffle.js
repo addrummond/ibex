@@ -88,6 +88,13 @@ function latinSquare(arrayOfArrays, counter, extras) {
                 idx = 0;
         }
         else {
+            // Check that the chain index thingy is the same for every item in the group.
+            var firstChain = arrayOfArrays[i][0].group[1];
+            for (var j = 1; j < arrayOfArrays[i].length; ++j) {
+                if (arrayOfArrays[i][j].group[1] != firstChain)
+                    assert(false, "When using dependent group selection, the second element in each pair must be the same for every item in the group. This rule was violated in group " + arrayOfArrays[i][j].group[0] + ".");
+            }
+
             var group = arrayOfArrays[i][0].group[0];
             var groupchain = arrayOfArrays[i][0].group[1];
             // We are.
