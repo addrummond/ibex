@@ -132,7 +132,7 @@ function dget(d1, k, default_) {
         return v;
 }
 
-function flatten(html)
+function flattenHTML(html)
 {
     var a = new Array();
     var idx = 0;
@@ -153,7 +153,7 @@ function flatten(html)
 
 function truncateHTML(html, maxLength)
 {
-    var flat = flatten(html);
+    var flat = flattenHTML(html);
     var length = 0;
     var i = 0;
     for (i = 0; i < flat.length && length < maxLength; ++i) {
