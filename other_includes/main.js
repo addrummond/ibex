@@ -377,7 +377,8 @@ document.onkeydown = function(e) {
 function indicateThatResultsAreBeingSent()
 {
     // Clear "practice" notice if it's still up.
-    practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
+    if (practiceBox)
+        practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
 
     body.replaceChild(sendingResults, mainDiv);
     var spinChars = ["\u2013", "\\", "|", "/"]
