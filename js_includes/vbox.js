@@ -106,7 +106,7 @@ function VBox(div, options, finishedCallback, utils) {
         var res = [];
         for (var i = 0; i < iar.length; ++i) {
             for (var j = 0; j < iar[i][1].length; ++j) {
-                var line = [i];
+                var line = [];
                 for (var k = 0; k < iar[i][1][j].length; ++k)
                     line.push(iar[i][1][j][k]);
                 res.push(line);
