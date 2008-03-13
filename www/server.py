@@ -690,11 +690,12 @@ def control(env, start_response):
                 finally:
                     if f: f.close()
                 # Do we set the 'overview' option?
+                retlist = [contents]
                 if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
                     # UGLY: We just prepend a variable declaration to the file.
-                    contents = "var conf_showOverview = true;\n\n" + contents
+                    retlist = ["var conf_showOverview = true;\n\n"] + retlist
                 cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
-                return [contents]
+                return retlist
 
         # ...if not, it's some results.
 
