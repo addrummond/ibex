@@ -594,14 +594,15 @@ def create_monster_string(dir, extension, block_allow):
     s = StringIO.StringIO()
     f = None
     try:
-        for fn in filenames:
-            f = open(fn)
-            s.write(f.read())
-            s.write('\n\n')
-            f.close()
-    except Exception, e:
-        logger.error("Error reading Javascript files in '%s'" % dir)
-        sys.exit(1)
+        try:
+            for fn in filenames:
+                f = open(fn)
+                s.write(f.read())
+                s.write('\n\n')
+                f.close()
+        except Exception, e:
+            logger.error("Error reading Javascript files in '%s'" % dir)
+            sys.exit(1)
     finally:
         if f: f.close()
 
@@ -648,11 +649,12 @@ def control(env, start_response):
         contents = None
         f = None
         try:
-            f = open(os.path.join(PWD, c['STATIC_FILES_DIR'], last))
-            contents = f.read()
-        except IOError:
-            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
-            return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+            try:
+                f = open(os.path.join(PWD, c['STATIC_FILES_DIR'], last))
+                contents = f.read()
+            except IOError:
+                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if f: f.close()
         start_response('200 OK', [('Content-Type', (last.endswith('.html') and 'text/html' or 'text/javascript') +'; charset=utf-8')])
@@ -679,11 +681,12 @@ def control(env, start_response):
                 contents = None
                 f = None
                 try:
-                    f = open(os.path.join(PWD, c['OTHER_INCLUDES_DIR'], 'main.js'))
-                    contents = f.read()
-                except IOError:
-                    start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
-                    return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                    try:
+                        f = open(os.path.join(PWD, c['OTHER_INCLUDES_DIR'], 'main.js'))
+                        contents = f.read()
+                    except IOError:
+                        start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                        return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
                 finally:
                     if f: f.close()
                 # Do we set the 'overview' option?
@@ -713,45 +716,47 @@ def control(env, start_response):
         def backup_raw_post_data(header=None):
             bf = None
             try:
-                bf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RAW_RESULT_FILE_NAME']), "a")
-                if header:
-                    bf.write("\n")
-                    bf.write(header)
-                bf.write(post_data)
-            except:
-                pass
+                try:
+                    bf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RAW_RESULT_FILE_NAME']), "a")
+                    if header:
+                        bf.write("\n")
+                        bf.write(header)
+                    bf.write(post_data)
+                except:
+                    pass
             finally:
                 if bf: unlock_and_close(bf)
 
         rf = None
         try:
-            dec = JSONDecoder()
-            parsed_json = dec.decode(post_data)
-            random_counter, counter, main_results = rearrange(parsed_json, thetime, ip)
-            header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
-                (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
-                                      time_module.gmtime(thetime)),
-                 user_agent,
-                 "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
-            rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
-            backup_raw_post_data(header)
-            csv_results = to_csv(main_results)
-            rf.write(header)
-            rf.write(csv_results)
+            try:
+                dec = JSONDecoder()
+                parsed_json = dec.decode(post_data)
+                random_counter, counter, main_results = rearrange(parsed_json, thetime, ip)
+                header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
+                    (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
+                                          time_module.gmtime(thetime)),
+                     user_agent,
+                     "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
+                rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
+                backup_raw_post_data(header)
+                csv_results = to_csv(main_results)
+                rf.write(header)
+                rf.write(csv_results)
 
-            start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
-            return ["OK"]
-        except ValueError: # JSON parse failed.
-            backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
-            start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
-            return ["<html><body><1>400 Bad Request</h1></body></html>"]
-        except HighLevelParseError:
-            backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
-            start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
-            return ["<html><body><1>400 Bad Request</h1></body></html>"]
-        except IOError:
-            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
-            return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
+                return ["OK"]
+            except ValueError: # JSON parse failed.
+                backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                return ["<html><body><1>400 Bad Request</h1></body></html>"]
+            except HighLevelParseError:
+                backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                return ["<html><body><1>400 Bad Request</h1></body></html>"]
+            except IOError:
+                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if rf: unlock_and_close(rf)
     else:
