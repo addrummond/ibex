@@ -687,7 +687,7 @@ def control(env, start_response):
                 finally:
                     if f: f.close()
                 # Do we set the 'overview' option?
-                if qs_hash.has_key('overview'):
+                if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
                     contents = "var conf_showOverview = true;\n\n" + contents
                 cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
                 return [contents]
