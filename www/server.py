@@ -53,7 +53,7 @@ PY_SCRIPT_NAME = "server.py"
 #
 # =========== START OF decoder.py AND scanner.py FROM simple_json PACKAGE ==========
 #
-# This package is license under the MIT license (which is compatible with the BSD
+# This package is licensed under the MIT license (which is compatible with the BSD
 # license used for webspr).
 #
 # http://pypi.python.org/pypi/simplejson
@@ -688,6 +688,7 @@ def control(env, start_response):
                     if f: f.close()
                 # Do we set the 'overview' option?
                 if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
+                    # UGLY: We just prepend a variable declaration to the file.
                     contents = "var conf_showOverview = true;\n\n" + contents
                 cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
                 return [contents]
