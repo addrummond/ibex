@@ -71,7 +71,7 @@ environment variable overrides the value of the variable in `server_conf.py`.)
 
 On Linux/Unix/OS X, the server uses file locking to ensure that the results
 file and server state remain consistent. Currently, it does not do so on
-Windows, so there is a theoretical possibility of the state or the results
+Windows, so there is a theoretical possibility of the server state or the results
 being corrupted if you run the server in a Windows environment (but unless you
 have very high traffic, it's purely theoretical).
 
@@ -155,7 +155,7 @@ comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
-|| 2        || MD5 hash of parctipant's IP address                            ||
+|| 2        || MD5 hash of participant's IP address                            ||
 || 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
 || 4        || Item number                                                    ||
 || 5        || Element number                                                 ||
@@ -178,7 +178,7 @@ distribution are fully documented here.
 *Important*: A single element my contribute multiple lines to the results file.
 For example, if the `DashedSentence` element is in "self-paced reading" mode,
 it will add to the results file for every word reading time it records. Thus,
-there is not a one-to-one correspondence between itemes/elements and lines.
+there is not a one-to-one correspondence between items/elements and lines.
 
 =Format of a data file=
 Data files for Webspr are !JavaScript source files, but it is not really
@@ -310,7 +310,7 @@ The following type predicates are predefined as !JavaScript functions:
 || `startsWith(s)`      || Matches any string type starting with s.                ||
 || `endsWith(s)`        || Matches any string type ending with s.                  ||
 || `not(pred)`          || Matches anything that is not of a type matched by pred. ||
-|| `anyOf(p1, p2, ...)` || Matches anything matching one of its arguments.         ||
+|| `anyOf(p1, p2, ...)` || Takes any number of type predicates as its arguments, and matches anything matching one of these predicates. ||
 
 If you define your own predicates, be careful to test that they are
 cross-browser compatible. See section 7 for some pertinent advice.  The
@@ -503,7 +503,7 @@ Note that the second number in the pair must be the same for all items in the gr
 Webspr allows for a limited amount of communication between elements.  Each
 element may set keys in a hashtable which is passed to the next element.  The
 hashtable is cleared between elements, so there is no possibility of
-long-distance communication (unless you just use !JavaScript global variables).
+long-distance communication.
 
 Currently, this system is used to provide feedback to participants when they
 (for example) answer a comprehension question incorrectly.  Controllers such as
@@ -580,7 +580,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || q              || _obligatory_ || The question to pose.                                             ||
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
-|| hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the "as" list is the correct one; an integer, giving the index of the correct answer in the "as" list (starting from 0); or a string, giving the correct answer. ||
+|| hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
@@ -589,7 +589,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 *Results*
 
 || *Column* || *Description* ||
-|| 1        || The question that was posed (encoded as a URL with %XX escapes). ||
+|| 1        || The question that was posed (encoded as a URL with %XX escapes; commas are escaped). ||
 || 2        || The answer that the participant gave (also encoded as a URL).    ||
 || 3        || "NULL" if the question as no correct answer. Otherwise, 1 if the participant answered correctly, or 0 if they didn't. ||
 
@@ -616,15 +616,15 @@ a controller constructed using a VBox, see
 
 || *Option*  || *Default*    || *Description* ||
 || children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
-|| triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must specify the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. ||
-|| padding   || `"2em"`      || The amount of vertical padding to place between the children. ||
+|| triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. ||
+|| padding   || `"2em"`      || The amount of vertical padding to place between the children. This should be a CSS dimension. ||
 
 *Results*
 
 The `VBox` controller simply concatenates the results of its children in the order that the children were given.
 
 =Further configuration=
-==Miscelaneous options==
+==Miscalenous options==
 You can set the values of the following variables in your data file (e.g. `var showProgressBar = true;`).
 
 || *Option* || *Default* || *Description* ||
@@ -654,7 +654,7 @@ the files in `js_includes` and `css_includes` by editing the variables
 wish to exclude !JavaScript and CSS files which are not used by your experiment
 in order to reduce the size of the file that needs to be downloaded. Since the
 files in both directories are named after the controllers with which they are
-associated, it is easy to see which files are superflous.
+associated, it is easy to see which files are superfluous.
 
 *However:* note that the file `main.css` is required by all
 controllers.
@@ -688,12 +688,12 @@ Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1
 method.
 
 For debugging, I recommend using Firefox's !JavaScript console. Most syntax
-errors in a data file will result in an alert popping up warning that the
+errors in a data file will result in an alert popping up with a warning that the
 `items` array has not been defined. You can usually get a much more informative
 error message by looking at the !JavaScript console.
 
 Some further cross-browser issues:
 
-   * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgements on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
+   * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
 
-   * The standalone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete you temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
+   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete you temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
