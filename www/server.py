@@ -551,7 +551,7 @@ def rearrange(parsed_json, thetime, ip):
     
     new_results = []
     for line in parsed_json[3]:
-        new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + line)
+        new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
 
     return random_counter, counter, new_results
 

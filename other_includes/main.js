@@ -302,8 +302,9 @@ function finishedCallback(resultsLines) {
                              [2, currentItem.elementNumber],
                              [3, runningOrder[posInRunningOrder].type],
                              [4, group == null ? "NULL" : group ] ];
+            namesToIndices(resultsLines[i]);
             for (var j = 0; j < resultsLines[i].length; ++j) {
-                preamble.push(namesToIndices(resultsLines[i][j]));
+                preamble.push(resultsLines[i][j]);
             }
             allResults.push(preamble);
         }
