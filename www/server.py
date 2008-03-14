@@ -625,7 +625,6 @@ def control(env, start_response):
     def cc_start_response(status, headers):
         c = get_counter()
         start_response(status, headers + [counter_cookie_header(c)])
-        set_counter(c + 1)
 
     ip = None
     if env.has_key('HTTP_X_FORWARDED_FOR'):
@@ -744,6 +743,11 @@ def control(env, start_response):
                 csv_results = to_csv(main_results)
                 rf.write(header)
                 rf.write(csv_results)
+
+                # Everything went OK with receiving and recording the results, so
+                # update the counter.
+                c = get_counter()
+                set_counter(c + 1)
 
                 start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
                 return ["OK"]
