@@ -20,7 +20,7 @@ function FlashSentence(div, options, finishedCallback, utils) {
     if (this.timeout) {
         var t = this;
         utils.setTimeout(function() {
-            finishedCallback([[t.sentenceMD5]]);
+            finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
         }, this.timeout);
     }
 }

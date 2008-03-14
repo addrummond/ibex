@@ -269,6 +269,25 @@ var currentUtilsInstance = null;
 var currentControllerInstance = null;
 // A list of result lines.
 var allResults = [];
+// Array for column names.
+var columnNamesArray = ["Controller name", "Item number", "Element number", "Type", "Group"];
+
+function getColumnNameIndex(name) {
+    for (var i = 0; i < columnNamesArray.length; ++i) {
+        if (columnNamesArray[i] == name)
+            return i;
+    }
+    columnNamesArray.push(name);
+    return columnNamesArray.length - 1;
+}
+
+function namesToIndices(results_line) {
+    for (var i = 0; i < results_line.length; ++i) {
+        assert(results_line[i].length == 2, "Internal error");
+        results_line[i][0] = getColumnNameIndex(results_line[i][0]);
+    }
+    return results_line;
+}
 
 function finishedCallback(resultsLines) {
     var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
@@ -278,13 +297,13 @@ function finishedCallback(resultsLines) {
             var group = runningOrder[posInRunningOrder].group;
             if (group && group.length)
                 group = group[0]
-            var preamble = [ currentItem.controller.name ? currentItem.controller.name : "UNKNOWN",
-                             currentItem.itemNumber,
-                             currentItem.elementNumber,
-                             runningOrder[posInRunningOrder].type,
-                             group == null ? "NULL" : group ];
+            var preamble = [ [0, currentItem.controller.name ? currentItem.controller.name : "UNKNOWN"],
+                             [1, currentItem.itemNumber],
+                             [2, currentItem.elementNumber],
+                             [3, runningOrder[posInRunningOrder].type],
+                             [4, group == null ? "NULL" : group ] ];
             for (var j = 0; j < resultsLines[i].length; ++j) {
-                preamble.push(resultsLines[i][j]);
+                preamble.push(namesToIndices(resultsLines[i][j]));
             }
             allResults.push(preamble);
         }
@@ -426,7 +445,7 @@ function sendResults(resultsLines, success, failure)
     }
 
     // Prepare the post data.
-    var data = JSON.stringify([randomCounter ? true : false, counter, resultsLines]);
+    var data = JSON.stringify([randomCounter ? true : false, counter, columnNamesArray, resultsLines]);
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {

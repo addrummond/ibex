@@ -88,9 +88,9 @@ function Question(div, options, finishedCallback, utils) {
                 correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
             }
-            finishedCallback([[url_encode_removing_commas(t.question),
-                               url_encode_removing_commas(ans),
-                               correct]]);
+            finishedCallback([[["Question", url_encode_removing_commas(t.question)],
+                               ["Answer", url_encode_removing_commas(ans)],
+                               ["Correct?", correct]]]);
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
@@ -111,7 +111,7 @@ function Question(div, options, finishedCallback, utils) {
         var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
-            finishedCallback([[url_encode_removing_commas(t.question), "NULL", "NULL"]]);
+            finishedCallback([[["Question", url_encode_removing_commas(t.question)], ["Answer", "NULL"], ["Correct?", "NULL"]]]);
         }, this.timeout);
     }
 
@@ -129,9 +129,9 @@ function Question(div, options, finishedCallback, utils) {
                     correct = (correct_ans == ans ? 1 : 0);
                     this.setFlag(correct);
                 }
-                finishedCallback([[url_encode_removing_commas(this.question),
-                                   url_encode_removing_commas(ans),
-                                   correct]]);
+                finishedCallback([[["Question", url_encode_removing_commas(this.question)],
+                                   ["Answer", url_encode_removing_commas(ans)],
+                                   ["Correct?", correct]]]);
 
                 return false;
             }
@@ -161,9 +161,9 @@ function Question(div, options, finishedCallback, utils) {
                         correct = (correct_ans == ans ? 1 : 0);
                         this.setFlag(correct);
                     }
-                    finishedCallback([[url_encode_removing_commas(this.question),
-                                       url_encode_removing_commas(ans),
-                                       correct]]);
+                    finishedCallback([[["Question", url_encode_removing_commas(this.question)],
+                                       ["Answer", url_encode_removing_commas(ans)],
+                                       ["Correct", correct]]]);
 
                     return false;
                 }

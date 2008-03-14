@@ -57,7 +57,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
             if (t.currentWord >= t.words.length)
-                finishedCallback([[t.sentenceMD5]]);
+                finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
@@ -93,11 +93,11 @@ function DashedSentence(div, options, finishedCallback, utils) {
     this.recordSprResult = function(time, word) {
         if (word > 0 && word < this.wordDivs.length) {
             this.resultsLines.push([
-                word,
-                time - this.previous_time,
-                boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
-                                         this.wordDivs[word].offsetTop)),
-                this.sentenceMD5
+                ["Word number", word],
+                ["Reading time", time - this.previous_time],
+                ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
+                                                      this.wordDivs[word].offsetTop))],
+                ["Sentence MD5", this.sentenceMD5]
             ]);
 
             this.previous_time = time;

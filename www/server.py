@@ -536,7 +536,7 @@ class HighLevelParseError(Exception):
         Exception.__init__(self, *args)
 
 def rearrange(parsed_json, thetime, ip):
-    if type(parsed_json) != types.ListType or len(parsed_json) != 3:
+    if type(parsed_json) != types.ListType or len(parsed_json) != 4:
         raise HighLevelParseError()
 
     random_counter = parsed_json[0]
@@ -550,7 +550,7 @@ def rearrange(parsed_json, thetime, ip):
         raise HighLevelParseError()
     
     new_results = []
-    for line in parsed_json[2]:
+    for line in parsed_json[3]:
         new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + line)
 
     return random_counter, counter, new_results
