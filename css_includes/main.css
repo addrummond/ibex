@@ -2,8 +2,16 @@ body {
     color: black;
     background-color: white;
     font-size: small;
-    margin-left: 5em;
+    margin-left: 0;
     margin-top: 5em;
+}
+.centered-inner {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+.non-centered-inner {
+    margin-left: 5em;
 }
 .sending-results {
     font-weight: bold;
@@ -13,6 +21,7 @@ div.bar-container {
     border: 1px solid;
     border-color: #9ea4b1;
     background-color: white;
+    margin-left: 5em;
 }
 div.bar {
     background-color: blue;
@@ -21,6 +30,7 @@ p.progress-text {
     padding-top: 0.5em;
     margin-top: 0;
     margin-bottom: 2em;
+    margin-left: 5em;
     font-style: italic;
 }
 p.practice-box {

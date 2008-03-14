@@ -637,6 +637,8 @@ You can set the values of the following variables in your data file (e.g. `var s
 || `completionMessage` || `"..."` || The message shown when the results are successfully sent to the server. ||
 || `completionErrorMessage` || `"..."` || The message shown when there is an error sending the results to the server. ||
 || `practiceItemTypes` || `[]` || A list of types for practice sentences. A sentence whose type is in this list will have a blue "practice" heading above it. ||
+|| `showOverview` || false || See "Overviews section" ||
+|| `centerItems` || true || Whether or not items should be centered on the page. ||
 
 ==Configuring `js_includes`, `data_includes` and `css_includes`==
 The directories `js_includes`, and `css_includes` directories contain

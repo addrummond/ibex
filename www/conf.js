@@ -13,6 +13,7 @@ var conf_showProgressBar = true;
 var conf_practiceItemTypes = [];
 var conf_practiceMessage = "Practice";
 var conf_showOverview = false;
+var conf_centerItems = true;
 
 if (typeof(serverURI) != "undefined")
     conf_serverURI = serverURI;
@@ -32,4 +33,6 @@ if (typeof(practiceMessage) != "undefined")
     conf_practiceMessage = practiceMessage;
 if (typeof(showOverview) != "undefined")
     conf_showOverview = showOverview;
+if (typeof(centerItems) != "undefined")
+    conf_centerItems = centerItems;
 

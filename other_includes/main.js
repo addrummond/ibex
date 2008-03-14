@@ -8,10 +8,15 @@ for (var _ in { }) {
 
 var serverURI = "server.py";
 
-var body_ = document.getElementsByTagName("body")[0];
-var body = document.createElement("center");
-body.style.textAlign = "left";
-body_.appendChild(body);
+var body = document.getElementsByTagName("body")[0];
+var inner = document.createElement("div");
+if (conf_centerItems) {
+    inner.className = "centered-inner";
+}
+else {
+    inner.className = "non-centered-inner";
+}
+body.appendChild(inner);
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
@@ -140,7 +145,7 @@ if (conf_showOverview) {
         li.appendChild(sl);
         l.appendChild(li);
     }
-    body.appendChild(l);
+    inner.appendChild(l);
 }
 else {
 
@@ -205,12 +210,12 @@ if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
     practiceBox = document.createElement("p");
     practiceBox.className = "practice-box";
     practiceBox.appendChild(document.createTextNode(""));
-    body.appendChild(practiceBox);
+    inner.appendChild(practiceBox);
 }
 
 var mainDiv = document.createElement("div");
 mainDiv.style.clear = "both";
-body.appendChild(mainDiv);
+inner.appendChild(mainDiv);
 
 var progressBarHeight;
 var progressBarMaxWidth;
@@ -318,7 +323,7 @@ function finishedCallback(resultsLines) {
     var pForItem;
     if (dget(currentControllerInstance.options, "displayMode", "overwrite") != "append") {
         var newMainDiv = document.createElement("div");
-        body.replaceChild(newMainDiv, mainDiv);
+        inner.replaceChild(newMainDiv, mainDiv);
         mainDiv = newMainDiv;
         pForItem = document.createElement("p");
         mainDiv.appendChild(pForItem);
@@ -383,7 +388,7 @@ function indicateThatResultsAreBeingSent()
     if (practiceBox)
         practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
 
-    body.replaceChild(sendingResults, mainDiv);
+    inner.replaceChild(sendingResults, mainDiv);
     var spinChars = ["\u2013", "\\", "|", "/"]
     var spinCharsPos = 0
     function timerCallback()
