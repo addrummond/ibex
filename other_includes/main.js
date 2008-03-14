@@ -10,7 +10,7 @@ var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
 var inner = document.createElement("div");
-if (conf_centerItems) {
+if (conf_centerItems && (! conf_showOverview)) {
     inner.className = "centered-inner";
 }
 else {
