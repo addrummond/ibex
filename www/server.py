@@ -623,8 +623,8 @@ def control(env, start_response):
     thetime = time_module.time()
 
     def cc_start_response(status, headers):
-        c = get_counter()
-        start_response(status, headers + [counter_cookie_header(c)])
+        count = get_counter()
+        start_response(status, headers + [counter_cookie_header(count)])
 
     ip = None
     if env.has_key('HTTP_X_FORWARDED_FOR'):
@@ -746,8 +746,8 @@ def control(env, start_response):
 
                 # Everything went OK with receiving and recording the results, so
                 # update the counter.
-                c = get_counter()
-                set_counter(c + 1)
+                count = get_counter()
+                set_counter(count + 1)
 
                 start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
                 return ["OK"]

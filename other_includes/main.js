@@ -8,7 +8,10 @@ for (var _ in { }) {
 
 var serverURI = "server.py";
 
-var body = document.getElementsByTagName("body")[0];
+var body_ = document.getElementsByTagName("body")[0];
+var body = document.createElement("center");
+body.style.textAlign = "left";
+body_.appendChild(body);
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
