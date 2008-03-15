@@ -239,7 +239,7 @@ if (conf_showProgressBar) {
     showProgress.className = "lpad";
     showProgress.style.marginTop = "2em";
     barContainer = document.createElement("div");
-    barContainer.className = "bar-container"
+    barContainer.className = conf_centerItems ? "centered-bar-container" : "non-centered-bar-container";
     barContainer.style.height = progressBarHeight;
     barContainer.style.width = progressBarMaxWidth;
     var bar = document.createElement("div");
@@ -248,7 +248,7 @@ if (conf_showProgressBar) {
     bar.style.height = progressBarHeight;
     barContainer.appendChild(bar);
     var p = document.createElement("p");
-    p.className = "progress-text"
+    p.className = conf_centerItems ? "centered-progress-text" : "non-centered-progress-text";
     p.appendChild(document.createTextNode("progress"));
     showProgress.appendChild(barContainer);
     showProgress.appendChild(p);
