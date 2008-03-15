@@ -423,7 +423,8 @@ for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
-          'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR']:
+          'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR', 'INCLUDE_COMMENTS_IN_RESULTS_FILE',
+          'INCLUDE_HEADERS_IN_RESULTS_FILE']:
     if not c.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -766,15 +767,18 @@ def control(env, start_response):
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
                 random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip)
-                header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
-                    (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
-                                          time_module.gmtime(thetime)),
-                     user_agent,
-                     "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
-                rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
+                header = None
+                if c['INCLUDE_HEADERS_IN_RESULTS_FILE']:
+                    header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
+                        (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
+                                              time_module.gmtime(thetime)),
+                         user_agent,
+                         "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
                 backup_raw_post_data(header)
-                main_results = intersperse_comments(main_results, column_names)
+                if c['INCLUDE_COMMENTS_IN_RESULTS_FILE']:
+                    main_results = intersperse_comments(main_results, column_names)
                 csv_results = to_csv(main_results)
+                rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
                 rf.write(header)
                 rf.write(csv_results)
 

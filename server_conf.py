@@ -38,6 +38,13 @@ RAW_RESULT_FILE_NAME = "raw_results"
 # ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
 SERVER_STATE_DIR = "server_state"
 
+# Should each set of results be preceeded by a header in the results file? (The
+# headers gives some info about the results, e.g. the browser used).
+INCLUDE_HEADERS_IN_RESULTS_FILE = True
+# Should the server insert comments in the results file documenting the values
+# in each column?
+INCLUDE_COMMENTS_IN_RESULTS_FILE = True
+
 # The name of the directory where Javascript includes are stored.
 # ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
 JS_INCLUDES_DIR = "js_includes"
