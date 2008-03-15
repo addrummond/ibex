@@ -573,7 +573,8 @@ def rearrange(parsed_json, thetime, ip):
 def ensure_period(s):
     if s.endswith(".") or s.endswith("?") or s.endswith("!"):
         return s
-    else: return s + "."
+    else:
+        return s + "."
 
 def intersperse_comments(main, name_specs):
     newr = []
