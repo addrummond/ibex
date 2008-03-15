@@ -611,6 +611,10 @@ If `mode` is set to "self-paced reading", the results look like this:
 || presentAsScale || `false`             || As for `Question`            ||
 || timeout        || `null`              || As for `Question`            ||
 
+*Results*
+
+Same as for `Question`.
+
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form
 a single controller. Each controller in the VBox is displayed at the same time,
@@ -644,13 +648,13 @@ You can set the values of the following variables in your data file (e.g. `var s
 || `centerItems` || true || Whether or not items should be centered on the page. ||
 
 ==Configuring `js_includes`, `data_includes` and `css_includes`==
-The directories `js_includes`, and `css_includes` directories contain
-!JavaScript and CSS files that are necessary for the running of an experiment.
-The most important of these is the data file in `data_includes` containing the
-list of items for the experiment, but each controller also has its own file in
-`js_includes` (for example, the `DashedSentence` controller lives in
-`dashed_sentence.js`).  Many controllers also define some CSS classes in
-corresponding files in `css_includes` (e.g. `dashed_sentence.css`). If you
+The directories `js_includes`, `data_includes` and `css_includes` directories
+contain !JavaScript and CSS files that are necessary for the running of an
+experiment.  The most important of these is the data file in `data_includes`
+containing the list of items for the experiment, but each controller also has
+its own file in `js_includes` (for example, the `DashedSentence` controller
+lives in `dashed_sentence.js`).  Many controllers also define some CSS classes
+in corresponding files in `css_includes` (e.g. `dashed_sentence.css`). If you
 write your own controllers, you need to put the !JavaScript and CSS files in
 these directories.
 
