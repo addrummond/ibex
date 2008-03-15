@@ -550,7 +550,6 @@ def rearrange(parsed_json, thetime, ip):
         raise HighLevelParseError()
 
     names_array = parsed_json[2]
-    print names_array
     def getname(index):
         if index >= len(names_array) or index < 0:
             raise HighLevelParseError()
@@ -571,7 +570,7 @@ def rearrange(parsed_json, thetime, ip):
     return random_counter, counter, new_results, column_names
 
 def ensure_period(s):
-    if s.endswith("."):
+    if s.endswith(".") or s.endswith("?") or s.endswith("!"):
         return s
     else: return s + "."
 
@@ -767,7 +766,6 @@ def control(env, start_response):
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
                 random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip)
-                print column_names
                 header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                     (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                           time_module.gmtime(thetime)),
