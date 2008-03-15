@@ -1,12 +1,12 @@
 =Versions=
-This documentation covers Webspr 0.2 (currently at 0.2-beta4). The 0.1.x
+This documentation covers Webspr 0.2 (currently at 0.2-beta5). The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation
 
 =Requirements=
     * Python >= 2.4.
-    * `paste` module for Python if you want to run the stand-alone server.
+    * The `paste` module for Python if you want to run the stand-alone server.
 
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment online.
@@ -159,7 +159,7 @@ comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
-|| 2        || MD5 hash of participant's IP address                            ||
+|| 2        || MD5 hash of participant's IP address                           ||
 || 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
 || 4        || Item number                                                    ||
 || 5        || Element number                                                 ||
@@ -173,11 +173,14 @@ results, though it makes the format much more verbose.  The significance of the
 "type" and "group" columns will be explained later; they are involved in
 specifying the ordering of items.
 
-Currently, in order to make sense of a set of results, you must interpret the
-first seven columns of each line as specified above, and consult the
-documentation for the relevant controllers to determine the format of the
-subsequent columns. All of the controllers that are bundled with the Webspr
-distribution are fully documented here.
+There are two ways to find out what the values in each column mean.  The
+"manual" method is to interpret the first seven columns of each line as
+specified above, and then to consult the documentation for the relevant
+controllers to determine the format of the subsequent columns. All of the
+controllers that are bundled with the Webspr distribution are fully documented
+here.  An easier method is to look at the comments in the results file: for
+each sequence of lines in the same format, the server adds comments describing
+the values contained in each column.
 
 *Important*: A single element my contribute multiple lines to the results file.
 For example, if the `DashedSentence` element is in "self-paced reading" mode,
