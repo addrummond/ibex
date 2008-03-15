@@ -27,7 +27,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
     this.div.className = "sentence";
 
     this.resultsLines = [];
-    this.previous_time = null;
+    this.previousTime = null;
 
     this.wordDivs = new Array(this.words.length);
     for (var j = 0; j < this.words.length; ++j) {
@@ -92,16 +92,16 @@ function DashedSentence(div, options, finishedCallback, utils) {
 
     this.recordSprResult = function(time, word) {
         if (word > 0 && word < this.wordDivs.length) {
+            assert(this.previousTime, "Internal error in dashed_sentence.js");
             this.resultsLines.push([
                 ["Word number", word],
-                ["Reading time", time - this.previous_time],
+                ["Reading time", time - this.previousTime],
                 ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
                                                       this.wordDivs[word].offsetTop))],
                 ["Sentence MD5", this.sentenceMD5]
             ]);
-
-            this.previous_time = time;
         }
+        this.previousTime = time;
     };
 }
 
