@@ -175,14 +175,7 @@ function startsWith(k) {
         if (typeof(s) != "string")
             return false;
         else {
-            // Avoid searching through the whole string in cases where
-            // it's not necessary.
-            if (s.length == 0 && k.length == 0)
-                return true;
-            else if (s.charAt(0) != k.charAt(0))
-                return false;
-            else
-                return s.indexOf(k) == 0;
+            return stringStartsWith(k, s);
         }
     }
 }
@@ -191,16 +184,7 @@ function endsWith(k) {
         if (typeof(s) != "string")
             return false;
         else {
-            // Avoid searching through the whole string in cases where
-            // it's not necessary.
-            if (s.length == 0 && k.length == 0)
-                return true;
-            else if (s.charAt(s.length - 1) != k.charAt(k.length - 1))
-                return false
-            else {
-                var i = s.indexOf(k);
-                return k != -1 && i == s.length - k.length;
-            }
+            return stringEndsWith(k, s);
         }
     }
 }

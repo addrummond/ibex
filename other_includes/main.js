@@ -9,6 +9,14 @@ for (var _ in { }) {
 var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
+var inner = document.createElement("div");
+if (conf_centerItems && (! conf_showOverview)) {
+    inner.className = "centered-inner";
+}
+else {
+    inner.className = "non-centered-inner";
+}
+body.appendChild(inner);
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
@@ -137,7 +145,7 @@ if (conf_showOverview) {
         li.appendChild(sl);
         l.appendChild(li);
     }
-    body.appendChild(l);
+    inner.appendChild(l);
 }
 else {
 
@@ -202,12 +210,12 @@ if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
     practiceBox = document.createElement("p");
     practiceBox.className = "practice-box";
     practiceBox.appendChild(document.createTextNode(""));
-    body.appendChild(practiceBox);
+    inner.appendChild(practiceBox);
 }
 
 var mainDiv = document.createElement("div");
 mainDiv.style.clear = "both";
-body.appendChild(mainDiv);
+inner.appendChild(mainDiv);
 
 var progressBarHeight;
 var progressBarMaxWidth;
@@ -231,7 +239,7 @@ if (conf_showProgressBar) {
     showProgress.className = "lpad";
     showProgress.style.marginTop = "2em";
     barContainer = document.createElement("div");
-    barContainer.className = "bar-container"
+    barContainer.className = conf_centerItems ? "centered-bar-container" : "non-centered-bar-container";
     barContainer.style.height = progressBarHeight;
     barContainer.style.width = progressBarMaxWidth;
     var bar = document.createElement("div");
@@ -240,7 +248,7 @@ if (conf_showProgressBar) {
     bar.style.height = progressBarHeight;
     barContainer.appendChild(bar);
     var p = document.createElement("p");
-    p.className = "progress-text"
+    p.className = conf_centerItems ? "centered-progress-text" : "non-centered-progress-text";
     p.appendChild(document.createTextNode("progress"));
     showProgress.appendChild(barContainer);
     showProgress.appendChild(p);
@@ -335,7 +343,7 @@ function finishedCallback(resultsLines) {
     var pForItem;
     if (dget(currentControllerInstance.options, "displayMode", "overwrite") != "append") {
         var newMainDiv = document.createElement("div");
-        body.replaceChild(newMainDiv, mainDiv);
+        inner.replaceChild(newMainDiv, mainDiv);
         mainDiv = newMainDiv;
         pForItem = document.createElement("p");
         mainDiv.appendChild(pForItem);
@@ -400,7 +408,7 @@ function indicateThatResultsAreBeingSent()
     if (practiceBox)
         practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
 
-    body.replaceChild(sendingResults, mainDiv);
+    inner.replaceChild(sendingResults, mainDiv);
     var spinChars = ["\u2013", "\\", "|", "/"]
     var spinCharsPos = 0
     function timerCallback()

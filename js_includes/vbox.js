@@ -32,6 +32,14 @@ function VBox(div, options, finishedCallback, utils) {
         var d = document.createElement("p");
         d.style.clear = "both";
 
+        // Call a manipulator if one was supplied.
+        if (! (options.manipulators === undefined)) {
+            for (var j = 0; j < options.manipulators.length; ++j) {
+                if (options.manipulators[j][0] == i)
+                    d = options.manipulators[j][1](d);
+            }
+        }
+
         // Add padding if requested.
         var dd = null;
         if (this.padding && i > 0) {

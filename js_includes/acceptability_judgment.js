@@ -16,7 +16,10 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
                                   randomOrder:    options.randomOrder,
                                   showNumbers:    options.showNumbers,
                                   timeout:        options.timeout,
-                                  instructions:   options.instructions }]
+                                  instructions:   options.instructions }],
+        manipulators: [
+            [0, function(div) { div.style.fontSize = "larger"; return div; }]
+        ]
     };
 
     return new VBox(div, opts, finishedCallback, utils);

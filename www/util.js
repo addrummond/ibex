@@ -24,6 +24,29 @@ function assert_is_dict(expr, message) {
     assert(false, message);
 }
 
+function stringStartsWith(k, s) {
+    // Avoid searching through the whole string in cases where
+    // it's not necessary.
+    if (s.length == 0 && k.length == 0)
+        return true;
+    else if (s.charAt(0) != k.charAt(0))
+        return false;
+    else
+        return s.indexOf(k) == 0;
+}
+function stringEndsWith(k, s) {
+    // Avoid searching through the whole string in cases where
+    // it's not necessary.
+    if (s.length == 0 && k.length == 0)
+        return true;
+    else if (s.charAt(s.length - 1) != k.charAt(k.length - 1))
+        return false
+    else {
+        var i = s.indexOf(k);
+        return k != -1 && i == s.length - k.length;
+    }
+}
+
 function url_encode_removing_commas(s) {
     // Note sure if all implementations will escape commas, so
     // do it manually.
