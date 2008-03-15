@@ -163,7 +163,7 @@ function Question(div, options, finishedCallback, utils) {
                     }
                     finishedCallback([[["Question", url_encode_removing_commas(this.question)],
                                        ["Answer", url_encode_removing_commas(ans)],
-                                       ["Correct", correct]]]);
+                                       ["Correct?", correct]]]);
 
                     return false;
                 }

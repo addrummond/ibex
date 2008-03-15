@@ -548,12 +548,46 @@ def rearrange(parsed_json, thetime, ip):
         counter = int(parsed_json[1])
     except ValueError:
         raise HighLevelParseError()
-    
+
+    names_array = parsed_json[2]
+    print names_array
+    def getname(index):
+        if index >= len(names_array) or index < 0:
+            raise HighLevelParseError()
+        return names_array[index]
     new_results = []
-    for line in parsed_json[3]:
+    current_names = None
+    column_names = []
+    for line, i in itertools.izip(parsed_json[3], itertools.count(0)):
+        names = map(lambda x: getname(x[0]), line)
+        if not current_names:
+            column_names.append([i, names])
+            current_names = names
+        elif current_names != names:
+            column_names.append([i, names])
+            current_names = names
         new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
 
-    return random_counter, counter, new_results
+    return random_counter, counter, new_results, column_names
+
+def ensure_period(s):
+    if s.endswith("."):
+        return s
+    else return s + "."
+
+def intersperse_comments(main, name_specs):
+    newr = []
+    for line, i in itertools.izip(main, itertools.count(0)):
+        for idx, name_spec in name_specs:
+            if idx == i:
+                newr.append(["# Columns below this comment are as follows:"])
+                newr.append(["# 1. Time results were received."])
+                newr.append(["# 2. MD5 hash of participant's IP address."])
+                for colname,n in itertools.izip(name_spec, itertools.count(3)):
+                    newr.append(["# %i. %s" % (n, ensure_period(colname))])
+                break
+        newr.append(line)
+    return newr
 
 def to_csv(lines):
     s = StringIO.StringIO()
@@ -732,7 +766,8 @@ def control(env, start_response):
             try:
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
-                random_counter, counter, main_results = rearrange(parsed_json, thetime, ip)
+                random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip)
+                print column_names
                 header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                     (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
                                           time_module.gmtime(thetime)),
@@ -740,6 +775,7 @@ def control(env, start_response):
                      "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
                 rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
                 backup_raw_post_data(header)
+                main_results = intersperse_comments(main_results, column_names)
                 csv_results = to_csv(main_results)
                 rf.write(header)
                 rf.write(csv_results)
