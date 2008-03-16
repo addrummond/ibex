@@ -9,17 +9,23 @@ for (var _ in { }) {
 var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
-var inner = document.createElement("div");
+var inner;
 if (conf_centerItems && (! conf_showOverview)) {
     // Have to create an actual table because of stupid IE (I tried the
     // various CSS hacks for getting IE to do shrink-wrap centering, but it just
     // drove me insane).
     var t = document.createElement("table");
+    var tb = document.createElement("tbody");
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    t.style.marginLeft = "auto";
+    /*t.style.marginLeft = "auto";
     t.style.marginRight = "auto";
-    t.appendChild(tr);
+    tb.style.marginLeft = "auto";
+    tb.style.marginRight = "auto";*/
+    // I.e. can't even center tables using CSS?!
+    t.align = "center";
+    t.appendChild(tb);
+    tb.appendChild(tr);
     tr.appendChild(td);
     inner = td;
     body.appendChild(t);
@@ -252,11 +258,12 @@ if (conf_showProgressBar) {
     var thingToAppendToBody;
     if (conf_centerItems) {
         thingToAppendToBody = document.createElement("table");
-        thingToAppendToBody.style.marginLeft = "auto";
-        thingToAppendToBody.style.marginRight = "auto";
+        thingToAppendToBody.align = "center";
+        var tb = document.createElement("tbody");
         var tr = document.createElement("tr");
         var td = document.createElement("td");
-        thingToAppendToBody.appendChild(tr);
+        thingToAppendToBody.appendChild(tb);
+        tb.appendChild(tr);
         tr.appendChild(td);
         showProgress = td;
     }
