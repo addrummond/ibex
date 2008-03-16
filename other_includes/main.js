@@ -22,7 +22,7 @@ if (conf_centerItems && (! conf_showOverview)) {
     t.style.marginRight = "auto";
     tb.style.marginLeft = "auto";
     tb.style.marginRight = "auto";*/
-    // I.e. can't even center tables using CSS?!
+    // IE can't even center tables using CSS?!
     t.align = "center";
     t.appendChild(tb);
     tb.appendChild(tr);
