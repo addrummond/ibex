@@ -11,12 +11,24 @@ var serverURI = "server.py";
 var body = document.getElementsByTagName("body")[0];
 var inner = document.createElement("div");
 if (conf_centerItems && (! conf_showOverview)) {
-    inner.className = "centered-inner";
+    // Have to create an actual table because of stupid IE (I tried the
+    // various CSS hacks for getting IE to do shrink-wrap centering, but it just
+    // drove me insane).
+    var t = document.createElement("table");
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    t.style.marginLeft = "auto";
+    t.style.marginRight = "auto";
+    t.appendChild(tr);
+    tr.appendChild(td);
+    inner = td;
+    body.appendChild(t);
 }
 else {
-    inner.className = "non-centered-inner";
+    inner = document.createElement("div");
+    inner.className = "lindent";
+    body.appendChild(inner);
 }
-body.appendChild(inner);
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
@@ -235,10 +247,27 @@ if (conf_showProgressBar) {
 
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
-    showProgress = document.createElement("div");
-    showProgress.style.marginTop = "2em";
+
+    var showProgress;
+    var thingToAppendToBody;
+    if (conf_centerItems) {
+        thingToAppendToBody = document.createElement("table");
+        thingToAppendToBody.style.marginLeft = "auto";
+        thingToAppendToBody.style.marginRight = "auto";
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        thingToAppendToBody.appendChild(tr);
+        tr.appendChild(td);
+        showProgress = td;
+    }
+    else {
+        showProgress = document.createElement("div");
+        showProgress.style.marginTop = "2em";
+        showProgress.className = "lindent";
+        thingToAppendToBody = showProgress;
+    }
     barContainer = document.createElement("div");
-    barContainer.className = conf_centerItems ? "centered-bar-container" : "non-centered-bar-container";
+    barContainer.className = "bar-container";
     barContainer.style.height = progressBarHeight;
     barContainer.style.width = progressBarMaxWidth;
     var bar = document.createElement("div");
@@ -247,11 +276,13 @@ if (conf_showProgressBar) {
     bar.style.height = progressBarHeight;
     barContainer.appendChild(bar);
     var p = document.createElement("p");
-    p.className = conf_centerItems ? "centered-progress-text" : "non-centered-progress-text";
+    p.className = "progress-text";
+    if (conf_centerItems)
+        p.style.textAlign = "center";
     p.appendChild(document.createTextNode("progress"));
     showProgress.appendChild(barContainer);
     showProgress.appendChild(p);
-    body.insertBefore(showProgress, body.firstChild);
+    body.insertBefore(thingToAppendToBody, body.firstChild);
 }
 function updateProgressBar() {
     if (conf_showProgressBar) {
