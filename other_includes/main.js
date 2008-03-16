@@ -236,7 +236,6 @@ if (conf_showProgressBar) {
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
     showProgress = document.createElement("div");
-    showProgress.className = "lpad";
     showProgress.style.marginTop = "2em";
     barContainer = document.createElement("div");
     barContainer.className = conf_centerItems ? "centered-bar-container" : "non-centered-bar-container";
