@@ -16,7 +16,9 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
                                   randomOrder:    options.randomOrder,
                                   showNumbers:    options.showNumbers,
                                   timeout:        options.timeout,
-                                  instructions:   options.instructions }],
+                                  instructions:   options.instructions,
+                                  leftComment:    options.leftComment,
+                                  rightComment:   options.rightComment }],
         manipulators: [
             [0, function(div) { div.style.fontSize = "larger"; return div; }]
         ]

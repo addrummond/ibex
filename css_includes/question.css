@@ -24,14 +24,25 @@
     text-align: center;
 }
 li:hover.scale-box { cursor: pointer; }
+.scale-comment-box {
+    float: left;
+    list-style: none;
+    margin-left: 0em;
+    padding-left: 0;
+    margin-right: 1em;
+    padding-right: 0;
+    padding-top: 0.5em;
+    text-align: center;
+    font-style: italic;
+}
 
 li.scale-box a {
     text-decoration: none; 
     display: block;
-    vertical-align: center;
+    vertical-align: middle;
 }
 li.scale-box a:hover {
     text-decoration: none;
     display: block;
-    vertical-align: center;
+    vertical-align: middle;
 }

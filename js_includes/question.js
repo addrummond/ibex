@@ -42,6 +42,8 @@ function Question(div, options, finishedCallback, utils) {
     this.randomOrder = dget(options, "randomOrder", ! (this.hasCorrect === false));
     this.timeout = dget(options, "timeout", null);
     this.instructions = dget(options, "instructions");
+    this.leftComment = dget(options, "leftComment");
+    this.rightComment = dget(options, "rightComment");
 
     if (! (this.hasCorrect === false))
         assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
@@ -67,13 +69,20 @@ function Question(div, options, finishedCallback, utils) {
     this.qp.className = "question-text";
     this.qp.appendChild(document.createTextNode(this.question));
     this.xl = document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul");
+    this.xl.style.marginLeft = 0;
+    this.xl.style.paddingLeft = 0;
     __Question_answers__ = new Array(this.answers.length);
+
+    if (this.leftComment) {
+        var lcd = document.createElement("li");
+        lcd.className = "scale-comment-box";
+        lcd.appendChild(document.createTextNode(this.leftComment));
+        this.xl.appendChild(lcd);
+    }
     for (var i = 0; i < this.orderedAnswers.length; ++i) {
         var li;
         li = document.createElement("li");
         if (this.presentAsScale) {
-            this.xl.style.marginLeft = 0;
-            this.xl.style.paddingLeft = 0;
             li.className = "scale-box";
             li.onclick = new Function("__Question_callback__(" + i + ");");
         }
@@ -97,10 +106,16 @@ function Question(div, options, finishedCallback, utils) {
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
+
         this.xl.appendChild(li);
-        //if (this.presentAsScale && i < this.orderedAnswers.length - 1)
-        //    this.xl.appendChild(document.createTextNode(" | "));
     }
+    if (this.rightComment) {
+        var rcd = document.createElement("li");
+        rcd.className = "scale-comment-box";
+        rcd.appendChild(document.createTextNode(this.rightComment));
+        this.xl.appendChild(rcd);
+    }
+
     div.appendChild(this.qp);
     div.appendChild(this.xl);
     if (this.instructions) {
