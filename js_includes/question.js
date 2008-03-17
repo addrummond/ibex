@@ -7,6 +7,10 @@ __Question_callback__ = null;
 __Questions_answers__ = null;
 
 function Question(div, options, finishedCallback, utils) {
+    var questionField = "Question";
+    var answerField = "Answer";
+    var correctField = "Whether or not answer was correct (NULL if N/A)"
+
     this.div = div;
     this.options = options;
 
@@ -88,9 +92,9 @@ function Question(div, options, finishedCallback, utils) {
                 correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
             }
-            finishedCallback([[["Question", url_encode_removing_commas(t.question)],
-                               ["Answer", url_encode_removing_commas(ans)],
-                               ["Correct?", correct]]]);
+            finishedCallback([[[questionField, url_encode_removing_commas(t.question)],
+                               [answerField, url_encode_removing_commas(ans)],
+                               [correctField, correct]]]);
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
@@ -111,7 +115,7 @@ function Question(div, options, finishedCallback, utils) {
         var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
-            finishedCallback([[["Question", url_encode_removing_commas(t.question)], ["Answer", "NULL"], ["Correct?", "NULL"]]]);
+            finishedCallback([[[questionField, url_encode_removing_commas(t.question)], [answerField, "NULL"], [correctField, "NULL"]]]);
         }, this.timeout);
     }
 
@@ -129,9 +133,9 @@ function Question(div, options, finishedCallback, utils) {
                     correct = (correct_ans == ans ? 1 : 0);
                     this.setFlag(correct);
                 }
-                finishedCallback([[["Question", url_encode_removing_commas(this.question)],
-                                   ["Answer", url_encode_removing_commas(ans)],
-                                   ["Correct?", correct]]]);
+                finishedCallback([[[questionField, url_encode_removing_commas(this.question)],
+                                   [answerField, url_encode_removing_commas(ans)],
+                                   [correctField, correct]]]);
 
                 return false;
             }
@@ -161,9 +165,9 @@ function Question(div, options, finishedCallback, utils) {
                         correct = (correct_ans == ans ? 1 : 0);
                         this.setFlag(correct);
                     }
-                    finishedCallback([[["Question", url_encode_removing_commas(this.question)],
-                                       ["Answer", url_encode_removing_commas(ans)],
-                                       ["Correct?", correct]]]);
+                    finishedCallback([[[questionField, url_encode_removing_commas(this.question)],
+                                       [answerField, url_encode_removing_commas(ans)],
+                                       [correctField, correct]]]);
 
                     return false;
                 }
