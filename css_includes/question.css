@@ -7,5 +7,21 @@
 }
 .instructions-text {
   font-style: italic;
+  clear: left;
+  padding-top: 1em;
 }
+.scale-box {
+    float: left;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+    margin-right: 1em;
+    padding-right: 0;
+    border: 1px black solid;
+    width: 2em;
+    height: 2em;
+    padding-top: 0.5em;
+    text-align: center;
+}
+li:hover.scale-box { cursor: pointer; }
 

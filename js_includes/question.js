@@ -66,23 +66,24 @@ function Question(div, options, finishedCallback, utils) {
     this.qp = document.createElement("p");
     this.qp.className = "question-text";
     this.qp.appendChild(document.createTextNode(this.question));
-    this.xl;
-    if (! this.presentAsScale)
-        this.xl = document.createElement(this.showNumbers ? "ol" : "ul");
-    else
-        this.xl = document.createElement("p");
+    this.xl = document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul");
     __Question_answers__ = new Array(this.answers.length);
     for (var i = 0; i < this.orderedAnswers.length; ++i) {
         var li;
-        if (! this.presentAsScale)
-            li = document.createElement("li")
-        else
-            li = document.createElement("span");
+        li = document.createElement("li");
+        if (this.presentAsScale) {
+            this.xl.style.marginLeft = 0;
+            this.xl.style.paddingLeft = 0;
+            li.className = "scale-box";
+            li.onclick = new Function("__Question_callback__(" + i + ");");
+        }
         var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
-        var a = document.createElement("a");
         var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
                       // captured in the closure defined below.
+        var a = document.createElement("a");
         a.href = "javascript:__Question_callback__(" + i + ");";
+        a.style.verticalAlign = "center";
+        a.style.display = "block";
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
             var ans = __Question_answers__[i];
@@ -99,8 +100,8 @@ function Question(div, options, finishedCallback, utils) {
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
         this.xl.appendChild(li);
-        if (this.presentAsScale && i < this.orderedAnswers.length - 1)
-            this.xl.appendChild(document.createTextNode(" | "));
+        //if (this.presentAsScale && i < this.orderedAnswers.length - 1)
+        //    this.xl.appendChild(document.createTextNode(" | "));
     }
     div.appendChild(this.qp);
     div.appendChild(this.xl);
