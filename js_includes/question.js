@@ -82,8 +82,6 @@ function Question(div, options, finishedCallback, utils) {
                       // captured in the closure defined below.
         var a = document.createElement("a");
         a.href = "javascript:__Question_callback__(" + i + ");";
-        a.style.verticalAlign = "center";
-        a.style.display = "block";
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
             var ans = __Question_answers__[i];

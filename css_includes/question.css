@@ -25,3 +25,13 @@
 }
 li:hover.scale-box { cursor: pointer; }
 
+li.scale-box a {
+    text-decoration: none; 
+    display: block;
+    vertical-align: center;
+}
+li.scale-box a:hover {
+    text-decoration: none;
+    display: block;
+    vertical-align: center;
+}
