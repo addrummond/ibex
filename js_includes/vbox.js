@@ -49,8 +49,22 @@ function VBox(div, options, finishedCallback, utils) {
             dd.appendChild(d);
         }
 
+        // Wrap in a table if we're centering things.
+        var ddd = null;
+        if (conf_centerItems) {
+            ddd = document.createElement("table");
+            ddd.align = "center";
+            var tb = document.createElement("tbody");
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            ddd.appendChild(tb);
+            tb.appendChild(tr);
+            tr.appendChild(td);
+            td.appendChild(dd ? dd : d);
+        }
+
         // Add the actual child.
-        div.appendChild(dd ? dd : d);    
+        div.appendChild(ddd ? ddd : (dd ? dd : d));    
 
         var u = new Utils(utils.getValuesFromPreviousElement());
         this.childUtils.push(u);
