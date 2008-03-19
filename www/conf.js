@@ -5,6 +5,7 @@
 //
 
 // Variables common to all experiments.
+var conf_sendingResultsMessage = " Sending results to server...";
 var conf_completionMessage = "The results were successfully sent to the server. Thanks!";
 var conf_completionErrorMessage = "There was an error sending the results to the server.";
 var conf_pageTitle = "Experiment";
@@ -15,6 +16,8 @@ var conf_practiceMessage = "Practice";
 var conf_showOverview = false;
 var conf_centerItems = true;
 
+if (typeof(sendingResultsMessage) != "undefined")
+    conf_sendingResultsMessage = sendingResultsMessage;
 if (typeof(serverURI) != "undefined")
     conf_serverURI = serverURI;
 if (typeof(completionMessage) != "undefined")

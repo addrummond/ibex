@@ -1,8 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
+
 // Check that the object namespace hasn't been polluted by monkey patching (we
 // use objects as hashtables without conscience).
 for (var _ in { }) {
-    assert(false, "ERROR: The JavaScript object namespace has been polluted (perhaps by a library such as prototype.js?.");
+    assert(false, "ERROR: The JavaScript object namespace has been polluted (perhaps by a library such as prototype.js?)");
 }
 
 var serverURI = "server.py";
@@ -49,10 +50,31 @@ spinSpan.appendChild(document.createTextNode(""));
 spinSpan.style.width = "1.5em";
 spinSpan.style.cssFloat = "left";
 spinSpan.style.styleFloat = "left";
-sendingResults.appendChild(spinSpan);
-var sendingResultsMessage = document.createElement("div");
-sendingResultsMessage.appendChild(document.createTextNode(" Sending results to server..."));
-sendingResults.appendChild(sendingResultsMessage);
+
+function setStateToSendingResults() {
+    while (sendingResults.firstChild) { // Remove all children (if any).
+        sendingResults.removeChild(sendingResults.firstChild);
+    }
+    sendingResults.appendChild(spinSpan);
+    var sendingResultsMessage = document.createElement("div");
+    sendingResultsMessage.appendChild(document.createTextNode(conf_sendingResultsMessage));
+    sendingResults.appendChild(sendingResultsMessage);
+}
+__spinSpanShouldBeSpinning__ = false;
+function setStateToResultsSentOrFailed(succeeded) {
+    __spinSpanShouldBeSpinning__ = false;
+
+    while (sendingResults.firstChild) { // Remove all children (if any).
+        sendingResults.removeChild(sendingResults.firstChild);
+    }
+    sendingResults.appendChild(document.createTextNode((succeeded ? conf_completionMessage : conf_completionErrorMessage) + " "));
+    if (! succeeded) {
+        var a = document.createElement("a");
+        a.href = "javascript:__retry__();";
+        a.appendChild(document.createTextNode("Retry"));
+        sendingResults.appendChild(a);
+    }
+}
 
 // Convert the "defaults" variable to a list of [item, hashtable] pairs.
 var ht_defaults = [];
@@ -365,10 +387,14 @@ function finishedCallback(resultsLines) {
         ++posInRunningOrder;
         if (posInRunningOrder >= runningOrder.length) {
             // We've finished the experiment.
-            indicateThatResultsAreBeingSent();
-            sendResults(allResults,
-                        function() { indicateThatResultsWereSent(true); },
-                        function() { indicateThatResultsWereSent(false); });
+            document.onkeydown = undefined; // Stop listening for keypresses.
+            __retry__ = function () {
+                indicateThatResultsAreBeingSent();
+                sendResults(allResults,
+                            function() { setStateToResultsSentOrFailed(true); },
+                            function() { setStateToResultsSentOrFailed(false); });
+            }
+            __retry__();
             return;
         }
         posInCurrentItemSet = 0;
@@ -444,13 +470,19 @@ function indicateThatResultsAreBeingSent()
     if (practiceBox)
         practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
 
-    inner.replaceChild(sendingResults, mainDiv);
+    setStateToSendingResults();
+    if (mainDiv.firstChild != sendingResults) {
+        while (mainDiv.firstChild)
+            mainDiv.removeChild(mainDiv.firstChild);
+        mainDiv.appendChild(sendingResults, mainDiv.firstChild);
+    }
+
     var spinChars = ["\u2013", "\\", "|", "/"]
     var spinCharsPos = 0
+    __spinSpanShouldBeSpinning__ = true;
     function timerCallback()
     {
-        // Stop the callback if spinSpan no longer has any children.
-        if (spinSpan.childNodes.length == 0) { return; }
+        if (! __spinSpanShouldBeSpinning__) { return; }
 
         spinSpan.replaceChild(document.createTextNode(spinChars[spinCharsPos]),
                               spinSpan.firstChild);
@@ -461,23 +493,6 @@ function indicateThatResultsAreBeingSent()
         setTimeout(timerCallback, 200);
     }
     timerCallback();
-}
-
-function indicateThatResultsWereSent(success)
-{
-    spinSpan.removeChild(spinSpan.firstChild); // This will cause the callback to stop.
-    if (success) {
-        sendingResultsMessage.replaceChild(
-            document.createTextNode(conf_completionMessage),
-            sendingResultsMessage.firstChild
-        );
-    }
-    else {
-        sendingResultsMessage.replaceChild(
-            document.createTextNode(conf_completionErrorMessage),
-            sendingResultsMessage.firstChild
-        );
-    }
 }
 
 // Make a post request to a given address. Address may either be a domain
