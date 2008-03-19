@@ -18,10 +18,10 @@ function AcceptabilityJudgment(div, options, finishedCallback, utils) {
                                   timeout:        options.timeout,
                                   instructions:   options.instructions,
                                   leftComment:    options.leftComment,
-                                  rightComment:   options.rightComment }],
+                                  rightComment:   options.rightComment }]/*,
         manipulators: [
             [0, function(div) { div.style.fontSize = "larger"; return div; }]
-        ]
+        ]*/
     };
 
     return new VBox(div, opts, finishedCallback, utils);

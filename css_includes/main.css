@@ -1,7 +1,6 @@
 body {
     color: black;
     background-color: white;
-    font-size: small;
     margin-left: 0;
     margin-top: 5em;
 }
@@ -23,10 +22,12 @@ p.progress-text {
     margin-top: 0;
     margin-bottom: 2em;
     font-style: italic;
+    font-size: small;
 }
 p.practice-box {
     color: blue;
     height: 1.5em;
     padding-bottom: 1em;
+    font-size: small;
 }
 

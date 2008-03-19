@@ -4,11 +4,13 @@
 }
 .question-text {
   font-style: italic;
+  font-size: small;
 }
 .instructions-text {
   font-style: italic;
   clear: left;
   padding-top: 1em;
+  font-size: small;
 }
 .scale-box {
     float: left;

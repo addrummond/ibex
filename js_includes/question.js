@@ -1,7 +1,7 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
 Question.name = "Question";
-Question.obligatory = ["q", "as"];
+Question.obligatory = ["as"];
 
 __Question_callback__ = null;
 __Questions_answers__ = null;
@@ -73,7 +73,7 @@ function Question(div, options, finishedCallback, utils) {
     this.xl.style.paddingLeft = 0;
     __Question_answers__ = new Array(this.answers.length);
 
-    if (this.leftComment) {
+    if (this.presentAsScale && this.leftComment) {
         var lcd = document.createElement("li");
         lcd.className = "scale-comment-box";
         lcd.appendChild(document.createTextNode(this.leftComment));
@@ -109,7 +109,7 @@ function Question(div, options, finishedCallback, utils) {
 
         this.xl.appendChild(li);
     }
-    if (this.rightComment) {
+    if (this.presentAsScale && this.rightComment) {
         var rcd = document.createElement("li");
         rcd.className = "scale-comment-box";
         rcd.appendChild(document.createTextNode(this.rightComment));
