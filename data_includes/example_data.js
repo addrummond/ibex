@@ -14,6 +14,12 @@ var items = [
 
 ["sep", Separator, { }],
 
+/*["intro", Message, {html: ["div",
+                            ["p", "This experiment has two parts. In the first part, you",
+                                  "will be required to read a number of English senteces one word at a time.",
+                                  "You can advance to the next work by pressing the space bar."],
+                            ["p", "In the second part, you will be asked to*/
+
 ["intro", Message, {html: "<p>This experiment has two parts. In the first part, you will be required to read a number of English sentences one word at a time. You can advance to the next word by pressing the space bar.</p><p>In the second part, you will be asked to &ldquo;rate&rdquo; some sentences on a scale of 1-7 (with 1 bad and 7 good).</p><p><b>Press any key to continue.</b></p>"}],
 ["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
 

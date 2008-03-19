@@ -1,5 +1,35 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+function jsHTML(html) {
+    if (typeof(html) == "string") {
+        return document.createTextNode(html);
+    }
+    assert((!(html.length === undefined) && html.length > 0), "Bad jsHTML.");
+    var elem;
+    if (typeof(html[0]) == "string") {
+        elem = document.createElement(html[0]);
+    }
+    else {
+        assert((!(html[0].length === undefined))  &&
+                  html[0].length > 0              &&
+                  typeof(html[0][0]) == "string") &&
+                  html[0].length % 2 == 1,
+               "Bad jsHTML.");
+        elem = document.createElement(html[0][0]);
+        for (var i = 1; i < html[0].length; i += 2) {
+            var propertyName = html[0][i];
+            var propertyValue = html[0][i + 1];
+            elem[propertyName] = propertyValue;
+        }
+    }
+
+    for (var i = 1; i < html.length; ++i) {
+        elem.appendChild(jsHTML(html[i]));
+    }
+
+    return elem;
+}
+
 // Taken from http://aymanh.com/9-javascript-tips-you-may-not-know
 function AssertException(message) { this.message = message; }
 AssertException.prototype.toString = function () {
