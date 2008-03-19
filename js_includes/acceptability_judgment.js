@@ -1,7 +1,7 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
 AcceptabilityJudgment.name = "AcceptabilityJudgment";
-AcceptabilityJudgment.obligatory = ["s", "q", "as"];
+AcceptabilityJudgment.obligatory = ["s", "as"];
 
 function AcceptabilityJudgment(div, options, finishedCallback, utils) {
     var opts = {

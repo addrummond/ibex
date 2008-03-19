@@ -16,7 +16,7 @@ function Question(div, options, finishedCallback, utils) {
 
     div.className = "question";
 
-    this.question = options.q;
+    this.question = dget(options, "q");
     this.answers = options.as;
 
     this.hasCorrect = dget(options, "hasCorrect", false);
@@ -65,9 +65,11 @@ function Question(div, options, finishedCallback, utils) {
         }
     }
 
-    this.qp = document.createElement("p");
-    this.qp.className = "question-text";
-    this.qp.appendChild(document.createTextNode(this.question));
+    if (this.question) {
+        this.qp = document.createElement("p");
+        this.qp.className = "question-text";
+        this.qp.appendChild(document.createTextNode(this.question));
+    }
     this.xl = document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul");
     this.xl.style.marginLeft = 0;
     this.xl.style.paddingLeft = 0;
@@ -116,7 +118,8 @@ function Question(div, options, finishedCallback, utils) {
         this.xl.appendChild(rcd);
     }
 
-    div.appendChild(this.qp);
+    if (! (this.qp === undefined))
+        div.appendChild(this.qp);
     div.appendChild(this.xl);
     if (this.instructions) {
         var p = document.createElement("p");
