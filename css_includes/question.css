@@ -26,6 +26,7 @@
     text-align: center;
 }
 li:hover.scale-box { cursor: pointer; }
+li.scale-box { cursor: pointer; }
 .scale-comment-box {
     float: left;
     list-style: none;
