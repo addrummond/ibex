@@ -548,7 +548,7 @@ they answered incorrectly.
 *Options*
 
 || *Option*      || *Default*              || *Description*                                               ||
-|| s             || _obligatory_           || The sentence.                                               ||
+|| s             || _obligatory_           || The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want to (for example) interrupt a self-paced reading item with a lexical decision task. ||
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
@@ -559,7 +559,7 @@ The format of the results depends on the setting of the `mode` option. If it is
 set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
-|| 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
+|| 1        || MD5 hash of the sentence (with one space between each word/chunk -- all additional whitespace is trimmed). ||
 
 If `mode` is set to "self-paced reading", the results look like this:
 
