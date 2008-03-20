@@ -387,7 +387,7 @@ function finishedCallback(resultsLines) {
         ++posInRunningOrder;
         if (posInRunningOrder >= runningOrder.length) {
             // We've finished the experiment.
-            document.onkeydown = undefined; // Stop listening for keypresses.
+            document.onkeydown = null; // Stop listening for keypresses.
             __retry__ = function () {
                 indicateThatResultsAreBeingSent();
                 sendResults(allResults,
