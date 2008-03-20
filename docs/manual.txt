@@ -556,7 +556,7 @@ they answered incorrectly.
 *Options*
 
 || *Option*      || *Default*              || *Description*                                               ||
-|| s             || _obligatory_           || The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want to (for example) interrupt a self-paced reading item with a lexical decision task. ||
+|| s             || _obligatory_           || The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. ||
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
@@ -592,7 +592,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 *Options*
 
 || *Option*       || *Default*    || *Description*                                                     ||
-|| q              || _obligatory_ || The question to pose.                                             ||
+|| q              || `null`       || The question to pose.                                             ||
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
@@ -653,6 +653,7 @@ You can set the values of the following variables in your data file (e.g. `var s
 || *Option* || *Default* || *Description* ||
 || `showProgressBar` || `true` || Whether or not to show a progress bar. ||
 || `pageTitle` || `"experiment"` || Page title. ||
+|| `sendingResultsMessage` || `"..."` || The message shown while results are being sent to the server. ||
 || `completionMessage` || `"..."` || The message shown when the results are successfully sent to the server. ||
 || `completionErrorMessage` || `"..."` || The message shown when there is an error sending the results to the server. ||
 || `practiceItemTypes` || `[]` || A list of types for practice sentences. A sentence whose type is in this list will have a blue "practice" heading above it. ||
