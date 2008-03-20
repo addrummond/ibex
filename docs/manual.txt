@@ -91,25 +91,33 @@ of necessity rather vague. There are other ways of organizing the
 files/directories than the one described below, which is just the simplest
 option.
 
-*Step 1:* Copy the files in the `www` directory to somewhere within the root
-directory of your HTTP server. All of these files are ordinary static files
-except for `server.py`, which needs to be run as a CGI app.
+*Step 1:* Ensure that the `www` directory is somewhere within the root
+directory of your HTTP server. You may want to place the entire `webspr`
+directory within the root directory, or you may want to copy the files in `www`
+to a new location within the root directory. All of these files are ordinary
+static files except for `server.py`, which needs to be run as a CGI app.
 
 *Step 2:* Decide on a location for the main webspr directory. Depending on the
 details of your setup, you may be able to leave it in place, or you may need to
 copy it to a directory which the HTTP server has permission to access (so that
 `server.py` may access files in this directory when it is executed).
 
-*Step 3:* Edit `server.py` (in its new location) and change the value of
+*Step 3:* Edit `server.py` and change the value of
 `SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
 
-*Step 4:* Edit `server_conf.py` in its new location and change the value of
+*Step 4:* Edit `server_conf.py` and change the value of
 `WEBSPR_WORKING_DIR` to the new location of the main `webspr` dir. Also, change
 the value of `SERVER_MODE` to `"cgi"`.
 
+*Step 5:* If the version of Python you wish to use is not the default used by
+the HTTP server, add a `#!` line at the beginning of `server.py`.
+
 Once these steps are complete, it's just a matter of configuring your HTTP
-server correctly. There is an example configuration file for lighttpd included
-in the distribution (`example_lighttpd.conf`).
+server correctly. If you are using shared hosting, there is a reasonably good
+chance that the HTTP server will already have been configured to run Python CGI
+apps, in which case you won't need to do any additional configuration. There is
+an example configuration file for lighttpd included in the distribution
+(`example_lighttpd.conf`).
 
 =Basic concepts=
 A Webspr experiment is essentially a sequence of _items_.
