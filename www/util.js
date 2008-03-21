@@ -6,7 +6,10 @@ function jsHTML(html) {
             return document.createTextNode(html);
         }
         else {
-            // Bit of a hack -- haven't been able to find the proper DOM way to do this.
+            // Bit of a hack -- haven't been able to find a proper DOM way to do this.
+            if (! html.match(/^&\s*(?:(?:[a-zA-Z]+)|(?:#\d+))\s*;$/)) {
+                assert(false, "Bad entity: '" + html + "'.");
+            }
             var s = document.createElement("span");
             s.innerHTML = html;
             return s;
