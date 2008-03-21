@@ -290,9 +290,9 @@ if (conf_showProgressBar) {
             [["div:showProgress", {"margin-top": "2em", "class": "lindent"}]]
         );
     }
-    var showProgress = names.showProgress;
+    showProgress = names.showProgress;
 
-    var barContainer = jsHTMLWithNames(names,
+    barContainer = jsHTMLWithNames(names,
         [["div", {"class": "bar-container", "@style.height": progressBarHeight, "@style.width": progressBarMaxWidth}],
           [["div:bar", {"class": "bar", "@style.height": progressBarHeight, "@style.width": 0}]]]
     );
