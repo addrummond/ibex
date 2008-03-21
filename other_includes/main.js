@@ -246,9 +246,7 @@ function Utils(valuesFromPreviousElement) {
 
 var practiceBox;
 if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
-    practiceBox = document.createElement("p");
-    practiceBox.className = "practice-box";
-    practiceBox.appendChild(document.createTextNode(""));
+    practiceBox = jsHTML([["p", {"class": "practice-box"}], ""]);
     inner.appendChild(practiceBox);
 }
 
@@ -261,6 +259,7 @@ var progressBarMaxWidth;
 var currentProgressBarWidth = 0.0;
 var showProgress;
 var barContainer;
+var bar;
 var nPoints = 0;
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
@@ -275,42 +274,35 @@ if (conf_showProgressBar) {
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
 
-    var showProgress;
-    var thingToAppendToBody;
+    var names = { };
+    var thingToPrependToBody;
     if (conf_centerItems) {
-        thingToAppendToBody = document.createElement("table");
-        thingToAppendToBody.align = "center";
-        var tb = document.createElement("tbody");
-        var tr = document.createElement("tr");
-        var td = document.createElement("td");
-        thingToAppendToBody.appendChild(tb);
-        tb.appendChild(tr);
-        tr.appendChild(td);
-        showProgress = td;
+        thingToPrependToBody = jsHTMLWithNames(names,
+            [["table", {align: "center"}],
+              ["tbody",
+                ["tr",
+                  ["td:showProgress"]
+            ]]]
+        );
     }
-    else {
-        showProgress = document.createElement("div");
-        showProgress.style.marginTop = "2em";
-        showProgress.className = "lindent";
-        thingToAppendToBody = showProgress;
+    else  {
+        thingToPrependToBody = jsHTMLWithNames(names,
+            [["div:showProgress", {"margin-top": "2em", "class": "lindent"}]]
+        );
     }
-    barContainer = document.createElement("div");
-    barContainer.className = "bar-container";
-    barContainer.style.height = progressBarHeight;
-    barContainer.style.width = progressBarMaxWidth;
-    var bar = document.createElement("div");
-    bar.className = "bar";
-    bar.style.width = "0px";
-    bar.style.height = progressBarHeight;
-    barContainer.appendChild(bar);
-    var p = document.createElement("p");
-    p.className = "progress-text";
-    if (conf_centerItems)
-        p.style.textAlign = "center";
-    p.appendChild(document.createTextNode("progress"));
+    var showProgress = names.showProgress;
+
+    var barContainer = jsHTMLWithNames(names,
+        [["div", {"class": "bar-container", "@style.height": progressBarHeight, "@style.width": progressBarMaxWidth}],
+          [["div:bar", {"class": "bar", "@style.height": progressBarHeight, "@style.width": 0}]]]
+    );
+    bar = names.bar;
+    var p = jsHTML([["p", {"class": "progress-text", "@style.textAlign": conf_centerItems ? "center" : "left"}],
+                    "progress"]);
+
     showProgress.appendChild(barContainer);
     showProgress.appendChild(p);
-    body.insertBefore(thingToAppendToBody, body.firstChild);
+    body.insertBefore(thingToPrependToBody, body.firstChild);
 }
 function updateProgressBar() {
     if (conf_showProgressBar) {

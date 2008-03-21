@@ -6,7 +6,7 @@ function createJsHTMLTag(s, namesHash) {
         assert(false, "Badly formatted jsHTML tag: '" + s + "'.");
     var elem = document.createElement(m[1]);
     var n = m[2];
-    if (namesHash && n)
+    if (namesHash != null && n)
         namesHash[n] = elem;
     return elem;
 }
@@ -21,7 +21,7 @@ function jsHTML(html, namesHash) {
     var elem;
     if (typeof(html[0]) == "string") {
         if (! (html[0].charAt(0) == "&" && html[0].charAt(html[0].length - 1) == (";"))) {
-            elem = createJsHTMLTag(html[0]);
+            elem = createJsHTMLTag(html[0], namesHash);
         }
         else {
             assert(html.length == 1, "Entity cannot have children.");
@@ -36,16 +36,28 @@ function jsHTML(html, namesHash) {
     else {
         assert_is_arraylike(html[0], "Bad jsHTML.");
         assert(html[0].length == 1 || html[0].length == 2, "Bad jsHTML.");
-        elem = createJsHTMLTag(html[0][0]);
+        elem = createJsHTMLTag(html[0][0], namesHash);
         if (html[0].length == 2) {
             for (var k in html[0][1]) {
-                elem.setAttribute(k, html[0][1][k]);
+                // Is this setting an attribute or a DOM object key?
+                if (! (k.charAt(0) == "@")) {
+                    elem.setAttribute(k, html[0][1][k]);
+                }
+                else {
+                    var m = k.match(/^@\s*(?:([a-zA-Z_]\w*)\.)*([a-zA-Z_]\w*)\s*$/);
+                    assert(m, "Badly formatted DOM attribute selector in jsHTML.");
+                    var initials = m[1] ? m[1].split(".") : [];
+                    var lastObject = elem;
+                    for (var i = 0; i < initials.length; ++i)
+                        lastObject = lastObject[initials[i]];
+                    lastObject[m[2]] = html[0][1][k];
+                }
             }
         }
     }
 
     for (var i = 1; i < html.length; ++i) {
-        elem.appendChild(jsHTML(html[i]));
+        elem.appendChild(jsHTML(html[i], namesHash));
         // Should we add a space separator?
         if (i < html.length - 1                                       &&
             (! (typeof(html[i]) == "object" &&
@@ -61,6 +73,7 @@ function jsHTML(html, namesHash) {
 
     return elem;
 }
+function jsHTMLWithNames(names, html) { return jsHTML(html, names); }
 
 function htmlCodeToDOM(html) {
     if (typeof(html) == "string") {
