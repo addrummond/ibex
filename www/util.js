@@ -16,7 +16,8 @@ function jsHTML(html) {
         }
     }
 
-    assert((!(html.length === undefined) && html.length > 0), "Bad jsHTML.");
+    assert_is_arraylike(html, "Bad jsHTML.");
+    assert(html.length > 0, "Bad jsHTML");
     var elem;
     if (typeof(html[0]) == "string") {
         elem = document.createElement(html[0]);
@@ -76,7 +77,7 @@ function assert(exp, message) {
 }
 
 function assert_is_arraylike(expr, message) {
-    assert((! (expr == null)) && (! (expr.length === null || expr.length === undefined)), message)
+    assert((! (expr == null)) && typeof(expr.length) == "number", message)
 }
 
 function assert_is_dict(expr, message) {
