@@ -22,7 +22,10 @@ var items = [
                                   " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
                             [["p", {style: "font-weight: bold;"}], "Press any key to continue."]]}],
 
-["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
+["break", Message, {transfer: 10000,
+                    html: ["div",
+                            ["p", "You've completed the first part of the experiment. Thanks!"],
+                            ["p", "In a few seconds you'll be taken to the second part."]]}],
 
 ["practice", ds, {s: "This is a practice sentence to get you used to reading sentences like this."}],
 ["practice", ds, {s: "This is another practice sentence."}],
