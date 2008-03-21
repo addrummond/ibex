@@ -7,11 +7,26 @@ DashedSentence.obligatory = ["s"];
 
 function DashedSentence(div, options, finishedCallback, utils) {
     this.options = options;
-    this.words = options.s.split(/\s+/);
+    if (typeof(options.s) == "string")
+        this.words = options.s.split(/\s+/);
+    else {
+        assert_is_arraylike(options.s, "Bad value for 's' option of DashedSentence.");
+        this.words = options.s;
+    }
     this.mode = dget(options, "mode", "self-paced reading");
     this.wordTime = dget(options, "wordTime", 300); // Only for speeded accpetability.
     this.wordPauseTime = dget(options, "wordPauseTime", 100); // Ditto.
     this.currentWord = 0;
+
+    // Is there a "stopping point" specified?
+    this.stoppingPoint = this.words.length;
+    for (var i = 0; i < this.words.length; ++i) {
+        if (stringStartsWith("@", this.words[i])) {
+            this.words[i] = this.words[i].substring(1);
+            this.stoppingPoint = i + 1;
+            break;
+        }
+    }
 
     // Defaults.
     this.unshownBorderColor = dget(options, "unshownBorderColor", "#9ea4b1");
@@ -38,13 +53,13 @@ function DashedSentence(div, options, finishedCallback, utils) {
     }
 
     this.blankWord = function(w) {
-        if (this.currentWord <= this.words.length) {
+        if (this.currentWord <= this.stoppingPoint) {
             this.wordDivs[w].style.borderColor = this.unshownBorderColor;
             this.wordDivs[w].style.color = this.unshownWordColor;
         }
     };
     this.showWord = function(w) {
-        if (this.currentWord < this.words.length) {
+        if (this.currentWord < this.stoppingPoint) {
             this.wordDivs[w].style.borderColor = this.shownBorderColor;
             this.wordDivs[w].style.color = this.shownWordColor;
         }
@@ -56,7 +71,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
         function wordTimeout() {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
-            if (t.currentWord >= t.words.length)
+            if (t.currentWord >= t.stoppingPoint)
                 finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
@@ -76,10 +91,10 @@ function DashedSentence(div, options, finishedCallback, utils) {
 
                 if (this.currentWord - 1 >= 0)
                     this.blankWord(this.currentWord - 1);
-                if (this.currentWord < this.words.length)
+                if (this.currentWord < this.stoppingPoint)
                     this.showWord(this.currentWord);
                 ++(this.currentWord);
-                if (this.currentWord > this.words.length)
+                if (this.currentWord > this.stoppingPoint)
                     finishedCallback(this.resultsLines);
 
                 return false;
@@ -91,7 +106,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
     }
 
     this.recordSprResult = function(time, word) {
-        if (word > 0 && word < this.wordDivs.length) {
+        if (word > 0 && word < this.stoppingPoint) {
             assert(this.previousTime, "Internal error in dashed_sentence.js");
             this.resultsLines.push([
                 ["Word number", word],

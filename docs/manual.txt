@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers Webspr 0.2 (currently at 0.2-beta5). The 0.1.x
+This documentation covers Webspr 0.2 (currently at 0.2-beta7). The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation
@@ -91,25 +91,33 @@ of necessity rather vague. There are other ways of organizing the
 files/directories than the one described below, which is just the simplest
 option.
 
-*Step 1:* Copy the files in the `www` directory to somewhere within the root
-directory of your HTTP server. All of these files are ordinary static files
-except for `server.py`, which needs to be run as a CGI app.
+*Step 1:* Ensure that the `www` directory is somewhere within the root
+directory of your HTTP server. You may want to place the entire `webspr`
+directory within the root directory, or you may want to copy the files in `www`
+to a new location within the root directory. All of these files are ordinary
+static files except for `server.py`, which needs to be run as a CGI app.
 
 *Step 2:* Decide on a location for the main webspr directory. Depending on the
 details of your setup, you may be able to leave it in place, or you may need to
 copy it to a directory which the HTTP server has permission to access (so that
 `server.py` may access files in this directory when it is executed).
 
-*Step 3:* Edit `server.py` (in its new location) and change the value of
+*Step 3:* Edit `server.py` and change the value of
 `SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
 
-*Step 4:* Edit `server_conf.py` in its new location and change the value of
+*Step 4:* Edit `server_conf.py` and change the value of
 `WEBSPR_WORKING_DIR` to the new location of the main `webspr` dir. Also, change
 the value of `SERVER_MODE` to `"cgi"`.
 
+*Step 5:* If the version of Python you wish to use is not the default used by
+the HTTP server, add a `#!` line at the beginning of `server.py`.
+
 Once these steps are complete, it's just a matter of configuring your HTTP
-server correctly. There is an example configuration file for lighttpd included
-in the distribution (`example_lighttpd.conf`).
+server correctly. If you are using shared hosting, there is a reasonably good
+chance that the HTTP server will already have been configured to run Python CGI
+apps, in which case you won't need to do any additional configuration. There is
+an example configuration file for lighttpd included in the distribution
+(`example_lighttpd.conf`).
 
 =Basic concepts=
 A Webspr experiment is essentially a sequence of _items_.
@@ -548,7 +556,7 @@ they answered incorrectly.
 *Options*
 
 || *Option*      || *Default*              || *Description*                                               ||
-|| s             || _obligatory_           || The sentence.                                               ||
+|| s             || _obligatory_           || The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. ||
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
@@ -559,7 +567,7 @@ The format of the results depends on the setting of the `mode` option. If it is
 set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
-|| 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
+|| 1        || MD5 hash of the sentence (with one space between each word/chunk -- all additional whitespace is trimmed). ||
 
 If `mode` is set to "self-paced reading", the results look like this:
 
@@ -584,13 +592,15 @@ If `mode` is set to "self-paced reading", the results look like this:
 *Options*
 
 || *Option*       || *Default*    || *Description*                                                     ||
-|| q              || _obligatory_ || The question to pose.                                             ||
+|| q              || `null`       || The question to pose.                                             ||
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
+|| leftComment    || `null`       || _Only valid if `presentAsScale` is `true`._ This option specifies text to be displayed at the left edge of a scale (e.g. "Bad"). ||
+|| rightComment   || `null`       || As above, but for the right edge of the scale. ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
 
 *Results*
@@ -609,6 +619,8 @@ If `mode` is set to "self-paced reading", the results look like this:
 || showNumbers    || `true`              || As for `Question`            ||
 || randomOrder    || _as for `Question`_ || As for `Question`            ||
 || presentAsScale || `false`             || As for `Question`            ||
+|| leftComment    || `null`              || As for `Question`            ||
+|| rightComment   || `null`              || As for `Question`            ||
 || timeout        || `null`              || As for `Question`            ||
 
 *Results*
@@ -641,6 +653,7 @@ You can set the values of the following variables in your data file (e.g. `var s
 || *Option* || *Default* || *Description* ||
 || `showProgressBar` || `true` || Whether or not to show a progress bar. ||
 || `pageTitle` || `"experiment"` || Page title. ||
+|| `sendingResultsMessage` || `"..."` || The message shown while results are being sent to the server. ||
 || `completionMessage` || `"..."` || The message shown when the results are successfully sent to the server. ||
 || `completionErrorMessage` || `"..."` || The message shown when there is an error sending the results to the server. ||
 || `practiceItemTypes` || `[]` || A list of types for practice sentences. A sentence whose type is in this list will have a blue "practice" heading above it. ||
