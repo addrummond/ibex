@@ -11,7 +11,8 @@ function Message(div, options, finishedCallback, utils) {
 
     this.html = options.html;
     div.className = "message";
-    div.innerHTML = this.html;
+    //div.innerHTML = this.html;
+    div.appendChild(htmlCodeToDOM(this.html));
 
     // Bit of copy/pasting from 'Separator' here.
     this.transfer = dget(options, "transfer", "keypress");

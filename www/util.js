@@ -2,7 +2,15 @@
 
 function jsHTML(html) {
     if (typeof(html) == "string") {
-        return document.createTextNode(html);
+        if (! (stringStartsWith("&", html)) && stringEndsWith(";", html)) {
+            return document.createTextNode(html);
+        }
+        else {
+            // Bit of a hack -- haven't been able to find the proper DOM way to do this.
+            var s = document.createElement("span");
+            s.innerHTML = html;
+            return s;
+        }
     }
     assert((!(html.length === undefined) && html.length > 0), "Bad jsHTML.");
     var elem;
@@ -12,22 +20,44 @@ function jsHTML(html) {
     else {
         assert((!(html[0].length === undefined))  &&
                   html[0].length > 0              &&
-                  typeof(html[0][0]) == "string") &&
+                  typeof(html[0][0]) == "string"  &&
                   html[0].length % 2 == 1,
                "Bad jsHTML.");
         elem = document.createElement(html[0][0]);
         for (var i = 1; i < html[0].length; i += 2) {
             var propertyName = html[0][i];
             var propertyValue = html[0][i + 1];
-            elem[propertyName] = propertyValue;
+            elem.setAttribute(propertyName, propertyValue);
         }
     }
 
     for (var i = 1; i < html.length; ++i) {
         elem.appendChild(jsHTML(html[i]));
+        // Should we add a space separator?
+        if (i < html.length - 1 &&
+            (! (typeof(html[i]) == "string" &&
+                stringStartsWith("&", html[i]) &&
+                stringEndsWith(";", html[i]))) &&
+            (! (i < html.length - 2 &&
+               typeof(html[i + 1]) == "string" &&
+                stringStartsWith("&", html[i + 1]) &&
+                stringEndsWith(";", html[i + 1])))) {
+            elem.appendChild(document.createTextNode(" "));
+        } 
     }
 
     return elem;
+}
+
+function htmlCodeToDOM(html) {
+    if (typeof(html) == "string") {
+        var d = document.createElement("div");
+        d.innerHTML = html;
+        return d;
+    }
+    else {
+        return jsHTML(html);
+    }
 }
 
 // Taken from http://aymanh.com/9-javascript-tips-you-may-not-know
