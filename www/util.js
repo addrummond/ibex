@@ -17,7 +17,7 @@ function jsHTML(html) {
     }
 
     assert_is_arraylike(html, "Bad jsHTML.");
-    assert(html.length > 0, "Bad jsHTML");
+    assert(html.length > 0, "Bad jsHTML.");
     var elem;
     if (typeof(html[0]) == "string") {
         elem = document.createElement(html[0]);
