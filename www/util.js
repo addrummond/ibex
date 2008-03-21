@@ -34,8 +34,8 @@ function jsHTML(html, namesHash) {
         }
     }
     else {
-        assert_is_arraylike(html[0], "Bad jsHTML");
-        assert(html[0].length == 1 || html[0].length == 2, "Bad jsHTML");
+        assert_is_arraylike(html[0], "Bad jsHTML.");
+        assert(html[0].length == 1 || html[0].length == 2, "Bad jsHTML.");
         elem = createJsHTMLTag(html[0][0]);
         if (html[0].length == 2) {
             for (var k in html[0][1]) {
