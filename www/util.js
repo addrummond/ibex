@@ -2,7 +2,7 @@
 
 function jsHTML(html) {
     if (typeof(html) == "string") {
-        if (! (stringStartsWith("&", html)) && stringEndsWith(";", html)) {
+        if (! (stringStartsWith("&", html) && stringEndsWith(";", html))) {
             return document.createTextNode(html);
         }
         else {
