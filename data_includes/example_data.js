@@ -20,7 +20,7 @@ var items = [
                                   "You can advance to the next work by pressing the space bar."],
                             ["p", "In the second part, you will be asked to ", "&ldquo;", "rate", "&rdquo;",
                                   " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
-                            [["p", "style", "font-weight: bold;"], "Press any key to continue."]]}],
+                            [["p", {style: "font-weight: bold;"}], "Press any key to continue."]]}],
 
 ["break", Message, {transfer: 10000, html: "You've completed the first part of the experiment. Thanks! In a few seconds you'll be taken to the second part."}],
 

@@ -18,16 +18,14 @@ function jsHTML(html) {
         elem = document.createElement(html[0]);
     }
     else {
-        assert((!(html[0].length === undefined))  &&
-                  html[0].length > 0              &&
-                  typeof(html[0][0]) == "string"  &&
-                  html[0].length % 2 == 1,
+        assert((!(html[0].length === undefined)) &&
+               (html[0].length == 1 || html[0].length == 2),
                "Bad jsHTML.");
         elem = document.createElement(html[0][0]);
-        for (var i = 1; i < html[0].length; i += 2) {
-            var propertyName = html[0][i];
-            var propertyValue = html[0][i + 1];
-            elem.setAttribute(propertyName, propertyValue);
+        if (html[0].length == 2) {
+            for (var k in html[0][1]) {
+                elem.setAttribute(k, html[0][1][k]);
+            }
         }
     }
 
