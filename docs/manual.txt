@@ -693,6 +693,9 @@ statement `var showOverview = true;` option to your data file.  The second is
 to go to the page `overview.html` instead of `experiment.html`.
 
 =Known problems and issues=
+*Overviews:* These currently do not work in Internet Explorer (should be fixed
+eventually). Experiments should work fine in IE (6 or 7).
+
 The following are some subtle problems which can often arise when writing a
 data file:
 
