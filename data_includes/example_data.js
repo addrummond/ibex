@@ -18,7 +18,7 @@ var items = [
                             ["p", "This experiment has two parts. In the first part, you",
                                   "will be required to read a number of English sentences one word at a time.",
                                   "You can advance to the next work by pressing the space bar."],
-                            ["p", "In the second part, you will be asked to ", "&ldquo;", "rate", "&rdquo;",
+                            ["p", "In the second part, you will be asked to ", ["&ldquo;"], "rate", ["&rdquo;"],
                                   " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
                             [["p:foo", {style: "font-weight: bold;"}], "Press any key to continue."]]}],
 

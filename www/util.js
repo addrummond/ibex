@@ -13,30 +13,29 @@ function createJsHTMLTag(s, namesHash) {
 
 function jsHTML(html, namesHash) {
     if (typeof(html) == "string") {
-        if (! (stringStartsWith("&", html) && stringEndsWith(";", html))) {
-            return document.createTextNode(html);
-        }
-        else {
-            // Bit of a hack -- haven't been able to find a proper DOM way to do this.
-            if (! html.match(/^&\s*(?:(?:[a-zA-Z]+)|(?:#\d+))\s*;$/)) {
-                assert(false, "Bad entity: '" + html + "'.");
-            }
-            var s =document.createElement("span");
-            s.innerHTML = html;
-            return s;
-        }
+        return document.createTextNode(html);
     }
 
     assert_is_arraylike(html, "Bad jsHTML.");
     assert(html.length > 0, "Bad jsHTML.");
     var elem;
     if (typeof(html[0]) == "string") {
-        elem = createJsHTMLTag(html[0]);
+        if (! (html[0].charAt(0) == "&" && html[0].charAt(html[0].length - 1) == (";"))) {
+            elem = createJsHTMLTag(html[0]);
+        }
+        else {
+            assert(html.length == 1, "Entity cannot have children.");
+            // Bit of a hack -- haven't been able to find a proper DOM way to do this.
+            if (! html[0].match(/^&\s*(?:(?:[a-zA-Z]+)|(?:#\d+))\s*;$/)) {
+                assert(false, "Bad entity: '" + html + "'.");
+            }
+            elem = document.createElement("span");
+            elem.innerHTML = html[0];
+        }
     }
     else {
-        assert((!(html[0].length === undefined)) &&
-               (html[0].length == 1 || html[0].length == 2),
-               "Bad jsHTML.");
+        assert_is_arraylike(html[0], "Bad jsHTML");
+        assert(html[0].length == 1 || html[0].length == 2, "Bad jsHTML");
         elem = createJsHTMLTag(html[0][0]);
         if (html[0].length == 2) {
             for (var k in html[0][1]) {
@@ -48,14 +47,14 @@ function jsHTML(html, namesHash) {
     for (var i = 1; i < html.length; ++i) {
         elem.appendChild(jsHTML(html[i]));
         // Should we add a space separator?
-        if (i < html.length - 1 &&
-            (! (typeof(html[i]) == "string" &&
-                stringStartsWith("&", html[i]) &&
-                stringEndsWith(";", html[i]))) &&
+        if (i < html.length - 1                                       &&
+            (! (typeof(html[i]) == "object" &&
+                html[i][0].charAt(0) == "&" &&
+                html[i][0].charAt(html[i][0].length - 1) == ";"))     &&
             (! (i < html.length - 2 &&
-               typeof(html[i + 1]) == "string" &&
-                stringStartsWith("&", html[i + 1]) &&
-                stringEndsWith(";", html[i + 1])))) {
+               typeof(html[i + 1]) == "object" &&
+                html[i + 1][0].charAt(0) == "&" &&
+                html[i + 1][0].charAt(html[i + 1][0].length - 1) == ";"))) {
             elem.appendChild(document.createTextNode(" "));
         } 
     }
