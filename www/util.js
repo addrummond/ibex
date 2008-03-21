@@ -42,6 +42,8 @@ function jsHTML(html, namesHash) {
                 // Is this setting an attribute or a DOM object key?
                 if (! (k.charAt(0) == "@")) {
                     elem.setAttribute(k, html[0][1][k]);
+                    if (k == "class")
+                        elem.setAttribute("className", html[0][1][k]);
                 }
                 else {
                     var m = k.match(/^@\s*(?:([a-zA-Z_]\w*)\.)*([a-zA-Z_]\w*)\s*$/);
