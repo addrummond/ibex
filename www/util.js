@@ -15,6 +15,7 @@ function jsHTML(html) {
             return s;
         }
     }
+
     assert((!(html.length === undefined) && html.length > 0), "Bad jsHTML.");
     var elem;
     if (typeof(html[0]) == "string") {
