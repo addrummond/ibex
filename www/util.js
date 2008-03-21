@@ -1,6 +1,17 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-function jsHTML(html) {
+function createJsHTMLTag(s, namesHash) {
+    m = s.match(/^\s*(\w+)(?::(\w+))?$/);
+    if (! m)
+        assert(false, "Badly formatted jsHTML tag: '" + s + "'.");
+    var elem = document.createElement(m[1]);
+    var n = m[2];
+    if (namesHash && n)
+        namesHash[n] = elem;
+    return elem;
+}
+
+function jsHTML(html, namesHash) {
     if (typeof(html) == "string") {
         if (! (stringStartsWith("&", html) && stringEndsWith(";", html))) {
             return document.createTextNode(html);
@@ -10,7 +21,7 @@ function jsHTML(html) {
             if (! html.match(/^&\s*(?:(?:[a-zA-Z]+)|(?:#\d+))\s*;$/)) {
                 assert(false, "Bad entity: '" + html + "'.");
             }
-            var s = document.createElement("span");
+            var s =document.createElement("span");
             s.innerHTML = html;
             return s;
         }
@@ -20,13 +31,13 @@ function jsHTML(html) {
     assert(html.length > 0, "Bad jsHTML.");
     var elem;
     if (typeof(html[0]) == "string") {
-        elem = document.createElement(html[0]);
+        elem = createJsHTMLTag(html[0]);
     }
     else {
         assert((!(html[0].length === undefined)) &&
                (html[0].length == 1 || html[0].length == 2),
                "Bad jsHTML.");
-        elem = document.createElement(html[0][0]);
+        elem = createJsHTMLTag(html[0][0]);
         if (html[0].length == 2) {
             for (var k in html[0][1]) {
                 elem.setAttribute(k, html[0][1][k]);
