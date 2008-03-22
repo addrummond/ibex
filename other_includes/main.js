@@ -9,6 +9,8 @@ for (var _ in { }) {
 var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
+
+var practiceBox;
 var inner;
 var mainTable; // Only set if conf_centerItems.
 
@@ -31,24 +33,16 @@ function createMainTable() {
     mainTable = newt;
 }
 
-if (conf_centerItems && (! conf_showOverview)) {
-    // Have to create an actual table because of stupid IE (I tried the
-    // various CSS hacks for getting IE to do shrink-wrap centering, but it just
-    // drove me insane).
-    createMainTable();
-}
-else {
-    inner = document.createElement("div");
-    inner.className = "lindent";
-    body.appendChild(inner);
-}
-inner.style.clear = "both";
-
 function renewInner() {
-    if (! conf_centerItems) {
+    if ((! conf_centerItems) || conf_showOverview) {
         var newdiv = document.createElement("div");
         newdiv.className = "lindent";
-        body.replaceChild(newdiv, inner);
+        if (inner) {
+            body.replaceChild(newdiv, inner);
+        }
+        else {
+            body.appendChild(newdiv);
+        }
         inner = newdiv;
     }
     else {
@@ -57,7 +51,13 @@ function renewInner() {
         createMainTable();
     }
     inner.style.clear = "both";
+    if ((! conf_showOverview) && conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
+        practiceBox = jsHTML([["p", {"class": "practice-box"}], ""]);
+        inner.appendChild(practiceBox);
+    }
 }
+
+renewInner();
 
 var counter = parseInt(readCookie("counter"));
 var randomCounter = false;
@@ -265,12 +265,6 @@ function Utils(valuesFromPreviousElement) {
     this.getValuesFromPreviousElement = function() {
         return copy_dict(valuesFromPreviousElement);
     }
-}
-
-var practiceBox;
-if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
-    practiceBox = jsHTML([["p", {"class": "practice-box"}], ""]);
-    inner.appendChild(practiceBox);
 }
 
 var progressBarHeight;
