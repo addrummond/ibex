@@ -10,30 +10,53 @@ var serverURI = "server.py";
 
 var body = document.getElementsByTagName("body")[0];
 var inner;
+var mainTable; // Only set if conf_centerItems.
+
+function createMainTable() {
+    var newt = document.createElement("table");
+    var tb = document.createElement("tbody");
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    newt.align = "center"; // IE sucks.
+    newt.appendChild(tb);
+    tb.appendChild(tr);
+    tr.appendChild(td);
+    inner = td;
+    if (mainTable) {
+        body.replaceChild(newt, mainTable);
+    }
+    else {
+        body.appendChild(newt);
+    }
+    mainTable = newt;
+}
+
 if (conf_centerItems && (! conf_showOverview)) {
     // Have to create an actual table because of stupid IE (I tried the
     // various CSS hacks for getting IE to do shrink-wrap centering, but it just
     // drove me insane).
-    var t = document.createElement("table");
-    var tb = document.createElement("tbody");
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
-    /*t.style.marginLeft = "auto";
-    t.style.marginRight = "auto";
-    tb.style.marginLeft = "auto";
-    tb.style.marginRight = "auto";*/
-    // IE can't even center tables using CSS?!
-    t.align = "center";
-    t.appendChild(tb);
-    tb.appendChild(tr);
-    tr.appendChild(td);
-    inner = td;
-    body.appendChild(t);
+    createMainTable();
 }
 else {
     inner = document.createElement("div");
     inner.className = "lindent";
     body.appendChild(inner);
+}
+inner.style.clear = "both";
+
+function renewInner() {
+    if (! conf_centerItems) {
+        var newdiv = document.createElement("div");
+        newdiv.className = "lindent";
+        body.replaceChild(newdiv, inner);
+        inner = newdiv;
+    }
+    else {
+        // Have to recreate the entire table, or Firefox 2 will do weird
+        // things.
+        createMainTable();
+    }
+    inner.style.clear = "both";
 }
 
 var counter = parseInt(readCookie("counter"));
@@ -250,10 +273,6 @@ if (conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
     inner.appendChild(practiceBox);
 }
 
-var mainDiv = document.createElement("div");
-mainDiv.style.clear = "both";
-inner.appendChild(mainDiv);
-
 var progressBarHeight;
 var progressBarMaxWidth;
 var currentProgressBarWidth = 0.0;
@@ -396,17 +415,10 @@ function finishedCallback(resultsLines) {
 
     var pForItem;
     if (dget(currentControllerInstance.options, "displayMode", "overwrite") != "append") {
-        var newMainDiv = document.createElement("div");
-        inner.replaceChild(newMainDiv, mainDiv);
-        mainDiv = newMainDiv;
-        pForItem = document.createElement("p");
-        mainDiv.appendChild(pForItem);
+        renewInner();
     }
-    else {
-        // Append the Item instead of overwriting the previous one.
-        pForItem = document.createElement("p");
-        mainDiv.appendChild(pForItem);
-    }
+    pForItem = document.createElement("p");
+    inner.appendChild(pForItem);
     pForItem.style.clear = "both";
 
     // Is this a practice item?
@@ -433,10 +445,12 @@ function finishedCallback(resultsLines) {
     else
         showProgressBar();
 }
+var pForItem = document.createElement("p");
+inner.appendChild(pForItem);
 currentUtilsInstance = new Utils({});
 currentControllerInstance =
     new (runningOrder[0][0].controller)
-        (mainDiv, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
+        (pForItem, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
 // Should we show the progress bar with the first item?
 if (currentControllerInstance.hideProgressBar)
     hideProgressBar();
@@ -463,10 +477,11 @@ function indicateThatResultsAreBeingSent()
         practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
 
     setStateToSendingResults();
-    if (mainDiv.firstChild != sendingResults) {
-        while (mainDiv.firstChild)
-            mainDiv.removeChild(mainDiv.firstChild);
-        mainDiv.appendChild(sendingResults, mainDiv.firstChild);
+    if (inner.firstChild != sendingResults) {
+        renewInner();
+        //while (inner.firstChild)
+        //    inner.removeChild(inner.firstChild);
+        inner.appendChild(sendingResults, inner.firstChild);
     }
 
     var spinChars = ["\u2013", "\\", "|", "/"]
