@@ -356,8 +356,7 @@ function getColumnNameIndex(name) {
 function namesToIndices(results_line) {
     for (var i = 0; i < results_line.length; ++i) {
         assert(results_line[i].length == 2, "Internal error");
-        var tmp = getColumnNameIndex(results_line[i][0]);
-        results_line[i][0] = tmp;
+        results_line[i][0] = getColumnNameIndex(results_line[i][0]);
     }
     return results_line;
 }
