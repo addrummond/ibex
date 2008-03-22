@@ -9,7 +9,7 @@ __Questions_answers__ = null;
 function Question(div, options, finishedCallback, utils) {
     var questionField = "Question";
     var answerField = "Answer";
-    var correctField = "Whether or not answer was correct (NULL if N/A)"
+    var correctField = "Whether or not answer was correct (NULL if N/A)";
 
     this.div = div;
     this.options = options;
