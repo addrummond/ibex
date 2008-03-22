@@ -89,7 +89,7 @@ function Question(div, options, finishedCallback, utils) {
             //li.onclick = new Function("__Question_callback__(" + i + ");");
             (function(i) {
                 li.onclick = function () { __Question_callback__(i); };
-            })(i);*/
+            })(i);
         }
         var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
         var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
