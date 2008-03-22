@@ -1,29 +1,38 @@
 .question {
-  margin-left: 0;
-  padding-left: 0;
+    margin-left: 0;
+    padding-left: 0;
 }
 .question-text {
-  font-style: italic;
-  font-size: small;
+    font-style: italic;
+    font-size: small;
 }
 .instructions-text {
-  font-style: italic;
-  clear: left;
-  padding-top: 1em;
-  font-size: small;
+    font-style: italic;
+    clear: left;
+    padding-top: 1em;
+    font-size: small;
 }
-.scale-box {
+li.normal-answer {
+    cursor: pointer;
+}
+li:hover.normal-answer {
+    cursor: pointer;
+}
+li.scale-box {
     float: left;
     list-style: none;
     margin-left: 0;
     padding-left: 0;
     margin-right: 1em;
     padding-right: 0;
-    border: 1px black solid;
+    border: 1px #9ea4b1 solid;
     width: 2em;
     height: 2em;
     padding-top: 0.5em;
     text-align: center;
+}
+li:hover.scale-box {
+    border-color: black;
 }
 li:hover.scale-box { cursor: pointer; }
 li.scale-box { cursor: pointer; }
@@ -38,7 +47,6 @@ li.scale-box { cursor: pointer; }
     text-align: center;
     font-style: italic;
 }
-
 li.scale-box a {
     text-decoration: none; 
     display: block;
@@ -49,3 +57,11 @@ li.scale-box a:hover {
     display: block;
     vertical-align: middle;
 }
+span.fake-link {
+    color: blue;
+    cursor: pointer;
+}
+span:hover.fake-link {
+    cursor: pointer;
+}
+

@@ -86,16 +86,19 @@ function Question(div, options, finishedCallback, utils) {
         li = document.createElement("li");
         if (this.presentAsScale) {
             li.className = "scale-box";
-            //li.onclick = new Function("__Question_callback__(" + i + ");");
-            (function(i) {
-                li.onclick = function () { __Question_callback__(i); };
-            })(i);
         }
+        else {
+            li.className = "normal-answer";
+        }
+        //li.onclick = new Function("__Question_callback__(" + i + ");");
+        (function(i) {
+            li.onclick = function () { __Question_callback__(i); };
+        })(i);
         var ans = typeof(this.orderedAnswers[i]) == "string" ? this.orderedAnswers[i] : this.orderedAnswers[i][1];
         var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
                       // captured in the closure defined below.
-        var a = document.createElement("a");
-        a.href = "#";
+        var a = document.createElement("span");
+        a.className = "fake-link";
         //a.href = "javascript:__Question_callback__(" + i + ");";
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
