@@ -109,7 +109,7 @@ function Question(div, options, finishedCallback, utils) {
                 correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
             }
-            finishedCallback([[[questionField, url_encode_removing_commas(t.question)],
+            finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                [answerField, url_encode_removing_commas(ans)],
                                [correctField, correct]]]);
         };
@@ -139,7 +139,8 @@ function Question(div, options, finishedCallback, utils) {
         var t = this;
         utils.setTimeout(function () {
             t.setFlag(false);
-            finishedCallback([[[questionField, url_encode_removing_commas(t.question)], [answerField, "NULL"], [correctField, "NULL"]]]);
+            finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
+                               [answerField, "NULL"], [correctField, "NULL"]]]);
         }, this.timeout);
     }
 
@@ -157,7 +158,7 @@ function Question(div, options, finishedCallback, utils) {
                     correct = (correct_ans == ans ? 1 : 0);
                     this.setFlag(correct);
                 }
-                finishedCallback([[[questionField, url_encode_removing_commas(this.question)],
+                finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
                                    [answerField, url_encode_removing_commas(ans)],
                                    [correctField, correct]]]);
 
@@ -189,7 +190,7 @@ function Question(div, options, finishedCallback, utils) {
                         correct = (correct_ans == ans ? 1 : 0);
                         this.setFlag(correct);
                     }
-                    finishedCallback([[[questionField, url_encode_removing_commas(this.question)],
+                    finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
                                        [answerField, url_encode_removing_commas(ans)],
                                        [correctField, correct]]]);
 
