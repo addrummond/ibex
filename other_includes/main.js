@@ -344,6 +344,7 @@ var allResults = [];
 var columnNamesArray = ["Controller name", "Item number", "Element number", "Type", "Group"];
 
 function getColumnNameIndex(name) {
+    assert(typeof(name) == "string", "Internal error: 'getColumnNameIndex(...)'");
     for (var i = 0; i < columnNamesArray.length; ++i) {
         if (columnNamesArray[i] == name)
             return i;
@@ -355,7 +356,8 @@ function getColumnNameIndex(name) {
 function namesToIndices(results_line) {
     for (var i = 0; i < results_line.length; ++i) {
         assert(results_line[i].length == 2, "Internal error");
-        results_line[i][0] = getColumnNameIndex(results_line[i][0]);
+        var tmp = getColumnNameIndex(results_line[i][0]);
+        results_line[i][0] = tmp;
     }
     return results_line;
 }
