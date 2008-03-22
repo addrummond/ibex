@@ -95,7 +95,8 @@ function Question(div, options, finishedCallback, utils) {
         var t = this; // 'this' doesn't behave as a lexically scoped variable so can't be
                       // captured in the closure defined below.
         var a = document.createElement("a");
-        a.href = "javascript:__Question_callback__(" + i + ");";
+        a.href = "#";
+        //a.href = "javascript:__Question_callback__(" + i + ");";
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
             var ans = __Question_answers__[i];
