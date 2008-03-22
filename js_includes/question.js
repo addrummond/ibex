@@ -7,7 +7,7 @@ __Question_callback__ = null;
 __Questions_answers__ = null;
 
 function Question(div, options, finishedCallback, utils) {
-    var questionField = "Question";
+    var questionField = "Question (NULL if none).";
     var answerField = "Answer";
     var correctField = "Whether or not answer was correct (NULL if N/A)";
 
