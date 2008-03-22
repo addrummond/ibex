@@ -31,8 +31,7 @@ function Message(div, options, finishedCallback, utils) {
 }
 
 Message.htmlDescription = function (opts) {
-    var d = document.createElement("div");
-    d.innerHTML = opts.html;
+    var d = htmlCodeToDOM(opts.html);
     return truncateHTML(d, 100);
 }
 
