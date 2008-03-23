@@ -729,10 +729,25 @@ getting webspr to display an overview of this sort. The first is to add the
 statement `var showOverview = true;` option to your data file.  The second is
 to go to the page `overview.html` instead of `experiment.html`.
 
-=Known problems and issues=
-*Overviews:* These currently do not work in Internet Explorer (should be fixed
-eventually). Experiments should work fine in IE (6 or 7).
+=Cross-browser compatibility=
+For the 0.2 release, I plan on ensuring compatibility with the following browsers:
 
+    * Internet Explorer 5.5, 6 and 7.
+    * Firefox 1, 1.5, 2, and 3 (beta).
+    * Safari 3.
+    * Opera 9 (latest point release).
+
+At this point (beta 8) I am pretty confident that webspr experiments work on
+all of these browsers. Overviews (see previous section) currently do not work
+on IE; this may or may not be fixed before the 0.2 release.
+
+Known cross-browser issues:
+
+   * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
+
+   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete you temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
+
+=Known problems and issues=
 The following are some subtle problems which can often arise when writing a
 data file:
 
@@ -758,8 +773,3 @@ errors in a data file will result in an alert popping up with a warning that the
 `items` array has not been defined. You can usually get a much more informative
 error message by looking at the !JavaScript console.
 
-Some further cross-browser issues:
-
-   * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
-
-   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete you temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
