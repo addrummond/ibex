@@ -86,6 +86,12 @@ function Question(div, options, finishedCallback, utils) {
         li = document.createElement("li");
         if (this.presentAsScale) {
             li.className = "scale-box";
+            // IE doesn't support :hover for anything other than links, so we
+            // have to use JS.
+            (function (li) {
+            li.onmouseover = function () { li.style.borderColor = "black"; li.style.cursor = "pointer";  };
+            li.onmouseout = function () { li.style.borderColor = "#9ea4b1"; li.style.cursor = "default"; };
+            })(li);
         }
         else {
             li.className = "normal-answer";

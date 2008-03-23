@@ -31,11 +31,6 @@ li.scale-box {
     padding-top: 0.5em;
     text-align: center;
 }
-li:hover.scale-box {
-    border-color: black;
-}
-li:hover.scale-box { cursor: pointer; }
-li.scale-box { cursor: pointer; }
 .scale-comment-box {
     float: left;
     list-style: none;
