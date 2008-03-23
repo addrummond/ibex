@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers Webspr 0.2 (currently at 0.2-beta7). The 0.1.x
+This documentation covers Webspr 0.2 (currently at 0.2-beta8). The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation
@@ -543,10 +543,10 @@ they answered incorrectly.
 ==Message==
 *Options*
 
-|| *Option*        || *Default*    || *Description*                                                       ||
-|| html            || _obligatory_ || The HTML for the message to display.                                ||
-|| hideProgressBar || `true`       || If true, the progress bar is hidden when the message is displayed.  ||
-|| transfer        || `"keypress"` || Same as for `Separator`.                                            ||
+|| *Option*        || *Default*    || *Description*                                                        ||
+|| html            || _obligatory_ || The HTML for the message to display (see section "HTML Code" below). ||
+|| hideProgressBar || `true`       || If true, the progress bar is hidden when the message is displayed.   ||
+|| transfer        || `"keypress"` || Same as for `Separator`.                                             ||
 
 *Results*
 
@@ -684,6 +684,43 @@ associated, it is easy to see which files are superfluous.
 
 *However:* note that the file `main.css` is required by all
 controllers.
+
+=HTML Code=
+Webspr provides two ways of passing HTML code to the `Message` controller
+(currently the only controller which has an `html` option). The first is simply
+to pass a !JavaScript string containing the HTML code. The second is to pass a
+!JavaScript data structure representing the HTML Code. For example, here is
+the representation of a `div` element containing two paragraphs:
+{{{
+["div",
+    ["p", "This is the first paragraph."],
+    ["p", "This is the second paragraph.", "Containing two text nodes."]
+]
+}}}
+Note that a space will automatically be inserted between the two text nodes in
+the second paragraph. If you wanted to set the foreground color of the `div` to
+red, you could use the following code:
+{{{
+[["div", {style: "color: red;"}],
+    ["p", "This is the first paragraph."],
+    ["p", "This is the second paragraph.", "Containing two text nodes."]
+}}}
+If you want to set DOM properties directly, you can use
+a key beginning with "@":
+{{{
+[["div", {"@style.color": "red"}],
+    ["p", "This is the first paragraph."],
+    ["p", "This is the second paragraph.", "Containing two text nodes."]
+}}}
+Elements (e.g. `&ldquo;` -- a left double quote) are specified as in the
+following example:
+{{{
+[["div", {"@style.color": "red"}],
+    ["p", "This is the first paragraph."],
+    ["p", "This is the second paragraph.", "Containing two text nodes."],
+    ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
+}}}
+Spaces are _not_ automatically inserted before and after elements.
 
 =Overviews=
 Sometimes it's useful to get an overview of the sequence of items in an
