@@ -11,6 +11,7 @@
     clear: left;
     padding-top: 1em;
     font-size: small;
+    text-align: center;
 }
 li.normal-answer {
     cursor: pointer;
