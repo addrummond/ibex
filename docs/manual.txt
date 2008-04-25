@@ -729,16 +729,84 @@ getting webspr to display an overview of this sort. The first is to add the
 statement `var showOverview = true;` option to your data file.  The second is
 to go to the page `overview.html` instead of `experiment.html`.
 
+=Creating your own controllers=
+This is quite easy if you are familiar with !JavaScript/DHTML.
+As an example, here's the code for the `Message` controller:
+{{{
+Message.name = "Message";
+Message.obligatory = ["html"];
+Message.countsForProgressBar = false;
+
+function Message(div, options, finishedCallback, utils) {
+    this.div = div;
+    this.options = options;
+    this.hideProgressBar = dget(options, "hideProgressBar", true);
+
+    this.html = options.html;
+    div.className = "message";
+    div.appendChild(htmlCodeToDOM(this.html));
+
+    this.transfer = dget(options, "transfer", "keypress");
+    assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
+           "Value of 'transfer' option of Message must either be the string 'keypress' or a number");
+
+    if (this.transfer == "keypress") {
+        this.handleKey = function(code, time) {
+            finishedCallback(null);
+            return true;
+        }
+    }
+    else {
+        utils.setTimeout(finishedCallback, this.transfer);
+    }
+}
+
+Message.htmlDescription = function (opts) {
+    var d = htmlCodeToDOM(opts.html);
+    return truncateHTML(d, 100);
+}
+}}}
+The first three lines set some properties of the `Message` class.
+The `obligatory` option specifies those options which must obligatorily be
+given to the controller. In this case, it is obligatory that the controller
+be given an `"html"` option. Both `Controller.name` and `Controller.obligatory`
+must be set. The `countsForProgressBar` property is optional and is `true`
+by default. It determines whether instances of the controller count towards
+the size of the progress bar.
+
+The constructor for the controller class is called with four arguments:
+
+    * The `div` which the controller should use to display HTML in.
+    * The options which the controller was given (an object).
+    * A function which should be called with lines to be added to the results file when the controller is complete.
+    * A "utils" object which contains some useful functions.
+
+In the case of `Message`, `finishedCallback` is called with `null` as its argument
+because this controller does not add any lines to the results file.
+In general, the format of a non-null argument to `finishedCallback` is as follows:
+{{{
+[
+    // Line 1.
+    [ ["fieldname1", value1], ["fieldname2", value2], ["fieldname3", value3], ... ],
+    // Line 2.
+    [ ["fieldname2", value2], ["fieldname2", value2], ["fieldname3", value3], ... ],
+    ...
+]
+}}}
+
+As can be seen in the code for `Message`, the `utils` object provides a `setTimeout` method
+similar to the builtin `setTimeout` function of !JavaScript.
+Any timeouts set using this method are automatically cleared when the controller is complete.
+
 =Cross-browser compatibility=
-For the 0.2 release, I plan on ensuring compatibility with the following browsers:
+I have tested compatibility with the following browsers:
 
     * Internet Explorer 5.5, 6 and 7.
     * Firefox 1, 1.5, 2, and 3 (beta).
     * Safari 3.
     * Opera 9 (latest point release).
 
-At this point (beta 8) I am pretty confident that webspr experiments work on
-all of these browsers. Overviews (see previous section) currently do not work
+Overviews (see previous section) currently do not work
 on IE; this may or may not be fixed before the 0.2 release.
 
 Known cross-browser issues:
