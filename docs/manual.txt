@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers Webspr 0.2 (currently at 0.2-beta8). The 0.1.x
+This documentation covers Webspr 0.2. The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation
