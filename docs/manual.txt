@@ -609,6 +609,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || 1        || The question that was posed (encoded as a URL with %XX escapes; commas are escaped). ||
 || 2        || The answer that the participant gave (also encoded as a URL).    ||
 || 3        || "NULL" if the question as no correct answer. Otherwise, 1 if the participant answered correctly, or 0 if they didn't. ||
+|| 4        || The time the participant took to answer the question. ||
 
 ==!AcceptabilityJudgment==
 || *Option*       || *Default*           || *Description*                ||

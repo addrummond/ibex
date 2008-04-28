@@ -10,6 +10,7 @@ function Question(div, options, finishedCallback, utils) {
     var questionField = "Question (NULL if none).";
     var answerField = "Answer";
     var correctField = "Whether or not answer was correct (NULL if N/A)";
+    var timeField = "Time taken to answer.";
 
     this.div = div;
     this.options = options;
@@ -114,6 +115,7 @@ function Question(div, options, finishedCallback, utils) {
         //a.href = "javascript:__Question_callback__(" + i + ");";
         __Question_answers__[i] = ans;
         __Question_callback__ = function (i) {
+            var answerTime = new Date().getTime();
             var ans = __Question_answers__[i];
             var correct = "NULL";
             if (! (t.hasCorrect === false)) {
@@ -123,7 +125,8 @@ function Question(div, options, finishedCallback, utils) {
             }
             finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                [answerField, url_encode_removing_commas(ans)],
-                               [correctField, correct]]]);
+                               [correctField, correct],
+                               [timeField, answerTime - this.creationTime]]]);
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
@@ -150,14 +153,17 @@ function Question(div, options, finishedCallback, utils) {
     if (this.timeout) {
         var t = this;
         utils.setTimeout(function () {
+            var answerTime = new Date().getTime();
             t.setFlag(false);
             finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
-                               [answerField, "NULL"], [correctField, "NULL"]]]);
+                               [answerField, "NULL"], [correctField, "NULL"],
+                               [timeField, answerTime - this.creationTime]]]);
         }, this.timeout);
     }
 
     // TODO: A bit of code duplication in this function.
     this.handleKey = function(code, time) {
+        var answerTime = new Date().getTime();
         if ((! this.presentAsScale) && this.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
             // Convert numeric keypad codes to ordinary keypad codes.
@@ -172,7 +178,8 @@ function Question(div, options, finishedCallback, utils) {
                 }
                 finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
                                    [answerField, url_encode_removing_commas(ans)],
-                                   [correctField, correct]]]);
+                                   [correctField, correct],
+                                   [timeField, answerTime = this.creationTime]]]);
 
                 return false;
             }
@@ -204,7 +211,8 @@ function Question(div, options, finishedCallback, utils) {
                     }
                     finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
                                        [answerField, url_encode_removing_commas(ans)],
-                                       [correctField, correct]]]);
+                                       [correctField, correct],
+                                       [timeField, answerTime - this.creationTime]]);
 
                     return false;
                 }
@@ -213,6 +221,9 @@ function Question(div, options, finishedCallback, utils) {
 
         return true;
     }
+
+    // Store the time when this was first displayed.
+    this.creationTime = new Date().getTime();
 }
 
 Question.htmlDescription = function(opts) {
