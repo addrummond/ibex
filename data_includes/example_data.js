@@ -1,4 +1,4 @@
-var shuffleSequence = seq(/*"intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep",*/ rshuffle("q1", "q2"))/*)*/;
+var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var ds = DashedSentence;
@@ -34,7 +34,7 @@ var items = [
 [["s1",1], ds, {s: "The journalist interviewed an actress who he knew to be shy of publicity after meeting on a previous occasion."}],
 [["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity."}],
 [["q1", [2, 1]], q, {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
-[["q2", [2, 1]], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}]/*,
+[["q2", [2, 1]], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}],
 
 [["s1",3], ds, {s: "The teacher helped struggling students who he encouraged to succeed without treating like idiots."}],
 [["s2",3], ds, {s: "The teacher helped struggling students who without treating like idiots he encouraged to succeed."}],
@@ -79,7 +79,8 @@ var items = [
 ["f", ds, {s: "If the spoiled toddler had stopped shouting when the baby sitter asked, he would have gotten a piece of candy."}],
 ["f", ds, {s: "The brave detective that had just been put on a new case searched for the dangerous criminals at the docks in ten hours."}],
 ["f", ds, {s: "If the careful scientist had tested his data one more time, he finds that his results were wrong all along."}],
-["f", ds, {s: "The cattle that destroyed the farmer's field have eaten all his food as well."}],
+["f", ds, {s: "The cattle that destroyed the farmer's field have eaten all his food as well."}] /*,
+
 ["f", ds, {s: "If the amateur marathon runners had practiced more, they finish in the top fifty in this year's marathon."}],
 ["f", ds, {s: "If the tough boxer had gotten punched in the face one more time, he gets a concussion."}],
 ["f", ds, {s: "The engineer that designed the new and innovative rocket has bought himself a fancy new desk."}],
