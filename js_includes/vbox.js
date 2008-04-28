@@ -35,7 +35,7 @@ function VBox(div, options, finishedCallback, utils) {
         // Call a manipulator if one was supplied.
         if (! (options.manipulators === undefined)) {
             for (var j = 0; j < options.manipulators.length; ++j) {
-                if (options.manipulators[j][0] == i)
+                if (options.manipulators[j][0] == (i / 2))
                     d = options.manipulators[j][1](d);
             }
         }
