@@ -142,7 +142,20 @@ function Question(div, options, finishedCallback, utils) {
 
     if (! (this.qp === undefined))
         div.appendChild(this.qp);
-    div.appendChild(this.xl);
+
+    // Again, using tables to center because IE sucks.
+    var table = document.createElement("table");
+    table.align = "center";
+    var tbody = document.createElement("tbody");
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.align = "center";
+    table.appendChild(tbody);
+    tbody.appendChild(tr);
+    tr.appendChild(td);
+    td.appendChild(this.xl);
+    div.appendChild(table);
+
     if (this.instructions) {
         var p = document.createElement("p");
         p.className = "instructions-text"
