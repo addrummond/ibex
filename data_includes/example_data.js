@@ -1,4 +1,4 @@
-var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2")));
+var shuffleSequence = seq(/*"intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep",*/ rshuffle("q1", "q2"))/*)*/;
 var practiceItemTypes = ["practice"];
 
 var ds = DashedSentence;
@@ -34,7 +34,7 @@ var items = [
 [["s1",1], ds, {s: "The journalist interviewed an actress who he knew to be shy of publicity after meeting on a previous occasion."}],
 [["s2",1], ds, {s: "The journalist interviewed an actress who after meeting on a previous occasion he knew to be shy of publicity."}],
 [["q1", [2, 1]], q, {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
-[["q2", [2, 1]], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}],
+[["q2", [2, 1]], q, {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}]/*,
 
 [["s1",3], ds, {s: "The teacher helped struggling students who he encouraged to succeed without treating like idiots."}],
 [["s2",3], ds, {s: "The teacher helped struggling students who without treating like idiots he encouraged to succeed."}],
@@ -73,7 +73,7 @@ var items = [
 ["f", ds, {s: "The cowboy that the bulls tried to trample injured herself getting off a horse."}],
 ["f", ds, {s: "The patient that was admitted to the hospital last month still suffers severe pain in his left leg."}],
 ["f", ds, {s: "Very few economists that work in downtown DC will traveling to Russia this year."}],
-["f", ds, {s: "The warm weather that everyone had been waiting patiently for melted the frost on the fields in two weeks."}]/*,
+["f", ds, {s: "The warm weather that everyone had been waiting patiently for melted the frost on the fields in two weeks."}],
 ["f", ds, {s: "The basketball player that had just signed a million dollar contract bounced the new ball with great skill in twenty minutes."}],
 ["f", ds, {s: "The girls that rode the elephants at the beginning of the parade was from Africa."}],
 ["f", ds, {s: "If the spoiled toddler had stopped shouting when the baby sitter asked, he would have gotten a piece of candy."}],

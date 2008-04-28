@@ -126,7 +126,7 @@ function Question(div, options, finishedCallback, utils) {
             finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                [answerField, url_encode_removing_commas(ans)],
                                [correctField, correct],
-                               [timeField, answerTime - this.creationTime]]]);
+                               [timeField, answerTime - t.creationTime]]]);
         };
         a.appendChild(document.createTextNode(ans));
         li.appendChild(a);
@@ -157,29 +157,30 @@ function Question(div, options, finishedCallback, utils) {
             t.setFlag(false);
             finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                [answerField, "NULL"], [correctField, "NULL"],
-                               [timeField, answerTime - this.creationTime]]]);
+                               [timeField, answerTime - t.creationTime]]]);
         }, this.timeout);
     }
 
     // TODO: A bit of code duplication in this function.
+    var t = this;
     this.handleKey = function(code, time) {
         var answerTime = new Date().getTime();
-        if ((! this.presentAsScale) && this.showNumbers &&
+        if ((! t.presentAsScale) && t.showNumbers &&
             ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
             // Convert numeric keypad codes to ordinary keypad codes.
             var n = code >= 96 ? code - 96 : code - 48;
-            if (n > 0 && n <= this.orderedAnswers.length) {
-                var ans = typeof(this.orderedAnswers[n-1]) == "string" ? this.orderedAnswers[n-1] : this.orderedAnswers[n-1][1];
+            if (n > 0 && n <= t.orderedAnswers.length) {
+                var ans = typeof(t.orderedAnswers[n-1]) == "string" ? t.orderedAnswers[n-1] : t.orderedAnswers[n-1][1];
                 var correct = "NULL";
-                if (! (this.hasCorrect === false)) {
-                    var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
+                if (! (t.hasCorrect === false)) {
+                    var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
                     correct = (correct_ans == ans ? 1 : 0);
-                    this.setFlag(correct);
+                    t.setFlag(correct);
                 }
-                finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
+                finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                    [answerField, url_encode_removing_commas(ans)],
                                    [correctField, correct],
-                                   [timeField, answerTime = this.creationTime]]]);
+                                   [timeField, answerTime = t.creationTime]]]);
 
                 return false;
             }
@@ -188,31 +189,31 @@ function Question(div, options, finishedCallback, utils) {
             }
         }
         // Letters (and numbers in the case of scales).
-        else if ((code >= 65 && code <= 90) || (this.presentAsScale && ((code >= 48 && code <= 57) || (code >= 96 && code <= 105)))) {
+        else if ((code >= 65 && code <= 90) || (t.presentAsScale && ((code >= 48 && code <= 57) || (code >= 96 && code <= 105)))) {
             // Convert numeric keypad codes to ordinary keypad codes.
             code = (code >= 96 && code <= 105) ? code - 48 : code;
-            for (var i = 0; i < this.answers.length; ++i) {
+            for (var i = 0; i < t.answers.length; ++i) {
                 var ans = null;
-                if (typeof(this.answers[i]) == "string") {
-                    if (code == this.answers[i].toUpperCase().charCodeAt(0))
-                        ans = this.answers[i];
+                if (typeof(t.answers[i]) == "string") {
+                    if (code == t.answers[i].toUpperCase().charCodeAt(0))
+                        ans = t.answers[i];
                 }
                 else {
-                    if (code == this.answers[i][0].toUpperCase().charCodeAt(0))
-                        ans = this.answers[i][1];
+                    if (code == t.answers[i][0].toUpperCase().charCodeAt(0))
+                        ans = t.answers[i][1];
                 }
 
                 if (ans) {
                     var correct = "NULL";
-                    if (! (this.hasCorrect === false)) {
-                        var correct_ans = typeof(this.answers[this.hasCorrect]) == "string" ? this.answers[this.hasCorrect] : this.answers[this.hasCorrect][1];
+                    if (! (t.hasCorrect === false)) {
+                        var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
                         correct = (correct_ans == ans ? 1 : 0);
-                        this.setFlag(correct);
+                        t.setFlag(correct);
                     }
-                    finishedCallback([[[questionField, this.question ? url_encode_removing_commas(this.question) : "NULL"],
+                    finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
                                        [answerField, url_encode_removing_commas(ans)],
                                        [correctField, correct],
-                                       [timeField, answerTime - this.creationTime]]);
+                                       [timeField, answerTime - t.creationTime]]]);
 
                     return false;
                 }
