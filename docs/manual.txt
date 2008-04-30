@@ -586,7 +586,8 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 *Results*
 
-`FlashSentence` does not add any lines to the results file.
+|| *Column* || *Description* ||
+|| 1        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
 
 ==Question==
 *Options*
