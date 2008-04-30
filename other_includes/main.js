@@ -354,14 +354,16 @@ function getColumnNameIndex(name) {
 }
 
 function namesToIndices(results_line) {
+    var na = [];
     for (var i = 0; i < results_line.length; ++i) {
         assert(results_line[i].length == 2, "Internal error");
-        results_line[i][0] = getColumnNameIndex(results_line[i][0]);
+        na.push([getColumnNameIndex(results_line[i][0]), results_line[i][1]]);
     }
-    return results_line;
+    return na;
 }
 
 function finishedCallback(resultsLines) {
+    alert("F: " + resultsLines);
     var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
     if (resultsLines != null) {
