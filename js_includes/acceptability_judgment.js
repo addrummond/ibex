@@ -5,8 +5,6 @@ AcceptabilityJudgment.obligatory = ["s", "as"];
 
 function AcceptabilityJudgment(div, options, finishedCallback, utils) {
     var opts = {
-        q:           options.q,
-        as:          options.as,
         triggers:    [1],
         children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
                       Question, { q:              options.q,
