@@ -363,7 +363,6 @@ function namesToIndices(results_line) {
 }
 
 function finishedCallback(resultsLines) {
-    alert("F: " + resultsLines);
     var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
     if (resultsLines != null) {
