@@ -23,6 +23,11 @@ function FlashSentence(div, options, finishedCallback, utils) {
             finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
         }, this.timeout);
     }
+    else {
+        // Give results without actually finishing.
+        if (utils.setResults)
+            utils.setResults([[["Sentence MD5", this.sentenceMD5]]]);
+    }
 }
 
 FlashSentence.htmlDescription = function (opts) {

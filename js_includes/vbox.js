@@ -22,8 +22,10 @@ function VBox(div, options, finishedCallback, utils) {
                "Numbers in the 'triggers' array must be indices into the 'children' array starting from 0");
     });
 
+    this.indicesAndResultsOfThingsThatHaveFinished = [];
     this.childInstances = [];
     this.childUtils = [];
+
     for (var i = 0; i < this.children.length; i += 2) {
         var controllerClass = this.children[i];
         var childOptions = this.children[i + 1];
@@ -68,8 +70,13 @@ function VBox(div, options, finishedCallback, utils) {
 
         var u = new Utils(utils.getValuesFromPreviousElement());
         this.childUtils.push(u);
+        (function(i) {
+            u.setResults = function(results) {
+                t.indicesAndResultsOfThingsThatHaveFinished.push([i, results]);
+            };
+        })(i);
+
         var l = this.childUtils.length - 1;
-        var t = this;
         // Get around JavaScript's silly closure capture behavior (deriving
         // from weird variable scoping rules).
         // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
@@ -91,8 +98,6 @@ function VBox(div, options, finishedCallback, utils) {
                 c.handleKey(code, time);
         });
     }
-
-    this.indicesAndResultsOfThingsThatHaveFinished = [];
 
     this.myFinishedCallback = function(index, results) {
         this.childUtils[index].gc();
