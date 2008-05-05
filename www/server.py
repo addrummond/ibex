@@ -536,6 +536,17 @@ class HighLevelParseError(Exception):
     def __init__(self, *args):
         Exception.__init__(self, *args)
 
+def group_list(l, n):
+    newl = []
+    for i in xrange(0, len(l), n):
+        subl = []
+        for j in xrange(n):
+            if i + j >= len(l):
+                break
+            subl.append(l[i + j])
+        newl.append(subl)
+    return newl
+
 def rearrange(parsed_json, thetime, ip):
     if type(parsed_json) != types.ListType or len(parsed_json) != 4:
         raise HighLevelParseError()
@@ -555,18 +566,41 @@ def rearrange(parsed_json, thetime, ip):
         if index >= len(names_array) or index < 0:
             raise HighLevelParseError()
         return names_array[index]
+
+    #
+    # This is a fairly horrible bit of code that does most of the work
+    # of inserting comments for columns into the results file. As well as detecting
+    # adjacent lines with identical column names, it is also able to detect regular
+    # patterns of alternating identical columns.
+    #
     new_results = []
-    current_names = None
+    current_names = []
     column_names = []
-    for line, i in itertools.izip(parsed_json[3], itertools.count(0)):
-        names = map(lambda x: getname(x[0]), line)
-        if not current_names:
-            column_names.append([i, names])
-            current_names = names
-        elif current_names != names:
-            column_names.append([i, names])
-            current_names = names
-        new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
+    main_index = 0
+    next_comment_index = None
+    for phase in xrange(1, 6): # [1, 2, 3, 4, 5]
+        next_comment_index = main_index
+        subs = group_list(parsed_json[3][main_index:], phase)
+
+        rs = []
+        old_names = None
+        for sub in subs:
+            names = []
+            for line in sub:
+                names.append(map(lambda x: getname(x[0]), line))
+
+            if not old_names:
+                old_names = names
+            elif old_names != names:
+                break
+            else:
+                rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
+                main_index += phase
+        if len(rs) > 0:
+            column_names.append([next_comment_index, old_names])
+            new_results.extend(rs)
+        if main_index >= len(parsed_json[3]):
+            break
 
     return random_counter, counter, new_results, column_names
 
@@ -581,12 +615,24 @@ def intersperse_comments(main, name_specs):
     for line, i in itertools.izip(main, itertools.count(0)):
         for idx, name_spec in name_specs:
             if idx == i:
-                newr.append(["# Columns below this comment are as follows:"])
-                newr.append(["# 1. Time results were received."])
-                newr.append(["# 2. MD5 hash of participant's IP address."])
-                for colname,n in itertools.izip(name_spec, itertools.count(3)):
-                    newr.append(["# %i. %s" % (n, ensure_period(str(colname)))])
-                break
+                if len(name_spec) == 1:
+                    newr.append(["# Columns below this comment are as follows:"])
+                    newr.append(["# 1. Time results were received."])
+                    newr.append(["# 2. MD5 hash of participant's IP address."])
+                    for colname,n in itertools.izip(name_spec[0], itertools.count(3)):
+                        newr.append(["# %i. %s" % (n, ensure_period(str(colname)))])
+                    break
+                else:
+                    newr.append(["# The lines below this comment are in groups of %i." % len(name_spec)])
+                    newr.append(["# The formats of the lines in each of these groups are as follows:"])
+                    newr.append(["#"])
+                    for names, i in itertools.izip(name_spec, itertools.count(1)):
+                        newr.append(["# Line %i:" % i])
+                        newr.append(["#    Col. 1: Time results were received."])
+                        newr.append(["#    Col. 2: MD5 hash of participant's IP address."])
+                        for name, j in itertools.izip(names, itertools.count(3)):
+                            newr.append(["#    Col. %i: %s" % (j, ensure_period(str(name)))])
+                    break
         newr.append(line)
     return newr
 
