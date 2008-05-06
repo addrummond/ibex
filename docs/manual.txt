@@ -628,9 +628,9 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 *Results*
 
-Each `AcceptabilityJudgment` adds *two* lines to the results file. The first line
-is the same as for the `Question` controller; the second line is the same as for
-the `FlashSentence` controller.
+Each `AcceptabilityJudgment` adds *two* lines to the results file. The first
+line is the same as for the `FlashSentence` controller; the second line is the
+same as for the `Question` controller.
 
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form

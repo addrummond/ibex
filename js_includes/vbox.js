@@ -129,7 +129,7 @@ function VBox(div, options, finishedCallback, utils) {
     }
 
     this.concatResults = function(iar) {
-        iar.sort(function(x, y) { return x[0] < y[0]; });
+        iar = iar.sort(function(x, y) { return x[0] - y[0]; });
         var res = [];
         for (var i = 0; i < iar.length; ++i) {
             for (var j = 0; j < iar[i][1].length; ++j) {
