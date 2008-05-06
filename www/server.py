@@ -537,14 +537,21 @@ class HighLevelParseError(Exception):
         Exception.__init__(self, *args)
 
 def group_list(l, n):
+    """Written in this slightly awkward way so that it works with iterators."""
+    assert n > 0
+
     newl = []
-    for i in xrange(0, len(l), n):
-        subl = []
-        for j in xrange(n):
-            if i + j >= len(l):
-                break
-            subl.append(l[i + j])
-        newl.append(subl)
+    count = 0
+    current_sub = []
+    for elem in l:
+        if count >= n:
+            newl.append(current_sub)
+            current_sub = [elem]
+            count = 1
+        else:
+            current_sub.append(elem)
+            count += 1
+    newl.append(current_sub)
     return newl
 
 def rearrange(parsed_json, thetime, ip):
@@ -571,7 +578,10 @@ def rearrange(parsed_json, thetime, ip):
     # This is a fairly horrible bit of code that does most of the work
     # of inserting comments for columns into the results file. As well as detecting
     # adjacent lines with identical column names, it is also able to detect regular
-    # patterns of alternating identical columns.
+    # patterns of alternating identical columns. The nice thing about having this
+    # monstrosity is that it makes it possible to maintain a very simple concept of
+    # results from the point of view of writing a controller (each controller just
+    # returns a list of lines, where each line is a list of name/value pairs).
     #
     # Unfortunately, this is almost impossible to understand. If it needs to be
     # changed at all it's probably best to rewrite it. Sorry.
@@ -584,7 +594,7 @@ def rearrange(parsed_json, thetime, ip):
         old_main_index = main_index
         for phase in xrange(1, 6): # [1, 2, 3, 4, 5]
             next_comment_index = main_index
-            subs = group_list(parsed_json[3][main_index:], phase)
+            subs = group_list(itertools.islice(parsed_json[3], main_index, None), phase)
 
             rs = []
             old_names = None
@@ -612,7 +622,7 @@ def rearrange(parsed_json, thetime, ip):
 
         # Fallback to commenting each line.
         if old_main_index == main_index:
-            for line, i in itertools.izip(parsed_json[3][main_index:], itertools.count(0)):
+            for line, i in itertools.izip(itertools.islice(parsed_json[3], main_index, None), itertools.count(0)):
                 new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
                 column_names.append([main_index + i, [map(lambda x: getname(x[0]), line)]])
             break
