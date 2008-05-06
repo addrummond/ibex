@@ -573,35 +573,52 @@ def rearrange(parsed_json, thetime, ip):
     # adjacent lines with identical column names, it is also able to detect regular
     # patterns of alternating identical columns.
     #
+    # Unfortunately, this is almost impossible to understand. If it needs to be
+    # changed at all it's probably best to rewrite it.
+    #
     new_results = []
-    current_names = []
     column_names = []
     main_index = 0
     next_comment_index = None
-    for phase in xrange(1, 6): # [1, 2, 3, 4, 5]
-        next_comment_index = main_index
-        subs = group_list(parsed_json[3][main_index:], phase)
+    while main_index < len(parsed_json[3]):
+        old_main_index = main_index
+        for phase in xrange(1, 6): # [1, 2, 3, 4, 5]
+            next_comment_index = main_index
+            subs = group_list(parsed_json[3][main_index:], phase)
 
-        rs = []
-        old_names = None
-        for sub in subs:
-            names = []
-            for line in sub:
-                names.append(map(lambda x: getname(x[0]), line))
+            rs = []
+            old_names = None
+            for sub in subs:
+                names = []
+                for line in sub:
+                    names.append(map(lambda x: getname(x[0]), line))
 
-            if not old_names:
-                old_names = names
-            elif old_names != names:
+                if not old_names:
+                    old_names = names
+                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
+                    main_index += phase
+                elif old_names != names:
+                    break
+                else:
+                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
+                    main_index += phase
+            if len(rs) == 1:
+                main_index -= phase
+            elif len(rs) > 1:
+                column_names.append([next_comment_index, old_names])
+                new_results.extend(rs)
                 break
-            else:
-                rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
-                main_index += phase
-        if len(rs) > 0:
-            column_names.append([next_comment_index, old_names])
-            new_results.extend(rs)
-        if main_index >= len(parsed_json[3]):
-            break
 
+            if main_index >= len(parsed_json[3]):
+                break # while loop will now also exit, since it perfoms the same test.
+
+        # Fallback to commenting each line.
+        if old_main_index == main_index:
+            for line, i in itertools.izip(parsed_json[3][main_index:], itertools.count(0)):
+                new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
+                column_names.append([main_index + i, [map(lambda x: getname(x[0]), line)]])
+            break
+     
     return random_counter, counter, new_results, column_names
 
 def ensure_period(s):
@@ -888,7 +905,8 @@ if COUNTER_SHOULD_BE_RESET:
     print "Counter for latin square designs has been reset.\n"
     set_counter(0)
 
-if c['SERVER_MODE'] == "paste":
-    httpserver.serve(control, port=c['PORT'])
-elif c['SERVER_MODE'] == "cgi":
-    wsgiref.handlers.CGIHandler().run(control)
+if __name__ == "__main__":
+    if c['SERVER_MODE'] == "paste":
+        httpserver.serve(control, port=c['PORT'])
+    elif c['SERVER_MODE'] == "cgi":
+        wsgiref.handlers.CGIHandler().run(control)
