@@ -628,15 +628,19 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 *Results*
 
-Same as for `Question`.
+Each `AcceptabilityJudgment` adds two lines to the results file. The first line
+is the same as for the `Question` controller; the second line is the same as for
+the `FlashSentence` controller.
 
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form
 a single controller. Each controller in the VBox is displayed at the same time,
-one on top of the other. This allows the functionality of simple controllers
-to be reused in the construction of more complex controllers. For an example of
-a controller constructed using a VBox, see
-`js_includes/acceptability_judgment.js`.
+one on top of the other. This allows the functionality of simple controllers to
+be reused in the construction of more complex controllers. For an example of a
+controller constructed using a VBox, see
+`js_includes/acceptability_judgment.js`. For simpler cases, you can just create
+a VBox directly in your data file instead of creating a new controller in the
+`js_includes` directory.
 
 *Options*
 
