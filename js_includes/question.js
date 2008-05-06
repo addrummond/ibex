@@ -145,11 +145,13 @@ function Question(div, options, finishedCallback, utils) {
 
     // Again, using tables to center because IE sucks.
     var table = document.createElement("table");
-    table.align = "center";
+    if (conf_centerItems)
+        table.align = "center";
     var tbody = document.createElement("tbody");
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    td.align = "center";
+    if (conf_centerItems)
+        td.align = "center";
     table.appendChild(tbody);
     tbody.appendChild(tr);
     tr.appendChild(td);
@@ -159,6 +161,8 @@ function Question(div, options, finishedCallback, utils) {
     if (this.instructions) {
         var p = document.createElement("p");
         p.className = "instructions-text"
+        if (conf_centerItems)
+            p.style.textAlign = "center";
         p.appendChild(document.createTextNode(this.instructions));
         div.appendChild(p);
     }

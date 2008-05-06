@@ -5,7 +5,7 @@ var ds = DashedSentence;
 var q = AcceptabilityJudgment;
 
 var defaults = [
-    Separator, { transfer: /*100*/0, normalMessage: "Please wait for the next sentence." },
+    Separator, { transfer: 1000, normalMessage: "Please wait for the next sentence." },
     DashedSentence, {mode: "self-paced reading" },
     AcceptabilityJudgment, {as: ["1", "2", "3", "4", "5", "6", "7"], presentAsScale: true, instructions: "Use number keys or click boxes to answer.", leftComment: "(Bad)", rightComment: "(Good)" }
 ]
@@ -22,7 +22,7 @@ var items = [
                                   " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
                             [["p:foo", {style: "font-weight: bold;"}], "Press any key to continue."]]}],
 
-["break", Message, {transfer: 1/*0000*/,
+["break", Message, {transfer: 10000,
                     html: ["div",
                             ["p", "You've completed the first part of the experiment. Thanks!"],
                             ["p", "In a few seconds you'll be taken to the second part."]]}],
