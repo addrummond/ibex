@@ -574,7 +574,7 @@ def rearrange(parsed_json, thetime, ip):
     # patterns of alternating identical columns.
     #
     # Unfortunately, this is almost impossible to understand. If it needs to be
-    # changed at all it's probably best to rewrite it.
+    # changed at all it's probably best to rewrite it. Sorry.
     #
     new_results = []
     column_names = []
@@ -595,9 +595,7 @@ def rearrange(parsed_json, thetime, ip):
 
                 if not old_names:
                     old_names = names
-                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
-                    main_index += phase
-                elif old_names != names:
+                if old_names != names:
                     break
                 else:
                     rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
