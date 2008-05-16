@@ -192,9 +192,10 @@ each sequence of lines in the same format, the server adds comments describing
 the values contained in each column.
 
 *Important*: A single element my contribute multiple lines to the results file.
-For example, if the `DashedSentence` element is in "self-paced reading" mode,
-it will add to the results file for every word reading time it records. Thus,
-there is not a one-to-one correspondence between items/elements and lines.
+For example, if the `DashedSentence` element is in "self-paced reading" mode, it
+will add a line to the results file for every word reading time it
+records. Thus, there is not a one-to-one correspondence between items/elements
+and lines.
 
 *New:* The server now uses a more sophisticted algorithm for commenting lines in
 the results file. It is now able to handle cases where there are repeating
