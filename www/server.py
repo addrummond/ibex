@@ -909,11 +909,11 @@ except os.error, IOError:
     logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
     sys.exit(1)
 
-if COUNTER_SHOULD_BE_RESET:
-    set_counter(0)
-    print "Counter for latin square designs has been reset.\n"
-
 if __name__ == "__main__":
+    if COUNTER_SHOULD_BE_RESET:
+        set_counter(0)
+        print "Counter for latin square designs has been reset.\n"
+
     if c['SERVER_MODE'] == "paste":
         httpserver.serve(control, port=c['PORT'])
     elif c['SERVER_MODE'] == "cgi":
