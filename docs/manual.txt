@@ -855,7 +855,12 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.2.1 (current version) and 0.2:
+Changes between 0.2.2 and 0.2.1:
+    * Better algorithm for commenting results in results files.
+    * `FlashSentence` controller now adds a line with the MD5 of the sentence to the results file whether or not it finishes. (In practice, this means that sentence MD5s are stored when using the `Question` controller.)
+    * `DashedSentence` controller now stores words as well as word numbers in results file when operating in "self-paced reading" mode.
+
+Changes between 0.2.1 and 0.2:
 
     * Fix error in documentation for `FlashSentence` controller.
     * Fix bug that caused results to be recorded improperly under some circumstances.
