@@ -653,10 +653,10 @@ def intersperse_comments(main, name_specs):
                     newr.append(["#"])
                     for names, i in itertools.izip(name_spec, itertools.count(1)):
                         newr.append(["# Line %i:" % i])
-                        newr.append(["#    Col. 1: Time results were received."])
-                        newr.append(["#    Col. 2: MD5 hash of participant's IP address."])
+                        newr.append(["#     Col. 1: Time results were received."])
+                        newr.append(["#     Col. 2: MD5 hash of participant's IP address."])
                         for name, j in itertools.izip(names, itertools.count(3)):
-                            newr.append(["#    Col. %i: %s" % (j, ensure_period(str(name)))])
+                            newr.append(["#     Col. %i: %s" % (j, ensure_period(str(name)))])
                     break
         newr.append(line)
     return newr
