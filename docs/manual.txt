@@ -574,9 +574,10 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 || *Column* || *Description* ||
 || 1        || Word number. For example, "1" indicates that this line gives the time it took to read the first word (i.e. the difference between <the time at which the first word appeared> and <the time at which it disappeared and the second word appeared>). ||
-|| 2        || The reading time in ms. ||
-|| 3        || Either 1 or 0. Indicates whether or not there was a line break between word n and word n + 1 (where reading time is for word n). ||
-|| 4        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
+|| 2        || The word. ||
+|| 3        || The reading time in ms. ||
+|| 4        || Either 1 or 0. Indicates whether or not there was a line break between word n and word n + 1 (where reading time is for word n). ||
+|| 5        || MD5 hash of the sentence (with one space between each word -- all additional whitespace is trimmed). ||
 
 ==!FlashSentence==
 *Options*
@@ -851,6 +852,6 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.2.1 (current version) and 0.2:
 
-* Fix error in documentation for `FlashSentence` controller.
-* Fix bug that caused results to be recorded improperly under some circumstances.
+    * Fix error in documentation for `FlashSentence` controller.
+    * Fix bug that caused results to be recorded improperly under some circumstances.
 
