@@ -196,6 +196,10 @@ For example, if the `DashedSentence` element is in "self-paced reading" mode,
 it will add to the results file for every word reading time it records. Thus,
 there is not a one-to-one correspondence between items/elements and lines.
 
+*New:* The server now uses a more sophisticted algorithm for commenting lines in
+the results file. It is now able to handle cases where there are repeating
+patterns of lines in a results file.
+
 =Format of a data file=
 Data files for Webspr are !JavaScript source files, but it is not really
 necessary to know !JavaScript in order to write one.  The most important part
