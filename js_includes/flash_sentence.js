@@ -33,4 +33,3 @@ function FlashSentence(div, options, finishedCallback, utils) {
 FlashSentence.htmlDescription = function (opts) {
     return document.createTextNode(opts.s);
 }
-
