@@ -412,10 +412,11 @@ def nice_time(t):
 # Logging and configuration variables.
 #
 
-logging.basicConfig(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
-                                          "server.log"))
+logging.basicConfig()
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
+logger.addHandleR(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
+                                          "server.log")))
 
 # Check that all conf variables have been defined
 # (except the optional WEBSPR_WORKING_DIR and PORT variables).
@@ -480,7 +481,8 @@ except:
 if c['SERVER_MODE'] == "paste":
     from paste import httpserver
 elif c['SERVER_MODE'] == "cgi":
-    import wsgiref.handlers
+    #import wsgiref.handlers
+    pass
 else:
     logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
     sys.exit(1)
@@ -917,4 +919,13 @@ if __name__ == "__main__":
     if c['SERVER_MODE'] == "paste":
         httpserver.serve(control, port=c['PORT'])
     elif c['SERVER_MODE'] == "cgi":
-        wsgiref.handlers.CGIHandler().run(control)
+        #wsgiref.handlers.CGIHandler().run(control)
+        env = cgi.FieldStorage()
+        def start_response(type, headers):
+            sys.stdout.write(type + "\r\n")
+            for h in headers:
+                sys.stdout.write("%s: %s\r\n" % h)
+            sys.stdout.write("\r\n")
+            for l in control(env, start_response):
+                sys.stdout.write(l)
+            sys.stdout.write("\r\n")
