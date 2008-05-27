@@ -921,7 +921,10 @@ if __name__ == "__main__":
         httpserver.serve(control, port=c['PORT'])
     elif c['SERVER_MODE'] == "cgi":
         #wsgiref.handlers.CGIHandler().run(control)
-        env = os.environ #cgi.FieldStorage()
+        env = { }
+        for k in os.environ:
+            env[k] = os.environ[k]
+        env['wsgi.input'] = sys.stdin
         def start_response(type, headers):
             sys.stdout.write("Content-Type: %s\n" % type)
             for h in headers:
