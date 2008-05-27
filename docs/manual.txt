@@ -717,6 +717,7 @@ red, you could use the following code:
 [["div", {style: "color: red;"}],
     ["p", "This is the first paragraph."],
     ["p", "This is the second paragraph.", "Containing two text nodes."]
+]
 }}}
 If you want to set DOM properties directly, you can use
 a key beginning with "@":
@@ -724,6 +725,7 @@ a key beginning with "@":
 [["div", {"@style.color": "red"}],
     ["p", "This is the first paragraph."],
     ["p", "This is the second paragraph.", "Containing two text nodes."]
+]
 }}}
 Elements (e.g. `&ldquo;` -- a left double quote) are specified as in the
 following example:
@@ -732,6 +734,7 @@ following example:
     ["p", "This is the first paragraph."],
     ["p", "This is the second paragraph.", "Containing two text nodes."],
     ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
+]
 }}}
 Spaces are _not_ automatically inserted before and after elements.
 
@@ -837,7 +840,7 @@ data file:
     * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
 Setting the value of HTML options (for example the `html` option of the
-`Message` controller) can be a bit of a pain, since writing HTML code inside
+`Message` controller) can be a bit of a pain if you, since writing HTML code inside
 !JavaScript string literals is a bit finicky. Remember to escape singe/double
 quotes with a backslash (depending on whether you enclose the string in
 single/double quotes) and to escape newlines with a backslash also (by making
