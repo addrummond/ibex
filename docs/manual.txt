@@ -496,7 +496,7 @@ could place both of the "relclause" sentences from the previous example in the
 same group using the following code:
 {{{
 [["relclause", 1], DashedSentence, {s: "A sentence that has a relative clause"}],
-[["relcluase", 1], DashedSentence, {s: "Another sentence that has a relative clause"}]
+[["relclause", 1], DashedSentence, {s: "Another sentence that has a relative clause"}]
 }}}
 Now, any given participant will see only one of these sentences. Designs are
 rotated using a counter stored on the server. Like types, groups may either be
