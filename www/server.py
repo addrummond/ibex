@@ -415,7 +415,7 @@ def nice_time(t):
 logging.basicConfig()
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
-logger.addHandleR(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
+logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
                                           "server.log")))
 
 # Check that all conf variables have been defined
@@ -469,13 +469,14 @@ if type(c['DATA_INCLUDES_LIST']) != types.ListType or len(c['DATA_INCLUDES_LIST'
 
 # File locking on UNIX/Linux/OS X
 HAVE_FLOCK = False
-try:
-    import fcntl # For flock.
-    if 'flock' in dir(fcntl) and \
-       type(fcntl.flock) == types.BuiltinFunctionType:
-        HAVE_FLOCK = True
-except:
-    pass
+if (sys.version.split(' ')[0]) >= '2.4': # File locking doesn't seem to work well in Python 2.3.
+    try:
+        import fcntl # For flock.
+        if 'flock' in dir(fcntl) and \
+                type(fcntl.flock) == types.BuiltinFunctionType:
+            HAVE_FLOCK = True
+    except:
+        pass
 
 # Configuration.
 if c['SERVER_MODE'] == "paste":
@@ -522,16 +523,16 @@ def get_counter():
         n = int(f.read().strip())
         unlock_and_close(f)
         return n
-    except IOError, ValueError:
-        logger.error("Error reading counter from server state")
+    except (IOError, ValueError), e:
+        logger.error("Error reading counter from server state: %s" % str(e))
         sys.exit(1)
 def set_counter(n):
     try:
         f = lock_and_open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
         f.write(str(n))
         unlock_and_close(f)
-    except IOError:
-        logger.error("Error setting counter in server state")
+    except IOError, e:
+        logger.error("Error setting counter in server state: %s" % str(e))
         sys.exit(1)
 
 class HighLevelParseError(Exception):
@@ -920,12 +921,12 @@ if __name__ == "__main__":
         httpserver.serve(control, port=c['PORT'])
     elif c['SERVER_MODE'] == "cgi":
         #wsgiref.handlers.CGIHandler().run(control)
-        env = cgi.FieldStorage()
+        env = os.environ #cgi.FieldStorage()
         def start_response(type, headers):
-            sys.stdout.write(type + "\r\n")
+            sys.stdout.write("Content-Type: %s\n" % type)
             for h in headers:
-                sys.stdout.write("%s: %s\r\n" % h)
-            sys.stdout.write("\r\n")
-            for l in control(env, start_response):
-                sys.stdout.write(l)
-            sys.stdout.write("\r\n")
+                sys.stdout.write("%s: %s\n" % h)
+            sys.stdout.write("\n")
+        for l in control(env, start_response):
+            sys.stdout.write(l)
+        sys.stdout.write("\n")
