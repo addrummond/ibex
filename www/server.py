@@ -932,4 +932,3 @@ if __name__ == "__main__":
             sys.stdout.write("\n")
         for l in control(env, start_response):
             sys.stdout.write(l)
-        sys.stdout.write("\n")
