@@ -19,8 +19,7 @@ var items = [
                                   "will be required to read a number of English sentences one word at a time.",
                                   "You can advance to the next work by pressing the space bar."],
                             ["p", "In the second part, you will be asked to ", ["&ldquo;"], "rate", ["&rdquo;"],
-                                  " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
-                            [["p:foo", {style: "font-weight: bold;"}], "Press any key to continue."]]}],
+                             " some sentences on a scale of 1-7 (with 1 bad and 7 good)."]]}],
 
 ["break", Message, {transfer: 10000,
                     html: ["div",

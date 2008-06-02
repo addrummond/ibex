@@ -2,3 +2,7 @@
     font-size: medium;
     width: 40em;
 }
+
+.continue-link { text-decoration: none; color: blue; }
+.continue-link:hover { text-decoration: underline; color: blue; }
+.continue-link:visited { color: blue; }
