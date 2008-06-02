@@ -39,4 +39,3 @@ Message.htmlDescription = function (opts) {
     var d = htmlCodeToDOM(opts.html);
     return truncateHTML(d, 100);
 }
-
