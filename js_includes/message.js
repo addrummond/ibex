@@ -20,7 +20,7 @@ function Message(div, options, finishedCallback, utils) {
            "Value of 'transfer' option of Message must either be the string 'click' or a number");
 
     if (this.transfer == "click") {
-        this.continueMessage = dget(options, "continueMessage", "Click here to cotinue.");
+        this.continueMessage = dget(options, "continueMessage", "Click here to continue.");
         var m = document.createElement("p");
         var a = document.createElement("a");
         a.href = "";
