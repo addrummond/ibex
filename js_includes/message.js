@@ -20,13 +20,13 @@ function Message(div, options, finishedCallback, utils) {
            "Value of 'transfer' option of Message must either be the string 'click' or a number");
 
     if (this.transfer == "click") {
-        this.message = dget(options, "message", "Click here to cotinue.");
+        this.continueMessage = dget(options, "continueMessage", "Click here to cotinue.");
         var m = document.createElement("p");
         var a = document.createElement("a");
         a.href = "";
         a.className = "continue-link";
         a.onclick = function() { finishedCallback(); return false; }
-        a.appendChild(document.createTextNode("\u2192 " + this.message));
+        a.appendChild(document.createTextNode("\u2192 " + this.continueMessage));
         m.appendChild(a);
         div.appendChild(m);
     }
