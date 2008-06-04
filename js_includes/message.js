@@ -21,16 +21,50 @@ function Message(div, options, finishedCallback, utils) {
 
     if (this.transfer == "click") {
         this.continueMessage = dget(options, "continueMessage", "Click here to continue.");
-        var m = document.createElement("p");
-        var a = document.createElement("a");
-        a.href = "";
-        a.className = "continue-link";
-        a.onclick = function() { finishedCallback(); return false; }
-        a.appendChild(document.createTextNode("\u2192 " + this.continueMessage));
-        m.appendChild(a);
-        div.appendChild(m);
+        this.consentRequired = dget(options, "consentRequired", false);
+        this.consentMessage = dget(options, "consentMessage", "I have read the above and agree to do the experiment.");
+        this.consentErrorMessage = dget(options, "consentErrorMessage", "You must consent before continuing.");
+
+        // Add the consent checkbox if necessary.
+        var checkbox = null;
+        if (this.consentRequired) {
+            var names = { };
+            var dom = jsHTML(
+                ["form",
+                 [["table", {style: "border: none; padding: none; margin: none;"}],
+                  ["tbody",
+                   ["tr",
+                    [["td", { }], [["input:checkbox", {type: "checkbox"}]]],
+                    [["td", {style: "padding-left: 1em;"}], this.consentMessage]
+                ]]]],
+                names
+            );
+            checkbox = names.checkbox;
+            this.div.appendChild(dom);
+        }
+
+        var t = this;
+        // Get a proper lexical scope for the checkbox element so we can capture it in a closure.
+        (function (checkbox) {
+            var m = document.createElement("p");
+            m.style.clear = "left";
+            var a = document.createElement("a");
+            a.href = "";
+            a.className = "continue-link";
+            a.onclick = function() {
+                if ((! checkbox) || checkbox.checked)
+                    finishedCallback();
+                else
+                    alert(t.consentErrorMessage); 
+                return false;
+            }
+            a.appendChild(document.createTextNode("\u2192 " + t.continueMessage));
+            m.appendChild(a);
+            div.appendChild(m);
+        })(checkbox);
     }
     else {
+        assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
         utils.setTimeout(finishedCallback, this.transfer);
     }
 }
