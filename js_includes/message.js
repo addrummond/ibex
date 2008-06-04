@@ -34,8 +34,8 @@ function Message(div, options, finishedCallback, utils) {
                  [["table", {style: "border: none; padding: none; margin: none;"}],
                   ["tbody",
                    ["tr",
-                    [["td", { }], [["input:checkbox", {type: "checkbox"}]]],
-                    [["td", {style: "padding-left: 1em;"}], this.consentMessage]
+                    [["td", {style: "border: none; padding-left: 0; margin-left: 0;"}], [["input:checkbox", {type: "checkbox"}]]],
+                    [["td", {style: "border: none; margin-left: 0; padding-left: 1em;"}], this.consentMessage]
                 ]]]],
                 names
             );
