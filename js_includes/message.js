@@ -16,7 +16,7 @@ function Message(div, options, finishedCallback, utils) {
 
     // Bit of copy/pasting from 'Separator' here.
     this.transfer = dget(options, "transfer", "click");
-    assert(this.transfer == "click" || typeof(this.transfer) == "number",
+    assert(this.transfer == "click" || this.transfer == "keypress" || typeof(this.transfer) == "number",
            "Value of 'transfer' option of Message must either be the string 'click' or a number");
 
     if (this.transfer == "click") {
@@ -62,6 +62,12 @@ function Message(div, options, finishedCallback, utils) {
             m.appendChild(a);
             div.appendChild(m);
         })(checkbox);
+    }
+    else if (this.transfer == "keypress") {
+        this.handleKey = function(code, time) {
+            finishedCallback(null);
+            return false;
+        }
     }
     else {
         assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
