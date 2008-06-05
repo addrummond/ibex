@@ -14,12 +14,14 @@ var items = [
 
 ["sep", Separator, { }],
 
-    ["intro", Message, {html: ["div",
+    ["intro", Message, {consentRequired: true,
+                        html: ["div",
                             ["p", "This experiment has two parts. In the first part, you",
                                   "will be required to read a number of English sentences one word at a time.",
                                   "You can advance to the next work by pressing the space bar."],
                             ["p", "In the second part, you will be asked to ", ["&ldquo;"], "rate", ["&rdquo;"],
-                             " some sentences on a scale of 1-7 (with 1 bad and 7 good)."]]}],
+                             " some sentences on a scale of 1-7 (with 1 bad and 7 good)."],
+                            ["p", "[Privacy statement, etc., etc.]"]]}],
     ["break", Message, {transfer: 10000,
                     html: ["div",
                             ["p", "You've completed the first part of the experiment. Thanks!"],
