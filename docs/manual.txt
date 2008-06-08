@@ -47,7 +47,7 @@ set the server mode and port respectively. These options override those set in
 `server_conf.py`.
 
 If you are running the server as a CGI application, make sure that the
-webserver you are using can serve up `experiment.html` as a static file. All
+web server you are using can serve up `experiment.html` as a static file. All
 dynamic requests go through `server.py`, so as long as `experiment.html` can be
 accessed, and the server recognizes `server.py` as a CGI application,
 everything should be fine. The "Step-by-step CGI" section below goes through
@@ -198,7 +198,7 @@ will add a line to the results file for every word reading time it
 records. Thus, there is not a one-to-one correspondence between items/elements
 and lines.
 
-*New:* The server now uses a more sophisticted algorithm for commenting lines in
+*New:* The server now uses a more sophisticated algorithm for commenting lines in
 the results file. It is now able to handle cases where there are repeating
 patterns of lines in a results file.
 
@@ -554,7 +554,7 @@ they answered incorrectly.
 || html                || _obligatory_ || The HTML for the message to display (see section "HTML Code" below). ||
 || hideProgressBar     || `true`       || If true, the progress bar is hidden when the message is displayed.   ||
 || transfer            || `"click"`    || Either `"click"`, `"keypress`" or an integer. If `"click"`, the participant clicks a link at the bottom of the message to continue (see "continueMessage" option). If `"keypress"`, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. ||
-|| requiresConsent     || `false`      || If true, the pariticipant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. ||
+|| requiresConsent     || `false`      || If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. ||
 || continueMessage     || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. ||
 || consentMessage      || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the text that will appear next to the checkbox. ||
 || consentErrorMessage || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the error message that will be given if the participant attempts to continue without checking the consent checkbox. ||
