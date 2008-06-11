@@ -829,13 +829,13 @@ I have tested compatibility with the following browsers:
     * Opera 9 (latest point release).
 
 Overviews (see previous section) currently do not work
-on IE; this may or may not be fixed before the 0.2 release.
+on Internet Explorer.
 
 Known cross-browser issues:
 
    * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
 
-   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete you temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
+   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
 
 =Known problems and issues=
 The following are some subtle problems which can often arise when writing a
