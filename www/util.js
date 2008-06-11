@@ -68,9 +68,9 @@ function jsHTML(html, namesHash) {
                 html[i][0].charAt(html[i][0].length - 1) == ";"))     &&
             (! (i < html.length - 2 &&
                typeof(html[i + 1]) == "object" &&
-                typeof(html[i][0]) == "string" &&
-                html[i + 1][0].charAt(0) == "&" &&
-                html[i + 1][0].charAt(html[i + 1][0].length - 1) == ";"))) {
+               typeof(html[i + 1][0]) == "string" &&
+               html[i + 1][0].charAt(0) == "&" &&
+               html[i + 1][0].charAt(html[i + 1][0].length - 1) == ";"))) {
             elem.appendChild(document.createTextNode(" "));
         } 
     }
