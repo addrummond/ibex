@@ -63,15 +63,17 @@ function evenShuffle(arrayOfArrays) {
 }
 
 function latinSquare(arrayOfArrays, counter) {
-//    var groupSize = null;
-    /*for (var i = 0; i < arrayOfArrays.length; ++i) {
-        if (groupSize == null) {
-            groupSize = arrayOfArrays[i].length;
+    if (conf_equalGroupSizes) {
+        var groupSize = null;
+        for (var i = 0; i < arrayOfArrays.length; ++i) {
+            if (groupSize == null) {
+                groupSize = arrayOfArrays[i].length;
+            }
+            else if (groupSize != arrayOfArrays[i].length) {
+                assert(false, "Inconsistent group sizes.");
+            }
         }
-        else if (groupSize != arrayOfArrays[i].length) {
-            assert(false, "Inconsistent group sizes.");
-        }
-    }*/
+    }
 
     var record = { };
     var idx = counter; // % groupSize;

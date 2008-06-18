@@ -15,6 +15,7 @@ var conf_practiceItemTypes = [];
 var conf_practiceMessage = "Practice";
 var conf_showOverview = false;
 var conf_centerItems = true;
+var conf_equalGroupSizes = false;
 
 if (typeof(sendingResultsMessage) != "undefined")
     conf_sendingResultsMessage = sendingResultsMessage;
@@ -38,4 +39,5 @@ if (typeof(showOverview) != "undefined")
     conf_showOverview = showOverview;
 if (typeof(centerItems) != "undefined")
     conf_centerItems = centerItems;
-
+if (typeof(conf_equalGroupSizes) != "undefined")
+    conf_equalGroupSizes = equalGroupSizes;
