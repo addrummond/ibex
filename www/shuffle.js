@@ -62,30 +62,31 @@ function evenShuffle(arrayOfArrays) {
     return shuffledArray;
 }
 
-function latinSquare(arrayOfArrays, counter, extras) {
-    var groupSize = null;
-    for (var i = 0; i < arrayOfArrays.length; ++i) {
+function latinSquare(arrayOfArrays, counter) {
+//    var groupSize = null;
+    /*for (var i = 0; i < arrayOfArrays.length; ++i) {
         if (groupSize == null) {
             groupSize = arrayOfArrays[i].length;
         }
         else if (groupSize != arrayOfArrays[i].length) {
             assert(false, "Inconsistent group sizes.");
         }
-    }
+    }*/
 
     var record = { };
-    var idx = counter % groupSize;
+    var idx = counter; // % groupSize;
     var a = new Array(arrayOfArrays.length);
     for (var i = 0; i < arrayOfArrays.length; ++i) {
         // Are we using the bare idx or a chain thingy?
         if (arrayOfArrays[i][0].group[1] == null) { // Get group of first element of subarray (will be same for
                                                     // all other subelements.
             // We aren't.
-            a[i] = arrayOfArrays[i][idx];
-            record[arrayOfArrays[i][0].group[0]] = idx;
+            var x = idx % arrayOfArrays[i].length;
+            a[i] = arrayOfArrays[i][x];
+            record[arrayOfArrays[i][0].group[0]] = x;
             ++idx;
-            if (idx >= groupSize)
-                idx = 0;
+            //if (idx >= groupSize)
+            //    idx = 0;
         }
         else {
             // Check that the chain index thingy is the same for every item in the group.
@@ -108,7 +109,7 @@ function latinSquare(arrayOfArrays, counter, extras) {
         }
     }
 
-    if (extras != null) { extras.groupSize = groupSize; }
+    //if (extras != null) { extras.groupSize = groupSize; }
     return a;
 }
 
@@ -123,7 +124,7 @@ function regularizeGroup(g) {
     }
 }
 
-function mungGroups(sentenceArray, counter, extras) {
+function mungGroups(sentenceArray, counter) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
     // NOTE: May need to change to a for loop for efficiency reasons.
     //var grouped = map(regularizeGroup, filter(function (e) { return e.group != null; }, sentenceArray));
@@ -148,9 +149,8 @@ function mungGroups(sentenceArray, counter, extras) {
     for (k in hash) {
         flat.push(hash[k]);
     }
-    var es = {};
-    var ls = flat.length > 0 ? latinSquare(flat, counter, es) : [];
-    if (extras != null) { extras['groupSize'] = es['groupSize']; }
+    var ls = flat.length > 0 ? latinSquare(flat, counter) : [];
+//    if (extras != null) { extras['groupSize'] = es['groupSize']; }
     return nulls.concat(ls);
 }
 

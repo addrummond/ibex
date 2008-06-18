@@ -181,8 +181,7 @@ iter(items, function(it) {
     ++itemNumber;
  });
 
-var mungGroupsExtras = { };
-var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter, mungGroupsExtras), conf_shuffleSequence);
+var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
