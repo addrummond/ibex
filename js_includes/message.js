@@ -35,12 +35,25 @@ function Message(div, options, finishedCallback, utils) {
                   ["tbody",
                    ["tr",
                     [["td", {style: "border: none; padding-left: 0; margin-left: 0;"}], [["input:checkbox", {type: "checkbox"}]]],
-                    [["td", {style: "border: none; margin-left: 0; padding-left: 1em;"}], this.consentMessage]
+                    [["td:message", {style: "border: none; margin-left: 0; padding-left: 1em;"}], this.consentMessage]
                 ]]]],
                 names
             );
             checkbox = names.checkbox;
             this.div.appendChild(dom);
+            // Allow clicking on the message as well as on the checkbox itself.
+            names.message.onclick = function () {
+                // This is more robust that names.checkbox.checked = ! names.checkbox.checked
+                if (names.checkbox.checked)
+                    names.checkbox.checked = false;
+                else
+                    names.checkbox.checked = true;
+            }
+            // Change cursor to pointer when hovering over the message (have to use JS because
+            // IE doesn't support :hover for anything other than links).
+            names.message.onmouseover = function () {
+                names.message.style.cursor = "default";
+            }
         }
 
         var t = this;
