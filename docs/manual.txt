@@ -873,7 +873,8 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes betwee 0.2.4 (current version) and 0.2.3:
     * Bug fixes in code for processing structured HTML (see "HTML Code" section above).
-    * Groups in Latin Square designs are no longer required to have equal numbers of sentences.
+    * Groups in Latin Square designs are no longer required to have equal numbers of sentences (though enforcement of this requirement can still be turned on by setting an option).
+    * Minor usability improvements for consent checkboxes (can now click text next to checkbox as well as checkbox itself).
 
 Changes between 0.2.3 and 0.2.2:
     * Add option to use "click here to continue" as well as "press any key to continue" in `Message` controller.
