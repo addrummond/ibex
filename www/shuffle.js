@@ -76,7 +76,7 @@ function latinSquare(arrayOfArrays, counter) {
     }
 
     var record = { };
-    var idx = counter; // % groupSize;
+    var idx = counter;
     var a = new Array(arrayOfArrays.length);
     for (var i = 0; i < arrayOfArrays.length; ++i) {
         // Are we using the bare idx or a chain thingy?
@@ -87,8 +87,6 @@ function latinSquare(arrayOfArrays, counter) {
             a[i] = arrayOfArrays[i][x];
             record[arrayOfArrays[i][0].group[0]] = x;
             ++idx;
-            //if (idx >= groupSize)
-            //    idx = 0;
         }
         else {
             // Check that the chain index thingy is the same for every item in the group.
@@ -105,6 +103,8 @@ function latinSquare(arrayOfArrays, counter) {
                 assert(false, "Oh deary me");
             }
             else {
+                assert(record[groupchain] <= arrayOfArrays[i].length,
+                       "Bad dependent group selection index.");
                 a[i] = arrayOfArrays[i][record[groupchain]];
                 record[group] = record[groupchain];
             }
