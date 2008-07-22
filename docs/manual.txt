@@ -29,7 +29,7 @@ experiment at http://localhost:3000/experiment.html).
 *Note:* you will need to
 have the `paste` module installed for Python in order for stand-alone mode to
 work (see http://pythonpaste.org). The CGI mode requires only modules that come
-with the standard Python 2.3/3.4/2.5 distribution.
+with the standard Python 2.3/2.4/2.5 distribution.
 
 The stand-alone server is limited to serving files relating to Webspr, so it is
 unlikely to be useful for real work (unless you hide it behind a proxy).
