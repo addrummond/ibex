@@ -832,7 +832,7 @@ Any timeouts set using this method are automatically cleared when the controller
 I have tested compatibility with the following browsers:
 
     * Internet Explorer 5.5, 6 and 7.
-    * Firefox 1, 1.5, 2, and 3 (beta).
+    * Firefox 1, 1.5, 2, and 3.
     * Safari 3.
     * Opera 9 (latest point release).
 
