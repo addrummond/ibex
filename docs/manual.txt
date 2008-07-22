@@ -82,7 +82,7 @@ being corrupted if you run the server in a Windows environment (but unless you
 have very high traffic, it's purely theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will almost
-certainly work on any system with Python 2.4/2.5, so long as the `paste` module
+certainly work on any system with Python 2.3/2.4/2.5, so long as the `paste` module
 is installed). The CGI server has been tested on OS X and Linux using the
 lighttpd web server in both cases.
 
@@ -158,7 +158,6 @@ experimental task that the entity will present.  For example, there is a
 acceptability judgment tasks.  Webspr has a modular design, where each
 controller is a !JavaScript object that follows a standard interface. This
 makes it quite easy to add new controllers if you are familiar with
-
 !JavaScript/DHTML programming.
 
 Webspr stores results in CSV format. This makes it easy to import results into
@@ -620,7 +619,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
 || leftComment    || `null`       || _Only valid if `presentAsScale` is `true`._ This option specifies text to be displayed at the left edge of a scale (e.g. "Bad"). ||
-|| rightComment   || `null`       || As for "rightCommnet", but for the right edge of the scale. ||
+|| rightComment   || `null`       || As for "leftComment", but for the right edge of the scale. ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
 
 *Results*
@@ -755,7 +754,7 @@ Spaces are _not_ automatically inserted before and after elements.
 Sometimes it's useful to get an overview of the sequence of items in an
 experiment without actually running through each item. There are two ways of
 getting webspr to display an overview of this sort. The first is to add the
-statement `var showOverview = true;` option to your data file.  The second is
+statement `var showOverview = true;` to your data file.  The second is
 to go to the page `overview.html` instead of `experiment.html`.
 
 =Creating your own controllers=
@@ -836,10 +835,9 @@ I have tested compatibility with the following browsers:
     * Safari 3.
     * Opera 9 (latest point release).
 
-Overviews (see previous section) currently do not work
-on Internet Explorer.
-
 Known cross-browser issues:
+
+   * Overviews (see previous section) currently do not work on Internet Explorer.
 
    * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
 
