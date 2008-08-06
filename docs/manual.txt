@@ -89,9 +89,8 @@ lighttpd web server in both cases.
 ==Step-by-step CGI==
 This subsection describes how to set up webspr as a CGI application from
 scratch.  Since the particulars of different web servers differ, some parts are
-of necessity rather vague. There are other ways of organizing the
-files/directories than the one described below, which is just the simplest
-option.
+necessarily rather vague. There are many possible ways of organizing the
+files/directories; the setup described below is just the simplest.
 
 *Step 1:* Ensure that the `www` directory is somewhere within the root
 directory of your HTTP server. You may want to place the entire `webspr`
@@ -108,10 +107,12 @@ copy it to a directory which the HTTP server has permission to access (so that
 `SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
 
 *Step 4:* Edit `server_conf.py` and change the value of
-`WEBSPR_WORKING_DIR` to the new location of the main `webspr` dir. Also, change
-the value of `SERVER_MODE` to `"cgi"`.
+`WEBSPR_WORKING_DIR` to the new location of the main `webspr` dir.
 
-*Step 5:* If the version of Python you wish to use is not the default used by
+*Step 5:* Edit `server_conf.py` and change change the value of
+`SERVER_MODE` to `"cgi"`.
+
+*Step 6:* If the version of Python you wish to use is not the default used by
 the HTTP server, add a `#!` line at the beginning of `server.py`.
 
 Once these steps are complete, it's just a matter of configuring your HTTP
@@ -335,8 +336,9 @@ The following type predicates are predefined as !JavaScript functions:
 || `anyOf(p1, p2, ...)` || Takes any number of type predicates as its arguments, and matches anything matching one of these predicates. ||
 
 If you define your own predicates, be careful to test that they are
-cross-browser compatible. See section 7 for some pertinent advice.  The
-predicates above are defined in `shuffle.js`.
+cross-browser compatible. See the "Cross-browser compatibility"
+section below for some pertinent advice.  The predicates above are
+defined in `shuffle.js`.
 
 The power of shuffle sequences derives from the possibility of composing them
 without limit. Suppose we want the following order: all practice items in their
