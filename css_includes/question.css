@@ -3,7 +3,6 @@
     padding-left: 0;
 }
 .question-text {
-    font-style: italic;
     font-size: normal;
     text-align: left;
 }
@@ -16,6 +15,7 @@
 li.normal-answer {
     text-align: left;
     cursor: pointer;
+    padding-bottom: 1em;
 }
 li:hover.normal-answer {
     cursor: pointer;
