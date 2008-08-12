@@ -39,5 +39,5 @@ if (typeof(showOverview) != "undefined")
     conf_showOverview = showOverview;
 if (typeof(centerItems) != "undefined")
     conf_centerItems = centerItems;
-if (typeof(conf_equalGroupSizes) != "undefined")
+if (typeof(equalGroupSizes) != "undefined")
     conf_equalGroupSizes = equalGroupSizes;
