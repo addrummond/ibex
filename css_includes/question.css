@@ -4,7 +4,8 @@
 }
 .question-text {
     font-style: italic;
-    font-size: small;
+    font-size: normal;
+    text-align: left;
 }
 .instructions-text {
     font-style: italic;
@@ -13,6 +14,7 @@
     font-size: small;
 }
 li.normal-answer {
+    text-align: left;
     cursor: pointer;
 }
 li:hover.normal-answer {
