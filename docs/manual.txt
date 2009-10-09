@@ -579,6 +579,7 @@ they answered incorrectly.
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
+|| sentenceDescType || `"md5"`             || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (with ',' replaced by '\,', newlines replaced by '\n', and '\' replaced by '\\'). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* Although `"md5"` is the default setting for backwards compatibility, it's use is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
 
 *Results*
 
@@ -586,7 +587,7 @@ The format of the results depends on the setting of the `mode` option. If it is
 set to "speeded acceptability", results have the following format:
 
 || *Column* || *Description* ||
-|| 1        || MD5 hash of the sentence (with one space between each word/chunk -- all additional whitespace is trimmed). ||
+|| 1        || See documentation for 'sentenceDescType' option above. ||
 
 If `mode` is set to "self-paced reading", the results look like this:
 
@@ -603,6 +604,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || *Option* || *Default*    || *Description*                 ||
 || s        || _obligatory_ || The sentence to be displayed. ||
 || timeout  || 2000         || If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence.    ||
+|| sentenceDescType || `"md5"` || See documentation for !DashedSentence controller. ||
 
 *Results*
 
@@ -845,6 +847,13 @@ Known cross-browser issues:
 
    * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
 
+=Terminological clarifications=
+Unfortunately, the terms I've used relating to the design of experiments (latin squares, etc.) are enormously confusing as they use some non-standard terms, and make non-standard use of some standard terms. Specifically:
+
+* The term 'item number' is used to describe the number assigned to a controller based on its position in the list of controllers in the data file. Of course, controllers are not normally in one-to-one correspondence with 'items' in the usual sense of the term. 
+
+* The term 'group' is used to refer to what are usually called items (i.e. sets of conditions).
+
 =Known problems and issues=
 The following are some subtle problems which can often arise when writing a
 data file:
@@ -875,7 +884,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes betwee 0.2.4 (current version) and 0.2.3:
+Changes between 0.2.5 (current version) and 0.2.3:
+    * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes.
+
+Changes between 0.2.4 and 0.2.3:
     * Bug fixes in code for processing structured HTML (see "HTML Code" section above).
     * Groups in Latin Square designs are no longer required to have equal numbers of sentences (though enforcement of this requirement can still be turned on by setting an option).
     * Minor usability improvements for consent checkboxes (can now click text next to checkbox as well as checkbox itself).
