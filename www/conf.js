@@ -41,3 +41,10 @@ if (typeof(centerItems) != "undefined")
     conf_centerItems = centerItems;
 if (typeof(equalGroupSizes) != "undefined")
     conf_equalGroupSizes = equalGroupSizes;
+
+// Undocumented. By default, counters set using ?withsquare=XXXX are forgotten
+// as soon as experiment.html is loaded again. Using this option you can modify
+// this behavior so that the counter is remembered for the whole session.
+var conf_withsquareCounterStoreForWholeSession = false;
+if (typeof(withsquareCounterStoreForWholeSession) != "undefined")
+    conf_withsquareCounterStoreForWholeSession = withsquareCounterStoreForWholeSession;

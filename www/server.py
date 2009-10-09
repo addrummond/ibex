@@ -676,12 +676,11 @@ def to_csv(lines):
 # The server itself.
 #
 
-def counter_cookie_header(c):
+def counter_cookie_header(c, cookiename):
     return (
         "Set-Cookie",
-        "counter=%i; path=/; expires=%s GMT" % \
-        (c,
-         nice_time(time_module.time() + 60 * 60))
+        "%s=%i; path=/" % \
+        (cookiename, c)
     )
 
 def create_monster_string(dir, extension, block_allow):
@@ -731,9 +730,9 @@ def control(env, start_response):
     # Save the time the results were received.
     thetime = time_module.time()
 
-    def cc_start_response(status, headers):
-        count = get_counter()
-        start_response(status, headers + [counter_cookie_header(count)])
+    def cc_start_response(status, headers, count=None, cookiename="counter"):
+        count = count and count or get_counter()
+        start_response(status, headers + [counter_cookie_header(count, cookiename)])
 
     ip = None
     if env.has_key('HTTP_X_FORWARDED_FOR'):
@@ -805,7 +804,28 @@ def control(env, start_response):
                 cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
                 return retlist
 
-        # ...if not, it's some results.
+        # (All branches above end with a return from this function.)
+        #
+        # Is it a request to forward to experiment.html with the counter set to a particular value?
+        #
+        #     NOTE: This is (as you may have noticed) a rather odd way of doing things. We just do
+        #     it this way so that experiment.html can remain as a static file (for no other reason
+        #     than keeping things the same as they used to be unless we absolutely have to change
+        #     them).
+        #
+        if qs_hash.has_key('withsquare'):
+            ivalue = None
+            try:
+                ivalue = int(qs_hash['withsquare'][0])
+            except ValueError:
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                return ["<html><body><h1>400 Bad Request</h1></body></html>"]
+
+            cc_start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8'), ('Refresh', '0; url=experiment.html')],
+                              ivalue, "counter_override")
+            return []
+
+        # ...if none of the above, it's some results.
 
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])

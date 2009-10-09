@@ -60,11 +60,19 @@ function renewInner() {
 renewInner();
 
 var counter = parseInt(readCookie("counter"));
+var counter_override = parseInt(readCookie("counter_override"));
 var randomCounter = false;
-if (isNaN(counter)) {
+if (isNaN(counter) && (! counter_override)) {
     counter = Math.floor(Math.random() * 10000);
     randomCounter = true;
 }
+if (counter_override) {
+    counter = parseInt(counter_override);
+    // Remove the override cookie immediately.
+    if (! conf_withsquareCounterStoreForWholeSession)
+        createCookie("counter_override", "", -1);
+}
+// alert(counter)
 
 var sendingResults = document.createElement("p");
 sendingResults.className = "sending-results";
