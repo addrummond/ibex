@@ -10,8 +10,15 @@ function FlashSentence(div, options, finishedCallback, utils) {
     this.timeout = dget(options, "timeout", 2000);
 
     // Precalculate MD5 of sentence.
-    var canonicalSentence = this.sentence.split('/\s/').join(' ');
-    this.sentenceMD5 = hex_md5(canonicalSentence);
+    this.sentenceDescType = dget(options, "sentenceDescType", "md5");
+    assert(this.sentenceDescType == "md5" || this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller.");
+    if (this.sentenceDescType == "md5") {
+        var canonicalSentence = this.sentence.split('/\s/').join(' ');
+        this.sentenceMD5 = hex_md5(canonicalSentence);
+    }
+    else {
+        this.sentenceDesc = csv_sanitize(options.s);
+    }
 
     this.div = div;
     this.div.className = "flashed-sentence";
