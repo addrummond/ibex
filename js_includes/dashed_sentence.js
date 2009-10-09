@@ -35,8 +35,15 @@ function DashedSentence(div, options, finishedCallback, utils) {
     this.shownWordColor = dget(options, "shownWordColor", "black");
 
     // Precalculate MD5 of sentence.
-    var canonicalSentence = this.words.join(' ');
-    this.sentenceMD5 = hex_md5(canonicalSentence);
+    this.sentenceDescType = dget(options, "sentenceDescType", "md5");
+    assert(this.sentenceDescType == "md5" || this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of DashedSentence.");
+    if (this.sentenceDescType == "md5") {
+        var canonicalSentence = this.words.join(' ');
+        this.sentenceDesc = hex_md5(canonicalSentence);
+    }
+    else {
+        this.sentenceDesc = csv_sanitize(options.s);
+    }
 
     this.div = div;
     this.div.className = "sentence";
@@ -72,7 +79,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
             if (t.currentWord >= t.stoppingPoint)
-                finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
+                finishedCallback([[["Sentence MD5", t.sentenceDesc]]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
@@ -114,7 +121,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
                 ["Reading time", time - this.previousTime],
                 ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
                                                       this.wordDivs[word].offsetTop))],
-                ["Sentence MD5", this.sentenceMD5]
+                ["Sentence MD5", this.sentenceDesc]
             ]);
         }
         this.previousTime = time;
