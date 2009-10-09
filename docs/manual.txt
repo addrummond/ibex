@@ -893,7 +893,7 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.2.5 (current version) and 0.2.4:
-    * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes.
+    * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes (this is now the default).
     * Latin square counter can now be set in the URL (".../server.py?withsquare=XXXX"; this sets the counter to XXXX and then redirects to ".../experiment.html"). Setting the counter this way does not alter the counter stored on the server.
 
 Changes between 0.2.4 and 0.2.3:
