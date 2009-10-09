@@ -35,7 +35,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
     this.shownWordColor = dget(options, "shownWordColor", "black");
 
     // Precalculate MD5 of sentence.
-    this.sentenceDescType = dget(options, "sentenceDescType", "md5");
+    this.sentenceDescType = dget(options, "sentenceDescType", "literal");
     assert(this.sentenceDescType == "md5" || this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of DashedSentence.");
     if (this.sentenceDescType == "md5") {
         var canonicalSentence = this.words.join(' ');

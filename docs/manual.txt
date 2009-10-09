@@ -579,7 +579,7 @@ they answered incorrectly.
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
-|| sentenceDescType || `"md5"`             || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (with ',' replaced by '\,', newlines replaced by '\n', and '\' replaced by '\\'). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* Although `"md5"` is the default setting for backwards compatibility, it's use is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
+|| sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (with ',' replaced by '\,', newlines replaced by '\n', and '\' replaced by '\\'). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
 
 *Results*
 

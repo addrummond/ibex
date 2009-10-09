@@ -10,7 +10,7 @@ function FlashSentence(div, options, finishedCallback, utils) {
     this.timeout = dget(options, "timeout", 2000);
 
     // Precalculate MD5 of sentence.
-    this.sentenceDescType = dget(options, "sentenceDescType", "md5");
+    this.sentenceDescType = dget(options, "sentenceDescType", "literal");
     assert(this.sentenceDescType == "md5" || this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller.");
     if (this.sentenceDescType == "md5") {
         var canonicalSentence = this.sentence.split('/\s/').join(' ');
