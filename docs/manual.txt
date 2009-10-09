@@ -884,7 +884,7 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.2.5 (current version) and 0.2.3:
+Changes between 0.2.5 (current version) and 0.2.4:
     * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes.
 
 Changes between 0.2.4 and 0.2.3:
