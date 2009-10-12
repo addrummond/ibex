@@ -17,7 +17,7 @@ function FlashSentence(div, options, finishedCallback, utils) {
         this.sentenceMD5 = hex_md5(canonicalSentence);
     }
     else {
-        this.sentenceDesc = csv_sanitize(options.s);
+        this.sentenceMD5 = csv_sanitize(options.s);
     }
 
     this.div = div;
@@ -27,13 +27,13 @@ function FlashSentence(div, options, finishedCallback, utils) {
     if (this.timeout) {
         var t = this;
         utils.setTimeout(function() {
-            finishedCallback([[["Sentence MD5", t.sentenceMD5]]]);
+            finishedCallback([[["Sentence (or sentence MD5)", t.sentenceMD5]]]);
         }, this.timeout);
     }
     else {
         // Give results without actually finishing.
         if (utils.setResults)
-            utils.setResults([[["Sentence MD5", this.sentenceMD5]]]);
+            utils.setResults([[["Sentence (or sentence MD5)", this.sentenceMD5]]]);
     }
 }
 

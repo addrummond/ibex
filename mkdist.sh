@@ -6,7 +6,14 @@ if [ ! -d dist ]; then
     mkdir dist
 fi
 
+OO=$PWD
 O=`echo $PWD | awk 'BEGIN { FS="/"; } { print $NF }'`
 cd ..
 
-tar -cz $O/LICENSE $O/www/conf.js $O/css_includes/*.css $O/js_includes/*.js $O/data_includes/*.js $O/www/json.js $O/mkdist.sh $O/www/server.py $O/server_conf.py $O/www/shuffle.js $O/www/experiment.html $O/www/overview.html $O/www/util.js $O/example_lighttpd.conf $O/docs/manual.txt $O/other_includes/main.js > $O/dist/webspr-${1}.tar.gz 
+NO=/tmp/webspr-${1}
+cp -R $O $NO
+
+cd /tmp
+NO=webspr-${1}
+
+tar -cz $NO/LICENSE $NO/www/conf.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/mkdist.sh $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/other_includes/main.js > $OO/dist/webspr-${1}.tar.gz 

@@ -79,7 +79,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             t.blankWord(t.currentWord);
             ++(t.currentWord);
             if (t.currentWord >= t.stoppingPoint)
-                finishedCallback([[["Sentence MD5", t.sentenceDesc]]]);
+                finishedCallback([[["Sentence (or sentence MD5)", t.sentenceDesc]]]);
             else
                 utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
         }
