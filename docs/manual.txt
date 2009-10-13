@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers Webspr 0.2.5. The 0.1.x
+This documentation covers Webspr 0.2.6. The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation.
@@ -892,7 +892,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.2.5 (current version) and 0.2.4:
+Changes between 0.2.6 (current version) and 0.2.5:
+    * Fixed bug which caused sentences not be be stored in results file under some circumstances.
+
+Changes between 0.2.5 and 0.2.4:
     * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes (this is now the default).
     * Latin square can now be selected in the URL (".../server.py?withsquare=XXXX"); this sets the counter to XXXX and then redirects to ".../experiment.html". Selecting latin squares in this way does not alter the master counter stored on the server.
 
