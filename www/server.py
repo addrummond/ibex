@@ -830,7 +830,6 @@ def control(env, start_response):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
-        sys.stderr.write(str(env))
         content_length = None
         content_encoding = None
         try:
