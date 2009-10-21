@@ -42,7 +42,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
         this.sentenceDesc = hex_md5(canonicalSentence);
     }
     else {
-        this.sentenceDesc = csv_sanitize(options.s);
+        this.sentenceDesc = url_encode_removing_commas(options.s);
     }
 
     this.div = div;
@@ -121,7 +121,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
                 ["Reading time", time - this.previousTime],
                 ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
                                                       this.wordDivs[word].offsetTop))],
-                ["Sentence MD5", this.sentenceDesc]
+                ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }
         this.previousTime = time;

@@ -405,7 +405,7 @@ except Exception, e:
 # Random utility.
 #
 def nice_time(t):
-    return time_module.strftime("%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(t))
+    return time_module.strftime(u"%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(t))
 
 
 #
@@ -633,10 +633,10 @@ def rearrange(parsed_json, thetime, ip):
     return random_counter, counter, new_results, column_names
 
 def ensure_period(s):
-    if s.endswith(".") or s.endswith("?") or s.endswith("!"):
+    if s.endswith(u".") or s.endswith(u"?") or s.endswith(u"!"):
         return s
     else:
-        return s + "."
+        return s + u"."
 
 def intersperse_comments(main, name_specs):
     newr = []
@@ -644,22 +644,22 @@ def intersperse_comments(main, name_specs):
         for idx, name_spec in name_specs:
             if idx == i:
                 if len(name_spec) == 1:
-                    newr.append(["# Columns below this comment are as follows:"])
-                    newr.append(["# 1. Time results were received."])
-                    newr.append(["# 2. MD5 hash of participant's IP address."])
+                    newr.append([u"# Columns below this comment are as follows:"])
+                    newr.append([u"# 1. Time results were received."])
+                    newr.append([u"# 2. MD5 hash of participant's IP address."])
                     for colname,n in itertools.izip(name_spec[0], itertools.count(3)):
-                        newr.append(["# %i. %s" % (n, ensure_period(str(colname)))])
+                        newr.append([u"# %i. %s" % (n, ensure_period(unicode(colname)))])
                     break
                 else:
-                    newr.append(["# The lines below this comment are in groups of %i." % len(name_spec)])
-                    newr.append(["# The formats of the lines in each of these groups are as follows:"])
-                    newr.append(["#"])
+                    newr.append([u"# The lines below this comment are in groups of %i." % len(name_spec)])
+                    newr.append([u"# The formats of the lines in each of these groups are as follows:"])
+                    newr.append([u"#"])
                     for names, i in itertools.izip(name_spec, itertools.count(1)):
-                        newr.append(["# Line %i:" % i])
-                        newr.append(["#     Col. 1: Time results were received."])
-                        newr.append(["#     Col. 2: MD5 hash of participant's IP address."])
+                        newr.append([u"# Line %i:" % i])
+                        newr.append([u"#     Col. 1: Time results were received."])
+                        newr.append([u"#     Col. 2: MD5 hash of participant's IP address."])
                         for name, j in itertools.izip(names, itertools.count(3)):
-                            newr.append(["#     Col. %i: %s" % (j, ensure_period(str(name)))])
+                            newr.append([u"#     Col. %i: %s" % (j, ensure_period(unicode(name)))])
                     break
         newr.append(line)
     return newr
@@ -667,8 +667,8 @@ def intersperse_comments(main, name_specs):
 def to_csv(lines):
     s = StringIO.StringIO()
     for l in lines:
-        s.write(','.join(map(str, l)))
-        s.write('\n')
+        s.write(u','.join(map(unicode, l)))
+        s.write(u'\n')
     return s.getvalue()
 
 
@@ -826,19 +826,25 @@ def control(env, start_response):
             return []
 
         # ...if none of the above, it's some results.
-
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
         content_length = None
+        content_encoding = None
         try:
             content_length = int(env['CONTENT_LENGTH'])
+            encoding_re = re.compile(r"((charset)|(encoding))\s*=\s*(?P<encoding>[A-Za-z0-9_-]+)")
+            content_encoding = encoding_re.search(env['CONTENT_TYPE']).group('encoding')
         except ValueError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+        except IndexError:
+            content_encoding = DEFAULT_ENCODING
+        if not content_encoding: content_encoding = DEFAULT_ENCODING
 
         post_data = env['wsgi.input'].read(content_length)
+        post_data = post_data.decode(content_encoding, 'ignore')
 
         # This will be called in the normal course of events, and if
         # there is an error parsing the JSON.
@@ -848,9 +854,9 @@ def control(env, start_response):
                 try:
                     bf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RAW_RESULT_FILE_NAME']), "a")
                     if header:
-                        bf.write("\n")
-                        bf.write(header)
-                    bf.write(post_data)
+                        bf.write(u"\n")
+                        bf.write(header.encode(DEFAULT_ENCODING))
+                    bf.write(post_data.encode(DEFAULT_ENCODING))
                 except:
                     pass
             finally:
@@ -864,18 +870,18 @@ def control(env, start_response):
                 random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip)
                 header = None
                 if c['INCLUDE_HEADERS_IN_RESULTS_FILE']:
-                    header = '#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
-                        (time_module.strftime("%A %B %d %Y %H:%M:%S UTC",
+                    header = u'#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
+                        (time_module.strftime(u"%A %B %d %Y %H:%M:%S UTC",
                                               time_module.gmtime(thetime)),
                          user_agent,
-                         "Design number was " + ((random_counter and "random = " or "non-random = ") + str(counter)))
+                         u"Design number was " + ((random_counter and u"random = " or u"non-random = ") + unicode(counter)))
                 backup_raw_post_data(header)
                 if c['INCLUDE_COMMENTS_IN_RESULTS_FILE']:
                     main_results = intersperse_comments(main_results, column_names)
                 csv_results = to_csv(main_results)
                 rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
-                rf.write(header)
-                rf.write(csv_results)
+                rf.write(header.encode(DEFAULT_ENCODING))
+                rf.write(csv_results.encode(DEFAULT_ENCODING))
 
                 # Everything went OK with receiving and recording the results, so
                 # update the counter.

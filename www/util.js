@@ -307,11 +307,6 @@ function truncateHTML(html, maxLength)
     return html;
 }
 
-function csv_sanitize(s)
-{
-    return s.replace("\\", "\\\\").replace("\n", "\\n").replace(",", "\\c"); 
-}
-
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

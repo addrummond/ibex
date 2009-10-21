@@ -17,7 +17,7 @@ function FlashSentence(div, options, finishedCallback, utils) {
         this.sentenceMD5 = hex_md5(canonicalSentence);
     }
     else {
-        this.sentenceMD5 = csv_sanitize(options.s);
+        this.sentenceMD5 = url_encode_removing_commas(options.s);
     }
 
     this.div = div;
