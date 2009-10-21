@@ -830,17 +830,19 @@ def control(env, start_response):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
+        sys.stderr.write(str(env))
         content_length = None
         content_encoding = None
         try:
             content_length = int(env['CONTENT_LENGTH'])
             encoding_re = re.compile(r"((charset)|(encoding))\s*=\s*(?P<encoding>[A-Za-z0-9_-]+)")
-            content_encoding = encoding_re.search(env['CONTENT_TYPE']).group('encoding')
+            res = encoding_re.search(env['CONTENT_TYPE'])
+            if res: content_encoding = res.group('encoding')
         except ValueError:
             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         except IndexError:
-            content_encoding = DEFAULT_ENCODING
+            pass
         if not content_encoding: content_encoding = DEFAULT_ENCODING
 
         post_data = env['wsgi.input'].read(content_length)

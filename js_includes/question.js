@@ -7,6 +7,14 @@ __Question_callback__ = null;
 __Questions_answers__ = null;
 
 function Question(div, options, finishedCallback, utils) {
+    // With IE < 6, we have to use "hand" instead of "pointer".
+    var isOldIE = false;
+    /*@cc_on @if (@_jscript_version <= 5.5) isOldIE = true; @end @*/
+    // With IE <= 6 we have to pad lists differently.
+    var isIE6OrLess = true;
+    /*@cc_on @if (@_jscript_version <= 5.6) isIE6OrLess = true; @end @*/
+    /*@cc_on @if (@_jscript_version == 5.7) if (! window.XMLHttpRequest) isIE6OrLess = true; @end @*/
+
     var questionField = "Question (NULL if none).";
     var answerField = "Answer";
     var correctField = "Whether or not answer was correct (NULL if N/A)";
@@ -92,16 +100,14 @@ function Question(div, options, finishedCallback, utils) {
             (function (li) {
                 li.onmouseover = function () {
                     li.style.borderColor = "black";
-                    // With IE < 6, we have to use "hand" instead of "pointer".
-                    var isOldIE = false;
-                    /*@cc_on @if (@_jscript_version <= 5.5) isOldIE = true; @end @*/
                     li.style.cursor = (isOldIE ? "hand" : "pointer");
                 };
                 li.onmouseout = function () { li.style.borderColor = "#9ea4b1"; li.style.cursor = "default"; };
             })(li);
-         }
+        }
         else {
             li.className = "normal-answer";
+            if (isIE6OrLess && (! this.presentAsScale) && this.showNumbers) { li.style.marginLeft = "2em"; }
         }
         //li.onclick = new Function("__Question_callback__(" + i + ");");
         (function(i) {

@@ -530,6 +530,9 @@ function sendResults(resultsLines, success, failure)
         }
     };
     xmlhttp.open("POST", serverURI, true);
+    xmlhttp.setRequestHeader("Content-Type", "text/html; charset=UTF-8");
+    xmlhttp.setRequestHeader("Content-Length", data.length);
+    xmlhttp.setRequestHeader("Connection", "close");
     xmlhttp.send(data);
 }
 
