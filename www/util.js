@@ -137,11 +137,18 @@ function stringEndsWith(k, s) {
     }
 }
 
-// URL encode chars in a string which will screw up a CSV file (we leave spaces in as it gets very ugly otherwise).
-function csv_url_encode(s) {
+function custom_url_encode(s, specials) {
+    function is_special(c) {
+        for (var i = 0; i < specials.length; ++i) {
+            if (specials.charAt(i) == c.charAt(0))
+                return true;
+        }
+        return false;
+    }
+
     var insertions = [];
     for (var i = 0; i < s.length; ++i) {
-        if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || s.charAt(i) == ",") {
+        if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || (specials && is_special(s.charAt(i)))) {
             var sr = s.charCodeAt(i).toString(16);
             if (sr.length == 1) sr = "0" + sr;
             insertions.push([i, "%" + sr])
@@ -162,6 +169,13 @@ function csv_url_encode(s) {
         js += s.slice(insertions[insertions.length-1][0] + 1, s.length);
     return js;
 }
+
+// URL encode chars in a string which will screw up a CSV file (we leave spaces in as it gets very ugly otherwise).
+function csv_url_encode(s) {
+    return custom_url_encode(s, ",");
+}
+
+alert(csv_url_encode("fo,of"))
 
 function getXMLHttpRequest()
 {
