@@ -117,7 +117,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
             assert(this.previousTime, "Internal error in dashed_sentence.js");
             this.resultsLines.push([
                 ["Word number", word],
-                ["Word", this.words[word - 1]],
+                ["Word", csv_url_encode(this.words[word - 1])],
                 ["Reading time", time - this.previousTime],
                 ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
                                                       this.wordDivs[word].offsetTop))],

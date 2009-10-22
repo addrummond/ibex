@@ -139,8 +139,8 @@ function stringEndsWith(k, s) {
 
 function custom_url_encode(s, specials) {
     function is_special(c) {
-        for (var i = 0; i < specials.length; ++i) {
-            if (specials.charAt(i) == c.charAt(0))
+        for (var k = 0; k < specials.length; ++k) {
+            if (specials.charAt(k) == c.charAt(0))
                 return true;
         }
         return false;
@@ -149,7 +149,7 @@ function custom_url_encode(s, specials) {
     var insertions = [];
     for (var i = 0; i < s.length; ++i) {
         if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || (specials && is_special(s.charAt(i)))) {
-            var sr = s.charCodeAt(i).toString(16);
+            var sr = s.charCodeAt(i).toString(16).toUpperCase();
             if (sr.length == 1) sr = "0" + sr;
             insertions.push([i, "%" + sr])
         }
@@ -167,6 +167,8 @@ function custom_url_encode(s, specials) {
     var js = slices.join("");
     if (insertions.length > 0 && insertions[insertions.length-1][0] < s.length)
         js += s.slice(insertions[insertions.length-1][0] + 1, s.length);
+    else
+        js = s;
     return js;
 }
 
@@ -174,8 +176,6 @@ function custom_url_encode(s, specials) {
 function csv_url_encode(s) {
     return custom_url_encode(s, ",");
 }
-
-alert(csv_url_encode("fo,of"))
 
 function getXMLHttpRequest()
 {

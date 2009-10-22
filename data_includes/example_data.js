@@ -15,7 +15,7 @@ var defaults = [
                              leftComment: "(Bad)", rightComment: "(Good)" },
     Question, { hasCorrect: true }
 ];
-    
+
 var items = [
 
 ["sep", Separator, { }],

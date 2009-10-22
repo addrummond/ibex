@@ -897,6 +897,7 @@ Changes betwen 0.2.7 (current version) and 0.2.6:
     * FlashSentence, DashedSentence and Question now consistently store questions/sentences in the results file in URL-encoded format.
     * Cleaned up example data file a little.
     * Fixed bug where numbers for numbered answers to comprehension questions were not displayed in IE <= 6.
+    * Minor CSS fixes.
 
 Changes between 0.2.6 and 0.2.5:
     * Fixed bug which caused sentences not be be stored in results file under some circumstances.
