@@ -42,7 +42,7 @@ function DashedSentence(div, options, finishedCallback, utils) {
         this.sentenceDesc = hex_md5(canonicalSentence);
     }
     else {
-        this.sentenceDesc = url_encode_removing_commas(options.s);
+        this.sentenceDesc = csv_url_encode(options.s);
     }
 
     this.div = div;

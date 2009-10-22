@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers Webspr 0.2.6. The 0.1.x
+This documentation covers Webspr 0.2.7. The 0.1.x
 versions of Webspr come with a README containing full documentation.  The
 latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation.
@@ -587,7 +587,7 @@ they answered incorrectly.
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
-|| sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes; commas are %2C). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
+|| sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
 
 *Results*
 
@@ -637,7 +637,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 *Results*
 
 || *Column* || *Description* ||
-|| 1        || The question that was posed (encoded as a URL with %XX escapes; commas are %2C). ||
+|| 1        || The question that was posed (encoded as a URL with %XX escapes). ||
 || 2        || The answer that the participant gave (also encoded as a URL).    ||
 || 3        || "NULL" if the question as no correct answer. Otherwise, 1 if the participant answered correctly, or 0 if they didn't. ||
 || 4        || The time the participant took to answer the question (ms). ||

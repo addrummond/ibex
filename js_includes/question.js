@@ -129,8 +129,8 @@ function Question(div, options, finishedCallback, utils) {
                 correct = (ans == correct_ans ? 1 : 0);
                 t.setFlag(correct);
             }
-            finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
-                               [answerField, url_encode_removing_commas(ans)],
+            finishedCallback([[[questionField, t.question ? csv_url_encode : "NULL"],
+                               [answerField, csv_url_encode(ans)],
                                [correctField, correct],
                                [timeField, answerTime - t.creationTime]]]);
         };
@@ -178,7 +178,7 @@ function Question(div, options, finishedCallback, utils) {
         utils.setTimeout(function () {
             var answerTime = new Date().getTime();
             t.setFlag(false);
-            finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
+            finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
                                [answerField, "NULL"], [correctField, "NULL"],
                                [timeField, answerTime - t.creationTime]]]);
         }, this.timeout);
@@ -200,8 +200,8 @@ function Question(div, options, finishedCallback, utils) {
                     correct = (correct_ans == ans ? 1 : 0);
                     t.setFlag(correct);
                 }
-                finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
-                                   [answerField, url_encode_removing_commas(ans)],
+                finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
+                                   [answerField, csv_url_encode(ans)],
                                    [correctField, correct],
                                    [timeField, answerTime = t.creationTime]]]);
 
@@ -233,8 +233,8 @@ function Question(div, options, finishedCallback, utils) {
                         correct = (correct_ans == ans ? 1 : 0);
                         t.setFlag(correct);
                     }
-                    finishedCallback([[[questionField, t.question ? url_encode_removing_commas(t.question) : "NULL"],
-                                       [answerField, url_encode_removing_commas(ans)],
+                    finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
+                                       [answerField, csv_url_encode(ans)],
                                        [correctField, correct],
                                        [timeField, answerTime - t.creationTime]]]);
 

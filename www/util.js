@@ -137,12 +137,30 @@ function stringEndsWith(k, s) {
     }
 }
 
-function url_encode_removing_commas(s) {
-    // Note sure if all implementations will escape commas, so
-    // do it manually.
-    var x = escape(s);
-    x.replace(",", "%2C");
-    return x;
+// URL encode chars in a string which will screw up a CSV file (we leave spaces in as it gets very ugly otherwise).
+function csv_url_encode(s) {
+    var insertions = [];
+    for (var i = 0; i < s.length; ++i) {
+        if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || s.charAt(i) == "," || s.charAt(i) == "\r" || s.charAt(i) == "\n") {
+            var sr = s.charCodeAt(i).toString(16);
+            if (sr.length == 1) sr = "0" + sr;
+            insertions.push([i, "%" + sr])
+        }
+    }
+    var slices = [];
+    var lastIndex = 0;
+    for (var j = 0; j < insertions.length; ++j) {
+        var ins = insertions[j];
+        if (lastIndex != ins[0])
+            slices.push(s.slice(lastIndex, ins[0]));
+        slices.push(ins[1]);
+        lastIndex = ins[0] + 1;
+    }
+    
+    var js = slices.join("");
+    if (insertions.length > 0 && insertions[insertions.length-1][0] < s.length)
+        js += s.slice(insertions[insertions.length-1][0] + 1, s.length);
+    return js;
 }
 
 function getXMLHttpRequest()
