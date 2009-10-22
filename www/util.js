@@ -141,7 +141,7 @@ function stringEndsWith(k, s) {
 function csv_url_encode(s) {
     var insertions = [];
     for (var i = 0; i < s.length; ++i) {
-        if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || s.charAt(i) == "," || s.charAt(i) == "\r" || s.charAt(i) == "\n") {
+        if (s.charCodeAt(i) < 32 || s.charCodeAt(i) == 127 || s.charAt(i) == ",") {
             var sr = s.charCodeAt(i).toString(16);
             if (sr.length == 1) sr = "0" + sr;
             insertions.push([i, "%" + sr])
