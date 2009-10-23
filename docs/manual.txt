@@ -849,11 +849,11 @@ I have tested compatibility with the following browsers:
 
 Known cross-browser issues:
 
-   * Overviews (see previous section) currently do not work on Internet Explorer.
+   * Overviews (see previous section) currently do not work on all versions of Internet Explorer.
 
    * Pressing '6' and '7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
 
-   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, Internet Explorer ignores this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
+   * The stand-alone server serves up the !JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, some versions of Internet Explorer ignore this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
 
 =Terminological clarifications=
 Unfortunately, the terms I've used relating to the design of experiments (latin squares, etc.) are enormously confusing as they use some non-standard terms, and make non-standard use of some standard terms. Specifically:
