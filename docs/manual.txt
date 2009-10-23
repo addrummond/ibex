@@ -894,7 +894,7 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes betwen 0.2.7 (current version) and 0.2.6:
     * Server now attempts to do the Right Thing with unicode. Earlier versions would occasionally fail to work when the server was running on Windows due to crufty unicode issues. This should now be fixed.
-    * FlashSentence, DashedSentence and Question now consistently store questions/sentences in the results file in URL-encoded format.
+    * `FlashSentence`, `DashedSentence` and `Question` controllers now consistently store questions/sentences in the results file in URL-encoded format.
     * Cleaned up example data file a little.
     * Fixed bug where numbers for numbered answers to comprehension questions were not displayed in IE <= 6.
     * Minor CSS fixes.
