@@ -11,7 +11,7 @@ O=`echo $PWD | awk 'BEGIN { FS="/"; } { print $NF }'`
 cd ..
 
 NO=/tmp/webspr-${1}
-cp -R $O $NO
+cp -XR $O $NO
 
 cd /tmp
 NO=webspr-${1}
