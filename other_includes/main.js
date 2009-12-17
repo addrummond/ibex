@@ -127,7 +127,7 @@ $.each(items, function(_, it) {
             assert_is_arraylike($.ui[controller]._webspr_obligatory, "The '_webspr_obligatory' field must be an Array of strings.");
             $.each($.ui[controller]._webspr_obligatory, function(_, o) {
                 assert(typeof(o) == "string", "All members of the '_webspr_obligatory' Array must be strings.");
-                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for " + controller);
+                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for the controller" + controller);
             });
         }
 
