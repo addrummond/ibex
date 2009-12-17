@@ -79,7 +79,10 @@ $.widget("ui.DashedSentence", {
 
         if (this.mode == "self-paced reading") {    
             var t = this;
-            this.options._eventHandlers.handleKey = function(code, time) {
+            this.safeBind($(window), 'keydown', function(e) {
+                var time = new Date().getTime();
+                var code = e.keyCode;
+
                 if (code == 32) {
                     t.recordSprResult(time, t.currentWord);
 
@@ -96,7 +99,7 @@ $.widget("ui.DashedSentence", {
                 else {
                     return true;
                 }
-            };
+            });
         }
     },
 

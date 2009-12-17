@@ -15,33 +15,31 @@ var inner;
 var mainTable; // Only set if conf_centerItems.
 
 function createMainTable() {
-    var newt = document.createElement("table");
-    var tb = document.createElement("tbody");
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
-    newt.align = "center"; // IE sucks.
-    newt.appendChild(tb);
-    tb.appendChild(tr);
-    tr.appendChild(td);
-    inner = td;
+    // Note that this statement sets the 'inner' var.
+    var newt =
+        $(document.createElement("table"))
+        .attr('align', 'center') // IE sucks.
+        .append($(document.createElement("tr"))
+                .append(inner = $(document.createElement("td"))));
+
     if (mainTable) {
-        body.replaceChild(newt, mainTable);
+        mainTable.replaceWith(newt);
     }
     else {
-        body.appendChild(newt);
+        $("body").append(newt);
     }
     mainTable = newt;
 }
 
 function renewInner() {
     if ((! conf_centerItems) || conf_showOverview) {
-        var newdiv = document.createElement("div");
+        var newdiv = $(document.createElement("div")).addClass("lindent");
         newdiv.className = "lindent";
         if (inner) {
-            body.replaceChild(newdiv, inner);
+            inner.replaceWith(newdiv);
         }
         else {
-            body.appendChild(newdiv);
+            $("body").append(newdiv);
         }
         inner = newdiv;
     }
@@ -50,11 +48,9 @@ function renewInner() {
         // things.
         createMainTable();
     }
-    inner.style.clear = "both";
-    if ((! conf_showOverview) && conf_practiceItemTypes && conf_practiceItemTypes.length > 0) {
-        practiceBox = jsHTML([["p", {"class": "practice-box"}], ""]);
-        inner.appendChild(practiceBox);
-    }
+    inner.css('clear', "both");
+    if ((! conf_showOverview) && conf_practiceItemTypes && conf_practiceItemTypes.length > 0)
+        inner.append($(document.createElement("p")).addClass("practice-box"));
 }
 
 renewInner();
@@ -195,26 +191,21 @@ assert(runningOrder.length > 0 && runningOrder[0].length > 0,
 
 //conf_showOverview = true;
 if (conf_showOverview) {
-    var l = document.createElement("ol");
+    var l = $(document.createElement("ol"));
     for (var i = 0; i < runningOrder.length; ++i) {
-        var sl = document.createElement("ol");
+        var sl = $(document.createElement("ol"));
         for (var j = 0; j < runningOrder[i].length; ++j) {
-            var li = document.createElement("li");
-            var b = document.createElement("b");
-            b.appendChild(document.createTextNode(runningOrder[i][j].controller.name));
-            li.appendChild(b);
-            var hd = runningOrder[i][j].controller.htmlDescription ? runningOrder[i][j].controller.htmlDescription(runningOrder[i][j].options) : null;
-            if (hd) {
-                li.appendChild(document.createTextNode(": "));
-                li.appendChild(hd);
-            }
-            sl.appendChild(li);
+            var li = $(document.createElement("li"));
+            var b = $(document.createElement("b"));
+            li.append(b.append(runningOrder[i][j]));
+            var hd = $.ui[runningOrder[i][j].controller]._webspr_htmlDescription ? $.ui[runningOrder[i][j].controller]._webspr_htmlDescription(runningOrder[i][j].options) : null;
+
+            if (hd) li.append(": ").append(hd);
+            sl.append(li);
         }
-        var li = document.createElement("li");
-        li.appendChild(sl);
-        l.appendChild(li);
+        l.append($(document.createElement("li")).append(sl));
     }
-    inner.appendChild(l);
+    inner.append(l);
 }
 else {
 
@@ -294,50 +285,53 @@ if (conf_showProgressBar) {
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
 
-    var names = { };
+    var showProgress;
     var thingToPrependToBody;
     if (conf_centerItems) {
-        thingToPrependToBody = jsHTMLWithNames(names,
-            [["table", {align: "center"}],
-              ["tbody",
-                ["tr",
-                  ["td:showProgress"]
-            ]]]
-        );
+        thingToPrependToBody =
+            $(document.createElement("table"))
+            .attr('align', 'center')
+            .append($(document.createElement("tr"))
+                    .append(showProgress = $(document.createElement("td"))));
     }
     else  {
-        thingToPrependToBody = jsHTMLWithNames(names,
-            [["div:showProgress", {"margin-top": "2em", "class": "lindent"}]]
-        );
+        thingToPrependToBody = showProgress =
+            $(document.createElement("div")).css('margin-top', '2em').addClass("lindent");
     }
-    showProgress = names.showProgress;
 
-    barContainer = jsHTMLWithNames(names,
-        [["div", {"class": "bar-container", "@style.height": progressBarHeight, "@style.width": progressBarMaxWidth}],
-          [["div:bar", {"class": "bar", "@style.height": progressBarHeight, "@style.width": 0}]]]
-    );
-    bar = names.bar;
-    var p = jsHTML([["p", {"class": "progress-text", "@style.textAlign": conf_centerItems ? "center" : "left"}],
-                    "progress"]);
+    var bar;
+    barContainer =
+        $(document.createElement("div"))
+        .addClass("bar-container")
+        .css('height', progressBarHeight)
+        .css('width', progressBarMaxWidth)
+        .append(bar = $(document.createElement("div"))
+                .addClass("bar")
+                .css('height', progressBarHeight)
+                .css('width', 0));
+    var p =
+        $(document.createElement("p"))
+        .addClass("progress-text")
+        .css('text-align', conf_centerItems ? "center" : "left")
+        .text('progress');
 
-    showProgress.appendChild(barContainer);
-    showProgress.appendChild(p);
-    body.insertBefore(thingToPrependToBody, body.firstChild);
+    showProgress.append(barContainer).append(p);
+    $("body").prepend(thingToPrependToBody);
 }
 function updateProgressBar() {
     if (conf_showProgressBar) {
         currentProgressBarWidth += progressBarMaxWidth / nPoints;
-        bar.style.width = Math.round(currentProgressBarWidth) + "px";
+        bar.css('width', Math.round(currentProgressBarWidth) + "px");
     }
 }
 function hideProgressBar() {
     if (conf_showProgressBar) {
-        showProgress.style.visibility = "hidden";
+        showProgress.css('visibility', "hidden");
     }
 }
 function showProgressBar() {
     if (conf_showProgressBar) {
-        showProgress.style.visibility = "visible";
+        showProgress.css('visibility', "visible");
     }
 }
 
@@ -367,6 +361,29 @@ function namesToIndices(results_line) {
         na.push([getColumnNameIndex(results_line[i][0]), results_line[i][1]]);
     }
     return na;
+}
+
+// Methods we add to all widgets for handling events which need to be cleaned
+// up after widget has gone but which can't be attached to this.element.
+// (These will get attached to widgets in a minute, using the 'addSafeBindMethodPair'
+// utility function.)
+function methodToAdd_safeBind(jqobj, ename, func) {
+    jqobj.bind(ename, func);
+    if (! this._eventsToRemove) this._eventsToRemove = [[jqobj, ename, func]];
+    else this._eventsToRemove.push([jqobj, ename, func]);
+}
+function makeMethodToAdd_destroy(origDestroyMethod) { // Call original destroy method too if there was one.
+    return function () {
+        var t = this;
+        $.each(t._eventsToRemove || [], function () {
+            this[0].unbind(this[1], this[2]);
+        });
+        if (origDestroyMethod) origDestroyMethod.call(t);
+    };
+}
+function addSafeBindMethodPair(name) {
+    $.ui[name].prototype.safeBind = methodToAdd_safeBind;
+    $.ui[name].prototype.destroy = makeMethodToAdd_destroy($.ui[name].prototype.destroy);
 }
 
 function finishedCallback(resultsLines) {
@@ -420,9 +437,8 @@ function finishedCallback(resultsLines) {
     if (dget(currentControllerOptions, "displayMode", "overwrite") != "append") {
         renewInner();
     }
-    pForItem = document.createElement("p");
-    inner.appendChild(pForItem);
-    pForItem.style.clear = "both";
+    pForItem = $(document.createElement("p")).css('clear', 'both');
+    inner.append(pForItem);
 
     // Is this a practice item?
     if (practiceBox) {
@@ -442,9 +458,9 @@ function finishedCallback(resultsLines) {
     os._finishedCallback = finishedCallback;
     os._utils = currentUtilsInstance;
     os._cssPrefix = "";
-    os._eventHandlers = { };
     currentControllerOptions = os;
-    $(pForItem)[currentItem.controller](os);
+    addSafeBindMethodPair(currentItem.controller);
+    pForItem[currentItem.controller](os);
 
     // Should we show the progress bar with this item?
     if (currentControllerOptions.hideProgressBar)
@@ -452,8 +468,8 @@ function finishedCallback(resultsLines) {
     else
         showProgressBar();
 }
-var pForItem = document.createElement("p");
-inner.appendChild(pForItem);
+var pForItem = $(document.createElement("p")).css('clear', 'both');
+inner.append(pForItem);
 currentUtilsInstance = new Utils({});
 var os = runningOrder[0][0].options;
 os._finishedCallback = finishedCallback;
@@ -461,12 +477,13 @@ os._utils = currentUtilsInstance;
 os._cssPrefix = "";
 os._eventHandlers = { };
 currentControllerOptions = os;
-$(pForItem)[runningOrder[0][0].controller](os);
+addSafeBindMethodPair(runningOrder[0][0].controller);
+pForItem[runningOrder[0][0].controller](os);
 // Should we show the progress bar with the first item?
 if (currentControllerOptions.hideProgressBar)
     hideProgressBar();
 
-document.onkeydown = function(e) {
+/*document.onkeydown = function(e) {
     // Record the time ASAP.
     var time = new Date().getTime();
 
@@ -479,7 +496,7 @@ document.onkeydown = function(e) {
         // Should return false if they keypress wasn't handled.
         return currentControllerOptions._eventHandlers.handleKey(e.keyCode, time);
     }
-}
+}*/
 
 function indicateThatResultsAreBeingSent()
 {

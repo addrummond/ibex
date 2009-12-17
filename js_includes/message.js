@@ -82,10 +82,10 @@ $.widget("ui.Message", {
         }
         else if (this.transfer == "keypress") {
             var t = this;
-            this.options._eventHandlers.handleKey = function(code, time) {
+            this.safeBind($(window), 'keydown', function () {
                 t.finishedCallback(null);
                 return false;
-            }
+            });
         }
         else {
             assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");

@@ -31,8 +31,8 @@ $.widget("ui.AcceptabilityJudgment", {
 $.ui.AcceptabilityJudgment._webspr_name = "AcceptabilityJudgment";
 $.ui.AcceptabilityJudgment._webspr_obligatory = ["s", "as"];
 $.ui.AcceptabilityJudgment._webspr_htmlDescription = function (opts) {
-    var s = FlashSentence.htmlDescription(opts);
-    var q = Question.htmlDescription(opts);
+    var s = $.ui.FlashSentence._webspr_htmlDescription(opts);
+    var q = $.ui.Question._webspr_htmlDescription(opts);
     var p = document.createElement("p");
     var b1 = document.createElement("b");
     b1.appendChild(document.createTextNode("S: "));

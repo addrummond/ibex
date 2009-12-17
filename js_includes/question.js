@@ -174,7 +174,10 @@ $.widget("ui.Question", {
 
         // TODO: A bit of code duplication in this function.
         var t = this;
-        this.options._eventHandlers.handleKey = function(code, time) {
+        this.safeBind($(window), 'keydown', function(e) {
+            var code = e.keyCode;
+            var time = new Date().getTime();
+
             var answerTime = new Date().getTime();
             if ((! t.presentAsScale) && t.showNumbers &&
                 ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
@@ -232,7 +235,7 @@ $.widget("ui.Question", {
             }
 
             return true;
-        }
+        });
 
         // Store the time when this was first displayed.
         this.creationTime = new Date().getTime();
