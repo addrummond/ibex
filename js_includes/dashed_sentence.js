@@ -52,10 +52,12 @@ $.widget("ui.DashedSentence", {
         this.previousTime = null;
 
         this.wordDivs = new Array(this.words.length);
+        this.wdnjq = new Array(this.words.length); // 'word divs no jQuery'.
         for (var j = 0; j < this.words.length; ++j) {
             var div = $(document.createElement("div")).text(this.words[j]);
             this.element.append(div);
             this.wordDivs[j] = div;
+            this.wdnjq[j] = div[0];
         }
 
         if (this.mode == "speeded acceptability") {
@@ -107,14 +109,14 @@ $.widget("ui.DashedSentence", {
     // NOTE: [0] subscript gets DOM object from JQuery selector.
     blankWord: function(w) {
         if (this.currentWord <= this.stoppingPoint) {
-            this.wordDivs[w][0].style.borderColor = this.unshownBorderColor;
-            this.wordDivs[w][0].style.color = this.unshownWordColor;
+            this.wdnjq[w].style.borderColor = this.unshownBorderColor;
+            this.wdnjq[w].style.color = this.unshownWordColor;
         }
     },
     showWord: function(w) {
         if (this.currentWord < this.stoppingPoint) {
-            this.wordDivs[w][0].style.borderColor = this.shownBorderColor;
-            this.wordDivs[w][0].style.color = this.shownWordColor;
+            this.wdnjq[w].style.borderColor = this.shownBorderColor;
+            this.wdnjq[w].style.color = this.shownWordColor;
         }
     },
 

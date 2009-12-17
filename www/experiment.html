@@ -13,12 +13,17 @@
     <script type="text/javascript" src="shuffle.js"></script>
     <!-- JSON serialization code. -->
     <script type="text/javascript" src="json.js"></script>
+    <!-- Backwards compatability cruft to ensure that old JS data files work. -->
+    <script type="text/javascript" src="backcompatcruft.js"></script>
     <!-- JS includes. -->
     <script type="text/javascript" src="server.py?include=js"></script>
     <!-- Data file JS includes. -->
     <script type="text/javascript" src="server.py?include=data"></script>
     <!-- Set up configuration variables. -->
     <script type="text/javascript" src="conf.js"></script>
+
+    <!-- The main body of JS code. -->
+    <script type="text/javascript" src="server.py?include=main.js"></script>
 
     <link rel="stylesheet" type="text/css" href="server.py?include=css">
 
@@ -39,9 +44,5 @@
 <noscript>
 <p>You need to have Javascript enabled in order to use this page.</p>
 </noscript>
-
-<!-- The main body of JS code. -->
-<script type="text/javascript" src="server.py?include=main.js"></script>
-
 </body>
 </html>

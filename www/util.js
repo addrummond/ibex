@@ -209,20 +209,6 @@ function filter(f, a, initialLength) {
     return na;
 }
 
-function map(f, a) {
-    na = new Array(a.length);
-    for (var i = 0; i < a.length; ++i) {
-        na[i] = f(a[i]);
-    }
-    return na;
-}
-
-function iter(a, f) {
-    for (var i = 0; i < a.length; ++i) {
-        f(a[i]);
-    }
-}
-
 function list_contains(x, l) {
     for (var i = 0; i < l.length; ++i) {
         if (x == l[i])
@@ -360,6 +346,18 @@ function addSafeBindMethodPair(name) {
         $.ui[name].prototype.safeBind = methodToAdd_safeBind;
         $.ui[name].prototype.destroy = makeMethodToAdd_destroy($.ui[name].prototype.destroy);
     }
+}
+
+// We don't have object-keyed hashtables at our disposal, so
+// here's a utility function for traversing defaults alists.
+function get_defaults_for(defaults, obj) {
+    for (var i = 0; i < defaults.length; ++i) {
+        if (defaults[i][0] == obj) {
+            // Copy the dictionary (had a nasty bug from not doing this...).
+            return copy_dict(defaults[i][1]);
+        }
+    }
+    return {}
 }
 
 

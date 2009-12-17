@@ -5,6 +5,8 @@ $.widget("ui.VBox", {
         this.cssPrefix = this.options.options._cssPrefix;
         this.utils = this.options.options._utils;
         this.finishedCallback = this.options.options._finishedCallback;
+        this.controllerDefaults = this.options.options._controllerDefaults;
+        this.utilsClass = this.options.options._utilsClass;
 
         this.children = this.options.children;
         this.triggers = this.options.triggers;
@@ -17,7 +19,7 @@ $.widget("ui.VBox", {
         assert(this.triggers.length > 0, "The 'triggers' array for VBox must be an array of length > 0");
 
         var t = this;
-        iter(this.triggers, function (tr) {
+        $.each(this.triggers, function (_, tr) {
             assert(typeof(tr) == "number", "The 'triggers' array for VBox must be an array of integers");
             assert(tr >= 0 && tr < t.children.length / 2,
                    "Numbers in the 'triggers' array must be indices into the 'children' array starting from 0");
@@ -30,7 +32,7 @@ $.widget("ui.VBox", {
         for (var i = 0; i < this.children.length; i += 2) {
             var controllerClass = this.children[i];
             var childOptions = this.children[i + 1];
-            childOptions = merge_dicts(get_defaults_for(controllerClass), childOptions);
+            childOptions = merge_dicts(get_defaults_for(this.controllerDefaults, controllerClass), childOptions);
 
             var d = $(document.createElement("p")).css('clear', 'both');
 
@@ -64,7 +66,7 @@ $.widget("ui.VBox", {
             // Add the actual child.
             this.element.append(ddd ? ddd : (dd ? dd : d));    
 
-            var u = new Utils(this.utils.getValuesFromPreviousElement());
+            var u = new this.utilsClass(this.utils.getValuesFromPreviousElement());
             this.childUtils.push(u);
             (function(i) {
                 u.setResults = function(results) {
@@ -117,8 +119,8 @@ $.widget("ui.VBox", {
 
         if (satisfied) {
             // Merge values for next element.
-            var merged = merge_list_of_dicts(map(function (x) { return x.valuesForNextElement; },
-                                                 this.childUtils));
+            var merged = merge_list_of_dicts($.map(this.childUtils,
+                                             function (x) { return x.valuesForNextElement; }));
             this.utils.valuesForNextElement = merged;
 
             this.finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));

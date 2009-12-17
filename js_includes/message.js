@@ -37,7 +37,8 @@ $.widget("ui.Message", {
                                     .append($(document.createElement("td"))
                                             .css('border', 0).css('padding-left', 0).css('margin-left', 0)
                                             .append(checkbox = $(document.createElement("input"))
-                                                    .attr('type', 'checkbox')))
+                                                    .attr('type', 'checkbox')
+                                                    .attr('checked', 0)))
                                     .append(message = $(document.createElement("td"))
                                             .css('border', 0).css('margin-left', 0).css('padding-left', 0)
                                             .append(this.consentMessage))));
@@ -45,11 +46,7 @@ $.widget("ui.Message", {
                 this.element.append(dom);
                 // Allow clicking on the message as well as on the checkbox itself.
                 message.click(function () {
-                    // This is more robust that names.checkbox.checked = ! names.checkbox.checked
-                    if (checkbox.checked)
-                        checkbox.checked = false;
-                    else
-                        checkbox.checked = true;
+                    checkbox.attr('checked', checkbox.attr('checked') ? 0 : 1);
                 });
                 // Change cursor to pointer when hovering over the message (have to use JS because
                 // IE doesn't support :hover for anything other than links).

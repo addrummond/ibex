@@ -928,6 +928,7 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         'conf.js',
         'shuffle.js',
         'util.js',
+        'backcompatcruft.js',
         'jquery.min.js',
         'jquery-ui.min.js'
     ]

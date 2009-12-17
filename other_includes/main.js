@@ -6,9 +6,9 @@ for (var _ in { }) {
     assert(false, "ERROR: The JavaScript object namespace has been polluted (perhaps by a library such as prototype.js?)");
 }
 
-var serverURI = "server.py";
+$(document).ready(function () {
 
-var body = document.getElementsByTagName("body")[0];
+var serverURI = "server.py";
 
 var practiceBox;
 var inner;
@@ -84,18 +84,6 @@ if (typeof(defaults) != "undefined") {
     }
 }
 
-// We don't have object-keyed hashtables at our disposal, so
-// here's a utility function for traversing the ht_defaults alist.
-function get_defaults_for(obj) {
-    for (var i = 0; i < ht_defaults.length; ++i) {
-        if (ht_defaults[i][0] == obj) {
-            // Copy the dictionary (had a nasty bug from not doing this...).
-            return copy_dict(ht_defaults[i][1]);
-        }
-    }
-    return {}
-}
-
 function Item(itemNumber, elementNumber, controller, options) {
     this.itemNumber = itemNumber;
     this.elementNumber = elementNumber;
@@ -131,7 +119,7 @@ $.each(items, function(_, it) {
             type = typeAndGroup;
         }
         
-        var opts = get_defaults_for(controller);
+        var opts = get_defaults_for(ht_defaults, controller);
         opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
@@ -401,6 +389,8 @@ function finishedCallback(resultsLines) {
     os._finishedCallback = finishedCallback;
     os._utils = currentUtilsInstance;
     os._cssPrefix = "";
+    os._controllerDefaults = ht_defaults;
+    os._utilsClass = Utils;
     currentControllerOptions = os;
     addSafeBindMethodPair(currentItem.controller);
     pForItem[currentItem.controller](os);
@@ -418,7 +408,8 @@ var os = runningOrder[0][0].options;
 os._finishedCallback = finishedCallback;
 os._utils = currentUtilsInstance;
 os._cssPrefix = "";
-os._eventHandlers = { };
+os._controllerDefaults = ht_defaults;
+os._utilsClass = Utils;
 currentControllerOptions = os;
 addSafeBindMethodPair(runningOrder[0][0].controller);
 pForItem[runningOrder[0][0].controller](os);
@@ -505,3 +496,5 @@ function sendResults(resultsLines, success, failure)
 }
 
 } // End of else for if (conf_showOverview).
+
+}); // End of $(document).read(function { ...

@@ -129,7 +129,8 @@ function regularizeGroup(g) {
 function mungGroups(sentenceArray, counter) {
     var nulls = filter(function (e) { return e.group == null; }, sentenceArray);
     // NOTE: May need to change to a for loop for efficiency reasons.
-    //var grouped = map(regularizeGroup, filter(function (e) { return e.group != null; }, sentenceArray));
+    //var grouped = $.map(filter(function (e) { return e.group != null; }, sentenceArray),
+    //                    regularizeGroup);
     var grouped = [];
     for (var i = 0; i < sentenceArray.length; ++i) {
         var k = sentenceArray[i];
@@ -195,7 +196,7 @@ function not(pred) {
     return function(k) { return ! pred_(k); }
 }
 function anyOf() {
-    var ps = map(toPredicate, anyOf.arguments);
+    var ps = $.map(anyOf.arguments, toPredicate);
     return function(k) {
         for (var i = 0; i < ps.length; ++i) {
             if (ps[i](k))
@@ -241,7 +242,7 @@ function Shuffle(args) {
     }
 }
 function shuffle() { return new Shuffle(shuffle.arguments); }
-function rshuffle() { return new Shuffle(map(randomize, rshuffle.arguments)); }
+function rshuffle() { return new Shuffle($.map(rshuffle.arguments, randomize)); }
 function SepWith(sep, main) {
     this.args = [sep,main];
 
