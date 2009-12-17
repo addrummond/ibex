@@ -175,7 +175,7 @@ $.widget("ui.Question", {
 
         // TODO: A bit of code duplication in this function.
         var t = this;
-        this.safeBind($(window), 'keydown', function(e) {
+        this.safeBind($(document), 'keydown', function(e) {
             var code = e.keyCode;
             var time = new Date().getTime();
 

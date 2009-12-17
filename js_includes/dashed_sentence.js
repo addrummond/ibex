@@ -81,7 +81,7 @@ $.widget("ui.DashedSentence", {
 
         if (this.mode == "self-paced reading") {    
             var t = this;
-            this.safeBind($(window), 'keydown', function(e) {
+            this.safeBind($(document), 'keydown', function(e) {
                 var time = new Date().getTime();
                 var code = e.keyCode;
 

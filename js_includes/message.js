@@ -79,7 +79,7 @@ $.widget("ui.Message", {
         }
         else if (this.transfer == "keypress") {
             var t = this;
-            this.safeBind($(window), 'keydown', function () {
+            this.safeBind($(document), 'keydown', function () {
                 t.finishedCallback(null);
                 return false;
             });
