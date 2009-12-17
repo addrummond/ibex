@@ -6,7 +6,7 @@ $.widget("ui.Message", {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        this.hideProgressBar = dget(this.options, "hideProgressBar", true);
+        this.options.hideProgressBar = dget(this.options, "hideProgressBar", true);
 
         this.html = this.options.html;
         this.element.addClass(this.cssPrefix + "message");
@@ -54,7 +54,7 @@ $.widget("ui.Message", {
                 // Change cursor to pointer when hovering over the message (have to use JS because
                 // IE doesn't support :hover for anything other than links).
                 message.mouseover(function () {
-                    message.style.cursor = "default";
+                    message.css('cursor', "default");
                 });
             }
 
@@ -63,12 +63,12 @@ $.widget("ui.Message", {
             // ALEX: Looking at this again, I don't see why it's necessary to create a local scope here
             // but I am leaving it in as I may be missing something and it won't do any harm.
             (function (checkbox) {
-                this.element.append(
+                t.element.append(
                     $(document.createElement("p"))
                     .css('clear', 'left')
                     .append($(document.createElement("a"))
                             .attr('href', '')
-                            .addClass(this.cssPrefix + 'continue-link')
+                            .addClass(t.cssPrefix + 'continue-link')
                             .text("\u2192 " + t.continueMessage)
                             .click(function () {
                                 if ((! checkbox) || checkbox.attr('checked'))
@@ -89,15 +89,15 @@ $.widget("ui.Message", {
         }
         else {
             assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
-            utils.setTimeout(this.finishedCallback, this.transfer);
+            this.utils.setTimeout(this.finishedCallback, this.transfer);
         }
     }
 });
 
-$.ui.widget.Message._webspr_name = "Message";
-$.ui.widget.Message._webspr_obligatory = ["html"];
-$.ui.widget.Message._webspr_countsForProgressBar = false;
-$.ui.widget.Message._webspr_htmlDescription = function (opts) {
+$.ui.Message._webspr_name = "Message";
+$.ui.Message._webspr_obligatory = ["html"];
+$.ui.Message._webspr_countsForProgressBar = false;
+$.ui.Message._webspr_htmlDescription = function (opts) {
     var d = htmlCodeToDOM(opts.html);
     return truncateHTML(d, 100);
 };

@@ -1,6 +1,13 @@
 var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2", "qf")));
 var practiceItemTypes = ["practice"];
 
+var Separator = "Separator";
+var Message = "Message";
+var Question = "Question";
+var DashedSentence = "DashedSentence";
+var AcceptabilityJudgment = "AcceptabilityJudgment";
+var FlashSentence = "FlashSentence";
+
 var ds = DashedSentence;
 var q = AcceptabilityJudgment;
 

@@ -1,9 +1,5 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-Separator.name = "Separator";
-Separator.obligatory = [];
-Separator.countsForProgressBar = false;
-
 $.widget("ui.Separator", {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
@@ -52,9 +48,11 @@ $.widget("ui.Separator", {
             }, this.transfer);
         }
     }
-}
+});
 
-Separator.htmlDescription = function (opts) {
+$.ui.Separator._webspr_name = "Separator";
+$.ui.Separator._webspr_obligatory = [];
+$.ui.Separator._webspr_countsForProgressBar = false;
+$.ui.Separator._webspr_htmlDescription = function (opts) {
     return document.createTextNode(opts.normalMessage);
 }
-

@@ -22,14 +22,15 @@ $.widget("ui.AcceptabilityJudgment", {
             manipulators: [
                 [0, function(div) { div.css('font-size', "larger"); return div; }]
             ]*/
-    };
+        };
 
-    this.element.VBox(opts);
-}
+        this.element.VBox(opts);
+    }
+});
 
-$.ui.widget.AcceptabilityJudgment._webspr_name = "AcceptabilityJudgment";
-$.ui.widget.AcceptabilityJudgment._webspr_obligatory = ["s", "as"];
-$.ui.widget.AcceptabilityJudgment._webspr_htmlDescription = function (opts) {
+$.ui.AcceptabilityJudgment._webspr_name = "AcceptabilityJudgment";
+$.ui.AcceptabilityJudgment._webspr_obligatory = ["s", "as"];
+$.ui.AcceptabilityJudgment._webspr_htmlDescription = function (opts) {
     var s = FlashSentence.htmlDescription(opts);
     var q = Question.htmlDescription(opts);
     var p = document.createElement("p");

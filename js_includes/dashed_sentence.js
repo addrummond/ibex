@@ -65,16 +65,16 @@ $.widget("ui.DashedSentence", {
                 t.blankWord(t.currentWord);
                 ++(t.currentWord);
                 if (t.currentWord >= t.stoppingPoint)
-                    finishedCallback([[["Sentence (or sentence MD5)", t.sentenceDesc]]]);
+                    t.finishedCallback([[["Sentence (or sentence MD5)", t.sentenceDesc]]]);
                 else
-                    utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
+                    t.utils.setTimeout(wordPauseTimeout, t.wordPauseTime);
             }
             function wordPauseTimeout() {
                 t.showWord(t.currentWord);
-                utils.clearTimeout(wordPauseTimeout);
-                utils.setTimeout(wordTimeout, t.wordTime);
+                this.utils.clearTimeout(wordPauseTimeout);
+                this.utils.setTimeout(wordTimeout, t.wordTime);
             }
-            utils.setTimeout(wordTimeout, this.wordTime);
+            this.utils.setTimeout(wordTimeout, this.wordTime);
         }
 
         if (this.mode == "self-paced reading") {    
@@ -89,7 +89,7 @@ $.widget("ui.DashedSentence", {
                         t.showWord(t.currentWord);
                     ++(t.currentWord);
                     if (t.currentWord > t.stoppingPoint)
-                        finishedCallback(t.resultsLines);
+                        t.finishedCallback(t.resultsLines);
 
                     return false;
                 }
@@ -129,10 +129,10 @@ $.widget("ui.DashedSentence", {
         }
         this.previousTime = time;
     }
-}
+});
 
-$.ui.widget.DashedSentence._webspr_name = "DashedSentence";
-$.ui.widget.DashedSentence._webspr_obligatory = ["s"];
-$.ui.widget.DashedSentence._webspr_htmlDescription = function (opts) {
+$.ui.DashedSentence._webspr_name = "DashedSentence";
+$.ui.DashedSentence._webspr_obligatory = ["s"];
+$.ui.DashedSentence._webspr_htmlDescription = function (opts) {
     return document.createTextNode(opts.s);
 }

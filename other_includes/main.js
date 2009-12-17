@@ -114,7 +114,7 @@ if (typeof(defaults) != "undefined") {
     assert(defaults.length % 2 == 0, "'defaults' Array must have an even number of elements.");
     
     for (var i = 0; i < defaults.length; i += 2) {
-        assert(typeof(defaults[i]) == "function", "Odd members of the 'defaults' array must be object constructor functions.");
+        assert(typeof(defaults[i]) == "string", "Odd members of the 'defaults' array must be strings naming controllers.");
         assert_is_dict(defaults[i + 1], "Even members of the 'defaults' array must be dictionaries.");
 
         ht_defaults.push([defaults[i], defaults[i + 1]]);
@@ -344,7 +344,7 @@ function showProgressBar() {
 var posInRunningOrder = 0;
 var posInCurrentItemSet = 0;
 var currentUtilsInstance = null;
-var currentControllerInstance = null;
+var currentControllerOptions = null;
 // A list of result lines.
 var allResults = [];
 // Array for column names.
@@ -417,7 +417,7 @@ function finishedCallback(resultsLines) {
     currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
     var pForItem;
-    if (dget(currentControllerInstance.options, "displayMode", "overwrite") != "append") {
+    if (dget(currentControllerOptions, "displayMode", "overwrite") != "append") {
         renewInner();
     }
     pForItem = document.createElement("p");
@@ -438,12 +438,16 @@ function finishedCallback(resultsLines) {
 
     currentUtilsInstance.gc();
     currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextElement);
-    currentControllerInstance =
-        new (currentItem.controller)
-    (pForItem, currentItem.options, finishedCallback, currentUtilsInstance);
+    var os = currentItem.options;
+    os._finishedCallback = finishedCallback;
+    os._utils = currentUtilsInstance;
+    os._cssPrefix = "";
+    os._eventHandlers = { };
+    currentControllerOptions = os;
+    $(pForItem)[currentItem.controller](os);
 
     // Should we show the progress bar with this item?
-    if (currentControllerInstance.hideProgressBar)
+    if (currentControllerOptions.hideProgressBar)
         hideProgressBar();
     else
         showProgressBar();
@@ -451,11 +455,15 @@ function finishedCallback(resultsLines) {
 var pForItem = document.createElement("p");
 inner.appendChild(pForItem);
 currentUtilsInstance = new Utils({});
-currentControllerInstance =
-    new (runningOrder[0][0].controller)
-        (pForItem, runningOrder[0][0].options, finishedCallback, currentUtilsInstance);
+var os = runningOrder[0][0].options;
+os._finishedCallback = finishedCallback;
+os._utils = currentUtilsInstance;
+os._cssPrefix = "";
+os._eventHandlers = { };
+currentControllerOptions = os;
+$(pForItem)[runningOrder[0][0].controller](os);
 // Should we show the progress bar with the first item?
-if (currentControllerInstance.hideProgressBar)
+if (currentControllerOptions.hideProgressBar)
     hideProgressBar();
 
 document.onkeydown = function(e) {
@@ -467,9 +475,9 @@ document.onkeydown = function(e) {
         e = window.event;
     }
 
-    if (currentControllerInstance.handleKey) {
+    if (currentControllerOptions._eventHandlers.handleKey) {
         // Should return false if they keypress wasn't handled.
-        return currentControllerInstance.handleKey(e.keyCode, time);
+        return currentControllerOptions._eventHandlers.handleKey(e.keyCode, time);
     }
 }
 

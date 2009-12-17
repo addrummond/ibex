@@ -1,7 +1,7 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
 $.widget("ui.VBox", {
-    function _init () {
+    _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
@@ -140,5 +140,5 @@ $.widget("ui.VBox", {
     }
 });
 
-$.ui.widget.VBox._webspr_name = "VBox";
-$.ui.widget.VBox._webspr_obligatory = ["children", "triggers"];
+$.ui.VBox._webspr_name = "VBox";
+$.ui.VBox._webspr_obligatory = ["children", "triggers"];

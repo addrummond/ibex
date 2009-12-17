@@ -747,6 +747,7 @@ except os.error, IOError:
     sys.exit(1)
 
 def control(env, start_response):
+    print env
     # Save the time the results were received.
     thetime = time_module.time()
 
@@ -766,7 +767,11 @@ def control(env, start_response):
     elif env.has_key('HTTP_USER_AGENT'):
         user_agent = env['HTTP_USER_AGENT']
 
-    base = env.has_key('REQUEST_URI') and env['REQUEST_URI'] or env['PATH_INFO']
+    base = None
+    if env.has_key('REQUEST_URI'):
+        base = env['REQUEST_URI']
+    else:
+        base = env['PATH_INFO']
     # Sometimes the query string likes to stick around.
     base = base.split('?')[0]
 
@@ -923,6 +928,8 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         'conf.js',
         'shuffle.js',
         'util.js',
+        'jquery.min.js',
+        'jquery-ui.min.js'
     ]
 
     def __init__(self, request, client_address, server):
@@ -951,6 +958,7 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             def start_response(response_type_, headers_):
                 response_type[0] = response_type_
                 headers[0] = headers_
+            print "PATH!:", path, "\n\n"
             env = {
                 "REMOTE_ADDR"    : self.client_address[0], # self.client_address is a (host,port) tuple.
                 "REQUEST_URI"    : path,

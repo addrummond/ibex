@@ -4,7 +4,7 @@ __Question_callback__ = null;
 __Questions_answers__ = null;
 
 $.widget("ui.Question", {
-    function _init() {
+    _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
@@ -93,12 +93,13 @@ $.widget("ui.Question", {
             li = $(document.createElement("li"));
             if (this.presentAsScale) {
                 li.addClass(this.cssPrefix + "scale-box");
+                var t = this;
                  // IE doesn't support :hover for anything other than links, so we
                  // have to use JS.
                  (function (li) {
                      li.mouseover(function () {
                          li.css('border-color', "black")
-                           .css('cursor', isOldIE ? 'hand', 'pointer');
+                           .css('cursor', t.isOldIE ? 'hand' : 'pointer');
                      });
                      li.mouseout(function () {
                          li.css('border-color', "#9ea4b1")
@@ -108,7 +109,7 @@ $.widget("ui.Question", {
             }
             else {
                 li.addClass(this.cssPrefix + "normal-answer");
-                if (isIE6OrLess && (! this.presentAsScale) && this.showNumbers) { li.css('margin-left', "2em"); }
+                if (this.isIE6OrLess && (! this.presentAsScale) && this.showNumbers) { li.css('margin-left', "2em"); }
             }
             (function(i) {
                 li.click(function () { __Question_callback__(i); });
@@ -150,7 +151,7 @@ $.widget("ui.Question", {
         var tr = $(document.createElement("tr"));
         var td = $(document.createElement("td"));
         if (conf_centerItems)
-            td.attr('align' = 'center');
+            td.attr('align', 'center');
         this.element.append(table.append(tr.append(td.append(this.xl))));
 
         if (this.instructions) {
@@ -235,10 +236,11 @@ $.widget("ui.Question", {
 
         // Store the time when this was first displayed.
         this.creationTime = new Date().getTime();
-}
+    }
+});
 
-$.ui.widget.Question._webspr_name = "Question";
-$.ui.widget.Question._webspr_obligatory = ["as"];
-$.ui.widget.Question._webspr_htmlDescription = function(opts) {
+$.ui.Question._webspr_name = "Question";
+$.ui.Question._webspr_obligatory = ["as"];
+$.ui.Question._webspr_htmlDescription = function(opts) {
     return document.createTextNode(opts.q);
 }
