@@ -1,24 +1,25 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
 $.widget("ui.AcceptabilityJudgment", {
-    init: function () {
+    _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
         var opts = {
+            options:     this.options,
             triggers:    [1],
-            children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
-                          Question, { q:              options.q,
-                                      as:             options.as,
-                                      hasCorrect:     options.hasCorrect,
-                                      presentAsScale: options.presentAsScale,
-                                      randomOrder:    options.randomOrder,
-                                      showNumbers:    options.showNumbers,
-                                      timeout:        options.timeout,
-                                      instructions:   options.instructions,
-                                      leftComment:    options.leftComment,
-                                      rightComment:   options.rightComment }]/*,
+            children:    ["FlashSentence", {s: this.options.s, timeout: dget(this.options, "timeout", null)},
+                          "Question", { q:              this.options.q,
+                                        as:             this.options.as,
+                                        hasCorrect:     this.options.hasCorrect,
+                                        presentAsScale: this.options.presentAsScale,
+                                        randomOrder:    this.options.randomOrder,
+                                        showNumbers:    this.options.showNumbers,
+                                        timeout:        this.options.timeout,
+                                        instructions:   this.options.instructions,
+                                        leftComment:    this.options.leftComment,
+                                        rightComment:   this.options.rightComment }]/*,
             manipulators: [
                 [0, function(div) { div.css('font-size', "larger"); return div; }]
             ]*/
@@ -33,15 +34,15 @@ $.ui.AcceptabilityJudgment._webspr_obligatory = ["s", "as"];
 $.ui.AcceptabilityJudgment._webspr_htmlDescription = function (opts) {
     var s = $.ui.FlashSentence._webspr_htmlDescription(opts);
     var q = $.ui.Question._webspr_htmlDescription(opts);
-    var p = document.createElement("p");
-    var b1 = document.createElement("b");
-    b1.appendChild(document.createTextNode("S: "));
-    p.appendChild(b1);
-    p.appendChild(document.createTextNode(opts.s + " "));
-    p.appendChild(document.createElement("br"));
-    var b2 = document.createElement("b");
-    b2.appendChild(document.createTextNode("Q: "));
-    p.appendChild(b2);
-    p.appendChild(document.createTextNode(opts.q));
+    var p =
+        $(document.createElement("p"))
+        .append($(document.createElement("b"))
+                .append("Q: ")
+                .append($(q)))
+        .append($(document.createElement("br")))
+        .append($(document.createElement("b"))
+                .append("S: "))
+        .append($(s));
+
     return p;
 };

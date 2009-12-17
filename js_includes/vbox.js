@@ -2,9 +2,9 @@
 
 $.widget("ui.VBox", {
     _init: function () {
-        this.cssPrefix = this.options._cssPrefix;
-        this.utils = this.options._utils;
-        this.finishedCallback = this.options._finishedCallback;
+        this.cssPrefix = this.options.options._cssPrefix;
+        this.utils = this.options.options._utils;
+        this.finishedCallback = this.options.options._finishedCallback;
 
         this.children = this.options.children;
         this.triggers = this.options.triggers;
@@ -24,7 +24,7 @@ $.widget("ui.VBox", {
         });
 
         this.indicesAndResultsOfThingsThatHaveFinished = [];
-        this.childInstances = [];
+//        this.childInstances = [];
         this.childUtils = [];
 
         for (var i = 0; i < this.children.length; i += 2) {
@@ -72,28 +72,28 @@ $.widget("ui.VBox", {
                 };
             })(i);
 
+            var t = this;
             var l = this.childUtils.length - 1;
             // Get around JavaScript's silly closure capture behavior (deriving
             // from weird variable scoping rules).
             // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
             (function(l) {
-                t.childInstances.push(
+                childOptions._finishedCallback = function (r) { t.myFinishedCallback(l, r); };
+                childOptions._cssPrefix = "";
+                childOptions._utils = u;
+                addSafeBindMethodPair(controllerClass);
+                t.element[controllerClass](childOptions);
+
+/*                t.childInstances.push(
                     new controllerClass(
                         d,
                         childOptions,
                         function (r) { t.myFinishedCallback(l, r); },
                         u
                     )
-                );
+                );*/
             })(l);
         }
-    },
-
-    handleKey: function(code, time) {
-        iter(this.childInstances, function (c) {
-            if (c.handleKey)
-                c.handleKey(code, time);
-        });
     },
 
     myFinishedCallback: function(index, results) {

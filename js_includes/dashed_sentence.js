@@ -137,5 +137,5 @@ $.widget("ui.DashedSentence", {
 $.ui.DashedSentence._webspr_name = "DashedSentence";
 $.ui.DashedSentence._webspr_obligatory = ["s"];
 $.ui.DashedSentence._webspr_htmlDescription = function (opts) {
-    return document.createTextNode(opts.s);
+    return $(document.createElement("div")).text(opts.s);
 }

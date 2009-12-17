@@ -339,6 +339,29 @@ function truncateHTML(html, maxLength)
     return html;
 }
 
+// Methods we add to all widgets for handling events which need to be cleaned
+// up after widget has gone but which can't be attached to this.element.
+function methodToAdd_safeBind(jqobj, ename, func) {
+    jqobj.bind(ename, func);
+    if (! this._eventsToRemove) this._eventsToRemove = [[jqobj, ename, func]];
+    else this._eventsToRemove.push([jqobj, ename, func]);
+}
+function makeMethodToAdd_destroy(origDestroyMethod) { // Call original destroy method too if there was one.
+    return function () {
+        var t = this;
+        $.each(t._eventsToRemove || [], function () {
+            this[0].unbind(this[1], this[2]);
+        });
+        if (origDestroyMethod) origDestroyMethod.call(t);
+    };
+}
+function addSafeBindMethodPair(name) {
+    if (! $.ui[name].prototype.safeBind) {
+        $.ui[name].prototype.safeBind = methodToAdd_safeBind;
+        $.ui[name].prototype.destroy = makeMethodToAdd_destroy($.ui[name].prototype.destroy);
+    }
+}
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

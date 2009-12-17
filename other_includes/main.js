@@ -50,7 +50,7 @@ function renewInner() {
     }
     inner.css('clear', "both");
     if ((! conf_showOverview) && conf_practiceItemTypes && conf_practiceItemTypes.length > 0)
-        inner.append($(document.createElement("p")).addClass("practice-box"));
+        inner.append(practiceBox = $(document.createElement("p")).addClass("practice-box"));
 }
 
 renewInner();
@@ -69,39 +69,6 @@ if (counter_override) {
         createCookie("counter_override", "", -1);
 }
 // alert(counter)
-
-var sendingResults = document.createElement("p");
-sendingResults.className = "sending-results";
-var spinSpan = document.createElement("div");
-spinSpan.appendChild(document.createTextNode(""));
-spinSpan.style.width = "1.5em";
-spinSpan.style.cssFloat = "left";
-spinSpan.style.styleFloat = "left";
-
-function setStateToSendingResults() {
-    while (sendingResults.firstChild) { // Remove all children (if any).
-        sendingResults.removeChild(sendingResults.firstChild);
-    }
-    sendingResults.appendChild(spinSpan);
-    var sendingResultsMessage = document.createElement("div");
-    sendingResultsMessage.appendChild(document.createTextNode(conf_sendingResultsMessage));
-    sendingResults.appendChild(sendingResultsMessage);
-}
-__spinSpanShouldBeSpinning__ = false;
-function setStateToResultsSentOrFailed(succeeded) {
-    __spinSpanShouldBeSpinning__ = false;
-
-    while (sendingResults.firstChild) { // Remove all children (if any).
-        sendingResults.removeChild(sendingResults.firstChild);
-    }
-    sendingResults.appendChild(document.createTextNode((succeeded ? conf_completionMessage : conf_completionErrorMessage) + " "));
-    if (! succeeded) {
-        var a = document.createElement("a");
-        a.href = "javascript:__retry__();";
-        a.appendChild(document.createTextNode("Retry"));
-        sendingResults.appendChild(a);
-    }
-}
 
 // Convert the "defaults" variable to a list of [item, hashtable] pairs.
 var ht_defaults = [];
@@ -141,7 +108,7 @@ assert(typeof(items) != "undefined", "You must define the 'items' variable.");
 assert_is_arraylike(items, "The 'items' variable must be set to an Array.");
 var listOfItemSets = [];
 var itemNumber = 0;
-iter(items, function(it) {
+$.each(items, function(_, it) {
     assert_is_arraylike(it, "Every element in the 'items' Array must be an Array.");
 
     assert(((it.length - 1) % 2) == 0, "Following the item/group specifier, each element of the 'items' array must contain an even number of elements.")
@@ -168,11 +135,11 @@ iter(items, function(it) {
         opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
-        if (controller.obligatory) {
-            assert_is_arraylike(controller.obligatory, "The 'obligatory' field must be an Array of strings.");
-            iter(controller.obligatory, function(o) {
-                assert(typeof(o) == "string", "All members of the 'obligatory' Array must be strings.");
-                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for " + controller.name);
+        if ($.ui[controller]._webspr_obligatory) {
+            assert_is_arraylike($.ui[controller]._webspr_obligatory, "The '_webspr_obligatory' field must be an Array of strings.");
+            $.each($.ui[controller]._webspr_obligatory, function(_, o) {
+                assert(typeof(o) == "string", "All members of the '_webspr_obligatory' Array must be strings.");
+                assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for " + controller);
             });
         }
 
@@ -189,7 +156,6 @@ var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
-//conf_showOverview = true;
 if (conf_showOverview) {
     var l = $(document.createElement("ol"));
     for (var i = 0; i < runningOrder.length; ++i) {
@@ -200,7 +166,7 @@ if (conf_showOverview) {
             li.append(b.append(runningOrder[i][j]));
             var hd = $.ui[runningOrder[i][j].controller]._webspr_htmlDescription ? $.ui[runningOrder[i][j].controller]._webspr_htmlDescription(runningOrder[i][j].options) : null;
 
-            if (hd) li.append(": ").append(hd);
+            if (hd) li.append(": ").append($(hd));
             sl.append(li);
         }
         l.append($(document.createElement("li")).append(sl));
@@ -275,8 +241,8 @@ var nPoints = 0;
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
-            if (runningOrder[i][j].controller.countsForProgressBar === undefined ||
-                runningOrder[i][j].controller.countsForProgressBar) {
+            if ($.ui[runningOrder[i][j].controller]._webspr_countsForProgressBar === undefined ||
+                $.ui[runningOrder[i][j].controller]._webspr_countsForProgressBar) {
                 ++nPoints;
             }
         }
@@ -363,29 +329,6 @@ function namesToIndices(results_line) {
     return na;
 }
 
-// Methods we add to all widgets for handling events which need to be cleaned
-// up after widget has gone but which can't be attached to this.element.
-// (These will get attached to widgets in a minute, using the 'addSafeBindMethodPair'
-// utility function.)
-function methodToAdd_safeBind(jqobj, ename, func) {
-    jqobj.bind(ename, func);
-    if (! this._eventsToRemove) this._eventsToRemove = [[jqobj, ename, func]];
-    else this._eventsToRemove.push([jqobj, ename, func]);
-}
-function makeMethodToAdd_destroy(origDestroyMethod) { // Call original destroy method too if there was one.
-    return function () {
-        var t = this;
-        $.each(t._eventsToRemove || [], function () {
-            this[0].unbind(this[1], this[2]);
-        });
-        if (origDestroyMethod) origDestroyMethod.call(t);
-    };
-}
-function addSafeBindMethodPair(name) {
-    $.ui[name].prototype.safeBind = methodToAdd_safeBind;
-    $.ui[name].prototype.destroy = makeMethodToAdd_destroy($.ui[name].prototype.destroy);
-}
-
 function finishedCallback(resultsLines) {
     var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
@@ -408,8 +351,8 @@ function finishedCallback(resultsLines) {
     }
 
     // Update progress bar if applicable.
-    if (currentItem.controller.countsForProgressBar === undefined ||
-        currentItem.controller.countsForProgressBar) {
+    if ($.ui[currentItem.controller]._webspr_countsForProgressBar === undefined ||
+        $.ui[currentItem.controller]._webspr_countsForProgressBar) {
         updateProgressBar();
     }
 
@@ -445,10 +388,10 @@ function finishedCallback(resultsLines) {
 //        alert(currentItem.type + ":" + conf_practiceItemTypes);
         if (list_contains(runningOrder[posInRunningOrder].type, conf_practiceItemTypes)) {
 //            alert("PB2");
-            practiceBox.replaceChild(document.createTextNode(conf_practiceMessage), practiceBox.firstChild);
+            practiceBox.text(conf_practiceMessage);
         }
         else {
-            practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
+            practiceBox.text("");
         }
     }
 
@@ -483,44 +426,44 @@ pForItem[runningOrder[0][0].controller](os);
 if (currentControllerOptions.hideProgressBar)
     hideProgressBar();
 
-/*document.onkeydown = function(e) {
-    // Record the time ASAP.
-    var time = new Date().getTime();
+var sendingResults = $(document.createElement("p")).addClass("sending-results");
+var spinSpan =
+    $(document.createElement("div"))
+    .css('width', '1.5em')
+    .css('float', 'left');
 
-    // For IE.
-    if (! e) {
-        e = window.event;
+__spinSpanShouldBeSpinning__ = false;
+function setStateToResultsSentOrFailed(succeeded) {
+    __spinSpanShouldBeSpinning__ = false;
+
+    sendingResults.empty();
+    sendingResults.append(succeeded ? conf_completionMessage : conf_completionErrorMessage + " ");
+    if (! succeeded) {
+        sendingResults.append($(document.createElement("a"))
+                              .attr('href', "javascript:__retry__();")
+                              .text("Retry"));
     }
-
-    if (currentControllerOptions._eventHandlers.handleKey) {
-        // Should return false if they keypress wasn't handled.
-        return currentControllerOptions._eventHandlers.handleKey(e.keyCode, time);
-    }
-}*/
-
+}
 function indicateThatResultsAreBeingSent()
 {
     // Clear "practice" notice if it's still up.
     if (practiceBox)
-        practiceBox.replaceChild(document.createTextNode(""), practiceBox.firstChild);
+        practiceBox.text("");
 
-    setStateToSendingResults();
-    if (inner.firstChild != sendingResults) {
-        renewInner();
-        //while (inner.firstChild)
-        //    inner.removeChild(inner.firstChild);
-        inner.appendChild(sendingResults, inner.firstChild);
-    }
+    sendingResults.empty();
+    sendingResults.append(spinSpan).append(conf_sendingResultsMessage);
 
-    var spinChars = ["\u2013", "\\", "|", "/"]
+    renewInner();
+    inner.append(sendingResults);
+
+    var spinChars = ["\u2013", "\\", "|", "/"];
     var spinCharsPos = 0
     __spinSpanShouldBeSpinning__ = true;
     function timerCallback()
     {
         if (! __spinSpanShouldBeSpinning__) { return; }
 
-        spinSpan.replaceChild(document.createTextNode(spinChars[spinCharsPos]),
-                              spinSpan.firstChild);
+        spinSpan.text(spinChars[spinCharsPos]);
         ++spinCharsPos;
         if (spinCharsPos == spinChars.length) {
             spinCharsPos = 0;
@@ -562,4 +505,3 @@ function sendResults(resultsLines, success, failure)
 }
 
 } // End of else for if (conf_showOverview).
-

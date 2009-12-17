@@ -39,5 +39,5 @@ $.widget("ui.FlashSentence", {
 $.ui.FlashSentence._webspr_name = "FlashSentence";
 $.ui.FlashSentence._webspr_obligatory = ["s"];
 $.ui.FlashSentence._webspr_htmlDescription = function (opts) {
-    return document.createTextNode(opts.s);
+    return $(document.createElement("div")).text(opts.s)[0];
 }

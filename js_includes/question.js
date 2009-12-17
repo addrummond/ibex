@@ -245,5 +245,5 @@ $.widget("ui.Question", {
 $.ui.Question._webspr_name = "Question";
 $.ui.Question._webspr_obligatory = ["as"];
 $.ui.Question._webspr_htmlDescription = function(opts) {
-    return document.createTextNode(opts.q);
+    return $(document.createElement("div")).text(opts.q || "");
 }

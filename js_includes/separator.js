@@ -54,5 +54,5 @@ $.ui.Separator._webspr_name = "Separator";
 $.ui.Separator._webspr_obligatory = [];
 $.ui.Separator._webspr_countsForProgressBar = false;
 $.ui.Separator._webspr_htmlDescription = function (opts) {
-    return document.createTextNode(opts.normalMessage);
+    return $(document.createElement("div")).text(opts.normalMessage)[0];
 }
