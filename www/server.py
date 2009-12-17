@@ -46,6 +46,8 @@ import os
 import os.path
 import cgi
 import string
+import BaseHTTPServer
+import SimpleHTTPServer
 
 PY_SCRIPT_NAME = "server.py"
 
@@ -180,7 +182,7 @@ BACKSLASH = {
     'b': u'\b', 'f': u'\f', 'n': u'\n', 'r': u'\r', 't': u'\t',
 }
 
-DEFAULT_ENCODING = "utf-8"
+DEFAULT_ENCODING = "UTF-8"
 
 def scanstring(s, end, encoding=None, _b=BACKSLASH, _m=STRINGCHUNK.match):
     if encoding is None:
@@ -479,12 +481,7 @@ if (sys.version.split(' ')[0]) >= '2.4': # File locking doesn't seem to work wel
         pass
 
 # Configuration.
-if c['SERVER_MODE'] == "paste":
-    from paste import httpserver
-elif c['SERVER_MODE'] == "cgi":
-    #import wsgiref.handlers
-    pass
-else:
+if c['SERVER_MODE'] != "paste" and c['SERVER_MODE'] != "cgi":
     logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
     sys.exit(1)
 
@@ -716,15 +713,36 @@ def create_monster_string(dir, extension, block_allow):
 
     return s.getvalue()
 
-# Not used when this module is run as a CGI process.
-STATIC_FILES = [
-    'experiment.html',
-    'overview.html',
-    'json.js',
-    'conf.js',
-    'shuffle.js',
-    'util.js',
-]
+# Create a directory for storing results (if it doesn't already exist).
+try:
+    # Create the directory.
+    if os.path.isfile(os.path.join(PWD, c['RESULT_FILES_DIR'])):
+        logger.error("'%s' is a file, so could not create results directory" % c['RESULT_FILES_DIR'])
+        sys.exit(1)
+    elif not os.path.isdir(os.path.join(PWD, c['RESULT_FILES_DIR'])):
+        os.mkdir(os.path.join(PWD, c['RESULT_FILES_DIR']))
+except os.error, IOError:
+    logger.error("Could not create results directory at %s" % os.path.join(PWD, c['RESULT_FILES_DIR']))
+    sys.exit(1)
+
+# Create a directory for storing the server state
+# (if it doesn't already exist), and initialize the counter.
+try:
+    # Create the directory.
+    if os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'])):
+        logger.error("'%s' is a file, so could not create server state directory" % c['SERVER_STATE_DIR'])
+        sys.exit(1)
+    elif not os.path.isdir(os.path.join(PWD, c['SERVER_STATE_DIR'])):
+        os.mkdir(os.path.join(PWD, c['SERVER_STATE_DIR']))
+
+    # Initialize the counter, if there isn't one already.
+    if not os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter')):
+        f = open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
+        f.write("0")
+        f.close()
+except os.error, IOError:
+    logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
+    sys.exit(1)
 
 def control(env, start_response):
     # Save the time the results were received.
@@ -752,21 +770,7 @@ def control(env, start_response):
 
     last = filter(lambda x: x != [], base.split('/'))[-1];
 
-    if last in STATIC_FILES:
-        contents = None
-        f = None
-        try:
-            try:
-                f = open(os.path.join(PWD, c['STATIC_FILES_DIR'], last))
-                contents = f.read()
-            except IOError:
-                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
-                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
-        finally:
-            if f: f.close()
-        start_response('200 OK', [('Content-Type', (last.endswith('.html') and 'text/html' or 'text/javascript') +'; charset=utf-8')])
-        return [contents]
-    elif last == PY_SCRIPT_NAME:
+    if last == PY_SCRIPT_NAME:
         qs = env.has_key('QUERY_STRING') and env['QUERY_STRING'].lstrip('?') or ''
         qs_hash = cgi.parse_qs(qs)
 
@@ -774,15 +778,15 @@ def control(env, start_response):
         if qs_hash.has_key('include'): 
             if qs_hash['include'][0] == 'js':
                 m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'])
-                start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
                 m = create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
-                start_response('200 OK', [('Content-Type', 'text/css; charset=utf-8'), ('Pragma', 'no-cache')])
+                start_response('200 OK', [('Content-Type', 'text/css; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'data':
                 m = create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'])
-                start_response('200 OK', [('Content-Type', 'text/javascript; charset=utf-8'), ('Pragma', 'no-cache')])
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'main.js':
                 contents = None
@@ -792,7 +796,7 @@ def control(env, start_response):
                         f = open(os.path.join(PWD, c['OTHER_INCLUDES_DIR'], 'main.js'))
                         contents = f.read()
                     except IOError:
-                        start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                        start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                         return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
                 finally:
                     if f: f.close()
@@ -818,16 +822,16 @@ def control(env, start_response):
             try:
                 ivalue = int(qs_hash['withsquare'][0])
             except ValueError:
-                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
-            cc_start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8'), ('Refresh', '0; url=experiment.html')],
+            cc_start_response('200 OK', [('Content-Type', 'text/html; charset=UTF-8'), ('Refresh', '0; url=experiment.html')],
                               ivalue, "counter_override")
             return []
 
         # ...if none of the above, it's some results.
         if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
-            start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+            start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
         content_length = None
@@ -838,7 +842,7 @@ def control(env, start_response):
             res = encoding_re.search(env['CONTENT_TYPE'])
             if res: content_encoding = res.group('encoding')
         except ValueError:
-            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         except IndexError:
             pass
@@ -893,59 +897,93 @@ def control(env, start_response):
                 return ["OK"]
             except ValueError: # JSON parse failed.
                 backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
-                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><1>400 Bad Request</h1></body></html>"]
             except HighLevelParseError:
                 backup_raw_post_data(header="# BAD REQUEST FROM %s\n" % user_agent)
-                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=utf-8')])
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><1>400 Bad Request</h1></body></html>"]
             except IOError:
-                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=utf-8')])
+                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
         finally:
             if rf: unlock_and_close(rf)
     else:
-        start_response('404 Not Found', [('Content-Type', 'text/html; charset=utf-8')])
+        print "NOT FOUND!\n"
+        start_response('404 Not Found', [('Content-Type', 'text/html; charset=UTF-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
 
-# Create a directory for storing results (if it doesn't already exist).
-try:
-    # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c['RESULT_FILES_DIR'])):
-        logger.error("'%s' is a file, so could not create results directory" % c['RESULT_FILES_DIR'])
-        sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c['RESULT_FILES_DIR'])):
-        os.mkdir(os.path.join(PWD, c['RESULT_FILES_DIR']))
-except os.error, IOError:
-    logger.error("Could not create results directory at %s" % os.path.join(PWD, c['RESULT_FILES_DIR']))
-    sys.exit(1)
+class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    STATIC_FILES = [
+        'experiment.html',
+        'overview.html',
+        'json.js',
+        'conf.js',
+        'shuffle.js',
+        'util.js',
+    ]
 
-# Create a directory for storing the server state
-# (if it doesn't already exist), and initialize the counter.
-try:
-    # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'])):
-        logger.error("'%s' is a file, so could not create server state directory" % c['SERVER_STATE_DIR'])
-        sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c['SERVER_STATE_DIR'])):
-        os.mkdir(os.path.join(PWD, c['SERVER_STATE_DIR']))
+    def __init__(self, request, client_address, server):
+        self.extensions_map = {
+            "html" : "text/html; charset=UTF-8",
+            "css" : "text/css",
+            "js" : "text/javascript"
+        }
 
-    # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter')):
-        f = open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
-        f.write("0")
-        f.close()
-except os.error, IOError:
-    logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
-    sys.exit(1)
+        SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
+
+    def do_GET(self):
+        last = filter(lambda x: x != [], self.path.split('/'))[-1];
+        ps = last.split('?')
+        qs = len(ps) > 1 and ps[1] or None
+        path = ps[0]
+        if path in MyHTTPRequestHandler.STATIC_FILES:
+            return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self);
+        else:
+            # Bit of a hack. The 'control' function was written for use with the
+            # paste module's simple HTTP server.
+            response_type = [None]
+            headers = [None]
+            def start_response(response_type_, headers_):
+                response_type[0] = response_type_
+                headers[0] = headers_
+            env = {
+                "REMOTE_ADDR"    : self.client_address[0], # This is a (host,port) tuple.
+                "USER_AGENT"     : self.headers.getheader("User-Agent"),
+                "REQUEST_URI"    : path,
+                "REQUEST_METHOD" : "GET",
+                "QUERY_STRING"   : qs
+            }
+
+            body = control(env, start_response)
+            assert response_type[0]
+            rts = response_type[0].split(' ')
+            try:
+                self.send_response(int(rts[0]), ' '.join(rts[1:]))
+                if headers[0]:
+                    for h in headers[0]:
+                        self.send_header(h[0], h[1])
+                self.wfile.write('\n\n')
+                for cs in body:
+                    self.wfile.write(cs)
+            finally:
+                pass
+#            except:
+#                # If we let exceptions percolate, we end up serving things as static
+#                # files which shouldn't be.
+#                pass
 
 if __name__ == "__main__":
     if COUNTER_SHOULD_BE_RESET:
         set_counter(0)
         print "Counter for latin square designs has been reset.\n"
 
-    if c['SERVER_MODE'] == "paste":
-        httpserver.serve(control, port=c['PORT'])
+    if True: #c['SERVER_MODE'] == "paste":
+#        httpserver.serve(control, port=c['PORT'])
+        server_address = ('', c['PORT'])
+        httpd = BaseHTTPServer.HTTPServer(server_address, MyHTTPRequestHandler)
+        httpd.path = c['STATIC_FILES_DIR']
+        httpd.serve_forever()
     elif c['SERVER_MODE'] == "cgi":
         #wsgiref.handlers.CGIHandler().run(control)
         env = { }
