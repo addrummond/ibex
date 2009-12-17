@@ -46,8 +46,6 @@ import os
 import os.path
 import cgi
 import string
-import BaseHTTPServer
-import SimpleHTTPServer
 
 PY_SCRIPT_NAME = "server.py"
 
@@ -481,9 +479,13 @@ if (sys.version.split(' ')[0]) >= '2.4': # File locking doesn't seem to work wel
         pass
 
 # Configuration.
-if c['SERVER_MODE'] != "paste" and c['SERVER_MODE'] != "cgi":
+if c['SERVER_MODE'] not in ["paste", "toy", "cgi"]:
     logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
     sys.exit(1)
+
+if c['SERVER_MODE'] in ["toy", "paste"]:
+    import BaseHTTPServer
+    import SimpleHTTPServer
 
 PWD = None
 if c.has_key('WEBSPR_WORKING_DIR'):
@@ -925,35 +927,48 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def __init__(self, request, client_address, server):
         self.extensions_map = {
-            "html" : "text/html; charset=UTF-8",
-            "css" : "text/css",
-            "js" : "text/javascript"
+            '' : "application/octet-stream",
+            ".html" : "text/html; charset=UTF-8",
+            ".css"  : "text/css",
+            ".js"   : "text/javascript"
         }
 
         SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
 
-    def do_GET(self):
+    def do_either(self, method_name):
         last = filter(lambda x: x != [], self.path.split('/'))[-1];
         ps = last.split('?')
         qs = len(ps) > 1 and ps[1] or None
         path = ps[0]
-        if path in MyHTTPRequestHandler.STATIC_FILES:
+        if method_name == 'GET' and path in MyHTTPRequestHandler.STATIC_FILES:
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self);
         else:
             # Bit of a hack. The 'control' function was written for use with the
-            # paste module's simple HTTP server.
+            # paste module's simple HTTP server, but SimpleHTTPServer has a different
+            # interface, so we bridge the gap here.
             response_type = [None]
             headers = [None]
             def start_response(response_type_, headers_):
                 response_type[0] = response_type_
                 headers[0] = headers_
             env = {
-                "REMOTE_ADDR"    : self.client_address[0], # This is a (host,port) tuple.
-                "USER_AGENT"     : self.headers.getheader("User-Agent"),
+                "REMOTE_ADDR"    : self.client_address[0], # self.client_address is a (host,port) tuple.
                 "REQUEST_URI"    : path,
-                "REQUEST_METHOD" : "GET",
-                "QUERY_STRING"   : qs
+                "REQUEST_METHOD" : method_name,
             }
+            if qs:
+                env['QUERY_STRING'] = qs
+            if method_name == "POST":
+                env['wsgi.input'] = self.rfile
+            cl = self.headers.getheader("Content-Length")
+            if cl:
+                env['CONTENT_LENGTH'] = cl
+            ct = self.headers.getheader("Content-Type")
+            if ct:
+                env['CONTENT_TYPE'] = ct
+            ua = self.headers.getheader("User-Agent")
+            if ua:
+                env['USER_AGENT'] = ua
 
             body = control(env, start_response)
             assert response_type[0]
@@ -966,20 +981,24 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.wfile.write('\n\n')
                 for cs in body:
                     self.wfile.write(cs)
-            finally:
-                pass
-#            except:
-#                # If we let exceptions percolate, we end up serving things as static
-#                # files which shouldn't be.
-#                pass
+            except:
+                # If we let exceptions percolate, we end up serving things as static
+                # files which shouldn't be.
+                sys.error.write("FUCK\n")
+                logger.error("Error in responding to GET/POST request for toy Python HTTP server.");
+
+    def do_GET(self):
+        self.do_either('GET')
+
+    def do_POST(self):
+        self.do_either('POST')
 
 if __name__ == "__main__":
     if COUNTER_SHOULD_BE_RESET:
         set_counter(0)
         print "Counter for latin square designs has been reset.\n"
 
-    if True: #c['SERVER_MODE'] == "paste":
-#        httpserver.serve(control, port=c['PORT'])
+    if c['SERVER_MODE'] in ["paste", "toy"]:
         server_address = ('', c['PORT'])
         httpd = BaseHTTPServer.HTTPServer(server_address, MyHTTPRequestHandler)
         httpd.path = c['STATIC_FILES_DIR']

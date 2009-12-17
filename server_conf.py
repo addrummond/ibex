@@ -9,13 +9,15 @@
 # to this path, unless you set them to absolute paths.
 WEBSPR_WORKING_DIR = "../"
 
-# Options are "paste" or "cgi" (case-sensitive).
-# If "paste", the server will run in stand-alone mode.
+# Options are "toy" or "cgi" (case-sensitive); the value "paste"
+# is equivalent to "toy" and is supported for backwards compatibility.
+
+# If "toy", the server will run in stand-alone mode.
 # If "cgi", the server will run as a CGI process.
 #
 # Note that the value of this variable can be overridden by the
 # "-m" command line option.
-SERVER_MODE = "paste"
+SERVER_MODE = "toy"
 
 # The port the server will run on if running in stand-alone
 # mode.
@@ -68,7 +70,6 @@ STATIC_FILES_DIR = "www"
 # is either the string "block" or the string "allow". The remainder
 # of the list gives the filenames of those js/css files which should
 # be allowed/blocked.
-JS_INCLUDES_LIST   = ["block"]  # Block nothing (i.e. allow everything)
+JS_INCLUDES_LIST   = ["block"]  # Block nothing (i.e. allow everything).
 CSS_INCLUDES_LIST  = ["block"]  # Ditto.
 DATA_INCLUDES_LIST = ["block"]  # Ditto.
-
