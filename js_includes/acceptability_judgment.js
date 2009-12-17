@@ -1,31 +1,35 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-AcceptabilityJudgment.name = "AcceptabilityJudgment";
-AcceptabilityJudgment.obligatory = ["s", "as"];
+$.widget("ui.AcceptabilityJudgment", {
+    init: function () {
+        this.cssPrefix = this.options._cssPrefix;
+        this.utils = this.options._utils;
+        this.finishedCallback = this.options._finishedCallback;
 
-function AcceptabilityJudgment(div, options, finishedCallback, utils) {
-    var opts = {
-        triggers:    [1],
-        children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
-                      Question, { q:              options.q,
-                                  as:             options.as,
-                                  hasCorrect:     options.hasCorrect,
-                                  presentAsScale: options.presentAsScale,
-                                  randomOrder:    options.randomOrder,
-                                  showNumbers:    options.showNumbers,
-                                  timeout:        options.timeout,
-                                  instructions:   options.instructions,
-                                  leftComment:    options.leftComment,
-                                  rightComment:   options.rightComment }]/*,
-        manipulators: [
-            [0, function(div) { div.style.fontSize = "larger"; return div; }]
-        ]*/
+        var opts = {
+            triggers:    [1],
+            children:    [FlashSentence, {s: options.s, timeout: dget(options, "timeout", null)},
+                          Question, { q:              options.q,
+                                      as:             options.as,
+                                      hasCorrect:     options.hasCorrect,
+                                      presentAsScale: options.presentAsScale,
+                                      randomOrder:    options.randomOrder,
+                                      showNumbers:    options.showNumbers,
+                                      timeout:        options.timeout,
+                                      instructions:   options.instructions,
+                                      leftComment:    options.leftComment,
+                                      rightComment:   options.rightComment }]/*,
+            manipulators: [
+                [0, function(div) { div.css('font-size', "larger"); return div; }]
+            ]*/
     };
 
-    return new VBox(div, opts, finishedCallback, utils);
+    this.element.VBox(opts);
 }
 
-AcceptabilityJudgment.htmlDescription = function (opts) {
+$.ui.widget.AcceptabilityJudgment._webspr_name = "AcceptabilityJudgment";
+$.ui.widget.AcceptabilityJudgment._webspr_obligatory = ["s", "as"];
+$.ui.widget.AcceptabilityJudgment._webspr_htmlDescription = function (opts) {
     var s = FlashSentence.htmlDescription(opts);
     var q = Question.htmlDescription(opts);
     var p = document.createElement("p");
@@ -39,5 +43,4 @@ AcceptabilityJudgment.htmlDescription = function (opts) {
     p.appendChild(b2);
     p.appendChild(document.createTextNode(opts.q));
     return p;
-}
-
+};

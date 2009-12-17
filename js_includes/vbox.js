@@ -1,105 +1,102 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-VBox.name = "VBox";
-VBox.obligatory = ["children", "triggers"]
+$.widget("ui.VBox", {
+    function _init () {
+        this.cssPrefix = this.options._cssPrefix;
+        this.utils = this.options._utils;
+        this.finishedCallback = this.options._finishedCallback;
 
-function VBox(div, options, finishedCallback, utils) {
-    this.options = options;
-    this.children = options.children;
-    this.triggers = options.triggers;
-    this.padding = dget(options, "padding", "2em");
+        this.children = this.options.children;
+        this.triggers = this.options.triggers;
+        this.padding = dget(this.options, "padding", "2em");
 
-    assert_is_arraylike(this.children, "The 'children' option of VBox must be an array");
-    assert(this.children.length % 2 == 0, "The 'children' array for VBox must contain an even number of elements");
+        assert_is_arraylike(this.children, "The 'children' option of VBox must be an array");
+        assert(this.children.length % 2 == 0, "The 'children' array for VBox must contain an even number of elements");
 
-    assert_is_arraylike(this.triggers, "The 'triggers' option of VBox must be an array");
-    assert(this.triggers.length > 0, "The 'triggers' array for VBox must be an array of length > 0");
+        assert_is_arraylike(this.triggers, "The 'triggers' option of VBox must be an array");
+        assert(this.triggers.length > 0, "The 'triggers' array for VBox must be an array of length > 0");
 
-    var t = this;
-    iter(this.triggers, function (tr) {
-        assert(typeof(tr) == "number", "The 'triggers' array for VBox must be an array of integers");
-        assert(tr >= 0 && tr < t.children.length / 2,
-               "Numbers in the 'triggers' array must be indices into the 'children' array starting from 0");
-    });
+        var t = this;
+        iter(this.triggers, function (tr) {
+            assert(typeof(tr) == "number", "The 'triggers' array for VBox must be an array of integers");
+            assert(tr >= 0 && tr < t.children.length / 2,
+                   "Numbers in the 'triggers' array must be indices into the 'children' array starting from 0");
+        });
 
-    this.indicesAndResultsOfThingsThatHaveFinished = [];
-    this.childInstances = [];
-    this.childUtils = [];
+        this.indicesAndResultsOfThingsThatHaveFinished = [];
+        this.childInstances = [];
+        this.childUtils = [];
 
-    for (var i = 0; i < this.children.length; i += 2) {
-        var controllerClass = this.children[i];
-        var childOptions = this.children[i + 1];
-        childOptions = merge_dicts(get_defaults_for(controllerClass), childOptions);
+        for (var i = 0; i < this.children.length; i += 2) {
+            var controllerClass = this.children[i];
+            var childOptions = this.children[i + 1];
+            childOptions = merge_dicts(get_defaults_for(controllerClass), childOptions);
 
-        var d = document.createElement("p");
-        d.style.clear = "both";
+            var d = $(document.createElement("p")).css('clear', 'both');
 
-        // Call a manipulator if one was supplied.
-        if (! (options.manipulators === undefined)) {
-            for (var j = 0; j < options.manipulators.length; ++j) {
-                if (options.manipulators[j][0] == (i / 2))
-                    d = options.manipulators[j][1](d);
+            // Call a manipulator if one was supplied.
+            if (! (this.options.manipulators === undefined)) {
+                for (var j = 0; j < this.options.manipulators.length; ++j) {
+                    if (this.options.manipulators[j][0] == (i / 2))
+                        d = this.options.manipulators[j][1](d);
+                }
             }
+
+            // Add padding if requested.
+            var dd = null;
+            if (this.padding && i > 0) {
+                dd = $(document.createElement("div"))
+                     .css('margin-top', this.padding)
+                     .css('margin-bottom', 0)
+                     .append(d);
+            }
+
+            // Wrap in a table if we're centering things.
+            var ddd = null;
+            if (conf_centerItems) {
+                ddd = $(document.createElement("table"))
+                      .attr('align', 'center');
+                var tr = $(document.createElement("tr"));
+                var td = $(document.createElement("td"));
+                ddd.append(tr.append(td.append(dd ? dd : d)));
+            }
+
+            // Add the actual child.
+            this.element.append(ddd ? ddd : (dd ? dd : d));    
+
+            var u = new Utils(this.utils.getValuesFromPreviousElement());
+            this.childUtils.push(u);
+            (function(i) {
+                u.setResults = function(results) {
+                    t.indicesAndResultsOfThingsThatHaveFinished.push([i, results]);
+                };
+            })(i);
+
+            var l = this.childUtils.length - 1;
+            // Get around JavaScript's silly closure capture behavior (deriving
+            // from weird variable scoping rules).
+            // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
+            (function(l) {
+                t.childInstances.push(
+                    new controllerClass(
+                        d,
+                        childOptions,
+                        function (r) { t.myFinishedCallback(l, r); },
+                        u
+                    )
+                );
+            })(l);
         }
+    },
 
-        // Add padding if requested.
-        var dd = null;
-        if (this.padding && i > 0) {
-            dd = document.createElement("div");
-            dd.style.marginTop = this.padding;
-            dd.style.marginBottom = 0;
-            dd.appendChild(d);
-        }
-
-        // Wrap in a table if we're centering things.
-        var ddd = null;
-        if (conf_centerItems) {
-            ddd = document.createElement("table");
-            ddd.align = "center";
-            var tb = document.createElement("tbody");
-            var tr = document.createElement("tr");
-            var td = document.createElement("td");
-            ddd.appendChild(tb);
-            tb.appendChild(tr);
-            tr.appendChild(td);
-            td.appendChild(dd ? dd : d);
-        }
-
-        // Add the actual child.
-        div.appendChild(ddd ? ddd : (dd ? dd : d));    
-
-        var u = new Utils(utils.getValuesFromPreviousElement());
-        this.childUtils.push(u);
-        (function(i) {
-            u.setResults = function(results) {
-                t.indicesAndResultsOfThingsThatHaveFinished.push([i, results]);
-            };
-        })(i);
-
-        var l = this.childUtils.length - 1;
-        // Get around JavaScript's silly closure capture behavior (deriving
-        // from weird variable scoping rules).
-        // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
-        (function(l) {
-            t.childInstances.push(
-                new controllerClass(
-                    d,
-                    childOptions,
-                    function (r) { t.myFinishedCallback(l, r); },
-                    u
-                )
-            );
-        })(l);
-    }
-
-    this.handleKey = function(code, time) {
+    handleKey: function(code, time) {
         iter(this.childInstances, function (c) {
             if (c.handleKey)
                 c.handleKey(code, time);
         });
-    }
+    },
 
-    this.myFinishedCallback = function(index, results) {
+    myFinishedCallback: function(index, results) {
         this.childUtils[index].gc();
         this.indicesAndResultsOfThingsThatHaveFinished.push([index, results]);
 
@@ -122,13 +119,13 @@ function VBox(div, options, finishedCallback, utils) {
             // Merge values for next element.
             var merged = merge_list_of_dicts(map(function (x) { return x.valuesForNextElement; },
                                                  this.childUtils));
-            utils.valuesForNextElement = merged;
+            this.utils.valuesForNextElement = merged;
 
-            finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
+            this.finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
-    }
+    },
 
-    this.concatResults = function(iar) {
+    concatResults: function(iar) {
         iar = iar.sort(function(x, y) { return x[0] - y[0]; });
         var res = [];
         for (var i = 0; i < iar.length; ++i) {
@@ -141,4 +138,7 @@ function VBox(div, options, finishedCallback, utils) {
         }
         return res;
     }
-}
+});
+
+$.ui.widget.VBox._webspr_name = "VBox";
+$.ui.widget.VBox._webspr_obligatory = ["children", "triggers"];

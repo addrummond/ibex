@@ -1,94 +1,103 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-Message.name = "Message";
-Message.obligatory = ["html"];
-Message.countsForProgressBar = false;
+$.widget("ui.Message", {
+    _init: function () {
+        this.cssPrefix = this.options._cssPrefix;
+        this.utils = this.options._utils;
+        this.finishedCallback = this.options._finishedCallback;
 
-function Message(div, options, finishedCallback, utils) {
-    this.div = div;
-    this.options = options;
-    this.hideProgressBar = dget(options, "hideProgressBar", true);
+        this.hideProgressBar = dget(this.options, "hideProgressBar", true);
 
-    this.html = options.html;
-    div.className = "message";
-    //div.innerHTML = this.html;
-    div.appendChild(htmlCodeToDOM(this.html));
+        this.html = this.options.html;
+        this.element.addClass(this.cssPrefix + "message");
+        this.element.append(htmlCodeToDOM(this.html));
 
-    // Bit of copy/pasting from 'Separator' here.
-    this.transfer = dget(options, "transfer", "click");
-    assert(this.transfer == "click" || this.transfer == "keypress" || typeof(this.transfer) == "number",
-           "Value of 'transfer' option of Message must either be the string 'click' or a number");
+        // Bit of copy/pasting from 'Separator' here.
+        this.transfer = dget(this.options, "transfer", "click");
+        assert(this.transfer == "click" || this.transfer == "keypress" || typeof(this.transfer) == "number",
+               "Value of 'transfer' option of Message must either be the string 'click' or a number");
 
-    if (this.transfer == "click") {
-        this.continueMessage = dget(options, "continueMessage", "Click here to continue.");
-        this.consentRequired = dget(options, "consentRequired", false);
-        this.consentMessage = dget(options, "consentMessage", "I have read the above and agree to do the experiment.");
-        this.consentErrorMessage = dget(options, "consentErrorMessage", "You must consent before continuing.");
+        if (this.transfer == "click") {
+            this.continueMessage = dget(this.options, "continueMessage", "Click here to continue.");
+            this.consentRequired = dget(this.options, "consentRequired", false);
+            this.consentMessage = dget(this.options, "consentMessage", "I have read the above and agree to do the experiment.");
+            this.consentErrorMessage = dget(this.options, "consentErrorMessage", "You must consent before continuing.");
 
-        // Add the consent checkbox if necessary.
-        var checkbox = null;
-        if (this.consentRequired) {
-            var names = { };
-            var dom = jsHTML(
-                ["form",
-                 [["table", {style: "border: none; padding: none; margin: none;"}],
-                  ["tbody",
-                   ["tr",
-                    [["td", {style: "border: none; padding-left: 0; margin-left: 0;"}], [["input:checkbox", {type: "checkbox"}]]],
-                    [["td:message", {style: "border: none; margin-left: 0; padding-left: 1em;"}], this.consentMessage]
-                ]]]],
-                names
-            );
-            checkbox = names.checkbox;
-            this.div.appendChild(dom);
-            // Allow clicking on the message as well as on the checkbox itself.
-            names.message.onclick = function () {
-                // This is more robust that names.checkbox.checked = ! names.checkbox.checked
-                if (names.checkbox.checked)
-                    names.checkbox.checked = false;
-                else
-                    names.checkbox.checked = true;
+            // Add the consent checkbox if necessary.
+            var checkbox = null;
+            if (this.consentRequired) {
+                var names = { };
+                var checkbox;
+                var message;
+                var dom =
+                    $(document.createElement("form"))
+                    .append($(document.createElement("table"))
+                            .css('border', 'none').css('padding', 0).css('margin', 0)
+                            .append($(document.createElement("tr"))
+                                    .append($(document.createElement("td"))
+                                            .css('border', 0).css('padding-left', 0).css('margin-left', 0)
+                                            .append(checkbox = $(document.createElement("input"))
+                                                    .attr('type', 'checkbox')))
+                                    .append(message = $(document.createElement("td"))
+                                            .css('border', 0).css('margin-left', 0).css('padding-left', 0)
+                                            .append(this.consentMessage))));
+
+                this.element.append(dom);
+                // Allow clicking on the message as well as on the checkbox itself.
+                message.click(function () {
+                    // This is more robust that names.checkbox.checked = ! names.checkbox.checked
+                    if (checkbox.checked)
+                        checkbox.checked = false;
+                    else
+                        checkbox.checked = true;
+                });
+                // Change cursor to pointer when hovering over the message (have to use JS because
+                // IE doesn't support :hover for anything other than links).
+                message.mouseover(function () {
+                    message.style.cursor = "default";
+                });
             }
-            // Change cursor to pointer when hovering over the message (have to use JS because
-            // IE doesn't support :hover for anything other than links).
-            names.message.onmouseover = function () {
-                names.message.style.cursor = "default";
-            }
+
+            var t = this;
+            // Get a proper lexical scope for the checkbox element so we can capture it in a closure.
+            // ALEX: Looking at this again, I don't see why it's necessary to create a local scope here
+            // but I am leaving it in as I may be missing something and it won't do any harm.
+            (function (checkbox) {
+                this.element.append(
+                    $(document.createElement("p"))
+                    .css('clear', 'left')
+                    .append($(document.createElement("a"))
+                            .attr('href', '')
+                            .addClass(this.cssPrefix + 'continue-link')
+                            .text("\u2192 " + t.continueMessage)
+                            .click(function () {
+                                if ((! checkbox) || checkbox.attr('checked'))
+                                    t.finishedCallback();
+                                else
+                                    alert(t.consentErrorMessage);
+                                return false;
+                            }))
+                );
+            })(checkbox);
         }
-
-        var t = this;
-        // Get a proper lexical scope for the checkbox element so we can capture it in a closure.
-        (function (checkbox) {
-            var m = document.createElement("p");
-            m.style.clear = "left";
-            var a = document.createElement("a");
-            a.href = "";
-            a.className = "continue-link";
-            a.onclick = function() {
-                if ((! checkbox) || checkbox.checked)
-                    finishedCallback();
-                else
-                    alert(t.consentErrorMessage); 
+        else if (this.transfer == "keypress") {
+            var t = this;
+            this.options._eventHandlers.handleKey = function(code, time) {
+                t.finishedCallback(null);
                 return false;
             }
-            a.appendChild(document.createTextNode("\u2192 " + t.continueMessage));
-            m.appendChild(a);
-            div.appendChild(m);
-        })(checkbox);
-    }
-    else if (this.transfer == "keypress") {
-        this.handleKey = function(code, time) {
-            finishedCallback(null);
-            return false;
+        }
+        else {
+            assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
+            utils.setTimeout(this.finishedCallback, this.transfer);
         }
     }
-    else {
-        assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
-        utils.setTimeout(finishedCallback, this.transfer);
-    }
-}
+});
 
-Message.htmlDescription = function (opts) {
+$.ui.widget.Message._webspr_name = "Message";
+$.ui.widget.Message._webspr_obligatory = ["html"];
+$.ui.widget.Message._webspr_countsForProgressBar = false;
+$.ui.widget.Message._webspr_htmlDescription = function (opts) {
     var d = htmlCodeToDOM(opts.html);
     return truncateHTML(d, 100);
-}
+};
