@@ -52,6 +52,7 @@ $.widget("ui.Question", {
         this.instructions = dget(this.options, "instructions");
         this.leftComment = dget(this.options, "leftComment");
         this.rightComment = dget(this.options, "rightComment");
+        this.autoFirstChar = dget(this.options, "autoFirstChar", false);
 
         if (! (this.hasCorrect === false))
             assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
@@ -209,7 +210,7 @@ $.widget("ui.Question", {
                 for (var i = 0; i < t.answers.length; ++i) {
                     var ans = null;
                     if (typeof(t.answers[i]) == "string") {
-                        if (code == t.answers[i].toUpperCase().charCodeAt(0))
+                        if (t.autoFirstChar && code == t.answers[i].toUpperCase().charCodeAt(0))
                             ans = t.answers[i];
                     }
                     else {

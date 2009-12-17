@@ -14,6 +14,7 @@ $.widget("ui.AcceptabilityJudgment", {
                                         as:             this.options.as,
                                         hasCorrect:     this.options.hasCorrect,
                                         presentAsScale: this.options.presentAsScale,
+                                        autoFirstChar:  this.options.presentAsScale ? true : false,
                                         randomOrder:    this.options.randomOrder,
                                         showNumbers:    this.options.showNumbers,
                                         timeout:        this.options.timeout,
