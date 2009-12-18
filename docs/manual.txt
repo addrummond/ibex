@@ -1,13 +1,14 @@
 =Versions=
-This documentation covers Webspr 0.2.7. The 0.1.x
-versions of Webspr come with a README containing full documentation.  The
+This documentation covers 0.3. The 0.1.x
+versions of Webspr come with a README containing full documentation.
+0.2.x versions are documented in another page on the wiki.
+The
 latest version of this document can be found at
-http://code.google.com/p/webspr/wiki/Documentation.
+http://code.google.com/p/webspr/wiki/Documentation_0.3.
 See the end of this document for the changelog.
 
 =Requirements=
-    * Python >= 2.3.
-    * The `paste` module for Python if you want to run the stand-alone server.
+    * Python >= 2.3. (Python 3000 not currently supported.)
 
 =Introduction=
 Webspr allows you to run various kinds of psycholinguistic experiment online.
@@ -17,47 +18,46 @@ uses !JavaScript and HTML only, and doesn't require the use of plugins such as
 Java or Flash.
 
 =Setting up the server=
-There are two ways of running the server: either as a stand-alone HTTP server
+There are two ways of running the server: either using the stand-alone toy HTTP server,
 or as a CGI process. By default, the server runs in stand-alone mode. To start
 it, change to the `www` directory and execute server.py:
 {{{
     python server.py
 }}}
-This will start the server on port 3000 by default (so you can find the
-experiment at http://localhost:3000/experiment.html).
-
-*Note:* you will need to
-have the `paste` module installed for Python in order for stand-alone mode to
-work (see http://pythonpaste.org). The CGI mode requires only modules that come
-with the standard Python 2.3/2.4/2.5 distribution.
+This will start the server on port 3000 by default (so the
+experiment will be at http://localhost:3000/experiment.html).
 
 The stand-alone server is limited to serving files relating to Webspr, so it is
 unlikely to be useful for real work (unless you hide it behind a proxy).
 However, it is useful for testing experimental designs without setting up a
 real HTTP server, and for running experiments offline.
 
-The server can be configured by editing `server_conf.py`. Each of the options
-is commented. Change the `SERVER_MODE` variable to determine whether the server
-runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to
-"cgi", `server.py` will work as a standard CGI program; when it is set to
-"paste", the server will run in stand-alone mode. You can change the value of
-`PORT` to determine the port the server will listen on when operating in
-stand-alone mode. The `-m` and `-p` command-line options can also be used to
-set the server mode and port respectively. These options override those set in
-`server_conf.py`.
+The server can be configured by editing `server_conf.py`. Each of the
+options is commented. Change the `SERVER_MODE` variable to determine
+whether the server runs in stand-alone mode or as a CGI
+application. When `SERVER_MODE` is set to "cgi", `server.py` will work
+as a standard CGI program; when it is set to "toy", the server will
+run in stand-alone mode. (The value "paste" has the same effect as
+"toy", for backwards compatibility with 0.2.x version.) The value of
+the `PORT` variable determines the port the server will listen on when
+operating in stand-alone mode. As an alternative to editing the
+configuration file, the `-m` and `-p` command-line options can also be
+used to set the server mode and port respectively. Command-line options
+override those set in `server_conf.py`.
 
-If you are running the server as a CGI application, make sure that the
-web server you are using can serve up `experiment.html` as a static file. All
-dynamic requests go through `server.py`, so as long as `experiment.html` can be
-accessed, and the server recognizes `server.py` as a CGI application,
-everything should be fine. The "Step-by-step CGI" section below goes through
-the process of setting up webspr as a CGI app in detail.
+If running the server as a CGI application, make sure that the web
+server can serve up `experiment.html`, and the other files in the
+`www` dir, as static files. All dynamic requests go through
+`server.py`, so as long as the files in `www` can be accessed, and the
+server recognizes `server.py` as a CGI application, everything should
+work. The "Step-by-step CGI" section below goes through the process
+of setting up webspr as a CGI app.
 
-The directories `js_includes`, `data_includes` and `css_includes` contain
-!JavaScript (the first two) and CSS (the last one) files required for
-particular kinds of experiment. When an HTTP request is made for
-`server.py?include=js`, `server.py?include=data` or `server.py?include=css`,
-the server concatenates all the files in the specified directory and serves up
+The directories `js_includes`, `data_includes` and `css_includes`
+contain !JavaScript and CSS files required for particular kinds of
+experiment. When an HTTP request is made for `server.py?include=js`,
+`server.py?include=data` or `server.py?include=css`, the server
+concatenates all the files in the specified directory and serves up
 the result. Your data file(s) will live in `data_includes`.
 
 The server stores some state in the `server_state` directory. This
@@ -68,23 +68,25 @@ directory just contains the counter used to alternate latin square
 designs (see "Latin Square Designs" section below). This counter can
 be reset on server startup using the `-r` option.
 
-The server logs messages in the file `server.log`. The default is to store all
-files in the same directory as `server.py` (i.e. logs, results, the
-`server_state` directory, etc.), but the working directory of the server can be
-modified by setting the variable `WEBSPR_WORKING_DIR` in `server_conf.py`. You
-can also set the environment variable of the same name.  (The value of the
-environment variable overrides the value of the variable in `server_conf.py`.)
+The server logs messages in the file `server.log`. The default is to
+store all files in the same directory as `server.py` (i.e. logs,
+results, the `server_state` directory, etc.), but the working
+directory of the server can be modified by setting the variable
+`WEBSPR_WORKING_DIR` in `server_conf.py`. You can also set the
+environment variable of the same name.  The value of this environment
+variable overrides the value of the variable in `server_conf.py`.
 
-On Linux/Unix/OS X, the server uses file locking to ensure that the results
-file and server state remain consistent. Currently, it does not do so on
-Windows, so there is a theoretical possibility of the server state or the results
-being corrupted if you run the server in a Windows environment (but unless you
-have very high traffic, it's purely theoretical).
+On Linux/Unix/OS X, the server uses file locking to ensure that the
+results file and server state remain consistent. Currently, it does
+not do so on Windows, so there is a theoretical possibility of the
+server state or the results being corrupted if the server is deployed
+in a Windows environment (but unless there is very high traffic, it's
+purely theoretical).
 
-The stand-alone server has been tested on Windows and OS X (but will almost
-certainly work on any system with Python 2.3/2.4/2.5, so long as the `paste` module
-is installed). The CGI server has been tested on OS X and Linux using the
-lighttpd web server in both cases.
+The stand-alone server has been tested on Windows and OS X (but will
+almost certainly work on any system with Python 2.3/2.4/2.5).  The CGI
+server has been tested on OS X and Linux using the lighttpd web server
+in both cases.
 
 ==Step-by-step CGI==
 This subsection describes how to set up webspr as a CGI application from
@@ -892,37 +894,11 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes betwen 0.2.7 (current version) and 0.2.6:
-    * Server now attempts to do the Right Thing with unicode. Earlier versions would occasionally fail to work when the server was running on Windows due to crufty unicode issues. This should now be fixed.
-    * `FlashSentence`, `DashedSentence` and `Question` controllers now consistently store questions/sentences in the results file in URL-encoded format.
-    * Cleaned up example data file a little.
-    * Fixed bug where numbers for numbered answers to comprehension questions were not displayed in IE <= 6.
-    * Minor CSS fixes.
+Changes between 0.3-beta (current version) and 0.2.7:
+    * !JavaScript code now uses jQuery. Controllers are jQuery.ui widgets.
+    * (TODO) CSS files in css_includes now modified to ensure that there are no CSS namespace clashes between different widgets.
+    * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
+    * Support for IE 5.5 dropped (jQuery does not support IE 5.5).
+    * Some tweaking of the `Question` controller.
+    * (TODO) Modified terminology used in 0.2.x documentation ("items", "groups", etc.) to be less confusing and more consistent with ordinary usage.
 
-Changes between 0.2.6 and 0.2.5:
-    * Fixed bug which caused sentences not be be stored in results file under some circumstances.
-
-Changes between 0.2.5 and 0.2.4:
-    * Option to store whole sentences in results file for !DashedSentence and !FlashSentence controllers instead of MD5 hashes (this is now the default).
-    * Latin square can now be selected in the URL (".../server.py?withsquare=XXXX"); this sets the counter to XXXX and then redirects to ".../experiment.html". Selecting latin squares in this way does not alter the master counter stored on the server.
-
-Changes between 0.2.4 and 0.2.3:
-    * Bug fixes in code for processing structured HTML (see "HTML Code" section above).
-    * Groups in Latin Square designs are no longer required to have equal numbers of sentences (though enforcement of this requirement can still be turned on by setting an option).
-    * Minor usability improvements for consent checkboxes (can now click text next to checkbox as well as checkbox itself).
-
-Changes between 0.2.3 and 0.2.2:
-    * Add option to use "click here to continue" as well as "press any key to continue" in `Message` controller.
-    * Add option for consent checkboxes to `Message` controller.
-    * CGI server now works on Python 2.3 (previously required Python2.5, contrary to documentation, which incorrectly stated that it would run on Python >= 2.4).
-    * Improve wording in some parts of this manual.
-
-Changes between 0.2.2 and 0.2.1:
-    * Better algorithm for commenting results in results files.
-    * `FlashSentence` controller now adds a line with the MD5 of the sentence to the results file whether or not it finishes. (In practice, this means that sentence MD5s are stored when using the `Question` controller.)
-    * `DashedSentence` controller now stores words as well as word numbers in results file when operating in "self-paced reading" mode.
-
-Changes between 0.2.1 and 0.2:
-
-    * Fix error in documentation for `FlashSentence` controller.
-    * Fix bug that caused results to be recorded improperly under some circumstances.
