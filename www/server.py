@@ -414,27 +414,48 @@ def nice_time(t):
 # in the selectors).
 def css_parse(css):
     KINDS_CHARS = "#."
+    OPS_CHARS = "+>"
 
-    state = "initial"
+    state = "selector"
     prev_char = None
     precomment_return_to_state = None
-    current_selectors = None # Of the form [["tagname", "#/./whatever", "blah"]] (where "blah" includes : whatever unparsed).
+    current_selectors = []   # Of the form [["tagname", "#/./whatever", "blah"]] (where "blah" includes : whatever unparsed).
                              # Empty string is used to indicate that something (e.g. tag name) is missing.
                              # Note that the empty string counts as a false value in Python conditionals.
     current_selector_tagname = None
     current_selector_kind = None
     current_selector_rest = None
+    current_op = None
     current_body = None
     definitions = []
-    for c in css:
-#        sys.stderr.write(c);
-        if state is "initial":
-            if c == "/":
-                precomment_return_to_state = "initial"
+    i = 0
+    while i < len(css):
+        c = css[i]
+
+        if state is "selector":
+            if c.isspace():
+                pass
+            elif c == "/":
+                precomment_state = "selector"
                 state = "precomment"
-            elif c.isalnum() or c == "-" or c in KINDS_CHARS:
-                current_selectors = []
-                state = "selector"
+            elif c == "{":
+                current_body = StringIO.StringIO()
+                state = "body"
+            elif c in KINDS_CHARS:
+                current_selector_tagname = None
+                current_selector_kind = c
+                current_selector_rest = StringIO.StringIO()
+                state = "selector_rest"
+            elif c in OPS_CHARS:
+                current_op = StringIO.StringIO()
+                current_op.write(c)
+                state = "operator"
+            elif c.isalnum() or c == "-":
+                current_selector_tagname = StringIO.StringIO()
+                current_selector_tagname.write(c)
+                state = "selector_tagname"
+            else:
+                assert False
         elif state is "precomment":
             if c == "*":
                 state = "comment"
@@ -446,37 +467,45 @@ def css_parse(css):
         elif state is "preclose_comment":
             if c == "/":
                 state = precomment_return_to_state
-        elif state is "waiting_for_selector":
-            if c.isspace():
-                pass
-            elif c.isalnum() or c =="-" or c in KINDS_CHARS:
-                state = "selector"
-            elif c == "{":
-                current_body = StringIO.StringIO()
-                state = "body"
-            elif c == "/":
-                precomment_return_to_state = "waiting_for_selector"
-                state = "precomment"
-        elif state is "selector":
-            if prev_char in KINDS_CHARS:
-                current_selector_tagname = None
-                current_selector_kind = prev_char
-                current_selector_rest = StringIO.StringIO()
-                current_selector_rest.write(c)
-                state = "selector_rest"
-            elif prev_char.isalnum() or prev_char == "-":
-                current_selector_tagname = StringIO.StringIO()
-                current_selector_tagname.write(prev_char + c)
-                state = "selector_tagname"
+        elif state is "operator":
+            # Special handling of comments since they separate operators (we don't
+            # want to go back to this state, but rather to the "selector" state).
+            if c == "/":
+                state = "operator_comment"
+                current_selectors.append(current_op.getvalue())
+            elif c in OPS_CHARS:
+                current_op.write(c)
             else:
-                assert False
+                current_selectors.append(current_op.getvalue())
+                i -= 1 # IMPORTANT IMPORTANT IMPORTANT
+                state = "selector"
+        elif state is "operator_comment":
+            if c == "*":
+                current_selectors.append(current_op.getvalue())
+                precomment_return_to_state = "selector"
+                state = "precomment"
+            else:
+                current_op.write(c) # We'll allow '/' chars in the middle of operators -- this is a permissive parser.
+                state = "operator"
         elif state is "selector_tagname":
-            if c.isalnum() or c in ":-":
+            if c == "/":
+                current_selectors.append([current_selector_tagname.getvalue(), '', ''])
+                precomment_return_to_state = "selector"
+                state = "precomment"
+            elif c.isalnum() or c in ":-":
                 current_selector_tagname.write(c)
             elif c == "{":
                 selector_kind = None
                 current_body = StringIO.StringIO()
                 state = "body"
+            elif c in OPS_CHARS:
+                current_selectors.append([current_selector_tagname.getvalue(), '', ''])
+                current_op = StringIO.StringIO()
+                current_op.write(c)
+                state = "operator"
+            elif c.isspace():
+                current_selectors.append([current_selector_tagname.getvalue(), '', ''])
+                state = "selector"
             else:
                 current_selector_kind = (c in KINDS_CHARS and (c,) or (None,))[0]
                 current_selector_rest = StringIO.StringIO()
@@ -491,15 +520,33 @@ def css_parse(css):
                     (current_selector_rest and (current_selector_rest.getvalue(),) or ("",))[0]
                 ])
                 if c.isspace():
-                    state = "waiting_for_selector"
+                    state = "selector"
+                elif c == "/":
+                    state = "precomment"
+                    precomment_return_to_state = "selector"
+                elif c in OPS_CHARS:
+                    current_op = StringIO.StringIO()
+                    current_op.write(c)
+                    state = "operator"
                 else: #elif c == "{": # Being lax here because we don't want this parser to ever fail.
                     current_body = StringIO.StringIO()
                     state = "body"
         elif state is "body":
             if c == "}":
                 definitions.append((current_selectors, current_body.getvalue()))
-                state = "initial"
-            if c in "\"'":
+
+                current_selectors = []
+                current_selector_tagname = None
+                current_selector_kind = None
+                current_selector_rest = None
+                current_op = None
+                current_body = None
+
+                state = "selector"
+            elif c == "/": # We effectively strip comments out of the body.
+                precomment_return_to_state = "body"
+                state = "precomment"
+            elif c in "\"'":
                 current_body.write(c)
                 quote_char = c
                 state = "body_instring"
@@ -509,7 +556,10 @@ def css_parse(css):
             current_body.write(c)
             if c == quote_char and prev_char != "\\":
                 state = "body"
+        else:
+            assert False
 
+        i += 1
         prev_char = c
 
     return definitions
@@ -517,14 +567,25 @@ def css_parse(css):
 def css_add_namespace(css_definitions, name):
     for d in css_definitions:
         for sel in d[0]:
-            if sel[2]:
+            if type(sel) is type([]) and sel[2]:
                 sel[2] = name + sel[2]
 
 def css_spit_out(css_definitions, ofile):
     for d in css_definitions:
         for sel in d[0]:
-            ofile.write("%s%s%s " % (sel[0], sel[1], sel[2]))
+            if type(sel) is type(""): # It's an operator (e.g. '>')
+                ofile.write(" %s " % sel)
+            else:
+                ofile.write("%s%s%s " % (sel[0], sel[1], sel[2]))
         ofile.write("{%s}\n" % d[1])
+
+# TEST CODE
+#defs = css_parse("foo/**/>#amp/**/gob>++>dd/**/ { ./*.. }*/} foo { ... } amp { 56 }")
+#defs = css_parse("a { b} c { d} ")
+#print defs
+#css_add_namespace(defs, "ns-")
+#css_spit_out(defs, sys.stdout)
+#sys.exit(0)
             
 
 #
