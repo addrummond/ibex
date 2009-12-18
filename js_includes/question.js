@@ -13,7 +13,7 @@ $.widget("ui.Question", {
         this.isOldIE = false;
         /*@cc_on @if (@_jscript_version <= 5.5) this.isOldIE = true; @end @*/
         // With IE <= 6 we have to pad lists differently.
-        this.isIE6OrLess = true;
+        this.isIE6OrLess = false;
         /*@cc_on @if (@_jscript_version <= 5.6) this.isIE6OrLess = true; @end @*/
         /*@cc_on @if (@_jscript_version == 5.7) if (! window.XMLHttpRequest) this.isIE6OrLess = true; @end @*/
 
