@@ -747,7 +747,6 @@ except os.error, IOError:
     sys.exit(1)
 
 def control(env, start_response):
-    print env
     # Save the time the results were received.
     thetime = time_module.time()
 
@@ -916,7 +915,6 @@ def control(env, start_response):
         finally:
             if rf: unlock_and_close(rf)
     else:
-        print "NOT FOUND!\n"
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=UTF-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
 
@@ -959,7 +957,6 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             def start_response(response_type_, headers_):
                 response_type[0] = response_type_
                 headers[0] = headers_
-            print "PATH!:", path, "\n\n"
             env = {
                 "REMOTE_ADDR"    : self.client_address[0], # self.client_address is a (host,port) tuple.
                 "REQUEST_URI"    : path,
