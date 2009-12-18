@@ -407,6 +407,125 @@ except Exception, e:
 def nice_time(t):
     return time_module.strftime(u"%a, %d-%b-%Y %H:%M:%S", time_module.gmtime(t))
 
+#
+# CSS namespaceifier.
+#
+# This function performs a partial parse of a CSS file (we're only interested
+# in the selectors).
+def css_parse(css):
+    KINDS_CHARS = "#."
+
+    state = "initial"
+    prev_char = None
+    precomment_return_to_state = None
+    current_selectors = None # Of the form [["tagname", "#/./whatever", "blah"]] (where "blah" includes : whatever unparsed).
+                             # Empty string is used to indicate that something (e.g. tag name) is missing.
+                             # Note that the empty string counts as a false value in Python conditionals.
+    current_selector_tagname = None
+    current_selector_kind = None
+    current_selector_rest = None
+    current_body = None
+    definitions = []
+    for c in css:
+#        sys.stderr.write(c);
+        if state is "initial":
+            if c == "/":
+                precomment_return_to_state = "initial"
+                state = "precomment"
+            elif c.isalnum() or c == "-" or c in KINDS_CHARS:
+                current_selectors = []
+                state = "selector"
+        elif state is "precomment":
+            if c == "*":
+                state = "comment"
+            else:
+                state = precomment_return_to_state
+        elif state is "comment":
+            if c == "*":
+                state = "preclose_comment"
+        elif state is "preclose_comment":
+            if c == "/":
+                state = precomment_return_to_state
+        elif state is "waiting_for_selector":
+            if c.isspace():
+                pass
+            elif c.isalnum() or c =="-" or c in KINDS_CHARS:
+                state = "selector"
+            elif c == "{":
+                current_body = StringIO.StringIO()
+                state = "body"
+            elif c == "/":
+                precomment_return_to_state = "waiting_for_selector"
+                state = "precomment"
+        elif state is "selector":
+            if prev_char in KINDS_CHARS:
+                current_selector_tagname = None
+                current_selector_kind = prev_char
+                current_selector_rest = StringIO.StringIO()
+                current_selector_rest.write(c)
+                state = "selector_rest"
+            elif prev_char.isalnum() or prev_char == "-":
+                current_selector_tagname = StringIO.StringIO()
+                current_selector_tagname.write(prev_char + c)
+                state = "selector_tagname"
+            else:
+                assert False
+        elif state is "selector_tagname":
+            if c.isalnum() or c in ":-":
+                current_selector_tagname.write(c)
+            elif c == "{":
+                selector_kind = None
+                current_body = StringIO.StringIO()
+                state = "body"
+            else:
+                current_selector_kind = (c in KINDS_CHARS and (c,) or (None,))[0]
+                current_selector_rest = StringIO.StringIO()
+                state = "selector_rest"
+        elif state is "selector_rest":
+            if c.isalnum() or c in ":-":
+                current_selector_rest.write(c)
+            else:
+                current_selectors.append([
+                    (current_selector_tagname and (current_selector_tagname.getvalue(),) or ("",))[0],
+                    current_selector_kind or "",
+                    (current_selector_rest and (current_selector_rest.getvalue(),) or ("",))[0]
+                ])
+                if c.isspace():
+                    state = "waiting_for_selector"
+                else: #elif c == "{": # Being lax here because we don't want this parser to ever fail.
+                    current_body = StringIO.StringIO()
+                    state = "body"
+        elif state is "body":
+            if c == "}":
+                definitions.append((current_selectors, current_body.getvalue()))
+                state = "initial"
+            if c in "\"'":
+                current_body.write(c)
+                quote_char = c
+                state = "body_instring"
+            else:
+                current_body.write(c)
+        elif state is "body_instring":
+            current_body.write(c)
+            if c == quote_char and prev_char != "\\":
+                state = "body"
+
+        prev_char = c
+
+    return definitions
+
+def css_add_namespace(css_definitions, name):
+    for d in css_definitions:
+        for sel in d[0]:
+            if sel[2]:
+                sel[2] = name + sel[2]
+
+def css_spit_out(css_definitions, ofile):
+    for d in css_definitions:
+        for sel in d[0]:
+            ofile.write("%s%s%s " % (sel[0], sel[1], sel[2]))
+        ofile.write("{%s}\n" % d[1])
+            
 
 #
 # Logging and configuration variables.
@@ -682,7 +801,7 @@ def counter_cookie_header(c, cookiename):
         (cookiename, c)
     )
 
-def create_monster_string(dir, extension, block_allow):
+def create_monster_string(dir, extension, block_allow, manipulator=None):
     filenames = []
     try:
         ds = os.listdir(dir)
@@ -704,7 +823,11 @@ def create_monster_string(dir, extension, block_allow):
         try:
             for fn in filenames:
                 f = open(fn)
-                s.write(f.read())
+                if not manipulator:
+                    s.write(f.read())
+                else:
+                    content = f.read()
+                    newcontent = manipulator(os.path.split(fn)[1], content, s)
                 s.write('\n\n')
                 f.close()
         except Exception, e:
@@ -714,6 +837,17 @@ def create_monster_string(dir, extension, block_allow):
         if f: f.close()
 
     return s.getvalue()
+
+def css_create_monster_string(dir, extension, block_allow):
+    def manipulator (filename, content, ofile):
+        if filename.startswith("global_"):
+            ofile.write(content)
+        else:
+            parsed = css_parse(content)
+            name = filename.split('.')[0] + '-'
+            css_add_namespace(parsed, name)
+            css_spit_out(parsed, ofile)
+    return create_monster_string(dir, extension, block_allow, manipulator)
 
 # Create a directory for storing results (if it doesn't already exist).
 try:
@@ -787,7 +921,7 @@ def control(env, start_response):
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
-                m = create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
+                m = css_create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
                 start_response('200 OK', [('Content-Type', 'text/css; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'data':

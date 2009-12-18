@@ -388,7 +388,7 @@ function finishedCallback(resultsLines) {
     var os = currentItem.options;
     os._finishedCallback = finishedCallback;
     os._utils = currentUtilsInstance;
-    os._cssPrefix = "";
+    os._cssPrefix = currentItem.controller + "-";
     os._controllerDefaults = ht_defaults;
     os._utilsClass = Utils;
     currentControllerOptions = os;
@@ -407,7 +407,7 @@ currentUtilsInstance = new Utils({});
 var os = runningOrder[0][0].options;
 os._finishedCallback = finishedCallback;
 os._utils = currentUtilsInstance;
-os._cssPrefix = "";
+os._cssPrefix = runningOrder[0][0].controller + "-";
 os._controllerDefaults = ht_defaults;
 os._utilsClass = Utils;
 currentControllerOptions = os;
