@@ -414,7 +414,9 @@ def nice_time(t):
 # in the selectors).
 def css_parse(css):
     KINDS_CHARS = "#."
-    OPS_CHARS = "+>"
+    OPS_CHARS = "+>," # We treat comma as an operator just like '>' or '+', since
+                      # this works fine for our purposes, despite not being
+                      # semantically correct.
 
     state = "selector"
     prev_char = None
@@ -450,7 +452,7 @@ def css_parse(css):
                 current_op = StringIO.StringIO()
                 current_op.write(c)
                 state = "operator"
-            elif c.isalnum() or c == "-":
+            elif c.isalnum() or c in "_*": # '*' used to indicate any tag; we'll allow underscores in tag names.
                 current_selector_tagname = StringIO.StringIO()
                 current_selector_tagname.write(c)
                 state = "selector_tagname"
