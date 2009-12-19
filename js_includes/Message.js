@@ -93,7 +93,7 @@ $.widget("ui.Message", {
 
 webspr_controller_set_properties("Message", {
     obligatory: ["html"],
-    countsForProgressBar: false;
+    countsForProgressBar: false,
     htmlDescription: function (opts) {
         var d = htmlCodeToDOM(opts.html);
         return truncateHTML(d, 100);

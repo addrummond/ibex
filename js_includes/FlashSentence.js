@@ -37,7 +37,7 @@ $.widget("ui.FlashSentence", {
 });
 
 webspr_controller_set_properties("FlashSentence", {
-    obligatory: ["s"];
+    obligatory: ["s"],
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.s)[0];
     }
