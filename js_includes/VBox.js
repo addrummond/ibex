@@ -142,5 +142,4 @@ $.widget("ui.VBox", {
     }
 });
 
-$.ui.VBox._webspr_name = "VBox";
-$.ui.VBox._webspr_obligatory = ["children", "triggers"];
+webspr_controller_set_options("VBox", { obligatory: ["children", "triggers"] });

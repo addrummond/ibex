@@ -136,8 +136,10 @@ $.widget("ui.DashedSentence", {
     }
 });
 
-$.ui.DashedSentence._webspr_name = "DashedSentence";
-$.ui.DashedSentence._webspr_obligatory = ["s"];
-$.ui.DashedSentence._webspr_htmlDescription = function (opts) {
-    return $(document.createElement("div")).text(opts.s);
-}
+webspr_controller_set_properties("DashedSentence", {
+    obligatory: ["s"],
+    htmlDescription: function (opts) {
+        return $(document.createElement("div")).text(opts.s);
+    }
+});
+

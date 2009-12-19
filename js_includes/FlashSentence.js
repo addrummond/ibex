@@ -36,8 +36,9 @@ $.widget("ui.FlashSentence", {
     }
 });
 
-$.ui.FlashSentence._webspr_name = "FlashSentence";
-$.ui.FlashSentence._webspr_obligatory = ["s"];
-$.ui.FlashSentence._webspr_htmlDescription = function (opts) {
-    return $(document.createElement("div")).text(opts.s)[0];
-}
+webspr_controller_set_properties("FlashSentence", {
+    obligatory: ["s"];
+    htmlDescription: function (opts) {
+        return $(document.createElement("div")).text(opts.s)[0];
+    }
+});

@@ -360,6 +360,13 @@ function get_defaults_for(defaults, obj) {
     return {}
 }
 
+function webspr_controller_set_options(name, options) {
+    $.ui[name]._webspr_options = options;
+}
+function webspr_controller_get_option(cname, oname) {
+    return $.ui[cname]._webspr_options[oname];
+}
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

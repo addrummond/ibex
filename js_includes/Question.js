@@ -9,9 +9,6 @@ $.widget("ui.Question", {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        // With IE < 6, we have to use "hand" instead of "pointer".
-        this.isOldIE = false;
-        /*@cc_on @if (@_jscript_version <= 5.5) this.isOldIE = true; @end @*/
         // With IE <= 6 we have to pad lists differently.
         this.isIE6OrLess = false;
         /*@cc_on @if (@_jscript_version <= 5.6) this.isIE6OrLess = true; @end @*/
@@ -100,7 +97,7 @@ $.widget("ui.Question", {
                  (function (li) {
                      li.mouseover(function () {
                          li.css('border-color', "black")
-                           .css('cursor', t.isOldIE ? 'hand' : 'pointer');
+                           .css('cursor', 'pointer');
                      });
                      li.mouseout(function () {
                          li.css('border-color', "#9ea4b1")
@@ -243,8 +240,10 @@ $.widget("ui.Question", {
     }
 });
 
-$.ui.Question._webspr_name = "Question";
-$.ui.Question._webspr_obligatory = ["as"];
-$.ui.Question._webspr_htmlDescription = function(opts) {
-    return $(document.createElement("div")).text(opts.q || "");
-}
+webspr_controller_set_properties("Question", {
+    obligatory: ["as"],
+    htmlDescription: function(opts) {
+        return $(document.createElement("div")).text(opts.q || "");
+    }
+});
+

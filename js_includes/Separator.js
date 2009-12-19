@@ -50,9 +50,9 @@ $.widget("ui.Separator", {
     }
 });
 
-$.ui.Separator._webspr_name = "Separator";
-$.ui.Separator._webspr_obligatory = [];
-$.ui.Separator._webspr_countsForProgressBar = false;
-$.ui.Separator._webspr_htmlDescription = function (opts) {
-    return $(document.createElement("div")).text(opts.normalMessage)[0];
-}
+webspr_controller_set_properties("Separator", {
+    countsForProgressBar: false,
+    htmlDescription: function (opts) {
+        return $(document.createElement("div")).text(opts.normalMessage)[0];
+    }
+});

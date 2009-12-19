@@ -123,10 +123,10 @@ $.each(items, function(_, it) {
         opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
-        if ($.ui[controller]._webspr_obligatory) {
-            assert_is_arraylike($.ui[controller]._webspr_obligatory, "The '_webspr_obligatory' field must be an Array of strings.");
-            $.each($.ui[controller]._webspr_obligatory, function(_, o) {
-                assert(typeof(o) == "string", "All members of the '_webspr_obligatory' Array must be strings.");
+        if (webspr_controller_get_option(controller, "obligatory")) {
+            assert_is_arraylike(webspr_controller_get_option(controller, "obligatory"), "The 'obligatory' option field must be an Array of strings.");
+            $.each(webspr_controller_get_option(controller, "obligatory"), function(_, o) {
+                assert(typeof(o) == "string", "All members of the Array value of the 'obligatory' option must be strings.");
                 assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for the controller" + controller);
             });
         }
@@ -152,7 +152,7 @@ if (conf_showOverview) {
             var li = $(document.createElement("li"));
             var b = $(document.createElement("b"));
             li.append(b.append(runningOrder[i][j]));
-            var hd = $.ui[runningOrder[i][j].controller]._webspr_htmlDescription ? $.ui[runningOrder[i][j].controller]._webspr_htmlDescription(runningOrder[i][j].options) : null;
+            var hd = webspr_controller_get_option(runningOrder[i][j].controller, "htmlDescription") ?  webspr_controller_get_option(runningOrder[i][j].controller, "htmlDescription")(runningOrder[i][j].options) : null;
 
             if (hd) li.append(": ").append($(hd));
             sl.append(li);
@@ -229,8 +229,8 @@ var nPoints = 0;
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
-            if ($.ui[runningOrder[i][j].controller]._webspr_countsForProgressBar === undefined ||
-                $.ui[runningOrder[i][j].controller]._webspr_countsForProgressBar) {
+            if (webspr_controller_get_option(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
+                webspr_controller_get_option(runningOrder[i][j].controller, "countsForProgressBar")) {
                 ++nPoints;
             }
         }
@@ -339,8 +339,8 @@ function finishedCallback(resultsLines) {
     }
 
     // Update progress bar if applicable.
-    if ($.ui[currentItem.controller]._webspr_countsForProgressBar === undefined ||
-        $.ui[currentItem.controller]._webspr_countsForProgressBar) {
+    if (webspr_get_option(currentItem.controller, "countsForProgressBar") === undefined ||
+        webspr_get_option(currentItem.controller, "countsForProgressBar")) {
         updateProgressBar();
     }
 

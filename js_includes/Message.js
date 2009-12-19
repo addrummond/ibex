@@ -91,10 +91,11 @@ $.widget("ui.Message", {
     }
 });
 
-$.ui.Message._webspr_name = "Message";
-$.ui.Message._webspr_obligatory = ["html"];
-$.ui.Message._webspr_countsForProgressBar = false;
-$.ui.Message._webspr_htmlDescription = function (opts) {
-    var d = htmlCodeToDOM(opts.html);
-    return truncateHTML(d, 100);
-};
+webspr_controller_set_properties("Message", {
+    obligatory: ["html"],
+    countsForProgressBar: false;
+    htmlDescription: function (opts) {
+        var d = htmlCodeToDOM(opts.html);
+        return truncateHTML(d, 100);
+    }
+});
