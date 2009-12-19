@@ -59,6 +59,10 @@ DATA_INCLUDES_DIR = "data_includes"
 # ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
 OTHER_INCLUDES_DIR = "other_includes"
 
+# The name of the directory where various caches are kept.
+# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+CACHE_DIR = "cache"
+
 # Define this variable to set the directory containing static
 # HTML/JavaScript files (e.g. 'experiment.html').
 # ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****

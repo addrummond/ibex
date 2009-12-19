@@ -605,7 +605,7 @@ logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WO
 for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
-          'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
+          'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'CACHE_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR', 'INCLUDE_COMMENTS_IN_RESULTS_FILE',
           'INCLUDE_HEADERS_IN_RESULTS_FILE']:
     if not c.has_key(k):
@@ -864,7 +864,25 @@ def counter_cookie_header(c, cookiename):
         (cookiename, c)
     )
 
-def create_monster_string(dir, extension, block_allow, manipulator=None):
+def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulator=None):
+    if cacheKey and os.path.isfile(os.path.join(PWD, c['CACHE_DIR'], cacheKey)):
+        cacheCreatedTime = os.path.getmtime(os.path.join(PWD, c['CACHE_DIR'], cacheKey))
+        try:
+            ds = os.listdir(dir)
+            canUseCache = True
+            for path in ds:
+                if os.path.getmtime(os.path.join(dir, path)) >= cacheCreatedTime:
+                    canUseCache = False
+                    break
+            if canUseCache:
+                f = open(os.path.join(PWD, c['CACHE_DIR'], cacheKey))
+                return f.read()
+        except IOError:
+            # Just ignore the error -- it just means we won't use the cache this time.
+            pass
+
+    # We can't use the cache, so go ahead and create the string...
+
     filenames = []
     try:
         ds = os.listdir(dir)
@@ -876,7 +894,7 @@ def create_monster_string(dir, extension, block_allow, manipulator=None):
                     filenames.append(fullpath)
                 elif block_allow[0] == "allow" and path in block_allow[1:]:
                     filenames.append(fullpath)
-    except:
+    except IOError:
         logger.error("Error getting directory listing for Javascript include directory '%s'" % dir)
         sys.exit(1)
 
@@ -899,9 +917,24 @@ def create_monster_string(dir, extension, block_allow, manipulator=None):
     finally:
         if f: f.close()
 
-    return s.getvalue()
+    val = s.getvalue()
 
-def css_create_monster_string(dir, extension, block_allow):
+    # If a cache key was give, create a cache of the result before returning it.
+    if cacheKey:
+        f = None
+        try:
+            try:
+                f = open(os.path.join(PWD, c['CACHE_DIR'], cacheKey), 'w')
+                f.write(val)
+            except IOError:
+                # Ignore errors -- it just means that a cache won't be created.
+                pass
+        finally:
+            if f: f.close()
+
+    return val
+
+def css_create_monster_string(dir, extension, block_allow, cacheKey=None):
     def manipulator (filename, content, ofile):
         if filename.startswith("global_"):
             ofile.write(content)
@@ -910,7 +943,7 @@ def css_create_monster_string(dir, extension, block_allow):
             name = filename.split('.')[0] + '-'
             css_add_namespace(parsed, name)
             css_spit_out(parsed, ofile)
-    return create_monster_string(dir, extension, block_allow, manipulator)
+    return create_monster_string(dir, extension, block_allow, cacheKey, manipulator)
 
 # Create a directory for storing results (if it doesn't already exist).
 try:
@@ -942,6 +975,16 @@ try:
 except os.error, IOError:
     logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
     sys.exit(1)
+
+# Create a cache directory (if it doesn't already exist).
+try:
+    if os.path.isfile(os.path.join(PWD, c['CACHE_DIR'])):
+        logger.error("'%s' is a file, so could not create cache directory" % c['CACHE_DIR'])
+        sys.exit(1)
+    elif not os.path.isdir(os.path.join(PWD, c['CACHE_DIR'])):
+        os.mkdir(os.path.join(PWD, c['CACHE_DIR']))
+except os.error, IOError:
+    logger.error("Could not create cache directory at %S" % os.path.join(PWD, c['CACHE_DIR']))
 
 def control(env, start_response):
     # Save the time the results were received.
@@ -980,15 +1023,15 @@ def control(env, start_response):
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'): 
             if qs_hash['include'][0] == 'js':
-                m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'])
+                m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
-                m = css_create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'])
+                m = css_create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'], "css_includes")
                 start_response('200 OK', [('Content-Type', 'text/css; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'data':
-                m = create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'])
+                m = create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'], "data_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'main.js':
