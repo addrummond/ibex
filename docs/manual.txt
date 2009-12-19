@@ -631,6 +631,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 || as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
+|| autoFirstChar  || `false`      || If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
@@ -902,5 +903,6 @@ Changes between 0.3-beta (current version) and 0.2.7:
     * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
     * Support for IE 5.5 dropped (jQuery does not support IE 5.5).
     * Some tweaking of the `Question` controller.
+    * Some additional options for the `DashedSentence` controller.
     * (TODO) Modified terminology used in 0.2.x documentation ("items", "groups", etc.) to be less confusing and more consistent with ordinary usage.
 
