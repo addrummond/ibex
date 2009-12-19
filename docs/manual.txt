@@ -590,6 +590,8 @@ they answered incorrectly.
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
 || sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
+|| showAhead     || `true`                 || Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. ||
+|| showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
 
 *Results*
 
@@ -896,7 +898,7 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.3-beta (current version) and 0.2.7:
     * !JavaScript code now uses jQuery. Controllers are jQuery.ui widgets.
-    * (TODO) CSS files in css_includes now modified to ensure that there are no CSS namespace clashes between different widgets.
+    * CSS files in css_includes now modified to ensure that there are no CSS namespace clashes between different widgets.
     * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
     * Support for IE 5.5 dropped (jQuery does not support IE 5.5).
     * Some tweaking of the `Question` controller.

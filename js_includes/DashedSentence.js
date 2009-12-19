@@ -17,6 +17,8 @@ $.widget("ui.DashedSentence", {
         this.mode = dget(this.options, "mode", "self-paced reading");
         this.wordTime = dget(this.options, "wordTime", 300); // Only for speeded accpetability.
         this.wordPauseTime = dget(this.options, "wordPauseTime", 100); // Ditto.
+        this.showAhead = dget(this.options, "showAhead", true);
+        this.showBehind = dget(this.options, "showBehind", true);
         this.currentWord = 0;
 
         // Is there a "stopping point" specified?
@@ -29,10 +31,12 @@ $.widget("ui.DashedSentence", {
             }
         }
 
+        this.background = this.element.css('background-color') || "white";
+
         // Defaults.
         this.unshownBorderColor = dget(this.options, "unshownBorderColor", "#9ea4b1");
         this.shownBorderColor = dget(this.options, "shownBorderColor", "black");
-        this.unshownWordColor = dget(this.options, "unshownWordColor", "white");
+        this.unshownWordColor = dget(this.options, "unshownWordColor", this.background);
         this.shownWordColor = dget(this.options, "shownWordColor", "black");
 
         // Precalculate MD5 of sentence.
@@ -55,6 +59,8 @@ $.widget("ui.DashedSentence", {
         this.wdnjq = new Array(this.words.length); // 'word divs no jQuery'.
         for (var j = 0; j < this.words.length; ++j) {
             var div = $(document.createElement("div")).text(this.words[j]);
+            if (! this.showAhead)
+                div.css('border-color', this.background);
             this.element.append(div);
             this.wordDivs[j] = div;
             this.wdnjq[j] = div[0];
@@ -111,11 +117,14 @@ $.widget("ui.DashedSentence", {
         if (this.currentWord <= this.stoppingPoint) {
             this.wdnjq[w].style.borderColor = this.unshownBorderColor;
             this.wdnjq[w].style.color = this.unshownWordColor;
+            if (! this.showBehind)
+                this.wdnjq[w].style.borderColor = this.background;
         }
     },
     showWord: function(w) {
         if (this.currentWord < this.stoppingPoint) {
-            this.wdnjq[w].style.borderColor = this.shownBorderColor;
+            if (this.showAhead || this.showBehind)
+                this.wdnjq[w].style.borderColor = this.shownBorderColor;
             this.wdnjq[w].style.color = this.shownWordColor;
         }
     },
