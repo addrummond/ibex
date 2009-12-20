@@ -240,7 +240,7 @@ $.widget("ui.Question", {
     }
 });
 
-webspr_controller_set_properties("Question", {
+ibex_controller_set_properties("Question", {
     obligatory: ["as"],
     htmlDescription: function(opts) {
         return $(document.createElement("div")).text(opts.q || "");

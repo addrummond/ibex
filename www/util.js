@@ -360,11 +360,11 @@ function get_defaults_for(defaults, obj) {
     return {}
 }
 
-function webspr_controller_set_properties(name, options) {
-    $.ui[name]._webspr_options = options;
+function ibex_controller_set_properties(name, options) {
+    $.ui[name]._ibex_options = options;
 }
-function webspr_controller_get_property(cname, oname) {
-    return $.ui[cname]._webspr_options[oname];
+function ibex_controller_get_property(cname, oname) {
+    return $.ui[cname]._ibex_options[oname];
 }
 
 

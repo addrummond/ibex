@@ -123,9 +123,9 @@ $.each(items, function(_, it) {
         opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
-        if (webspr_controller_get_property(controller, "obligatory")) {
-            assert_is_arraylike(webspr_controller_get_property(controller, "obligatory"), "The 'obligatory' option field must be an Array of strings.");
-            $.each(webspr_controller_get_property(controller, "obligatory"), function(_, o) {
+        if (ibex_controller_get_property(controller, "obligatory")) {
+            assert_is_arraylike(ibex_controller_get_property(controller, "obligatory"), "The 'obligatory' option field must be an Array of strings.");
+            $.each(ibex_controller_get_property(controller, "obligatory"), function(_, o) {
                 assert(typeof(o) == "string", "All members of the Array value of the 'obligatory' option must be strings.");
                 assert(opts[o] != undefined, "The obligatory option '" + o + "' was not specified for the controller" + controller);
             });
@@ -152,7 +152,7 @@ if (conf_showOverview) {
             var li = $(document.createElement("li"));
             var b = $(document.createElement("b"));
             li.append(b.append(runningOrder[i][j]));
-            var hd = webspr_controller_get_property(runningOrder[i][j].controller, "htmlDescription") ?  webspr_controller_get_property(runningOrder[i][j].controller, "htmlDescription")(runningOrder[i][j].options) : null;
+            var hd = ibex_controller_get_property(runningOrder[i][j].controller, "htmlDescription") ?  ibex_controller_get_property(runningOrder[i][j].controller, "htmlDescription")(runningOrder[i][j].options) : null;
 
             if (hd) li.append(": ").append($(hd));
             sl.append(li);
@@ -229,8 +229,8 @@ var nPoints = 0;
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
-            if (webspr_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
-                webspr_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar")) {
+            if (ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
+                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar")) {
                 ++nPoints;
             }
         }
@@ -339,8 +339,8 @@ function finishedCallback(resultsLines) {
     }
 
     // Update progress bar if applicable.
-    if (webspr_controller_get_property(currentItem.controller, "countsForProgressBar") === undefined ||
-        webspr_controller_get_property(currentItem.controller, "countsForProgressBar")) {
+    if (ibex_controller_get_property(currentItem.controller, "countsForProgressBar") === undefined ||
+        ibex_controller_get_property(currentItem.controller, "countsForProgressBar")) {
         updateProgressBar();
     }
 

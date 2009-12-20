@@ -30,12 +30,12 @@ $.widget("ui.AcceptabilityJudgment", {
     }
 });
 
-webspr_controller_set_properties("AcceptabilityJudgment",
+ibex_controller_set_properties("AcceptabilityJudgment",
     { obligatory: ["s", "as"],
       htmlDescription:
           function (opts) {
-              var s = webspr_controller_get_property("FlashSentence", "htmlDescription")(opts);
-              var q = webspr_controller_get_property("Question", "htmlDescription")(opts);
+              var s = ibex_controller_get_property("FlashSentence", "htmlDescription")(opts);
+              var q = ibex_controller_get_property("Question", "htmlDescription")(opts);
               var p =
                   $(document.createElement("p"))
                   .append($(document.createElement("b"))

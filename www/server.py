@@ -55,7 +55,7 @@ PY_SCRIPT_NAME = "server.py"
 # =========== START OF decoder.py AND scanner.py FROM simple_json PACKAGE ==========
 #
 # This package is licensed under the MIT license (which is compatible with the BSD
-# license used for webspr).
+# license used for Ibex).
 #
 # http://pypi.python.org/pypi/simplejson
 #
@@ -598,12 +598,6 @@ def css_spit_out(css_definitions, ofile):
 # Logging and configuration variables.
 #
 
-logging.basicConfig()
-logger = logging.getLogger("server")
-logger.addHandler(logging.StreamHandler())
-logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
-                                          "server.log")))
-
 # Check if we're using external or internal config.
 #
 # NOTE: Some of this code is redundant now,since it was written when
@@ -611,12 +605,12 @@ logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WO
 # keeping the redundant code in anticipation of extensions to this
 # system.
 extkeys = ['EXTERNAL_CONFIG_URL']
-for k in extkeys:
+for k in extkeys: # Note that logging can't be set up till config is parsed, so we use sys.stderr here.
     if c.has_key(k) and c[k]:
         for kk in extkeys:
             if not (c.has_key(kk) and c[kk]):
                 vs = ', '.join(map(lambda x: "'%s'" % x))
-                logger.error("If one of the configuration variables %s is present, then all %i must be present." % (vs, len(vs)))
+                sys.stderr.write("If one of the configuration variables %s is present, then all %i must be present." % (vs, len(vs)))
                 sys.exit(1)
 
         # Make a request to the external config HTTP server, receiving a JSON record as a reply (we hope).
@@ -631,22 +625,32 @@ for k in extkeys:
                 try:
                      json = dec.decode(data)
                      if type(json) != type({}):
-                         logger.error("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
+                         sys.stderr.write("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
                          sys.exit(1)
                      c = json
                 except ValueError:
-                    logger.error("Bad JSON data received from the following external configuration URL: %s" % url)
+                    sys.stderr.write("Bad JSON data received from the following external configuration URL: %s" % url)
                     sys.exit(1)
             except IOError, e:
-                logger.error("Error opening the following URL to get external configuration: %s (%s)" % (url, str(e)))
+                sys.stderr.write("Error opening the following URL to get external configuration: %s (%s)" % (url, str(e)))
                 sys.exit(1)
         finally:
             if r: r.close()
 
         break
 
+# Back compat.
+if c.has_key('WEBSPR_WORKING_DIR') and not c.has_key('IBEX_WORKING_DIR'):
+    c['IBEX_WORKING_DIR'] = c['WEBSPR_WORKING_DIR']
+
+logging.basicConfig()
+logger = logging.getLogger("server")
+logger.addHandler(logging.StreamHandler())
+logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or '',
+                                          "server.log")))
+
 # Check that all conf variables have been defined
-# (except the optional WEBSPR_WORKING_DIR and PORT variables).
+# (except the optional IBEX_WORKING_DIR and PORT variables).
 for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
           'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
@@ -658,7 +662,7 @@ for k in ['RESULT_FILE_NAME',
         sys.exit(1)
 # Define optional variables if they are not already defined.
 c['PORT'] = c.has_key('PORT') and c['PORT'] or None
-c['WEBSPR_WORKING_DIR'] = c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or None
+c['IBEX_WORKING_DIR'] = c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or None
 
 # Check for "-m" and "-p" options (sets server mode and port respectively).
 # Also check for "-r" option (resest counter on startup).
@@ -715,10 +719,10 @@ if c['SERVER_MODE'] in ["toy", "paste"]:
     import SimpleHTTPServer
 
 PWD = None
-if c.has_key('WEBSPR_WORKING_DIR'):
-    PWD = c['WEBSPR_WORKING_DIR']
-if os.environ.get("WEBSPR_WORKING_DIR"):
-    PWD = os.environ.get("WEBSPR_WORKING_DIR")
+if c.has_key('IBEX_WORKING_DIR'):
+    PWD = c['IBEX_WORKING_DIR']
+if os.environ.get("IBEX_WORKING_DIR"):
+    PWD = os.environ.get("IBEX_WORKING_DIR")
 if PWD is None: PWD = ''
 
 

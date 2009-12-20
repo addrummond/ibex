@@ -91,7 +91,7 @@ $.widget("ui.Message", {
     }
 });
 
-webspr_controller_set_properties("Message", {
+ibex_controller_set_properties("Message", {
     obligatory: ["html"],
     countsForProgressBar: false,
     htmlDescription: function (opts) {

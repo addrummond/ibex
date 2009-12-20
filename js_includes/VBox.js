@@ -142,4 +142,4 @@ $.widget("ui.VBox", {
     }
 });
 
-webspr_controller_set_properties("VBox", { obligatory: ["children", "triggers"] });
+ibex_controller_set_properties("VBox", { obligatory: ["children", "triggers"] });

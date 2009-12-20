@@ -11,7 +11,7 @@
 #
 # IMPORTANT: A number of other _DIR options will be set relative
 # to this path, unless you set them to absolute paths.
-WEBSPR_WORKING_DIR = "../"
+IBEX_WORKING_DIR = "../"
 
 # Options are "toy" or "cgi" (case-sensitive); the value "paste"
 # is equivalent to "toy" and is supported for backwards compatibility.
@@ -31,7 +31,7 @@ PORT = 3000
 # The directory will automatically be created if it doesn't exist
 # (but if it is itself contained within a non-existent directory,
 # this won't happen).
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 RESULT_FILES_DIR = "results"
 
 # The name of the file where results will be stored (within
@@ -41,7 +41,7 @@ RESULT_FILE_NAME = "results"
 # the RESULT_FILES_DIR directory).
 RAW_RESULT_FILE_NAME = "raw_results"
 # The name of the directory where server state will be stored.
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 SERVER_STATE_DIR = "server_state"
 
 # Should each set of results be preceeded by a header in the results file? (The
@@ -52,24 +52,24 @@ INCLUDE_HEADERS_IN_RESULTS_FILE = True
 INCLUDE_COMMENTS_IN_RESULTS_FILE = True
 
 # The name of the directory where Javascript includes are stored.
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 JS_INCLUDES_DIR = "js_includes"
 # The name of the directory where CSS includes are stored.
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 CSS_INCLUDES_DIR = "css_includes"
 # The name of the directory where data files are stored.
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 DATA_INCLUDES_DIR = "data_includes"
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 OTHER_INCLUDES_DIR = "other_includes"
 
 # The name of the directory where various caches are kept.
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 CACHE_DIR = "cache"
 
 # Define this variable to set the directory containing static
 # HTML/JavaScript files (e.g. 'experiment.html').
-# ***** Relative to WEBSPR_WORKING_DIR unless absolute path. *****
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 STATIC_FILES_DIR = "www"
 
 # These variables specify which of the files in the js_includes,

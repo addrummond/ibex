@@ -50,7 +50,7 @@ $.widget("ui.Separator", {
     }
 });
 
-webspr_controller_set_properties("Separator", {
+ibex_controller_set_properties("Separator", {
     countsForProgressBar: false,
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.normalMessage)[0];

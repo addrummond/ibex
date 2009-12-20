@@ -145,7 +145,7 @@ $.widget("ui.DashedSentence", {
     }
 });
 
-webspr_controller_set_properties("DashedSentence", {
+ibex_controller_set_properties("DashedSentence", {
     obligatory: ["s"],
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.s);
