@@ -1,9 +1,13 @@
 # This software is licensed under a BSD license; see the LICENSE file for details.
 
-# Optionally define this variable to set the working directory
-# of the server. You can also define the environment variable of
-# the same name (the value of the environment variable takes
-# precedence over the value of this variable).
+# Most users sould ignore the following option and skip to those
+# in the rest of the file. See documentation.
+# EXTERNAL_CONFIG_URL = "http:///foo.net:9854/conf" # "file:///foo/bar/conf"
+
+# Optionally define the following variable to set the working
+# directory of the server. You can also define the environment
+# variable of the same name (the value of the environment variable
+# takes precedence over the value of this variable).
 #
 # IMPORTANT: A number of other _DIR options will be set relative
 # to this path, unless you set them to absolute paths.

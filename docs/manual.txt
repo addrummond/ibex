@@ -898,11 +898,11 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.3-beta (current version) and 0.2.7:
-    * !JavaScript code now uses jQuery. Controllers are jQuery.ui widgets.
-    * CSS files in css_includes now modified to ensure that there are no CSS namespace clashes between different widgets.
     * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
+    * !JavaScript code now uses jQuery. Controllers are jQuery.ui widgets.
+    * CSS files in css_includes now modified automatically by the server to ensure that there are no CSS namespace clashes between different widgets.
+    * Server now caches css and js includes (i.e. the results of requests like server.py?includes=js).
     * Support for IE 5.5 dropped (jQuery does not support IE 5.5).
-    * Some tweaking of the `Question` controller.
+    * Options for the `Question` controller reworked to be less confusing. (The reworked controller is called `NewQuestion`; the old `Question` controller is retained for backwards compatability.)
     * Some additional options for the `DashedSentence` controller.
-    * (TODO) Modified terminology used in 0.2.x documentation ("items", "groups", etc.) to be less confusing and more consistent with ordinary usage.
 

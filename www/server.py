@@ -46,6 +46,7 @@ import os
 import os.path
 import cgi
 import string
+import urllib
 
 PY_SCRIPT_NAME = "server.py"
 
@@ -394,11 +395,14 @@ __all__ = ['JSONDecoder']
 
 
 c = { }
-try:
-    execfile(SERVER_CONF_PY_FILE, c)
-except Exception, e:
-    print "Could not open/load config file: %s" % e
-    sys.exit(1)
+if globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+    try:
+        execfile(SERVER_CONF_PY_FILE, c)
+    except Exception, e:
+        print "Could not open/load config file: %s" % e
+        sys.exit(1)
+else:
+    c = globals()
 
 
 #
@@ -599,6 +603,47 @@ logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
 logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('WEBSPR_WORKING_DIR') and c['WEBSPR_WORKING_DIR'] or '',
                                           "server.log")))
+
+# Check if we're using external or internal config.
+#
+# NOTE: Some of this code is redundant now,since it was written when
+# there was more than one EXTERNAL_CONFIG_* variable. However, I'm
+# keeping the redundant code in anticipation of extensions to this
+# system.
+extkeys = ['EXTERNAL_CONFIG_URL']
+for k in extkeys:
+    if c.has_key(k) and c[k]:
+        for kk in extkeys:
+            if not (c.has_key(kk) and c[kk]):
+                vs = ', '.join(map(lambda x: "'%s'" % x))
+                logger.error("If one of the configuration variables %s is present, then all %i must be present." % (vs, len(vs)))
+                sys.exit(1)
+
+        # Make a request to the external config HTTP server, receiving a JSON record as a reply (we hope).
+        
+        r = None
+        try:
+            url = c['EXTERNAL_CONFIG_URL']
+            try:
+                r = urllib.urlopen(url)
+                data = r.read()
+                dec = JSONDecoder()
+                try:
+                     json = dec.decode(data)
+                     if type(json) != type({}):
+                         logger.error("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
+                         sys.exit(1)
+                     c = json
+                except ValueError:
+                    logger.error("Bad JSON data received from the following external configuration URL: %s" % url)
+                    sys.exit(1)
+            except IOError, e:
+                logger.error("Error opening the following URL to get external configuration: %s (%s)" % (url, str(e)))
+                sys.exit(1)
+        finally:
+            if r: r.close()
+
+        break
 
 # Check that all conf variables have been defined
 # (except the optional WEBSPR_WORKING_DIR and PORT variables).
