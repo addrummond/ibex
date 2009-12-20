@@ -1275,7 +1275,6 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             except:
                 # If we let exceptions percolate, we end up serving things as static
                 # files which shouldn't be.
-                sys.error.write("FUCK\n")
                 logger.error("Error in responding to GET/POST request for toy Python HTTP server.");
 
     def do_GET(self):
