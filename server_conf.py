@@ -1,9 +1,5 @@
 # This software is licensed under a BSD license; see the LICENSE file for details.
 
-# Most users sould ignore the following option and skip to those
-# in the rest of the file. See documentation.
-# EXTERNAL_CONFIG_URL = "http:///foo.net:9854/conf" # "file:///foo/bar/conf"
-
 # Optionally define the following variable to set the working
 # directory of the server. You can also define the environment
 # variable of the same name (the value of the environment variable
@@ -15,7 +11,7 @@ IBEX_WORKING_DIR = "../"
 
 # Options are "toy" or "cgi" (case-sensitive); the value "paste"
 # is equivalent to "toy" and is supported for backwards compatibility.
-
+#
 # If "toy", the server will run in stand-alone mode.
 # If "cgi", the server will run as a CGI process.
 #
@@ -81,3 +77,13 @@ STATIC_FILES_DIR = "www"
 JS_INCLUDES_LIST   = ["block"]  # Block nothing (i.e. allow everything).
 CSS_INCLUDES_LIST  = ["block"]  # Ditto.
 DATA_INCLUDES_LIST = ["block"]  # Ditto.
+
+# **********
+# Most users sould ignore the following options and skip to those
+# in the rest of the file. See documentation. Note that if one
+# of these options is defined, all must be defined.
+# **********
+
+# EXTERNAL_CONFIG_URL = "http:///foo.net:9854/conf" # "file:///foo/bar/conf"
+# EXTERNAL_CONFIG_PASS_PARAMS = True
+# EXTERNAL_CONFIG_METHOD = "GET"

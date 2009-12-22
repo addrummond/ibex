@@ -48,7 +48,8 @@ import cgi
 import string
 import urllib
 
-PY_SCRIPT_NAME = "server.py"
+PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
+PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
 
 
 #
@@ -599,12 +600,7 @@ def css_spit_out(css_definitions, ofile):
 #
 
 # Check if we're using external or internal config.
-#
-# NOTE: Some of this code is redundant now,since it was written when
-# there was more than one EXTERNAL_CONFIG_* variable. However, I'm
-# keeping the redundant code in anticipation of extensions to this
-# system.
-extkeys = ['EXTERNAL_CONFIG_URL']
+extkeys = ['EXTERNAL_CONFIG_URL', 'EXTERNAL_CONFIG_METHOD', 'EXTERNAL_CONFIG_PASS_PARAMS']
 for k in extkeys: # Note that logging can't be set up till config is parsed, so we use sys.stderr here.
     if c.has_key(k) and c[k]:
         for kk in extkeys:
@@ -618,7 +614,14 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
         r = None
         try:
             url = c['EXTERNAL_CONFIG_URL']
+            if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "GET":
+                sepchr = '?' in url and '&' or '?' # Don't screw it up if the url already has params.
+                url += sepchr + "dir=" + urllib.quote(SERVER_SCRIPT_DIR)
             try:
+                req_data = None:
+                if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
+                    sys.stderr.write("NOT IMPLEMENTED!!!!\n")
+                    sys.exit(1)
                 r = urllib.urlopen(url)
                 data = r.read()
                 dec = JSONDecoder()
