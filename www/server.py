@@ -633,7 +633,6 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
                          sys.stderr.write("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
                          sys.exit(1)
                      c = json
-                     sys.stderr.write(str(c))
                 except ValueError:
                     sys.stderr.write("Bad JSON data received from the following external configuration URL: %s" % url)
                     sys.exit(1)
