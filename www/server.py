@@ -395,8 +395,10 @@ __all__ = ['JSONDecoder']
 #
 
 
+# If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
+# to open SERVER_CONF_PY_FILE, even if it's defined.
 c = { }
-if globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
     try:
         execfile(SERVER_CONF_PY_FILE, c)
     except Exception, e:
@@ -616,9 +618,9 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
             url = c['EXTERNAL_CONFIG_URL']
             if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "GET":
                 sepchr = '?' in url and '&' or '?' # Don't screw it up if the url already has params.
-                url += sepchr + "dir=" + urllib.quote(SERVER_SCRIPT_DIR)
+                url += sepchr + "dir=" + urllib.quote(PY_SCRIPT_DIR)
             try:
-                req_data = None:
+                req_data = None
                 if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
                     sys.stderr.write("NOT IMPLEMENTED!!!!\n")
                     sys.exit(1)
@@ -631,6 +633,7 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
                          sys.stderr.write("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
                          sys.exit(1)
                      c = json
+                     sys.stderr.write(str(c))
                 except ValueError:
                     sys.stderr.write("Bad JSON data received from the following external configuration URL: %s" % url)
                     sys.exit(1)
@@ -646,11 +649,16 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
 if c.has_key('WEBSPR_WORKING_DIR') and not c.has_key('IBEX_WORKING_DIR'):
     c['IBEX_WORKING_DIR'] = c['WEBSPR_WORKING_DIR']
 
+
 logging.basicConfig()
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
-logger.addHandler(logging.FileHandler(filename=os.path.join(c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or '',
-                                          "server.log")))
+log_filename = os.path.join(c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or '', 'server.log')
+try:
+    open(log_filename, "w").close();
+except:
+    sys.stderr.write("Error touching server log file '%s'" % log_filename)
+logger.addHandler(logging.FileHandler(filename=log_filename))
 
 # Check that all conf variables have been defined
 # (except the optional IBEX_WORKING_DIR and PORT variables).
@@ -687,7 +695,7 @@ except ValueError:
     sys.exit(1)
 
 # Check values of (some) conf variables.
-if type(c['PORT']) != types.IntType:
+if c['SERVER_MODE'] != "cgi" and type(c['PORT']) != types.IntType:
     logger.error("Bad value (or no value) for server port.")
     sys.exit(1)
 if type(c['JS_INCLUDES_LIST']) != types.ListType or len(c['JS_INCLUDES_LIST']) < 1 or (c['JS_INCLUDES_LIST'][0] not in ["block", "allow"]):
@@ -726,8 +734,9 @@ if c.has_key('IBEX_WORKING_DIR'):
     PWD = c['IBEX_WORKING_DIR']
 if os.environ.get("IBEX_WORKING_DIR"):
     PWD = os.environ.get("IBEX_WORKING_DIR")
-if PWD is None: PWD = ''
-
+if PWD is None:
+    logger.error("No value was given for config variable IBEX_WORKING_DIR")
+    sys.exit(1)
 
 #
 # Some utility functions/classes.
@@ -1074,11 +1083,13 @@ def control(env, start_response):
 
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'): 
+            sys.stderr.write("INCLUDE!\n")
             if qs_hash['include'][0] == 'js':
                 m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
+                sys.stderr.write(os.path.join(PWD, c['CSS_INCLUDES_DIR']))
                 m = css_create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'], "css_includes")
                 start_response('200 OK', [('Content-Type', 'text/css; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
@@ -1210,85 +1221,86 @@ def control(env, start_response):
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=UTF-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
 
-class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-    STATIC_FILES = [
-        'experiment.html',
-        'overview.html',
-        'json.js',
-        'conf.js',
-        'shuffle.js',
-        'util.js',
-        'backcompatcruft.js',
-        'jquery.min.js',
-        'jquery-ui.min.js'
-    ]
+if c['SERVER_MODE'] != "cgi":
+    class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+        STATIC_FILES = [
+            'experiment.html',
+            'overview.html',
+            'json.js',
+            'conf.js',
+            'shuffle.js',
+            'util.js',
+            'backcompatcruft.js',
+            'jquery.min.js',
+            'jquery-ui.min.js'
+        ]
 
-    def __init__(self, request, client_address, server):
-        self.extensions_map = {
-            '' : "application/octet-stream",
-            ".html" : "text/html; charset=UTF-8",
-            ".css"  : "text/css",
-            ".js"   : "text/javascript"
-        }
-
-        SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-
-    def do_either(self, method_name):
-        last = filter(lambda x: x != [], self.path.split('/'))[-1];
-        ps = last.split('?')
-        qs = len(ps) > 1 and ps[1] or None
-        path = ps[0]
-        if method_name == 'GET' and path in MyHTTPRequestHandler.STATIC_FILES:
-            return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self);
-        else:
-            # Bit of a hack. The 'control' function was written for use with the
-            # paste module's simple HTTP server, but SimpleHTTPServer has a different
-            # interface, so we bridge the gap here.
-            response_type = [None]
-            headers = [None]
-            def start_response(response_type_, headers_):
-                response_type[0] = response_type_
-                headers[0] = headers_
-            env = {
-                "REMOTE_ADDR"    : self.client_address[0], # self.client_address is a (host,port) tuple.
-                "REQUEST_URI"    : path,
-                "REQUEST_METHOD" : method_name,
+        def __init__(self, request, client_address, server):
+            self.extensions_map = {
+                '' : "application/octet-stream",
+                ".html" : "text/html; charset=UTF-8",
+                ".css"  : "text/css",
+                ".js"   : "text/javascript"
             }
-            if qs:
-                env['QUERY_STRING'] = qs
-            if method_name == "POST":
-                env['wsgi.input'] = self.rfile
-            cl = self.headers.getheader("Content-Length")
-            if cl:
-                env['CONTENT_LENGTH'] = cl
-            ct = self.headers.getheader("Content-Type")
-            if ct:
-                env['CONTENT_TYPE'] = ct
-            ua = self.headers.getheader("User-Agent")
-            if ua:
-                env['USER_AGENT'] = ua
 
-            body = control(env, start_response)
-            assert response_type[0]
-            rts = response_type[0].split(' ')
-            try:
-                self.send_response(int(rts[0]), ' '.join(rts[1:]))
-                if headers[0]:
-                    for h in headers[0]:
-                        self.send_header(h[0], h[1])
-                self.wfile.write('\n\n')
-                for cs in body:
-                    self.wfile.write(cs)
-            except:
-                # If we let exceptions percolate, we end up serving things as static
-                # files which shouldn't be.
-                logger.error("Error in responding to GET/POST request for toy Python HTTP server.");
+            SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
 
-    def do_GET(self):
-        self.do_either('GET')
+        def do_either(self, method_name):
+            last = filter(lambda x: x != [], self.path.split('/'))[-1];
+            ps = last.split('?')
+            qs = len(ps) > 1 and ps[1] or None
+            path = ps[0]
+            if method_name == 'GET' and path in MyHTTPRequestHandler.STATIC_FILES:
+                return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self);
+            else:
+                # Bit of a hack. The 'control' function was written for use with the
+                # paste module's simple HTTP server, but SimpleHTTPServer has a different
+                # interface, so we bridge the gap here.
+                response_type = [None]
+                headers = [None]
+                def start_response(response_type_, headers_):
+                    response_type[0] = response_type_
+                    headers[0] = headers_
+                env = {
+                    "REMOTE_ADDR"    : self.client_address[0], # self.client_address is a (host,port) tuple.
+                    "REQUEST_URI"    : path,
+                    "REQUEST_METHOD" : method_name,
+                }
+                if qs:
+                    env['QUERY_STRING'] = qs
+                if method_name == "POST":
+                    env['wsgi.input'] = self.rfile
+                cl = self.headers.getheader("Content-Length")
+                if cl:
+                    env['CONTENT_LENGTH'] = cl
+                ct = self.headers.getheader("Content-Type")
+                if ct:
+                    env['CONTENT_TYPE'] = ct
+                ua = self.headers.getheader("User-Agent")
+                if ua:
+                    env['USER_AGENT'] = ua
 
-    def do_POST(self):
-        self.do_either('POST')
+                body = control(env, start_response)
+                assert response_type[0]
+                rts = response_type[0].split(' ')
+                try:
+                    self.send_response(int(rts[0]), ' '.join(rts[1:]))
+                    if headers[0]:
+                        for h in headers[0]:
+                            self.send_header(h[0], h[1])
+                    self.wfile.write('\n\n')
+                    for cs in body:
+                        self.wfile.write(cs)
+                except:
+                    # If we let exceptions percolate, we end up serving things as static
+                    # files which shouldn't be.
+                    logger.error("Error in responding to GET/POST request for toy Python HTTP server.");
+
+        def do_GET(self):
+            self.do_either('GET')
+
+        def do_POST(self):
+            self.do_either('POST')
 
 if __name__ == "__main__":
     if COUNTER_SHOULD_BE_RESET:

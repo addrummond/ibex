@@ -65,6 +65,7 @@ CACHE_DIR = "cache"
 
 # Define this variable to set the directory containing static
 # HTML/JavaScript files (e.g. 'experiment.html').
+# ***** Applicable only when server mode is "toy". *****
 # ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 STATIC_FILES_DIR = "www"
 
