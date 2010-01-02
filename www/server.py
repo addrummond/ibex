@@ -1083,7 +1083,6 @@ def control(env, start_response):
 
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'): 
-            sys.stderr.write("INCLUDE!\n")
             if qs_hash['include'][0] == 'js':
                 m = create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
