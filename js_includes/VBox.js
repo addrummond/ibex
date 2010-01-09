@@ -81,7 +81,7 @@ $.widget("ui.VBox", {
             // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
             (function(l) {
                 childOptions._finishedCallback = function (r) { t.myFinishedCallback(l, r); };
-                childOptions._cssPrefix = "";
+                childOptions._cssPrefix = ibex_controller_name_to_css_prefix(controllerClass);
                 childOptions._utils = u;
                 addSafeBindMethodPair(controllerClass);
                 t.element[controllerClass](childOptions);

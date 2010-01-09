@@ -388,7 +388,7 @@ function finishedCallback(resultsLines) {
     var os = currentItem.options;
     os._finishedCallback = finishedCallback;
     os._utils = currentUtilsInstance;
-    os._cssPrefix = currentItem.controller + "-";
+    os._cssPrefix = ibex_controller_name_to_css_prefix(currentItem.controller);
     os._controllerDefaults = ht_defaults;
     os._utilsClass = Utils;
     currentControllerOptions = os;

@@ -367,6 +367,10 @@ function ibex_controller_get_property(cname, oname) {
     return $.ui[cname]._ibex_options[oname];
 }
 
+function ibex_controller_name_to_css_prefix(cname) {
+    return cname + '-';
+}
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
