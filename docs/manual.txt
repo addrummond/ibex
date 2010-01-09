@@ -59,6 +59,9 @@ experiment. When an HTTP request is made for `server.py?include=js`,
 `server.py?include=data` or `server.py?include=css`, the server
 concatenates all the files in the specified directory and serves up
 the result. Your data file(s) will live in `data_includes`.
+*Note:* The server mangles CSS files by adding a prefix to each
+class/id name based on the name of the CSS file; see the section "CSS
+mangling" below for more details.
 
 The server stores some state in the `server_state` directory. This
 directory is automatically created by the server if it does not
@@ -628,7 +631,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || `null`       || The question to pose.                                             ||
-|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. ||
+|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that this will be ignored if presentAsScale is `true`. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || autoFirstChar  || `false`      || If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) ||
@@ -844,6 +847,14 @@ As can be seen in the code for `Message`, the `utils` object provides a `setTime
 similar to the builtin `setTimeout` function of !JavaScript.
 Any timeouts set using this method are automatically cleared when the controller is complete.
 
+==CSS mangling==
+Every class/id name in a CSS file in the `css_includes` directory is prepended
+with the string 'FILENAME-'. This ensures that there are no namespace
+clashes between controllers. Note that if you wish to avoid this behavior (e.g. because
+of a bug in the CSS mangling code that you need to work around),
+you may prefix your CSS file name with `"global_"`; this causes the file to
+be served as-is.
+
 =Cross-browser compatibility=
 I have tested compatibility with the following browsers:
 
@@ -905,5 +916,4 @@ Changes between 0.3-beta (current version) and 0.2.7:
     * CSS files in css_includes now modified automatically by the server to ensure that there are no CSS namespace clashes between different widgets.
     * Server now caches css and js includes (i.e. the results of requests like server.py?includes=js).
     * Support for IE 5.5 dropped (jQuery does not support IE 5.5).
-    * Options for the `Question` controller reworked to be less confusing. (The reworked controller is called `NewQuestion`; the old `Question` controller is retained for backwards compatability.)
     * Some additional options for the `DashedSentence` controller.
