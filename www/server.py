@@ -394,20 +394,6 @@ __all__ = ['JSONDecoder']
 # ========== END OF decoder.py AND scanner.py ==========
 #
 
-
-# If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
-# to open SERVER_CONF_PY_FILE, even if it's defined.
-c = { }
-if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
-    try:
-        execfile(SERVER_CONF_PY_FILE, c)
-    except Exception, e:
-        print "Could not open/load config file: %s" % e
-        sys.exit(1)
-else:
-    c = globals()
-
-
 #
 # Random utility.
 #
@@ -601,6 +587,18 @@ def css_spit_out(css_definitions, ofile):
 # Logging and configuration variables.
 #
 
+# If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
+# to open SERVER_CONF_PY_FILE, even if it's defined.
+c = { }
+if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+    try:
+        execfile(SERVER_CONF_PY_FILE, c)
+    except Exception, e:
+        print "Could not open/load config file: %s" % e
+        sys.exit(1)
+else:
+    c = globals()
+
 # Check if we're using external or internal config.
 extkeys = ['EXTERNAL_CONFIG_URL', 'EXTERNAL_CONFIG_METHOD', 'EXTERNAL_CONFIG_PASS_PARAMS']
 for k in extkeys: # Note that logging can't be set up till config is parsed, so we use sys.stderr here.
@@ -611,8 +609,12 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
                 sys.stderr.write("If one of the configuration variables %s is present, then all %i must be present." % (vs, len(vs)))
                 sys.exit(1)
 
+        # Check that EXTERNAL_CONFIG_METHOD IS 'GET' (haven't added support for POST yet).
+        if not c['EXTERNAL_CONFIG_METHOD'] == 'GET':
+            sys.stderr.write("'GET' is currently the only supported method for getting external config via HTTP.")
+            sys.exit(1)
+
         # Make a request to the external config HTTP server, receiving a JSON record as a reply (we hope).
-        
         r = None
         try:
             url = c['EXTERNAL_CONFIG_URL']
@@ -621,9 +623,9 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
                 url += sepchr + "dir=" + urllib.quote(PY_SCRIPT_DIR)
             try:
                 req_data = None
-                if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
-                    sys.stderr.write("NOT IMPLEMENTED!!!!\n")
-                    sys.exit(1)
+#                if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
+#                    sys.stderr.write("NOT IMPLEMENTED!!!!\n")
+#                    sys.exit(1)
                 r = urllib.urlopen(url)
                 data = r.read()
                 dec = JSONDecoder()
@@ -647,7 +649,6 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
 # Back compat.
 if c.has_key('WEBSPR_WORKING_DIR') and not c.has_key('IBEX_WORKING_DIR'):
     c['IBEX_WORKING_DIR'] = c['WEBSPR_WORKING_DIR']
-
 
 logging.basicConfig()
 logger = logging.getLogger("server")
