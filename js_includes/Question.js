@@ -246,4 +246,3 @@ ibex_controller_set_properties("Question", {
         return $(document.createElement("div")).text(opts.q || "");
     }
 });
-

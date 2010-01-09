@@ -39,7 +39,10 @@ import logging
 import getopt
 import itertools
 import StringIO
-import md5
+if (sys.version.split(' ')[0]) >= '3.0': # No md5 module in Python 3000.
+    import hashlib as md5
+else:
+    import md5
 import time as time_module
 import types
 import os
