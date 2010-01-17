@@ -177,19 +177,6 @@ function csv_url_encode(s) {
     return custom_url_encode(s, ",");
 }
 
-function getXMLHttpRequest()
-{
-    if (window.XMLHttpRequest) {
-        return new XMLHttpRequest()
-    }
-    else if (window.ActiveXObject) {
-        return new ActiveXObject("Microsoft.XMLHTTP")
-    }
-    else {
-        return null;
-    }
-}
-
 function filter(f, a, initialLength) {
     if (initialLength != null && initialLength != undefined)
         initialLength = Math.floor(a.length / 3);

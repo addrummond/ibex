@@ -476,23 +476,14 @@ function sendResults(resultsLines, success, failure)
     // Prepare the post data.
     var data = JSON.stringify([randomCounter ? true : false, counter, columnNamesArray, resultsLines]);
 
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if (xmlhttp.status == 200) {
-                // Great, we successfully sent the results to the server.
-                success();
-            }
-            else {
-                // There was an error sending the results to the server.
-                failure();
-            }
-        }
-    };
-    xmlhttp.open("POST", serverURI, true);
-    xmlhttp.setRequestHeader("Content-Type", "text/html; charset=UTF-8");
-    xmlhttp.setRequestHeader("Content-Length", data.length);
-    xmlhttp.setRequestHeader("Connection", "close");
-    xmlhttp.send(data);
+    $.ajax({
+        url: serverURI,
+        contentType: "text/html; charset=UTF-8",
+        data: data,
+        type: "POST",
+        success: success,
+        error: failure
+    });
 }
 
 } // End of else for if (conf_showOverview).
