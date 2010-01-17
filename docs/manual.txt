@@ -909,9 +909,9 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.3-beta (current version) and 0.2.7:
-    * Name changed to "Ibex" (Internet Based EXperiments) from "webspr".
+    * Name changed to "Ibex" (Internet Based EXperiments).
     * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
-    * !JavaScript code now uses jQuery. Controllers are jQuery.ui widgets.
+    * !JavaScript code now uses jQuery 1.4. Controllers are jQuery.ui widgets.
     * New ways of configuring the server. The server can now issue an HTTP GET request to get its config variables. Config variables can be inlined in server.py as well as being given in the separate `server_conf.py` file. These features are used for the Ibex Farm (http://spellout.net/ibexfarm).
     * CSS files in css_includes now modified automatically by the server to ensure that there are no CSS namespace clashes between different widgets.
     * Server now caches css and js includes (i.e. the results of requests like server.py?includes=js).

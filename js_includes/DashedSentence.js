@@ -32,6 +32,10 @@ $.widget("ui.DashedSentence", {
         }
 
         this.background = this.element.css('background-color') || "white";
+        this.isIE7OrLess = false;
+        /*@cc_on @if (@_jscript_version <= 5.7) this.isIE7OrLess = true; @end @*/
+        if (this.isIE7OrLess)
+            this.background = "white";
 
         // Defaults.
         this.unshownBorderColor = dget(this.options, "unshownBorderColor", "#9ea4b1");
