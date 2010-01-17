@@ -468,11 +468,6 @@ function indicateThatResultsAreBeingSent()
 // or an IP.
 function sendResults(resultsLines, success, failure)
 {
-    var xmlhttp = getXMLHttpRequest();
-    if (! xmlhttp) {
-        failure();
-    }
-
     // Prepare the post data.
     var data = JSON.stringify([randomCounter ? true : false, counter, columnNamesArray, resultsLines]);
 
