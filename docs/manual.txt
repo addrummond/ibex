@@ -4,7 +4,8 @@ versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
 latest version of this document can be found at
-http://code.google.com/p/webspr/wiki/Documentation_0.3.
+http://code.google.com/p/webspr/wiki/Documentation_0.3
+
 See the end of this document for the changelog.
 
 Note that prior to version 0.3 this software was called "webspr",
