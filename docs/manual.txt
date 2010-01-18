@@ -45,6 +45,10 @@ configuration file, the `-m` and `-p` command-line options can also be
 used to set the server mode and port respectively. Command-line options
 override those set in `server_conf.py`.
 
+*New:* Version 0.3 adds some new ways of configuring the server.
+These are unlikely to be useful to you, but are documented
+in the "New Configuration Methods" section below.
+
 If running the server as a CGI application, make sure that the web
 server can serve up `experiment.html`, and the other files in the
 `www` dir, as static files. All dynamic requests go through
@@ -90,6 +94,26 @@ The stand-alone server has been tested on Windows and OS X (but will
 almost certainly work on any system with Python 2.3/2.4/2.5).  The CGI
 server has been tested on OS X and Linux using the lighttpd web server
 in both cases.
+
+==New Configuration Methods==
+Version 0.3 of this software introduces two new methods of setting
+configuration variables. The first is simply to include the variable
+definitions in `server_conf.py` directly in `server.py`, obviating the need
+to set the `SERVER_CONF_PY_FILE` variables in `server.py`. The second
+is to specify that `server.py` should issue an HTTP GET request to a given
+URL, with the result obtained being interpreted as a JSON dictionary specifying the
+values of the configuration variables. This mode is configured by setting
+the configuration variables `EXTERNAL_CONFIG_URL`, `EXTERNAL_CONFIG_METHOD`
+and `EXTERNAL_CONFIG_PASS_PARAMS`. The first of these variables is self-explanatory;
+the second must be set to `"GET"`; the third should be set to a boolean,
+specifying whether or not `server.py` should set a `dir` paramater in the
+query string giving the directory in which `server.py` resides.
+Note that the values of these three variables may be set either in `server_conf.py`,
+or directly in `server.py`.
+
+The new configuration methods are used to handle the configuration
+of experiments in the Ibex Farm (http://spellout.net/ibexfarm).
+They are unlikely to be of interest to other users.
 
 ==Step-by-step CGI==
 This subsection describes how to set up webspr as a CGI application from
@@ -778,59 +802,70 @@ statement `var showOverview = true;` to your data file.  The second is
 to go to the page `overview.html` instead of `experiment.html`.
 
 =Creating your own controllers=
-This is quite easy if you are familiar with !JavaScript/DHTML.
-As an example, here's the code for an older (and simpler) version of the
+This is quite easy if you are familiar with !JavaScript/DHTML
+and the jQuery !JavaScript library. (One of the changes in Ibex
+from webspr 0.2 is that controllers are now JQuery.ui widgets.)
+As an example, here's the code for a simplified version of the
 `Message` controller:
 {{{
-Message.name = "Message";
-Message.obligatory = ["html"];
-Message.countsForProgressBar = false;
+$.widget("ui.Message", {
+    // Boilerplate code that appears in all controllers.
+    this.cssPrefix = this.options._cssPrefix;
+    this.utils = this.options._utils;
+    this.finishedCallback = this.options._finishedCallback;
 
-function Message(div, options, finishedCallback, utils) {
-    this.div = div;
-    this.options = options;
-    this.hideProgressBar = dget(options, "hideProgressBar", true);
+    // dget(h, k, d) evaluates to h[k] if h[k] is non-false, or d otherwise.
+    this.hideProgressBar = dget(this.options, "hideProgressBar", true);
 
-    this.html = options.html;
-    div.className = "message";
-    div.appendChild(htmlCodeToDOM(this.html));
+    this.html = this.options.html;
+    this.element.addClass(this.cssPrefix + "message");
+    this.element.append(htmlCodeToDOM(this.html));
 
-    this.transfer = dget(options, "transfer", "keypress");
+    this.transfer = dget(this.options, "transfer", "keypress");
     assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
            "Value of 'transfer' option of Message must either be the string 'keypress' or a number");
 
     if (this.transfer == "keypress") {
-        this.handleKey = function(code, time) {
-            finishedCallback(null);
+        var t = this;
+        // See below for info on 'safeBind'.
+        this.safeBind($(document), 'keydown', function () {
+            t.finishedCallback(null);
             return true;
-        }
+        });
     }
     else {
-        utils.setTimeout(finishedCallback, this.transfer);
+        // See below for info on 'this.utils'.
+        this.utils.setTimeout(this.finishedCallback, this.transfer);
     }
 }
 
-Message.htmlDescription = function (opts) {
-    var d = htmlCodeToDOM(opts.html);
-    return truncateHTML(d, 100);
-}
+ibex_controller_set_properties("Message", {
+    obligatory: ["html"],
+    countsForProgressBar: false,
+    htmlDescription: function (opts) {
+        var d = htmlCodeToDOM(opts.html);
+        return truncateHTML(d, 100);
+    }
+});
 }}}
-The first three lines set some properties of the `Message` class.
+The call to `ibex_controller_set_properties` sets some properties of the `Message` controller.
 The `obligatory` option specifies those options which must obligatorily be
 given to the controller. In this case, it is obligatory that the controller
-be given an `"html"` option. Both `Controller.name` and `Controller.obligatory`
-must be set. The `countsForProgressBar` property is optional and is `true`
+be given an `"html"` option. The `obligatory` key must be present in the object
+passed to `ibex_controller_set_properties`.
+The `countsForProgressBar` property is optional and is `true`
 by default. It determines whether instances of the controller count towards
-the size of the progress bar.
+the size of the progress bar. The `htmlDescription` function should return
+either HTML or a DOM node which gives a brief summary of the content of
+an instance of the controller for use in overviews.
 
-The constructor for the controller class is called with four arguments:
+The `options` for the widget have three special values set:
+    * A function (`_finishedCallback`) which should be called with lines to be added to the results file when the controller is complete.
+    * A `_utils` object which contains some useful functions.
+    * A `_cssPrefix` string, which gives the controller its designated CSS prefix for all CSS class names/ids which it adds to DOM nodes
+      (see section below, "CSS mangling").
 
-    * The `div` which the controller should use to display HTML in.
-    * The options which the controller was given (an object).
-    * A function which should be called with lines to be added to the results file when the controller is complete.
-    * A "utils" object which contains some useful functions.
-
-In the case of `Message`, `finishedCallback` is called with `null` as its argument
+In the case of `Message`, `_finishedCallback` is called with `null` as its argument
 because this controller does not add any lines to the results file.
 In general, the format of a non-null argument to `finishedCallback` is as follows:
 {{{
@@ -846,22 +881,26 @@ In general, the format of a non-null argument to `finishedCallback` is as follow
 As can be seen in the code for `Message`, the `utils` object provides a `setTimeout` method
 similar to the builtin `setTimeout` function of !JavaScript.
 Any timeouts set using this method are automatically cleared when the controller is complete.
+Similarly, a `safeBind` method has been added to jQuery, which ensures that event handlers
+are automatically unregistered once a controller instance is finished.
 
 ==CSS mangling==
 Every class/id name in a CSS file in the `css_includes` directory is prepended
-with the string 'FILENAME-'. This ensures that there are no namespace
-clashes between controllers. Note that if you wish to avoid this behavior (e.g. because
-of a bug in the CSS mangling code that you need to work around),
+with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`;
+this ensures that there are no namespace
+clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
+of a bug in the mangling code that you need to work around),
 you may prefix your CSS file name with `"global_"`; this causes the file to
 be served as-is.
 
 =Cross-browser compatibility=
 I have tested compatibility with the following browsers:
 
-    * Internet Explorer 5.5, 6 and 7.
+    * Internet Explorer 6 and 7. (Note that support for IE 5 has been dropped as of version 0.3 of this software, since the jQuery library doesn't support this browser.)
     * Firefox 1, 1.5, 2, and 3.
     * Safari 3.
-    * Opera 9 (latest point release).
+    * Opera 9.
+    * Google Chrome.
 
 Known cross-browser issues:
 
