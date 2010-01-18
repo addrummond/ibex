@@ -109,7 +109,7 @@ values of the configuration variables. This mode is configured by setting
 the configuration variables `EXTERNAL_CONFIG_URL`, `EXTERNAL_CONFIG_METHOD`
 and `EXTERNAL_CONFIG_PASS_PARAMS`. The first of these variables is self-explanatory;
 the second must be set to `"GET"`; the third should be set to a boolean,
-specifying whether or not `server.py` should set a `dir` paramater in the
+specifying whether or not `server.py` should pass a `dir` paramater in the
 query string giving the directory in which `server.py` resides.
 Note that the values of these three variables may be set either in `server_conf.py`,
 or directly in `server.py`.
