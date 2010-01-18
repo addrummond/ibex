@@ -49,7 +49,7 @@ used to set the server mode and port respectively. Command-line options
 override those set in `server_conf.py`.
 
 *New:* Version 0.3 adds some new ways of configuring the server.
-These are unlikely to be useful to you, but are documented
+These are unlikely to be of interest to most users, but are documented
 in the "New Configuration Methods" section below.
 
 If running the server as a CGI application, make sure that the web
