@@ -11,9 +11,9 @@ See the end of this document for the changelog.
     * Python >= 2.3. (Python 3000 not currently supported.)
 
 =Introduction=
-Webspr allows you to run various kinds of psycholinguistic experiment online.
-(Originally only self-paced reading was supported, hence the name.)  The system
-is modular and the range of possible experiments is steadily growing. Webspr
+Ibex ("Internet Based EXperiments) allows you to run various kinds of psycholinguistic experiment online.
+The system
+is modular and the range of possible experiments is steadily growing. Ibex
 uses !JavaScript and HTML only, and doesn't require the use of plugins such as
 Java or Flash.
 
@@ -27,7 +27,7 @@ it, change to the `www` directory and execute server.py:
 This will start the server on port 3000 by default (so the
 experiment will be at http://localhost:3000/experiment.html).
 
-The stand-alone server is limited to serving files relating to Webspr, so it is
+The stand-alone server is limited to serving files relating to Ibex, so it is
 unlikely to be useful for real work (unless you hide it behind a proxy).
 However, it is useful for testing experimental designs without setting up a
 real HTTP server, and for running experiments offline.
@@ -152,7 +152,7 @@ an example configuration file for lighttpd included in the distribution
 (`example_lighttpd.conf`).
 
 =Basic concepts=
-A Webspr experiment is essentially a sequence of _items_.
+An Ibex experiment is essentially a sequence of _items_.
 Each item is itself a sequence of _entities_. To give a concrete example, each
 item in a self-paced reading experiment might consist of two entities: an
 entity providing a sentence for the subject to step through word by word,
@@ -178,19 +178,19 @@ ITEM 5:
     ENTITY 2: Comprehension question
 }}}
 It is not necessary to construct the full sequence of items and entities
-manually. Webspr provides tools for ordering items in various ways (e.g. for
+manually. Ibex provides tools for ordering items in various ways (e.g. for
 inserting a pause between each item) and for implementing latin square designs.
 More on these shortly.
 
 Each entity is an instance of a _controller_, which determines the kind of
 experimental task that the entity will present.  For example, there is a
 `DashedSentence` controller useful for self-paced reading and speeded
-acceptability judgment tasks.  Webspr has a modular design, where each
+acceptability judgment tasks.  Ibex has a modular design, where each
 controller is a !JavaScript object that follows a standard interface. This
 makes it quite easy to add new controllers if you are familiar with
 !JavaScript/DHTML programming.
 
-Webspr stores results in CSV format. This makes it easy to import results into
+Ibex stores results in CSV format. This makes it easy to import results into
 spreadsheets, Matlab, R, etc. Each entity may contribute zero, one *or more*
 lines to the results file. The first seven columns of each line give generic
 information about the result (e.g. the MD5 hash of the subject's IP address) and
@@ -217,7 +217,7 @@ There are two ways to find out what the values in each column mean.  The
 "manual" method is to interpret the first seven columns of each line as
 specified above, and then to consult the documentation for the relevant
 controllers to determine the format of the subsequent columns. All of the
-controllers that are bundled with the Webspr distribution are fully documented
+controllers that are bundled with the Ibex distribution are fully documented
 here.  An easier method is to look at the comments in the results file: for
 each sequence of lines in the same format, the server adds comments describing
 the values contained in each column.
@@ -233,7 +233,7 @@ the results file. It is now able to handle cases where there are repeating
 patterns of lines in a results file.
 
 =Format of a data file=
-Data files for Webspr are !JavaScript source files, but it is not really
+Data files for Ibex are !JavaScript source files, but it is not really
 necessary to know !JavaScript in order to write one.  The most important part
 of a data file is the declaration of the "items" array, as in the following
 example:
@@ -251,13 +251,13 @@ The "items" array is an array of arrays, where each subarray specifies a single
 item. In the example above, every item contains a single element (multiple
 element items will be covered shortly).
 
-    * The first member of each subarray specifies the _type_ of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Webspr does not interpret these names in any way.
+    * The first member of each subarray specifies the _type_ of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Ibex does not interpret these names in any way.
 
     * The second member specifies the controller.
 
     * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
 
-Once the items array has been created, Webspr must be told the order in which
+Once the items array has been created, Ibex must be told the order in which
 the items should be displayed. There are some moderately sophisticated
 facilities for creating random orderings and latin square designs, but for the
 moment, let's just display the items in the order we gave them in the array.
@@ -401,14 +401,14 @@ equivalence holds:
 {{{
 rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
 }}}
-If no shuffle sequence is specified, Webspr uses the following default
+If no shuffle sequence is specified, Ibex uses the following default
 sequence:
 {{{
 seq(equalTo0, rshuffle(greaterThan0, lessThan0))
 }}}
 
 This will seem rather cryptic to anyone not familiar with the behavior of
-earlier versions of Webspr, where this ordering specification was built in and
+earlier versions of Ibex, where this ordering specification was built in and
 unchangeable. In short, it works well if practice items have type 0, filler
 items have integer types < 0, and real items have integer types > 0.
 
@@ -428,7 +428,7 @@ and predicates quite easily; see `shuffle.js` for the definitions of the `seq`,
 ==Adding separators==
 Normally, it is a good idea to have some sort of padding in between items to
 warn participants that they have finished one item and are starting another.
-Webspr provides the `Separator` item for this purpose. It can either work on a
+Ibex provides the `Separator` item for this purpose. It can either work on a
 timeout or prompt for a keypress. Here's an example:
 {{{
 ["sep", Separator, {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
@@ -521,7 +521,7 @@ same item number and element number in the results file (that based on the
 position of the question item in the data file).
 
 ==Latin square designs==
-Webspr has built-in support for latin square designs. These are implemented by
+Ibex has built-in support for latin square designs. These are implemented by
 assigning each item a _group_ in addition to its type. Each participant sees
 only one item out of all the items in any given group. To give an example, we
 could place both of the "relclause" sentences from the previous example in the
@@ -567,7 +567,7 @@ Note that the second number in the pair must be the same for all items in the gr
 a more general way of implementing more complex latin square designs.
 
 =Communication between elements=
-Webspr allows for a limited amount of communication between elements.  Each
+Ibex allows for a limited amount of communication between elements.  Each
 element may set keys in a hashtable which is passed to the next element.  The
 hashtable is cleared between elements, so there is no possibility of
 long-distance communication.
@@ -755,7 +755,7 @@ associated, it is easy to see which files are superfluous.
 controllers.
 
 =HTML Code=
-Webspr provides two ways of passing HTML code to the `Message` controller
+Ibex provides two ways of passing HTML code to the `Message` controller
 (currently the only controller which has an `html` option). The first is simply
 to pass a !JavaScript string containing the HTML code. The second is to pass a
 !JavaScript data structure representing the HTML Code. For example, here is
