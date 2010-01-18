@@ -94,7 +94,7 @@ in a Windows environment (but unless there is very high traffic, it's
 purely theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will
-almost certainly work on any system with Python 2.3/2.4/2.5).  The CGI
+almost certainly work on any system with Python 2.3-2.6).  The CGI
 server has been tested on OS X and Linux using the lighttpd web server
 in both cases.
 
