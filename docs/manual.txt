@@ -885,7 +885,7 @@ Similarly, a `safeBind` method has been added to jQuery, which ensures that even
 are automatically unregistered once a controller instance is finished.
 
 ==CSS mangling==
-Every class/id name in a CSS file in the `css_includes` directory is prepended
+(New in version 0.3) Every class/id name in a CSS file in the `css_includes` directory is prepended
 with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`;
 this ensures that there are no namespace
 clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
