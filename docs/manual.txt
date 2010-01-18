@@ -7,6 +7,9 @@ latest version of this document can be found at
 http://code.google.com/p/webspr/wiki/Documentation_0.3.
 See the end of this document for the changelog.
 
+Note that prior to version 0.3 this software was called "webspr",
+not "Ibex".
+
 =Requirements=
     * Python >= 2.3. (Python 3000 not currently supported.)
 
@@ -28,7 +31,7 @@ This will start the server on port 3000 by default (so the
 experiment will be at http://localhost:3000/experiment.html).
 
 The stand-alone server is limited to serving files relating to Ibex, so it is
-unlikely to be useful for real work (unless you hide it behind a proxy).
+unlikely to be useful for real work (unless perhaps you hide it behind a proxy).
 However, it is useful for testing experimental designs without setting up a
 real HTTP server, and for running experiments offline.
 
