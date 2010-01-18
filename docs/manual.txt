@@ -482,7 +482,7 @@ var items = [
 ==Manipulating individual items==
 So far, we've been treating items as atoms for the purposes of shuffle
 sequences -- although an item might be composed of several elements, the
-operations `seq`, `randomize` and `shuffle` ignore this internal structure.
+operations `seq`, `randomize`, `shuffle` and `sepWith` ignore this internal structure.
 However, it is sometimes useful to be able to append or prepend a particular
 sequence of elements to every item.  For example, if you are doing a speeded
 acceptability judgment task, you might want every sentence to be followed by
