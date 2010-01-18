@@ -751,7 +751,7 @@ in order to reduce the size of the file that needs to be downloaded. Since the
 files in both directories are named after the controllers with which they are
 associated, it is easy to see which files are superfluous.
 
-*However:* note that the file `main.css` is required by all
+*However:* note that the file `global_main.css` is required by all
 controllers.
 
 =HTML Code=
