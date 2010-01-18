@@ -15,7 +15,7 @@ not "Ibex".
     * Python >= 2.3. (Python 3000 not currently supported.)
 
 =Introduction=
-Ibex ("Internet Based EXperiments) allows you to run various kinds of psycholinguistic experiment online.
+Ibex ("Internet Based EXperiments") allows you to run various kinds of psycholinguistic experiment online.
 The system
 is modular and the range of possible experiments is steadily growing. Ibex
 uses !JavaScript and HTML only, and doesn't require the use of plugins such as
