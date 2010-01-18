@@ -243,10 +243,10 @@ example:
 {{{
 var items = [
 
-["filler", DashedSentence, {s: "Here's a silly filler sentence"}],
-["filler", DashedSentence, {s: "And another silly filler sentence"}],
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"}]
+["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
+["filler", "DashedSentence", {s: "And another silly filler sentence"}],
+["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
+["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
 
 ]; // NOTE SEMICOLON HERE
 }}}
@@ -275,14 +275,14 @@ easiest way to do this is to add a second element to each item:
 {{{
 var items = [
 
-["filler", DashedSentence, {s: "Here's a silly filler sentence"},
-           Question, {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
-["filler", DashedSentence, {s: "And another silly filler sentence"},
-           Question, {q: "Does this sentence have a relative clause?", as: ["Yes", "No"]],
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"},
-              Question, {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"},
-              Question, {q: "Was the first word of that sentence 'frog'?", ["Yes", "No"]}]
+["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+           "Question", {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
+["filler", "DashedSentence", {s: "And another silly filler sentence"},
+           "Question", {q: "Does this sentence have a relative clause?", as: ["Yes", "No"]],
+["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+              "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
+["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+              "Question", {q: "Was the first word of that sentence 'frog'?", ["Yes", "No"]}]
 
 ]; // NOTE SEMICOLON HERE
 }}}
@@ -294,8 +294,8 @@ example of how defaults for multiple controllers are specified, let's also set
 the `mode` option of `DashedSentence` to "speeded acceptability":
 {{{
 var defaults = [
-    Question, {as: ["Yes", "No"]},
-    DashedSentence, {mode: "speeded acceptability"}
+    "Question", {as: ["Yes", "No"]},
+    "DashedSentence", {mode: "speeded acceptability"}
 ];
 }}}
 Once this definition is in place, we can drop the specification of the `as`
@@ -304,20 +304,20 @@ option for each Question element. The final data file looks like this:
 var shuffleSequence = seq(anyType);
 
 var defaults = [
-    Question, {as: ["Yes", "No"]},
-    DashedSentence, {mode: "speeded acceptability"}
+    "Question", {as: ["Yes", "No"]},
+    "DashedSentence", {mode: "speeded acceptability"}
 ];
 
 var items = [
 
-["filler", DashedSentence, {s: "Here's a silly filler sentence"},
-           Question, {q: "Is this a filler sentence?"}],
-["filler", DashedSentence, {s: "And another silly filler sentence"},
-           Question, {q: "Does this sentence have a relative clause?"}],
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"},
-              Question, {q: "Was there movement through [Spec,CP]?"}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"},
-              Question, {q: "Was the first word of that sentence 'frog'?"}]
+["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+           "Question", {q: "Is this a filler sentence?"}],
+["filler", "DashedSentence", {s: "And another silly filler sentence"},
+           "Question", {q: "Does this sentence have a relative clause?"}],
+["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+              "Question", {q: "Was there movement through [Spec,CP]?"}],
+["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+              "Question", {q: "Was the first word of that sentence 'frog'?"}]
 
 ];
 }}}
@@ -434,7 +434,7 @@ warn participants that they have finished one item and are starting another.
 Ibex provides the `Separator` item for this purpose. It can either work on a
 timeout or prompt for a keypress. Here's an example:
 {{{
-["sep", Separator, {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
+["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
 }}}
 When the `transfer` option is set to 1000, this specifies that there should be
 a 1000ms wait before the next item. The `normalMessage` option gives the
@@ -459,22 +459,22 @@ the order in which they appear in the `items` array. Here's the modified file:
 var shuffleSequence = sepWith("sep", not("sep"));
 
 var defaults = [
-    Question, {as: ["Yes", "No"]},
-    DashedSentence, {mode: "speeded acceptability"}
+    "Question", {as: ["Yes", "No"]},
+    "DashedSentence", {mode: "speeded acceptability"}
 ];
 
 var items = [
 
-["sep", Separator, {transfer: 1500, normalMessage: "Please wait for the next item."}],
+["sep", "Separator", {transfer: 1500, normalMessage: "Please wait for the next item."}],
 
-["filler", DashedSentence, {s: "Here's a silly filler sentence"},
-           Question, {q: "Is this a filler sentence?"}],
-["filler", DashedSentence, {s: "And another silly filler sentence"},
-           Question, {q: "Does this sentence have a relative clause?"}],
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"},
-              Question, {q: "Was there movement through [Spec,CP]?"}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"},
-              Question, {q: "Was the first word of that sentence 'frog'?"}]
+["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+           "Question", {q: "Is this a filler sentence?"}],
+["filler", "DashedSentence", {s: "And another silly filler sentence"},
+           "Question", {q: "Does this sentence have a relative clause?"}],
+["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+              "Question", {q: "Was there movement through [Spec,CP]?"}],
+["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+              "Question", {q: "Was the first word of that sentence 'frog'?"}]
 
 ];
 }}}
@@ -500,18 +500,18 @@ sentences evenly spaced:
 var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
 
 var defaults = [
-    DashedSentence, {mode: "speeded acceptability"}
+    "DashedSentence", {mode: "speeded acceptability"}
 ];
 
 var items = [
 
-["question", Question, {q: "Was that a good sentence?", as: ["Yes", "No"]}],
+["question", "Question", {q: "Was that a good sentence?", as: ["Yes", "No"]}],
 
-["filler", DashedSentence, {s: "Here's a silly filler sentence"}],
-["filler", DashedSentence, {s: "And another silly filler sentence"}],
+["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
+["filler", "DashedSentence", {s: "And another silly filler sentence"}],
 
-["relclause", DashedSentence, {s: "A sentence that has a relative clause"}],
-["relclause", DashedSentence, {s: "Another sentence that has a relative clause"}]
+["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
+["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
 
 ];
 }}}
@@ -530,8 +530,8 @@ only one item out of all the items in any given group. To give an example, we
 could place both of the "relclause" sentences from the previous example in the
 same group using the following code:
 {{{
-[["relclause", 1], DashedSentence, {s: "A sentence that has a relative clause"}],
-[["relclause", 1], DashedSentence, {s: "Another sentence that has a relative clause"}]
+[["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
+[["relclause", 1], "DashedSentence", {s: "Another sentence that has a relative clause"}]
 }}}
 Now, any given participant will see only one of these
 sentences. Designs are rotated using a counter stored on the
@@ -562,8 +562,8 @@ example, suppose that we have another group (group 2), and we want choices from
 this group to be linked to choices from group 1 in the example above.  The
 following code will do the trick:
 {{{
-[["relclause", [2, 1]], DashedSentence, {s: "I am paired with 'A sentence that has a relative clause'"}],
-[["relclause", [2, 1]], DashedSentence, {s: "I am paired with 'Another sentence that has a relative clause'"}]
+[["relclause", [2, 1]], "DashedSentence", {s: "I am paired with 'A sentence that has a relative clause'"}],
+[["relclause", [2, 1]], "DashedSentence", {s: "I am paired with 'Another sentence that has a relative clause'"}]
 }}}
 Note that the second number in the pair must be the same for all items in the group.
 *Warning:* This feature may be removed in future releases if I get around to implementing
