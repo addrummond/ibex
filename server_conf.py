@@ -87,4 +87,4 @@ DATA_INCLUDES_LIST = ["block"]  # Ditto.
 
 # EXTERNAL_CONFIG_URL = "http:///foo.net:9854/conf" # "file:///foo/bar/conf"
 # EXTERNAL_CONFIG_PASS_PARAMS = True
-# EXTERNAL_CONFIG_METHOD = "GET"
+# EXTERNAL_CONFIG_METHOD = "GET" # 'POST' is currently not implemented.
