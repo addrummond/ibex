@@ -13,7 +13,8 @@ var defaults = [
                                presentAsScale: true,
                                instructions: "Use number keys or click boxes to answer.",
                                leftComment: "(Bad)", rightComment: "(Good)" },
-    "Question", { hasCorrect: true }
+    "Question", { hasCorrect: true },
+    "Message", { hideProgressBar: true }
 ];
 
 var items = [
