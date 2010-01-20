@@ -325,7 +325,7 @@ function finishedCallback(resultsLines) {
             var group = runningOrder[posInRunningOrder].group;
             if (group && group.length)
                 group = group[0]
-            var preamble = [ [0, currentItem.controller.name ? currentItem.controller.name : "UNKNOWN"],
+            var preamble = [ [0, currentItem.controller ? currentItem.controller : "UNKNOWN"],
                              [1, currentItem.itemNumber],
                              [2, currentItem.elementNumber],
                              [3, runningOrder[posInRunningOrder].type],

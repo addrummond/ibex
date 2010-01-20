@@ -1,7 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-__Question_callback__ = null;
-__Questions_answers__ = null;
+(function () {
+
+var __Question_callback__ = null;
+var __Questions_answers__ = null;
 
 $.widget("ui.Question", {
     _init: function () {
@@ -239,6 +241,8 @@ $.widget("ui.Question", {
         this.creationTime = new Date().getTime();
     }
 });
+
+})();
 
 ibex_controller_set_properties("Question", {
     obligatory: ["as"],
