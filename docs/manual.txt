@@ -22,6 +22,10 @@ uses !JavaScript and HTML only, and doesn't require the use of plugins such as
 Java or Flash.
 
 =Setting up the server=
+*Note:* If you are using the Ibex Farm, you can skip to the "Basic Concepts" section
+below. For most applications you will only need to modify the file `example_data.js`.
+(The Ibex Farm allows you to modify/upload some other files, but this rarely necessary.)
+
 There are two ways of running the server: either using the stand-alone toy HTTP server,
 or as a CGI process. By default, the server runs in stand-alone mode. To start
 it, change to the `www` directory and execute server.py:
