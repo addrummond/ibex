@@ -267,7 +267,7 @@ if (conf_showProgressBar) {
         $(document.createElement("p"))
         .addClass("progress-text")
         .css('text-align', conf_centerItems ? "center" : "left")
-        .text('progress');
+        .text(conf_progressBarText);
 
     showProgress.append(barContainer).append(p);
     $("body").prepend(thingToPrependToBody);
