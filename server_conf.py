@@ -56,6 +56,9 @@ CSS_INCLUDES_DIR = "css_includes"
 # The name of the directory where data files are stored.
 # ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 DATA_INCLUDES_DIR = "data_includes"
+# The name of the directory where html chunks are stored.
+# ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
+CHUNK_INCLUDES_DIR = "chunk_includes"
 # ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
 OTHER_INCLUDES_DIR = "other_includes"
 

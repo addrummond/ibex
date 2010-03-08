@@ -79,14 +79,39 @@ function jsHTML(html, namesHash) {
 }
 function jsHTMLWithNames(names, html) { return jsHTML(html, names); }
 
-function htmlCodeToDOM(html) {
+function htmlCodeToDOM(html, readyCallback) {
     if (typeof(html) == "string") {
         var d = document.createElement("div");
         d.innerHTML = html;
+        if (readyCallback)
+            readyCallback(d);
         return d;
     }
+    else if (typeof(html.include) == "string") {
+        var d = $("<div>");
+        var requestCompleted = false;
+        var id = setTimeout(function () { if (! requestCompleted) d.append('<i><small>loading...</small></i>'); }, 500);
+
+        $.ajax({
+            async: true,
+            url: 'server.py?chunk=' + escape(html.include),
+            dataType: "text",
+            error: function () { alert("ERROR: Could not retreive HTML from server.") },
+            success: function (data) {
+                requestCompleted = true;
+                clearTimeout(id);
+                d[0].innerHTML = data;
+                if (readyCallback)
+                    readyCallback(d[0]);
+            }
+        });
+        return d[0];
+    }
     else {
-        return jsHTML(html);
+        var h = jsHTML(html);
+        if (readyCallback)
+            readyCallback(h);
+        return h;
     }
 }
 

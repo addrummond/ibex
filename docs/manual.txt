@@ -764,7 +764,7 @@ associated, it is easy to see which files are superfluous.
 controllers.
 
 =HTML Code=
-Ibex provides two ways of passing HTML code to the `Message` controller
+Ibex provides *three* ways of passing HTML code to the `Message` controller
 (currently the only controller which has an `html` option). The first is simply
 to pass a !JavaScript string containing the HTML code. The second is to pass a
 !JavaScript data structure representing the HTML Code. For example, here is
@@ -802,6 +802,13 @@ following example:
 ]
 }}}
 Spaces are _not_ automatically inserted before and after elements.
+
+The third is to place the HTML in a file in the `chunk_includes` dir.
+Files can be included as follows:
+{{{
+{ html: { include: "file_name.html" } }
+}}}
+(This option is new in 0.3-beta3.)
 
 =Overviews=
 Sometimes it's useful to get an overview of the sequence of items in an
@@ -955,7 +962,13 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta1 (current version) and 0.2.7:
+Changes between 0.3-beta3 (current version) and 0.3-beta2:
+    * New method of passing HTML to the `Message` controller (HTML files can be included from `chunk_includes` dir).
+
+Changes between 0.3-beta2 and 0.3-beta1:
+    * Bug fixes.
+
+Changes between 0.3-beta1 and 0.2.7:
     * Name changed to "Ibex" (Internet Based EXperiments).
     * Removed dependence on `paste` module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
     * !JavaScript code now uses jQuery 1.4. Controllers are jQuery.ui widgets.

@@ -667,7 +667,7 @@ logger.addHandler(logging.FileHandler(filename=log_filename))
 # (except the optional IBEX_WORKING_DIR and PORT variables).
 for k in ['RESULT_FILE_NAME',
           'RAW_RESULT_FILE_NAME', 'SERVER_STATE_DIR',
-          'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR',
+          'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR', 'CHUNK_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'CACHE_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR', 'INCLUDE_COMMENTS_IN_RESULTS_FILE',
           'INCLUDE_HEADERS_IN_RESULTS_FILE']:
@@ -1116,8 +1116,21 @@ def control(env, start_response):
                 if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
                     # UGLY: We just prepend a variable declaration to the file.
                     retlist = ["var conf_showOverview = true;\n\n"] + retlist
-                cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=utif-8')])
+                cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
                 return retlist
+
+        # Is it a request for an HTML chunk?
+        if qs_hash.has_key('chunk'):
+            f = None
+            contents = None
+            try:
+                f = open(os.path.join(PWD, c['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
+                contents = f.read()
+            except IOError:
+                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+            cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
+            return [contents]
 
         # (All branches above end with a return from this function.)
         #

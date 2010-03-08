@@ -95,7 +95,6 @@ ibex_controller_set_properties("Message", {
     obligatory: ["html"],
     countsForProgressBar: false,
     htmlDescription: function (opts) {
-        var d = htmlCodeToDOM(opts.html);
-        return truncateHTML(d, 100);
+        return truncateHTML(htmlCodeToDOM(opts.html), 100);
     }
 });
