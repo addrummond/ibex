@@ -1,4 +1,4 @@
-var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2", "qf")));
+var shuffleSequence = seq("intro", "info", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2", "qf")));
 var practiceItemTypes = ["practice"];
 
 var ds = "DashedSentence";
@@ -23,6 +23,14 @@ var items = [
 
 ["intro", "Message", {consentRequired: true,
                       html: { include: "example_intro.html" } } ],
+
+["info", "Form", {
+                     html: { include: "example_info.html" },
+                     validators: {
+                         age: function (s) { if (s.match(/^\d+$/)) return true; else return "Bad value for 'age'"; }
+                     }
+                 } ],
+
 ["break", "Message", {transfer: 10000,
                       html: { include: "example_transfer.html" } } ],
 

@@ -1,0 +1,116 @@
+/* This software is licensed under a BSD license; see the LICENSE file for details. */
+
+$.widget("ui.Form", {
+    _init: function () {
+        this.cssPrefix = this.options._cssPrefix;
+        this.finishedCallback = this.options._finishedCallback;
+        this.utils = this.options._utils;
+
+        this.html = dget(this.options, "html");
+        this.continueMessage = dget(this.options, "continueMessage", "Click here to continue");
+        this.checkedValue = dget(this.options, "checkedValue", "yes");
+        this.uncheckedValue = dget(this.options, "uncheckedValue", "no");
+        this.validators = dget(this.options, "validators", { });
+
+        var t = this;
+
+        function alertOrAddError(name, error) {
+            var e = $("#error_for_" + name);
+            if (e.length > 0)
+                $(e).addClass(t.cssPrefix + "error-text").text(error);
+            else 
+                alert(error);
+        }
+
+        function handleClick(dom) {
+            return function (e) {
+                e.preventDefault();
+
+                // Get rid of any previous errors.
+                $("." + t.cssPrefix + "error-text").empty();
+
+                var rlines = [];
+
+                var inps = $(dom).find("input[type=text]");
+                var tas = $(dom).find("textarea");
+                for (var i = 0; i < tas.length; ++i) { inps.push(tas[i]); }
+
+                for (var i = 0; i < inps.length; ++i) {
+                    var inp = $(inps[i]);
+
+                    if (inp.hasClass("obligatory") && ((! inp.attr('value')) || inp.attr('value').match(/^\s*$/))) {
+                        alertOrAddError(inp.attr('name'), "The '" + inp.attr('name') + "' field is obligatory");
+                        return;
+                    }
+
+                    if (t.validators[inp.attr('name')]) {
+                        var er = t.validators[inp.attr('name')](inp.attr('value'));
+                        if (typeof(er) == "string") {
+                            alertOrAddError(inp.attr('name'), er);
+                            return;
+                        }
+                    }
+
+                    rlines.push([["Field name", custom_url_encode(inp.attr('name'))],
+                                 ["Field value", custom_url_encode(inp.attr('value'))]]);
+                }
+
+                var checks = $(dom).find("input[type=checkbox]");
+                for (var i = 0; i < checks.length; ++i) {
+                    var check = $(checks[i]);
+                    rlines.push([["Field name", check.attr('name')],
+                                 ["Field value", check.attr('checked') ? t.checkedValue : t.uncheckedValue]]);
+                }
+
+                var rads = $(dom).find("input[type=radio]");
+                // Sort by name.
+                var rgs = { };
+                for (var i = 0; i < rads.length; ++i) {
+                    var rad = $(rads[i]);
+                    if (rad.attr('name')) {
+                        if (! rgs[rad.attr('name')])
+                            rgs[rad.attr('name')] = [];
+                        rgs[rad.attr('name')].push(rad);
+                    }
+                }
+                for (k in rgs) {
+                    // Check if it's oblig.
+                    var oblig = false;
+                    var oneIsSelected = false;
+                    var val;
+                    for (var i = 0; i < rgs[k].length; ++i) {
+                        if (rgs[k][i].hasClass('obligatory')) oblig = true;
+                        if (rgs[k][i].attr('checked')) {
+                            oneIsSelected = true;
+                            val = rgs[k][i].attr('value');
+                        }
+                    }
+                    if (oblig && (! oneIsSelected)) {
+                        alertOrAddError(rgs[k][0].attr('name'), "You must select an option for '" + rgs[k][0].attr('name') + "'.");
+                        return;
+                    }
+                    if (oneIsSelected) {
+                        rlines.push([["Field name", rgs[k][0].attr('name')],
+                                     ["Field value", rgs[k][0].attr('value')]]);
+                    }
+                }
+
+                t.finishedCallback(rlines);
+            }
+        }
+
+        htmlCodeToDOM(this.html, function (dom) {
+            t.element.append(dom);
+            t.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
+                                             .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
+                                             .click(handleClick(dom))));
+        });
+    }
+});
+
+ibex_controller_set_properties("Form", {
+    obligatory: ["html"],
+    htmlDescription: function (opts) {
+        return $(document.createElement("div")).text(opts.s)[0];
+    }
+});
