@@ -11,13 +11,26 @@ $.widget("ui.Form", {
         this.checkedValue = dget(this.options, "checkedValue", "yes");
         this.uncheckedValue = dget(this.options, "uncheckedValue", "no");
         this.validators = dget(this.options, "validators", { });
+        this.errorCSSClass = dget(this.options, "errorCSSClass", "error");
+        this.obligatoryErrorGenerator =
+            dget(this.options, "obligatoryErrorGenerator",
+                 function (field) { return "The \u2018" + field + "\u2019 field is obligatory."; });
+        this.obligatoryRadioErrorGenerator =
+            dget(this.options, "obligatoryRadioErrorGenerator",
+                 function (field) { return "You must select an option for \u2018" + field + "\u2019."; });
 
         var t = this;
 
         function alertOrAddError(name, error) {
-            var e = $("#error_for_" + name);
+            var ae = $("label." + escape(t.errorCSSClass) + "[for=__ALL_FIELDS__]");
+            if (ae.length > 0) {
+                ae.addClass(t.cssPrefix + "error-text").text(error);
+                return;
+            }
+
+            var e = $("label." + escape(t.errorCSSClass) + "[for=" + escape(name) + "]");
             if (e.length > 0)
-                $(e).addClass(t.cssPrefix + "error-text").text(error);
+                e.addClass(t.cssPrefix + "error-text").text(error);
             else 
                 alert(error);
         }
@@ -39,7 +52,7 @@ $.widget("ui.Form", {
                     var inp = $(inps[i]);
 
                     if (inp.hasClass("obligatory") && ((! inp.attr('value')) || inp.attr('value').match(/^\s*$/))) {
-                        alertOrAddError(inp.attr('name'), "The '" + inp.attr('name') + "' field is obligatory");
+                        alertOrAddError(inp.attr('name'), t.obligatoryErrorGenerator(inp.attr('name')));
                         return;
                     }
 
@@ -86,7 +99,7 @@ $.widget("ui.Form", {
                         }
                     }
                     if (oblig && (! oneIsSelected)) {
-                        alertOrAddError(rgs[k][0].attr('name'), "You must select an option for '" + rgs[k][0].attr('name') + "'.");
+                        alertOrAddError(rgs[k][0].attr('name'), t.obligatoryRadioErrorGenerator(rgs[k][0].attr('name')));
                         return;
                     }
                     if (oneIsSelected) {
