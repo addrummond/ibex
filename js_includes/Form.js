@@ -35,9 +35,12 @@ $.widget("ui.Form", {
                 alert(error);
         }
 
+        var HAS_LOADED = false;
+
         function handleClick(dom) {
             return function (e) {
                 e.preventDefault();
+                if (! HAS_LOADED) return;
 
                 // Get rid of any previous errors.
                 $("." + t.cssPrefix + "error-text").empty();
@@ -112,12 +115,11 @@ $.widget("ui.Form", {
             }
         }
 
-        htmlCodeToDOM(this.html, function (dom) {
-            t.element.append(dom);
-            t.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
-                                             .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
-                                             .click(handleClick(dom))));
-        });
+        var dom = htmlCodeToDOM(this.html, function (dom) { HAS_LOADED = true; });
+        t.element.append(dom);
+        t.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
+                                         .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
+                                         .click(handleClick(dom))));
     }
 });
 

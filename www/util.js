@@ -89,18 +89,20 @@ function htmlCodeToDOM(html, readyCallback) {
     }
     else if (typeof(html.include) == "string") {
         var d = $("<div>");
-        var requestCompleted = false;
-        var id = setTimeout(function () { if (! requestCompleted) d.append('<i><small>loading...</small></i>'); }, 500);
+        var id = setTimeout(function () { d.append($("<span>").html('<i><small>loading...</small></i>')); }, 500);
 
         $.ajax({
+            cache: false,
             async: true,
             url: 'server.py?chunk=' + escape(html.include),
             dataType: "text",
-            error: function () { alert("ERROR: Could not retreive HTML from server.") },
+            error: function () { alert("ERROR: Could not retreive HTML from server."); },
             success: function (data) {
-                requestCompleted = true;
                 clearTimeout(id);
-                d[0].innerHTML = data;
+                // Setting innerHTML on d[0] can cause weird issues.
+                d.empty();
+                d.append(data);
+//                d.replaceWith($("<div>").html(data));
                 if (readyCallback)
                     readyCallback(d[0]);
             }
