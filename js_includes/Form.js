@@ -123,6 +123,7 @@ $.widget("ui.Form", {
 
 ibex_controller_set_properties("Form", {
     obligatory: ["html"],
+    countsForProgressBar: false,
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.s)[0];
     }
