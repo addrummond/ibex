@@ -724,43 +724,44 @@ The `VBox` controller simply concatenates the results of its children in the ord
 
 ==Form==
 The `Form` controller collects data from an HTML form presented to the participant.
-The form may contain any combination of text boxes (<input type="text">), text areas (<textarea>),
-checkboxes (<input type="checkbox">) and radio buttons (<input type="radio">).
-It is *not* necessary to wrap the <input> tags within a <form> tag; nor should
+The form may contain any combination of text boxes (`<input type="text">`), text areas (`<textarea>`),
+checkboxes (`<input type="checkbox">`) or radio buttons (`<input type="radio">`).
+It isn't necessary to wrap the `<input>` tags within a `<form>` tag; nor should
 you include a submit button.
 
-You may indicate that a text area or radio button group is obligatory by adding
-the "obligatory" class to it (e.g. <input type="text" class="obligatory">).
+You can indicate that a text area or radio button group is obligatory by adding
+the "obligatory" class to it (e.g. `<input type="text" class="obligatory">`).
 In the case of a group of radio buttons, you need only add the "obligatory" class
-to one button in the group.
+to one button in the group. (As usual, radio buttons in a single group should
+all have the same 'name' attribute.)
 
 By default, failure to fill in an obligatory field is signaled by an alert dialog.
-However, you may indicate that the error message is to be displayed on the page
+However, you can indicate that the error message is to be displayed on the page
 by inserting an empty label tag in your form of the following sort:
 {{{
 <label class="error" for="FIELD_NAME"></label>
 }}}
-(The CSS class is configurable; see options.) If you want all error messages to
-be displayed in the same location, you can use the special value for 'for' "__ALL_FIELDS__".
+If you want all error messages to
+be displayed in the same location, add a label with 'for' set to "__ALL_FIELDS__".
 
 *Options*
 
 || *Option* || *Default* || *Description* ||
 || html || _obligatory_ || As for the `Message` controller. ||
-|| continueMessage || "Click here to continue" ||
+|| continueMessage ||  "Click here to continue" || ||
 || checkedValue || `"yes"` || The value stored in the results file when a checkbox is checked. ||
 || uncheckedValue || `"no"`" || The value stored in the results file when a checkbox is unchecked. ||
 || validators || `{ }` || A !JavaScript dictionary mapping field names to validating functions. Functions take the field value as their sole argument, and return `true` if valid and an error string otherwise. ||
-|| errorCSSClass || error || The CSS class used to indicate that a <label> tag is a placeholder for error messages. ||
+|| errorCSSClass || error || The CSS class used to indicate that a `<label>` tag is a placeholder for error messages. ||
 || obligatoryErrorGenerator || `...` || A function from field names to error messages (used when an obligatory text box or text area is not filled in). ||
-|| obligatoryRadioErrorGenerator || As above but for radio button groups. ||
+|| obligatoryRadioErrorGenerator || `...` || As above but for radio button groups. ||
 
 *Results*
-For each <input> or <textarea> tag, there is a line in the results file with the
+For each `<input>` or `<textarea>` tag, there is a line in the results file with the
 following two columns:
 
 || *Column* || *Description* ||
-|| 1        || The name of the field (taken from the 'name' attribute of the <input> or <textarea>). ||
+|| 1        || The name of the field (taken from the 'name' attribute of the `<input>` or `<textarea>`). ||
 || 2        || The answer given by the participant. ||
 
 =Further configuration=
@@ -1979,7 +1980,12 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta2 (current version) and 0.3-beta2:
+Changes between 0.3-beta3 (current version) and 0.3-beta2:
+    * New `Form` controller for collecting information from participants.
+    * Allow HTML to be passed to the `Message` and `Form` controllers by referencing an external HTML file.
+    * Minor bug fixes.
+
+Changes between 0.3-beta2 (current version) and 0.3-beta1:
     * Fixed bug which prevented controller names from appearing in results file.
     * Stop `Question` controller from polluting global !JavaScript namespace unnecessarily.
 
