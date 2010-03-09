@@ -805,9 +805,14 @@ associated, it is easy to see which files are superfluous.
 controllers.
 
 =HTML Code=
-Ibex provides *three* ways of passing HTML code to the `Message` controller
-(currently the only controller which has an `html` option). The first is simply
-to pass a !JavaScript string containing the HTML code. The second is to pass a
+Ibex provides three ways of passing HTML code to the `Message` controller
+(currently the only controller which has an `html` option).
+
+==Way 1: HTML in !JavaScript String==
+Pass a !JavaScript string containing the HTML code.
+
+==Way 2: HTML as !JavaScript data structre==
+Pass a
 !JavaScript data structure representing the HTML Code. For example, here is
 the representation of a `div` element containing two paragraphs:
 {{{
@@ -844,12 +849,14 @@ following example:
 }}}
 Spaces are _not_ automatically inserted before and after elements.
 
-The third is to place the HTML in a file in the `chunk_includes` dir.
-Files can be included as follows:
+==Way 3: HTML in separate file==
+(New in 0.3-beta3.)
+
+Place the HTML in a file in the `chunk_includes` dir.
+Files in this directory can be included as follows:
 {{{
 { html: { include: "file_name.html" } }
 }}}
-(This option is new in 0.3-beta3.)
 
 =Overviews=
 Sometimes it's useful to get an overview of the sequence of items in an
