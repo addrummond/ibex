@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta2. The 0.1.x
+This documentation covers 0.3-beta3. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
