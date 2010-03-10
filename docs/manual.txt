@@ -952,8 +952,8 @@ are automatically unregistered once a controller instance is finished.
 (New in version 0.3.)
 
 Every class/id name in a CSS file in the `css_includes` directory is prepended
-with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`;
-this ensures that there are no namespace
+with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`.
+This ensures that there are no namespace
 clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
 of a bug in the mangling code that you need to work around),
 you may prefix your CSS file name with `"global_"`; this causes the file to
