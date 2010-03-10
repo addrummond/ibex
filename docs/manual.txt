@@ -8,7 +8,7 @@ http://code.google.com/p/webspr/wiki/Documentation03
 
 See the end of this document for the changelog.
 
-Note that prior to version 0.3 this software was called "webspr",
+Prior to version 0.3 this software was called "webspr",
 not "Ibex".
 
 =Requirements=
