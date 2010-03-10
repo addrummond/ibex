@@ -809,10 +809,10 @@ controllers.
 Ibex provides three methods of passing HTML code to the `Message` and `Form` controllers
 (currently the only controllers which have an `html` option).
 
-==Method 1: HTML in !JavaScript String==
+==Method 1: HTML in a !JavaScript String==
 Pass a !JavaScript string containing the HTML code.
 
-==Method 2: HTML as !JavaScript data structre==
+==Method 2: HTML as a !JavaScript data structre==
 Pass a
 !JavaScript data structure representing the HTML Code. For example, here is
 the representation of a `div` element containing two paragraphs:
@@ -850,7 +850,7 @@ following example:
 }}}
 Spaces are _not_ automatically inserted before and after elements.
 
-==Method 3: HTML in separate file==
+==Method 3: HTML in a separate file==
 (New in 0.3-beta3.)
 
 Place the HTML in a file in the `chunk_includes` dir.
