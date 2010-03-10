@@ -731,7 +731,7 @@ you include a submit button.
 
 You can indicate that a text area or radio button group is obligatory by adding
 the "obligatory" class to it (e.g. `<input type="text" class="obligatory">`).
-In the case of a group of radio buttons, you need only add the "obligatory" class
+For groups of radio buttons, you need only add the "obligatory" class
 to one button in the group. (As usual, radio buttons in a single group should
 all have the same 'name' attribute.)
 
