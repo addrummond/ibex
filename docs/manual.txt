@@ -750,13 +750,14 @@ be displayed in the same location, add a `<label>` with 'for' set to "__ALL_FIEL
 || html || _obligatory_ || As for the `Message` controller. ||
 || continueMessage ||  "Click here to continue" || ||
 || checkedValue || `"yes"` || The value stored in the results file when a checkbox is checked. ||
-|| uncheckedValue || `"no"`" || The value stored in the results file when a checkbox is unchecked. ||
+|| uncheckedValue || `"no"` || The value stored in the results file when a checkbox is unchecked. ||
 || validators || `{ }` || A !JavaScript dictionary mapping field names to validating functions. Functions take the field value as their sole argument, and return `true` if valid and an error string otherwise. ||
 || errorCSSClass || error || The CSS class used to indicate that a `<label>` tag is a placeholder for error messages. ||
 || obligatoryErrorGenerator || `...` || A function from field names to error messages (used when an obligatory text box or text area is not filled in). ||
 || obligatoryRadioErrorGenerator || `...` || As above but for radio button groups. ||
 
 *Results*
+
 For each `<input>` or `<textarea>` tag, there is a line in the results file with the
 following two columns:
 
