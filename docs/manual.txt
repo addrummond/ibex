@@ -859,13 +859,6 @@ Files in this directory can be included as follows:
 { html: { include: "file_name.html" } }
 }}}
 
-=Overviews=
-Sometimes it's useful to get an overview of the sequence of items in an
-experiment without actually running through each item. There are two ways of
-getting webspr to display an overview of this sort. The first is to add the
-statement `var showOverview = true;` to your data file.  The second is
-to go to the page `overview.html` instead of `experiment.html`.
-
 =Creating your own controllers=
 This is quite easy if you are familiar with !JavaScript/DHTML
 and the jQuery !JavaScript library. (One of the changes in Ibex
@@ -958,6 +951,13 @@ clashes between controllers. Note that if you wish to prevent automatic CSS mang
 of a bug in the mangling code that you need to work around),
 you may prefix your CSS file name with `"global_"`. This causes the file to
 be served as-is.
+
+=Overviews=
+Sometimes it's useful to get an overview of the sequence of items in an
+experiment without actually running through each item. There are two ways of
+getting webspr to display an overview of this sort. The first is to add the
+statement `var showOverview = true;` to your data file.  The second is
+to go to the page `overview.html` instead of `experiment.html`.
 
 =Cross-browser compatibility=
 I have tested compatibility with the following browsers:
