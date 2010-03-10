@@ -417,7 +417,7 @@ def css_parse(css):
     state = "selector"
     prev_char = None
     precomment_return_to_state = None
-    current_selectors = []   # Of the form [["tagname", "#/./whatever", "blah"]] (where "blah" includes : whatever unparsed).
+    current_selectors = []   # Of the form [["tagname", "#/./whatever", "blah"]] (where "blah" includes ":whatever" unparsed).
                              # Empty string is used to indicate that something (e.g. tag name) is missing.
                              # Note that the empty string counts as a false value in Python conditionals.
     current_selector_tagname = None
@@ -466,8 +466,8 @@ def css_parse(css):
             if c == "/":
                 state = precomment_return_to_state
         elif state is "operator":
-            # Special handling of comments since they separate operators (we don't
-            # want to go back to this state, but rather to the "selector" state).
+            # Special handling of comments since they separate operators. (We don't
+            # want to go back to this state, but rather to the "selector" state.)
             if c == "/":
                 state = "operator_comment"
                 current_selectors.append(current_op.getvalue())
