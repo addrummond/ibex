@@ -956,7 +956,7 @@ with the string 'FILENAME-'. The CSS for each controller should live in `CONTROL
 This ensures that there are no namespace
 clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
 of a bug in the mangling code that you need to work around),
-you may prefix your CSS file name with `"global_"`; this causes the file to
+you may prefix your CSS file name with `"global_"`. This causes the file to
 be served as-is.
 
 =Cross-browser compatibility=
