@@ -729,8 +729,10 @@ if c['SERVER_MODE'] not in ["paste", "toy", "cgi"]:
     sys.exit(1)
 
 if c['SERVER_MODE'] in ["toy", "paste"]:
+    import threading
     import BaseHTTPServer
     import SimpleHTTPServer
+    import SocketServer
 
 PWD = None
 if c.has_key('IBEX_WORKING_DIR'):
@@ -1237,7 +1239,10 @@ def control(env, start_response):
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
 
 if c['SERVER_MODE'] != "cgi":
-    class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    class ThreadedHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+        pass
+
+    class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler, ):
         STATIC_FILES = [
             'experiment.html',
             'overview.html',
@@ -1324,7 +1329,7 @@ if __name__ == "__main__":
 
     if c['SERVER_MODE'] in ["paste", "toy"]:
         server_address = ('', c['PORT'])
-        httpd = BaseHTTPServer.HTTPServer(server_address, MyHTTPRequestHandler)
+        httpd = ThreadedHTTPServer(server_address, MyHTTPRequestHandler)
         httpd.path = c['STATIC_FILES_DIR']
         httpd.serve_forever()
     elif c['SERVER_MODE'] == "cgi":
