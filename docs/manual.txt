@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta3. The 0.1.x
+This documentation covers 0.3-beta4. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
@@ -992,18 +992,6 @@ data file:
 
     * Some browsers accept trailing commas in !JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
-Setting the value of HTML options (for example the `html` option of the
-`Message` controller) can be a bit of a pain, since writing HTML code inside
-!JavaScript string literals is a bit finicky.
-(Note that there is now an alternative to using a raw HTML string;
-see the "HTML Code" section above.)
-If you do decide to use a raw HTML string, remember to escape singe/double
-quotes with a backslash (depending on whether you enclose the string in
-single/double quotes) and to escape newlines with a backslash also (by making
-the backslash the last character of the line). Some browsers may accept
-!JavaScript string literals containing unescaped newlines, but most will not,
-so make sure you don't use them.
-
 Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]`
 `== "f"`). Internet Explorer, however, requires the use of the string's `charAt`
 method.
@@ -1014,7 +1002,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta3 (current version) and 0.3-beta2:
+Changes between 0.3-beta4 (current version) and 0.3-beta3:
+    * Fix a bug in the `Form` controller that caused values for radio buttons to be incorrectly recorded in the results file.
+
+Changes between 0.3-beta3 and 0.3-beta2:
     * `Form` controller added for collecting data from participants.
     * New method of passing HTML to the `Message` and `Form` controllers (HTML files can be included from `chunk_includes` dir).
 
