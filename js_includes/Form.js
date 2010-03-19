@@ -93,11 +93,13 @@ $.widget("ui.Form", {
                     // Check if it's oblig.
                     var oblig = false;
                     var oneIsSelected = false;
+                    var oneThatWasSelected;
                     var val;
                     for (var i = 0; i < rgs[k].length; ++i) {
                         if (rgs[k][i].hasClass('obligatory')) oblig = true;
                         if (rgs[k][i].attr('checked')) {
                             oneIsSelected = true;
+                            oneThatWasSelected = i;
                             val = rgs[k][i].attr('value');
                         }
                     }
@@ -107,7 +109,7 @@ $.widget("ui.Form", {
                     }
                     if (oneIsSelected) {
                         rlines.push([["Field name", rgs[k][0].attr('name')],
-                                     ["Field value", rgs[k][0].attr('value')]]);
+                                     ["Field value", rgs[k][oneThatWasSelected].attr('value')]]);
                     }
                 }
 
@@ -127,6 +129,6 @@ ibex_controller_set_properties("Form", {
     obligatory: ["html"],
     countsForProgressBar: false,
     htmlDescription: function (opts) {
-        return $(document.createElement("div")).text(opts.s)[0];
+        return htmlCodeToDOM(opts.html);
     }
 });

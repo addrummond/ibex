@@ -16,4 +16,4 @@ cp -XR $O $NO
 cd /tmp
 NO=ibex-${1}
 
-tar -cz $NO/LICENSE $NO/www/conf.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/mkdist.sh $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/other_includes/main.js > $OO/dist/ibex-${1}.tar.gz 
+tar -cz $NO/LICENSE $NO/www/conf.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/mkdist.sh $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/other_includes/main.js $NO/chunk_includes/*.html > $OO/dist/ibex-${1}.tar.gz 
