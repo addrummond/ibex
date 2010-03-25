@@ -51,3 +51,10 @@ if (typeof(equalGroupSizes) != "undefined")
 var conf_withsquareCounterStoreForWholeSession = false;
 if (typeof(withsquareCounterStoreForWholeSession) != "undefined")
     conf_withsquareCounterStoreForWholeSession = withsquareCounterStoreForWholeSession;
+
+var CONFIG_VARS = [
+    "sendingResultsMessage", "serverURI", "completionMessage", "completionErrorMessage",
+    "pageTitle", "shuffleSequence", "showProgressBar", "progressBarText",
+    "practiceItemTypes", "practiceMessage", "showOverview", "centerItems",
+    "equalGroupSizes", "withsquareCounterStoreForWholeSession"
+];
