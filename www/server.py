@@ -804,8 +804,8 @@ def group_list(l, n):
     newl.append(current_sub)
     return newl
 
-def rearrange(parsed_json, thetime, ip):
-    if type(parsed_json) != types.ListType or len(parsed_json) != 4:
+def rearrange(parsed_json, thetime, ip, user_agent):
+    if type(parsed_json) != types.ListType or len(parsed_json) != 5:
         raise HighLevelParseError()
 
     random_counter = parsed_json[0]
@@ -823,6 +823,11 @@ def rearrange(parsed_json, thetime, ip):
         if index >= len(names_array) or index < 0:
             raise HighLevelParseError()
         return names_array[index]
+
+    unique_md5 = parsed_json[4]
+    if (type(unique_md5) != type("") and type(unique_md5) != type(u"")) or \
+       len(unique_md5) != 22:
+        raise HighLevelParseError()
 
     #
     # This is a fairly horrible bit of code that does most of the work
@@ -858,7 +863,9 @@ def rearrange(parsed_json, thetime, ip):
                 if old_names != names:
                     break
                 else:
-                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], l), sub))
+                    # Add columns common to all lines.
+                    uid = ip + ':' + user_agent + unique_md5
+                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(uid).hexdigest()] + map(lambda x: x[1], l), sub))
                     main_index += phase
             if len(rs) == 1:
                 main_index -= phase
@@ -1198,7 +1205,7 @@ def control(env, start_response):
             try:
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
-                random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip)
+                random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip, user_agent)
                 header = None
                 if c['INCLUDE_HEADERS_IN_RESULTS_FILE']:
                     header = u'#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
@@ -1252,7 +1259,8 @@ if c['SERVER_MODE'] != "cgi":
             'util.js',
             'backcompatcruft.js',
             'jquery.min.js',
-            'jquery-ui.min.js'
+            'jquery-ui.min.js',
+            'PluginDetect.js'
         ]
 
         def __init__(self, request, client_address, server):

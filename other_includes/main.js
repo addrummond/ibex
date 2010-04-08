@@ -464,12 +464,54 @@ function indicateThatResultsAreBeingSent()
     timerCallback();
 }
 
+// Attempt to generate a unique MD5 hash based on various features of the user's
+// browser. (Ideas taken from http://panopticlick.eff.org/)
+// Note that the server also makes use of the user agent and IP address
+// when creating unique identifying hashes.
+function uniqueMD5() {
+    // Time zone.
+    var s = "" + new Date().getTimezoneOffset() + ':';
+
+    // Plugins.
+    var plugins = [
+        "Java",
+        "QuickTime",
+        "DevalVR",
+        "Shockwave",
+        "Flash",
+        "Windows Media Player",
+        "Silverlight",
+        "VLC Player"
+    ];
+    for (var i = 0; i < plugins.length; ++i) {
+        var v = PluginDetect.getVersion(plugins[i]);
+        if (v) s += plugins[i] + ':' + v;
+    }
+
+    // Whether or not cookies are turned on.
+    createCookie("TEST", "TEST", 0.01); // Keep it for 0.01 days.
+    if (readCookie("TEST") == "TEST")
+        s += "C";
+
+    // Screen dimensions and color depth.
+    var width = screen.width ? screen.width : 1;
+    var height = screen.height ? screen.height : 1;
+    var colorDepth = screen.colorDepth ? screen.colorDepth : 1;
+    s += width + ':' + height + ':' + colorDepth;
+
+    return b64_md5(s);
+}
+
 // Make a post request to a given address. Address may either be a domain
 // or an IP.
 function sendResults(resultsLines, success, failure)
 {
     // Prepare the post data.
-    var data = JSON.stringify([randomCounter ? true : false, counter, columnNamesArray, resultsLines]);
+    var data = JSON.stringify([randomCounter ? true : false,
+                               counter, 
+                               columnNamesArray,
+                               resultsLines,
+                               uniqueMD5()]);
 
     $.ajax({
         url: serverURI,

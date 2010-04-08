@@ -201,13 +201,13 @@ makes it quite easy to add new controllers if you are familiar with
 Ibex stores results in CSV format. This makes it easy to import results into
 spreadsheets, Matlab, R, etc. Each entity may contribute zero, one *or more*
 lines to the results file. The first seven columns of each line give generic
-information about the result (e.g. the MD5 hash of the subject's IP address) and
+information about the result (e.g. an MD5 hash identifying the subject) and
 the rest give information specific to the particular element (e.g. word reading
 times, comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
-|| 2        || MD5 hash of participant's IP address                           ||
+|| 2        || MD5 hash identifying subject. This is based on the subject's IP address and various properties of their browser, and together with the first column should uniquely identify each subject. ||
 || 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
 || 4        || Item number                                                    ||
 || 5        || Element number                                                 ||
@@ -215,7 +215,7 @@ times, comprehension question answers). The first seven columns are as follows:
 || 7        || Group                                                          ||
 
 Note that some information pertaining to an entire experiment (e.g. the time
-that the server received the results, the MD5 hash of the IP address) is
+that the server received the results) is
 duplicated on each line of the results. This often makes it easier to parse the
 results, though it makes the format much more verbose.  The significance of the
 "type" and "group" columns will be explained later; they are involved in
