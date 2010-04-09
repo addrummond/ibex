@@ -1003,6 +1003,12 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.3-beta5 (current version) and 0.3-beta4:
+    * Improvements to the recording of times in self-paced reading experiments. Times should now be recorded a little more accurately.
+
+    * !DashedSentence controller works on the iPhone (though it's not practical for actually doing experiments).
+
+    * Option to minify !JavaScript code in `data_includes` dir.
+
     * In the results file, the MD5 hash of the subject's IP address has been replaced with a hash based on the IP address together with a variety of other identifying information (e.g. user agent string, subject's screen size). This both provides a better unique identifier, and is preferable from a privacy point of view. (It isn't difficult to reverse an IP address hash, but it would be pretty difficult to reverse the new hashes.)
 
 Changes between 0.3-beta4 and 0.3-beta3:
