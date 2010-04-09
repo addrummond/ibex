@@ -82,6 +82,11 @@ JS_INCLUDES_LIST   = ["block"]  # Block nothing (i.e. allow everything).
 CSS_INCLUDES_LIST  = ["block"]  # Ditto.
 DATA_INCLUDES_LIST = ["block"]  # Ditto.
 
+# If this is set to True, JavaScript files are "minified" before being
+# served up. This saves on bandwidth, but makes it much harder to
+# debug JavaScript errors.
+MINIFY_JS = False
+
 # **********
 # Most users sould ignore the following options and skip to those
 # in the rest of the file. See documentation. Note that if one
