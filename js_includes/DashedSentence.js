@@ -31,6 +31,9 @@ $.widget("ui.DashedSentence", {
             }
         }
 
+        this.mainDiv = $("<div>");
+        this.element.append(this.mainDiv);
+
         this.background = this.element.css('background-color') || "white";
         this.isIE7OrLess = false;
         /*@cc_on @if (@_jscript_version <= 5.7) this.isIE7OrLess = true; @end @*/
@@ -54,9 +57,15 @@ $.widget("ui.DashedSentence", {
             this.sentenceDesc = csv_url_encode(this.options.s);
         }
 
-        this.element.addClass(this.cssPrefix + "sentence");
+        this.mainDiv.addClass(this.cssPrefix + "sentence");
 
         this.resultsLines = [];
+        if (this.mode == "self-paced reading") {
+            // Don't want to be allocating arrays in time-critical code.
+            this.sprResults = new Array(this.words.length - 1);
+            for (var i = 0; i < this.sprResults.length; ++i)
+                this.sprResults[i] = new Array(2);
+        }
         this.previousTime = null;
 
         this.wordDivs = new Array(this.words.length);
@@ -65,7 +74,7 @@ $.widget("ui.DashedSentence", {
             var div = $(document.createElement("div")).text(this.words[j]);
             if (! this.showAhead)
                 div.css('border-color', this.background);
-            this.element.append(div);
+            this.mainDiv.append(div);
             this.wordDivs[j] = div;
             this.wdnjq[j] = div[0];
         }
@@ -89,29 +98,91 @@ $.widget("ui.DashedSentence", {
             this.utils.setTimeout(wordTimeout, this.wordTime);
         }
 
-        if (this.mode == "self-paced reading") {    
+        if (this.mode == "self-paced reading") {
             var t = this;
+            // Inlining this to minimize function calls in code for updating screen after space is pressed.
+/*            function goToNext(time) {
+                t.recordSprResult(time, t.currentWord);
+
+                if (t.currentWord - 1 >= 0)
+                    t.blankWord(t.currentWord - 1);
+                if (t.currentWord < t.stoppingPoint)
+                    t.showWord(t.currentWord);
+                ++(t.currentWord);
+                if (t.currentWord > t.stoppingPoint) {
+                    t.processSprResults();
+                    t.finishedCallback(t.resultsLines);
+                }
+
+                return false;
+            }*/
+
             this.safeBind($(document), 'keydown', function(e) {
                 var time = new Date().getTime();
                 var code = e.keyCode;
 
                 if (code == 32) {
-                    t.recordSprResult(time, t.currentWord);
+                    // *** goToNext() ***
+//                    t.recordSprResult(time, t.currentWord);
+                    var word = t.currentWord;
+                    if (word > 0 && word < t.stoppingPoint) {
+                        var rs = t.sprResults[word-1];
+                        rs[0] = time;
+                        rs[1] = t.previousTime;
+                    }
+                    t.previousTime = time;
 
                     if (t.currentWord - 1 >= 0)
                         t.blankWord(t.currentWord - 1);
                     if (t.currentWord < t.stoppingPoint)
                         t.showWord(t.currentWord);
                     ++(t.currentWord);
-                    if (t.currentWord > t.stoppingPoint)
+                    if (t.currentWord > t.stoppingPoint) {
+                        t.processSprResults();
                         t.finishedCallback(t.resultsLines);
-
+                    }
                     return false;
+                    // ***
                 }
                 else {
                     return true;
                 }
             });
+
+            // For iPhone/iPod touch -- add button for going to next word.
+            if (isIPhone) {
+                var btext = dget(this.options, "iPhoneNextButtonText", "next");
+                var next = $("<div>")
+                           .addClass(this.cssPrefix + "iphone-next")
+                           .text(btext);
+                this.element.append(next);
+                next.click(function () {
+                    var time = new Date().getTime();
+
+                    // *** goToNext() ***
+                    //t.recordSprResult(time, t.currentWord);
+                    var word = t.currentWord;
+                    if (word > 0 && word < t.stoppingPoint) {
+                        var rs = t.sprResults[word-1];
+                        rs[0] = time;
+                        rs[1] = t.previousTime;
+                    }
+                    t.previousTime = time;
+
+                    if (t.currentWord - 1 >= 0)
+                        t.blankWord(t.currentWord - 1);
+                    if (t.currentWord < t.stoppingPoint)
+                        t.showWord(t.currentWord);
+                    ++(t.currentWord);
+                    if (t.currentWord > t.stoppingPoint) {
+                        t.processSprResults();
+                        t.finishedCallback(t.resultsLines);
+                    }
+
+                    return false;
+                    // ***
+                });
+            }
         }
     },
 
@@ -133,19 +204,27 @@ $.widget("ui.DashedSentence", {
         }
     },
 
-    recordSprResult: function(time, word) {
+    // Inlining this now.
+    /*recordSprResult: function(time, word) {
         if (word > 0 && word < this.stoppingPoint) {
-            assert(this.previousTime, "Internal error in dashed_sentence.js");
+            var rs = this.sprResults[word-1];
+            rs[0] = time;
+            rs[1] = this.previousTime;
+        }
+        this.previousTime = time;
+    },*/
+
+    processSprResults: function () {
+        for (var i = 0; i < this.sprResults.length; ++i) {
             this.resultsLines.push([
-                ["Word number", word],
-                ["Word", csv_url_encode(this.words[word - 1])],
-                ["Reading time", time - this.previousTime],
-                ["Newline?", boolToInt((word > 0) && (this.wordDivs[word - 1].offsetTop !=
-                                                      this.wordDivs[word].offsetTop))],
+                ["Word number", i+1],
+                ["Word", csv_url_encode(this.words[i])],
+                ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
+                ["Newline?", boolToInt(((i+1) > 0) && (this.wordDivs[i].offsetTop !=
+                                                       this.wordDivs[i+1].offsetTop))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }
-        this.previousTime = time;
     }
 });
 
@@ -155,4 +234,3 @@ ibex_controller_set_properties("DashedSentence", {
         return $(document.createElement("div")).text(opts.s);
     }
 });
-

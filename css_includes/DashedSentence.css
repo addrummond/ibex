@@ -1,23 +1,42 @@
- .sentence {
-      background-color: white;
-      clear: both;
- }
- .question {
-      padding-left: 0.6em;
- }
- .rating {
+.sentence {
+     background-color: white;
+     clear: both;
+}
+.question {
      padding-left: 0.6em;
- }
- .sentence div {
-      background-color: white;
-      border-bottom: 1px solid;
-      color: white;
-      border-color: #9ea4b1;
-      float: left;
-      margin-right: 0.6em;
-      margin-bottom: 2em;
- }
- .practice-text {
-     color: blue; 
-     font-weight: bold;
- }
+}
+.rating {
+    padding-left: 0.6em;
+}
+.sentence div {
+     background-color: white;
+     border-bottom: 1px solid;
+     color: white;
+     border-color: #9ea4b1;
+     float: left;
+     margin-right: 0.6em;
+     margin-bottom: 2em;
+}
+.practice-text {
+    color: blue; 
+    font-weight: bold;
+}
+.iphone-next {
+    clear: both;
+    background: black;
+    color: white;
+    foreground: white;
+    text-align: center;
+    display: table;
+    font-size: 20px;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-weight: bold;
+    -webkit-border-radius: 5px;
+}

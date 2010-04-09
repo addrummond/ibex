@@ -385,6 +385,9 @@ function ibex_controller_name_to_css_prefix(cname) {
     return cname + '-';
 }
 
+// Test whether they're using an iPhone/iPod touch.
+var isIPhone = navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i);
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
