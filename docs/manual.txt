@@ -207,7 +207,7 @@ times, comprehension question answers). The first seven columns are as follows:
 
 || *Column* || *Information*                                                  ||
 || 1        || Time results were received (seconds since Jan 1 1970)          ||
-|| 2        || MD5 hash identifying subject. This is based on the subject's IP address and various properties of their browser, and together with the first column should uniquely identify each subject. ||
+|| 2        || MD5 hash identifying subject. This is based on the subject's IP address and various properties of their browser. Together with the value of first column, this value should uniquely identify each subject. ||
 || 3        || Name of the controller for the entity (e.g. "!DashedSentence") ||
 || 4        || Item number                                                    ||
 || 5        || Element number                                                 ||
