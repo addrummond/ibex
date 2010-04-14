@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta5. The 0.1.x
+This documentation covers 0.3-beta6. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
@@ -1002,7 +1002,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta5 (current version) and 0.3-beta4:
+Changes between 0.3-beta6 and 0.3-beta5:
+    * Fix bug in VBox.js which caused some things to appear off center. (This bug only affected the presentation of items, not the results.)
+
+Changes between 0.3-beta5 and 0.3-beta4:
     * Improvements to the recording of times in self-paced reading experiments. Times should now be recorded a little more accurately.
 
     * !DashedSentence controller works on the iPhone (though it's not practical for actually doing experiments).
