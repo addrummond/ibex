@@ -56,8 +56,7 @@ $.widget("ui.VBox", {
             // Wrap in a table if we're centering things.
             var ddd = null;
             if (conf_centerItems) {
-                ddd = $(document.createElement("table"))
-                      .attr('align', 'center');
+                ddd = $("<table align='center'>");
                 var tr = $(document.createElement("tr"));
                 var td = $(document.createElement("td"));
                 ddd.append(tr.append(td.append(dd ? dd : d)));
@@ -85,7 +84,7 @@ $.widget("ui.VBox", {
                 childOptions._cssPrefix = ibex_controller_name_to_css_prefix(controllerClass);
                 childOptions._utils = u;
                 addSafeBindMethodPair(controllerClass);
-                ac[controllerClass](childOptions);
+                d[controllerClass](childOptions);
 
 /*                t.childInstances.push(
                     new controllerClass(

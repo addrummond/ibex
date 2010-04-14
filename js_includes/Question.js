@@ -145,11 +145,9 @@ $.widget("ui.Question", {
             this.element.append(this.qp);
 
         // Again, using tables to center because IE sucks.
-        var table = $(document.createElement("table"));
-        if (conf_centerItems)
-            table.attr('align', "center");
+        var table = $("<table" + (conf_centerItems ? " align='center'" : "") + ">");
         var tr = $(document.createElement("tr"));
-        var td = $(document.createElement("td"));
+        var td = $("<td" + (conf_centerItems ? " align='center'" : "") + ">")
         if (conf_centerItems)
             td.attr('align', 'center');
         this.element.append(table.append(tr.append(td.append(this.xl))));
