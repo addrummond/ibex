@@ -607,7 +607,7 @@ they answered incorrectly.
 || html                || _obligatory_ || The HTML for the message to display (see section "HTML Code" below). ||
 || hideProgressBar     || `true`       || If true, the progress bar is hidden when the message is displayed.   ||
 || transfer            || `"click"`    || Either `"click"`, `"keypress`" or an integer. If `"click"`, the participant clicks a link at the bottom of the message to continue (see "continueMessage" option). If `"keypress"`, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. ||
-|| requiresConsent     || `false`      || If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. ||
+|| requiresConsent     || `false`      || If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. Note that it is also possible to create checkboxes like this using the more flexible `Form` controller. ||
 || continueMessage     || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. ||
 || consentMessage      || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the text that will appear next to the checkbox. ||
 || consentErrorMessage || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the error message that will be given if the participant attempts to continue without checking the consent checkbox. ||
@@ -729,11 +729,17 @@ checkboxes (`<input type="checkbox">`) or radio buttons (`<input type="radio">`)
 It isn't necessary to wrap the `<input>` tags within a `<form>` tag; nor should
 you include a submit button.
 
+The `Form` controller essentially serves as a more flexible version of the `Message` controller.
+Anything that can be done with `Message` can also be done with `Form`.
+
 You can indicate that a text area or radio button group is obligatory by adding
 the "obligatory" class to it (e.g. `<input type="text" class="obligatory">`).
 For groups of radio buttons, you need only add the "obligatory" class
 to one button in the group. (As usual, radio buttons in a single group should
 all have the same 'name' attribute.)
+
+The "obligatory" class can also be used to indicate that a checkbox must be checked
+before the user can continue. (This is useful for consent checkboxes.)
 
 By default, failure to fill in an obligatory field is signaled by an alert dialog.
 However, you can indicate that the error message is to be displayed on the page
@@ -754,6 +760,7 @@ be displayed in the same location, add a `<label>` with 'for' set to "__ALL_FIEL
 || validators || `{ }` || A !JavaScript dictionary mapping field names to validating functions. Functions take the field value as their sole argument, and return `true` if the value is valid or an error string otherwise. ||
 || errorCSSClass || error || The CSS class used to indicate that a `<label>` tag is a placeholder for error messages. ||
 || obligatoryErrorGenerator || `...` || A function from field names to error messages (used when an obligatory text box or text area is not filled in). ||
+|| obligatoryCheckboxErrorGenerator || `...` || A function from field names to error messages (used when an obligatory checkbox is not checked). ||
 || obligatoryRadioErrorGenerator || `...` || As above but for radio button groups. ||
 
 *Results*

@@ -15,6 +15,9 @@ $.widget("ui.Form", {
         this.obligatoryErrorGenerator =
             dget(this.options, "obligatoryErrorGenerator",
                  function (field) { return "The \u2018" + field + "\u2019 field is obligatory."; });
+        this.obligatoryCheckboxErrorGenerator =
+            dget(this.options, "obligatoryCheckboxErrorGenerator",
+                 function (field) { return "You must click the " + field + " checkbox to continue."; });
         this.obligatoryRadioErrorGenerator =
             dget(this.options, "obligatoryRadioErrorGenerator",
                  function (field) { return "You must select an option for \u2018" + field + "\u2019."; });
@@ -74,6 +77,13 @@ $.widget("ui.Form", {
                 var checks = $(dom).find("input[type=checkbox]");
                 for (var i = 0; i < checks.length; ++i) {
                     var check = $(checks[i]);
+ 
+                    // Checkboxes with the 'obligatory' class must be checked.
+                    if (! check.attr('checked') && check.hasClass('obligatory')) {
+                        alertOrAddError(check.attr('name'), t.obligatoryCheckboxErrorGenerator(check.attr('name')));
+                        return;
+                    }
+
                     rlines.push([["Field name", check.attr('name')],
                                  ["Field value", check.attr('checked') ? t.checkedValue : t.uncheckedValue]]);
                 }
