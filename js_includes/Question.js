@@ -76,6 +76,7 @@ $.widget("ui.Question", {
         if (this.question) {
             this.qp = $(document.createElement("p"))
             .addClass(this.cssPrefix + "question-text")
+            .css('text-align', conf_centerItems ? 'center' : 'left')
             .append(this.question);
         }
         this.xl = $(document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul"))
