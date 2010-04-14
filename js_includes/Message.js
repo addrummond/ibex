@@ -6,8 +6,6 @@ $.widget("ui.Message", {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        this.options.hideProgressBar = dget(this.options, "hideProgressBar", true);
-
         this.html = this.options.html;
         this.element.addClass(this.cssPrefix + "message");
         this.element.append(htmlCodeToDOM(this.html));

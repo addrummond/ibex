@@ -14,7 +14,8 @@ var defaults = [
                                instructions: "Use number keys or click boxes to answer.",
                                leftComment: "(Bad)", rightComment: "(Good)" },
     "Question", { hasCorrect: true },
-    "Message", { hideProgressBar: true }
+    "Message", { hideProgressBar: true },
+    "Form", { hideProgressBar: true }
 ];
 
 var items = [

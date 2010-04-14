@@ -587,6 +587,9 @@ Currently, this system is used to provide feedback to participants when they
 they answered incorrectly.
 
 =Controllers=
+For all controllers, the `hideProgressBar` option may be set to true, in order to prevent the progress
+bar being displayed while the controller is in action.
+
 ==Separator==
 *Options*
 
@@ -605,7 +608,6 @@ they answered incorrectly.
 
 || *Option*            || *Default*    || *Description*                                                        ||
 || html                || _obligatory_ || The HTML for the message to display (see section "HTML Code" below). ||
-|| hideProgressBar     || `true`       || If true, the progress bar is hidden when the message is displayed.   ||
 || transfer            || `"click"`    || Either `"click"`, `"keypress`" or an integer. If `"click"`, the participant clicks a link at the bottom of the message to continue (see "continueMessage" option). If `"keypress"`, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. ||
 || requiresConsent     || `false`      || If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. Note that it is also possible to create checkboxes like this using the more flexible `Form` controller. ||
 || continueMessage     || `"..."`      || Only valid if the "requiresConsent" option is set to `"true"`. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. ||
@@ -879,9 +881,6 @@ $.widget("ui.Message", {
     this.cssPrefix = this.options._cssPrefix;
     this.utils = this.options._utils;
     this.finishedCallback = this.options._finishedCallback;
-
-    // dget(h, k, d) evaluates to h[k] if h[k] is non-false, or d otherwise.
-    this.hideProgressBar = dget(this.options, "hideProgressBar", true);
 
     this.html = this.options.html;
     this.element.addClass(this.cssPrefix + "message");
