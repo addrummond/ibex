@@ -64,7 +64,8 @@ $.widget("ui.VBox", {
             }
 
             // Add the actual child.
-            this.element.append(ddd ? ddd : (dd ? dd : d));    
+            var ac = ddd ? ddd : (dd ? dd : d);
+            this.element.append(ac);    
 
             var u = new this.utilsClass(this.utils.getValuesFromPreviousElement());
             this.childUtils.push(u);
@@ -84,7 +85,7 @@ $.widget("ui.VBox", {
                 childOptions._cssPrefix = ibex_controller_name_to_css_prefix(controllerClass);
                 childOptions._utils = u;
                 addSafeBindMethodPair(controllerClass);
-                t.element[controllerClass](childOptions);
+                ac[controllerClass](childOptions);
 
 /*                t.childInstances.push(
                     new controllerClass(
