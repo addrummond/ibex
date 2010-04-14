@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta6. The 0.1.x
+This documentation covers 0.3-beta7. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
@@ -1008,7 +1008,11 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta6 (current version) and 0.3-beta5:
+Changes between 0.3-beta7 and 0.3-beta6:
+    * Checkboxes can be specified as obligatory in the `Form` controller.
+    * Minor changes to example data file.
+
+Changes between 0.3-beta6 and 0.3-beta5:
     * Fix bug in VBox.js which caused some things to appear off center. (This bug only affected the presentation of items, not the results.)
 
 Changes between 0.3-beta5 and 0.3-beta4:
