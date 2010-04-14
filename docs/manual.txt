@@ -1009,6 +1009,7 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.3-beta7 and 0.3-beta6:
+    * Fix bug which caused questions not to be recorded in results file.
     * Checkboxes can be specified as obligatory in the `Form` controller.
     * Minor changes to example data file.
 
