@@ -1002,7 +1002,7 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta6 and 0.3-beta5:
+Changes between 0.3-beta6 (current version) and 0.3-beta5:
     * Fix bug in VBox.js which caused some things to appear off center. (This bug only affected the presentation of items, not the results.)
 
 Changes between 0.3-beta5 and 0.3-beta4:
