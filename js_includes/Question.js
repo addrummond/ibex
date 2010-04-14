@@ -129,7 +129,7 @@ $.widget("ui.Question", {
                     correct = (ans == correct_ans ? 1 : 0);
                     t.setFlag(correct);
                 }
-                t.finishedCallback([[[questionField, t.question ? csv_url_encode : "NULL"],
+                t.finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
                                      [answerField, csv_url_encode(ans)],
                                      [correctField, correct],
                                      [timeField, answerTime - t.creationTime]]]);
