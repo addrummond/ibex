@@ -1017,7 +1017,6 @@ error message by looking at the !JavaScript console.
 Changes between 0.3-beta8 (current version) and 0.3-beta7:
     * Fix bug which caused self-paced reading experiments to display incorrectly in IE 8.
     * Fix bug which caused question answers to appear without numbers in IE.
-    * Fix minor issue with selecting radio buttons in the `Form` controller.
 
 Changes between 0.3-beta7 and 0.3-beta6:
     * Fix bug which caused questions not to be recorded in results file.
