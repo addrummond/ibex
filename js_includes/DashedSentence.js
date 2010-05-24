@@ -35,9 +35,9 @@ $.widget("ui.DashedSentence", {
         this.element.append(this.mainDiv);
 
         this.background = this.element.css('background-color') || "white";
-        this.isIE7OrLess = false;
-        /*@cc_on @if (@_jscript_version <= 5.7) this.isIE7OrLess = true; @end @*/
-        if (this.isIE7OrLess)
+        this.isIE7;
+        /*@cc_on this.isIE = true; @*/
+        if (this.isIE)
             this.background = "white";
 
         // Defaults.

@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta7. The 0.1.x
+This documentation covers 0.3-beta8. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The
@@ -630,6 +630,12 @@ bar being displayed while the controller is in action.
 || showAhead     || `true`                 || Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. ||
 || showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
 
+*Note on right-to-left languages:* The current version of Ibex doesn't provide out-of-the-box support
+for doing self-paced reading experiments with languages that are displayed left to right (although
+I hope to add support for this soon). However, it
+is possible to modify the code for the DashedSentence controller to display in right-to-left order.
+Please contact me (a.d.drummond@gmail.com) if you want to do this.
+
 *Results*
 
 The format of the results depends on the setting of the `mode` option. If it is
@@ -1008,6 +1014,11 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
+Changes between 0.3-beta8 (current version) and 0.3-beta7:
+    * Fix bug which caused self-paced reading experiments to display incorrectly in IE 8.
+    * Fix bug which caused question answers to appear without numbers in IE.
+    * Fix minor issue with selecting radio buttons in the `Form` controller.
+
 Changes between 0.3-beta7 and 0.3-beta6:
     * Fix bug which caused questions not to be recorded in results file.
     * Checkboxes can be specified as obligatory in the `Form` controller.

@@ -12,7 +12,7 @@ $.widget("ui.Question", {
         this.finishedCallback = this.options._finishedCallback;
 
         // With IE <= 6 we have to pad lists differently.
-        this.isIE6OrLess = false;
+        this.isIE6OrLesexs = false;
         /*@cc_on @if (@_jscript_version <= 5.6) this.isIE6OrLess = true; @end @*/
         /*@cc_on @if (@_jscript_version == 5.7) if (! window.XMLHttpRequest) this.isIE6OrLess = true; @end @*/
 
@@ -80,7 +80,7 @@ $.widget("ui.Question", {
             .append(this.question);
         }
         this.xl = $(document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul"))
-            .css('margin-left', 0).css('padding-left', 0);
+            .css('margin-left', "2em").css('padding-left', 0);
         __Question_answers__ = new Array(this.answers.length);
 
         if (this.presentAsScale && this.leftComment) {
