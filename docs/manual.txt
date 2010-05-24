@@ -631,7 +631,7 @@ bar being displayed while the controller is in action.
 || showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
 
 *Note on right-to-left languages:* The current version of Ibex doesn't provide out-of-the-box support
-for doing self-paced reading experiments with languages that are displayed left to right (although
+for doing self-paced reading experiments with languages that are displayed right to left (although
 I hope to add support for this soon). However, it
 is possible to modify the code for the `DashedSentence` controller to display in right-to-left order.
 Please contact me (a.d.drummond@gmail.com) if you want to do this.
