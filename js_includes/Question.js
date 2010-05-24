@@ -11,11 +11,6 @@ $.widget("ui.Question", {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        // With IE <= 6 we have to pad lists differently.
-        this.isIE6OrLesexs = false;
-        /*@cc_on @if (@_jscript_version <= 5.6) this.isIE6OrLess = true; @end @*/
-        /*@cc_on @if (@_jscript_version == 5.7) if (! window.XMLHttpRequest) this.isIE6OrLess = true; @end @*/
-
         var questionField = "Question (NULL if none).";
         var answerField = "Answer";
         var correctField = "Whether or not answer was correct (NULL if N/A)";
@@ -110,7 +105,6 @@ $.widget("ui.Question", {
             }
             else {
                 li.addClass(this.cssPrefix + "normal-answer");
-                if (this.isIE6OrLess && (! this.presentAsScale) && this.showNumbers) { li.css('margin-left', "2em"); }
             }
             (function(i) {
                 li.click(function () { __Question_callback__(i); });
