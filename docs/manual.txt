@@ -1031,7 +1031,6 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.3-beta9 (current version) and 0.3-beta8:
     * It is now possible to control the point in the experiment at which results are sent to the server.
-    * Fix occasional bug with ordering of numbers in scales.
 
 Changes between 0.3-beta8 and 0.3-beta7:
     * Fix bug which caused self-paced reading experiments to display incorrectly in IE 8.
