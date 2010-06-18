@@ -30,4 +30,15 @@ p.practice-box {
     padding-bottom: 1em;
     font-size: small;
 }
-
+span.retry {
+    color: blue;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+span.retry:hover {
+    text-decoration: underline;
+}
+span.retry:visited {
+    color: blue;
+}

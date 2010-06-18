@@ -143,6 +143,63 @@ $.each(items, function(_, it) {
 var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
+$.widget("ui.__SendResults__", {
+    _init: function() {
+	var spinSpan;
+        this.element.append($("<table>")
+                            .addClass("sending-results")
+                            .append($("<tr>")
+                                    .append($("<td>").text(conf_sendingResultsMessage + " " ))
+                                    .append($("<td>").css('width', '1.5em').append(spinSpan = $("<span>").text("/")))));
+
+        // Clear "practice" notice if it's still up.
+        if (practiceBox)
+            practiceBox.hide();
+
+        var spinChars = ["\u2013", "\\", "|", "/"];
+        var spinCharsPos = 0;
+        var spinSpanShouldBeSpinning = true;
+	var t = this;
+        function timerCallback() {
+            if (! spinSpanShouldBeSpinning) return;
+
+            spinSpan.text(spinChars[spinCharsPos]);
+	    ++spinCharsPos;
+            if (spinCharsPos == spinChars.length) spinCharsPos = 0;
+            t.options._utils.setTimeout(timerCallback, 200);
+        } // Note that this will be cleaned up automatically.
+        t.options._utils.setTimeout(timerCallback, 200);
+
+        sendResults(allResults,
+		    function() {
+                        spinSpanShouldBeSpinning = false;
+			t.element.empty().append($("<div>").addClass("sending-results").text(conf_completionMessage));
+			t.options._finishedCallback();
+		    },
+		    function() {
+                        spinSpanShouldBeSpinning = false;
+			t.element.empty()
+                                 .append($("<div>").addClass("sending-results").text(conf_completionErrorMessage + " ")
+                                         .append($("<span>")
+                                                 .addClass("retry")
+                                                 .text('Retry')
+                                                 .click(function (e) {
+                                                     e.preventDefault();
+                                                     t.element.empty();
+                                                     t._init();
+                                                 })));
+	            });
+    }
+});
+ibex_controller_set_properties("__SendResults__", {
+    obligatory: [],
+    countsForProgressBar: false,
+    htmlDescription: function () { return $("<div>").text("[SEND RESULTS]"); }
+});
+// Not necessary to set item/element numbers properly as the __SendResults__ controller
+// doesn't add any lines to the results file.
+if (! conf_manualSendResults)
+    runningOrder.push([new Item(-1, -1, "__SendResults__", { })]);
 
 if (conf_showOverview) {
     var l = $(document.createElement("ol"));
@@ -350,13 +407,6 @@ function finishedCallback(resultsLines) {
         if (posInRunningOrder >= runningOrder.length) {
             // We've finished the experiment.
             document.onkeydown = null; // Stop listening for keypresses.
-            __retry__ = function () {
-                indicateThatResultsAreBeingSent();
-                sendResults(allResults,
-                            function() { setStateToResultsSentOrFailed(true); },
-                            function() { setStateToResultsSentOrFailed(false); });
-            }
-            __retry__();
             return;
         }
         posInCurrentItemSet = 0;
@@ -417,53 +467,6 @@ pForItem[runningOrder[0][0].controller](os);
 if (currentControllerOptions.hideProgressBar)
     hideProgressBar();
 
-var sendingResults = $(document.createElement("p")).addClass("sending-results");
-var spinSpan =
-    $(document.createElement("div"))
-    .css('width', '1.5em')
-    .css('float', 'left');
-
-__spinSpanShouldBeSpinning__ = false;
-function setStateToResultsSentOrFailed(succeeded) {
-    __spinSpanShouldBeSpinning__ = false;
-
-    sendingResults.empty();
-    sendingResults.append(succeeded ? conf_completionMessage : conf_completionErrorMessage + " ");
-    if (! succeeded) {
-        sendingResults.append($(document.createElement("a"))
-                              .attr('href', "javascript:__retry__();")
-                              .text("Retry"));
-    }
-}
-function indicateThatResultsAreBeingSent()
-{
-    // Clear "practice" notice if it's still up.
-    if (practiceBox)
-        practiceBox.text("");
-
-    sendingResults.empty();
-    sendingResults.append(spinSpan).append(conf_sendingResultsMessage);
-
-    renewInner();
-    inner.append(sendingResults);
-
-    var spinChars = ["\u2013", "\\", "|", "/"];
-    var spinCharsPos = 0
-    __spinSpanShouldBeSpinning__ = true;
-    function timerCallback()
-    {
-        if (! __spinSpanShouldBeSpinning__) { return; }
-
-        spinSpan.text(spinChars[spinCharsPos]);
-        ++spinCharsPos;
-        if (spinCharsPos == spinChars.length) {
-            spinCharsPos = 0;
-        }
-        setTimeout(timerCallback, 200);
-    }
-    timerCallback();
-}
-
 // Attempt to generate a unique MD5 hash based on various features of the user's
 // browser. (Ideas taken from http://panopticlick.eff.org/)
 // Note that the server also makes use of the user agent and IP address
@@ -515,10 +518,11 @@ function sendResults(resultsLines, success, failure)
 
     $.ajax({
         url: serverURI,
+        cache: false,
         contentType: "text/html; charset=UTF-8",
         data: data,
         type: "POST",
-        success: success,
+        success: failure, //success,
         error: failure
     });
 }
