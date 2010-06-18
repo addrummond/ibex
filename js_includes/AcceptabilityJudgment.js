@@ -12,7 +12,7 @@ $.widget("ui.AcceptabilityJudgment", {
             children:    ["FlashSentence", {s: this.options.s, timeout: dget(this.options, "timeout", null)},
                           "Question", { q:              this.options.q,
                                         as:             this.options.as,
-                                        hasCorrect:     this.options.hasCorrect,
+                                        hasCorrect:     dget(this.options, "hasCorrect", false),
                                         presentAsScale: this.options.presentAsScale,
                                         autoFirstChar:  this.options.presentAsScale ? true : false,
                                         randomOrder:    this.options.randomOrder,

@@ -362,18 +362,6 @@ function addSafeBindMethodPair(name) {
     }
 }
 
-// We don't have object-keyed hashtables at our disposal, so
-// here's a utility function for traversing defaults alists.
-function get_defaults_for(defaults, obj) {
-    for (var i = 0; i < defaults.length; ++i) {
-        if (defaults[i][0] == obj) {
-            // Copy the dictionary (had a nasty bug from not doing this...).
-            return copy_dict(defaults[i][1]);
-        }
-    }
-    return {}
-}
-
 function ibex_controller_set_properties(name, options) {
     $.ui[name]._ibex_options = options;
 }

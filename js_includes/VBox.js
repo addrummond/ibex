@@ -32,7 +32,7 @@ $.widget("ui.VBox", {
         for (var i = 0; i < this.children.length; i += 2) {
             var controllerClass = this.children[i];
             var childOptions = this.children[i + 1];
-            childOptions = merge_dicts(get_defaults_for(this.controllerDefaults, controllerClass), childOptions);
+            childOptions = merge_dicts(this.controllerDefaults[controllerClass], childOptions);
 
             var d = $(document.createElement("p")).css('clear', 'both');
 

@@ -70,8 +70,8 @@ if (counter_override) {
 }
 // alert(counter)
 
-// Convert the "defaults" variable to a list of [item, hashtable] pairs.
-var ht_defaults = [];
+// Convert the "defaults" variable to a hash.
+var ht_defaults = { };
 if (typeof(defaults) != "undefined") {
     assert_is_arraylike(defaults, "'defaults' variable must be set to an Array.");
     assert(defaults.length % 2 == 0, "'defaults' Array must have an even number of elements.");
@@ -79,8 +79,9 @@ if (typeof(defaults) != "undefined") {
     for (var i = 0; i < defaults.length; i += 2) {
         assert(typeof(defaults[i]) == "string", "Odd members of the 'defaults' array must be strings naming controllers.");
         assert_is_dict(defaults[i + 1], "Even members of the 'defaults' array must be dictionaries.");
-
-        ht_defaults.push([defaults[i], defaults[i + 1]]);
+        if (typeof(ht_defaults[defaults[i]]) != "undefined")
+            assert(false, "Duplicate entry in 'defaults' for '" + defaults[i] + "'.");
+        ht_defaults[defaults[i]] = defaults[i + 1];
     }
 }
 
@@ -180,7 +181,7 @@ $.each(items, function(_, it) {
             type = typeAndGroup;
         }
         
-        var opts = get_defaults_for(ht_defaults, controller);
+        var opts = ht_defaults[controller];
         opts = merge_dicts(opts, options);
 
         // Check that all obligatory options have been specified.
