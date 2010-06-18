@@ -41,7 +41,7 @@ $.widget("ui.Question", {
         }
         this.showNumbers = dget(this.options, "showNumbers", true);
         this.presentAsScale = dget(this.options, "presentAsScale", false);
-        this.randomOrder = dget(this.options, "randomOrder", ! (this.hasCorrect === false));
+        this.randomOrder = dget(this.options, "randomOrder", ! (this.hasCorrect === false || this.presentAsScale));
         this.timeout = dget(this.options, "timeout", null);
         this.instructions = dget(this.options, "instructions");
         this.leftComment = dget(this.options, "leftComment");
