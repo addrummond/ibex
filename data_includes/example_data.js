@@ -20,6 +20,16 @@ var defaults = [
 
 var items = [
 
+// New in Ibex 0.3-beta-9. You can now add a '__SendResults__' controller into your shuffle
+// sequence to send results before the experiment has finished. This is NOT intended to allow
+// for incremental sending of results -- you should send results exactly once for every experiment.
+// However, it does allow you to (e.g.) display additional messages to a participant once the
+// experiment itself is over. If you are manually inserting a '__SendResults__' controller into
+// the shuffle sequence, you must set the 'manualSendResults' configuration variable to 'true', since
+// otherwise, results are automatically sent at the end of the experiment.
+//
+//["sr", "__SendResults__", { }],
+
 ["sep", "Separator", { }],
 
 ["intro", "Message", {consentRequired: true,

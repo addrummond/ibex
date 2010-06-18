@@ -91,6 +91,67 @@ function Item(itemNumber, elementNumber, controller, options) {
     this.options = options;
 }
 
+(function () {
+var RESULTS_HAVE_ALREADY_BEEN_SENT = false;
+$.widget("ui.__SendResults__", {
+    _init: function() {
+        if (RESULTS_HAVE_ALREADY_BEEN_SENT)
+            alert("WARNING: Results have already been sent once. Did you forget to set the 'manualSendResults' config option?");
+
+	var spinSpan;
+        this.element.append($("<table>")
+                            .addClass("sending-results")
+                            .append($("<tr>")
+                                    .append($("<td>").text(conf_sendingResultsMessage + " " ))
+                                    .append($("<td>").css('width', '1.5em').append(spinSpan = $("<span>").text("/")))));
+
+        // Clear "practice" notice if it's still up.
+        if (practiceBox)
+            practiceBox.hide();
+
+        var spinChars = ["\u2013", "\\", "|", "/"];
+        var spinCharsPos = 0;
+        var spinSpanShouldBeSpinning = true;
+	var t = this;
+        function timerCallback() {
+            if (! spinSpanShouldBeSpinning) return;
+
+            spinSpan.text(spinChars[spinCharsPos]);
+	    ++spinCharsPos;
+            if (spinCharsPos == spinChars.length) spinCharsPos = 0;
+            t.options._utils.setTimeout(timerCallback, 200);
+        } // Note that this will be cleaned up automatically.
+        t.options._utils.setTimeout(timerCallback, 200);
+
+        sendResults(allResults,
+		    function() {
+                        RESULTS_HAVE_ALREADY_BEEN_SENT = true;
+                        spinSpanShouldBeSpinning = false;
+			t.element.empty().append($("<div>").addClass("sending-results").text(conf_completionMessage));
+			t.options._finishedCallback();
+		    },
+		    function() {
+                        spinSpanShouldBeSpinning = false;
+			t.element.empty()
+                                 .append($("<div>").addClass("sending-results").text(conf_completionErrorMessage + " ")
+                                         .append($("<span>")
+                                                 .addClass("retry")
+                                                 .text('Retry')
+                                                 .click(function (e) {
+                                                     e.preventDefault();
+                                                     t.element.empty();
+                                                     t._init();
+                                                 })));
+	            });
+    }
+});
+})();
+ibex_controller_set_properties("__SendResults__", {
+    obligatory: [],
+    countsForProgressBar: false,
+    htmlDescription: function () { return $("<div>").text("[SEND RESULTS]"); }
+});
+
 // Now create our initial list of item sets (lists of Items), merging in default options.
 assert(typeof(items) != "undefined", "You must define the 'items' variable.");
 assert_is_arraylike(items, "The 'items' variable must be set to an Array.");
@@ -143,59 +204,7 @@ $.each(items, function(_, it) {
 var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
-$.widget("ui.__SendResults__", {
-    _init: function() {
-	var spinSpan;
-        this.element.append($("<table>")
-                            .addClass("sending-results")
-                            .append($("<tr>")
-                                    .append($("<td>").text(conf_sendingResultsMessage + " " ))
-                                    .append($("<td>").css('width', '1.5em').append(spinSpan = $("<span>").text("/")))));
 
-        // Clear "practice" notice if it's still up.
-        if (practiceBox)
-            practiceBox.hide();
-
-        var spinChars = ["\u2013", "\\", "|", "/"];
-        var spinCharsPos = 0;
-        var spinSpanShouldBeSpinning = true;
-	var t = this;
-        function timerCallback() {
-            if (! spinSpanShouldBeSpinning) return;
-
-            spinSpan.text(spinChars[spinCharsPos]);
-	    ++spinCharsPos;
-            if (spinCharsPos == spinChars.length) spinCharsPos = 0;
-            t.options._utils.setTimeout(timerCallback, 200);
-        } // Note that this will be cleaned up automatically.
-        t.options._utils.setTimeout(timerCallback, 200);
-
-        sendResults(allResults,
-		    function() {
-                        spinSpanShouldBeSpinning = false;
-			t.element.empty().append($("<div>").addClass("sending-results").text(conf_completionMessage));
-			t.options._finishedCallback();
-		    },
-		    function() {
-                        spinSpanShouldBeSpinning = false;
-			t.element.empty()
-                                 .append($("<div>").addClass("sending-results").text(conf_completionErrorMessage + " ")
-                                         .append($("<span>")
-                                                 .addClass("retry")
-                                                 .text('Retry')
-                                                 .click(function (e) {
-                                                     e.preventDefault();
-                                                     t.element.empty();
-                                                     t._init();
-                                                 })));
-	            });
-    }
-});
-ibex_controller_set_properties("__SendResults__", {
-    obligatory: [],
-    countsForProgressBar: false,
-    htmlDescription: function () { return $("<div>").text("[SEND RESULTS]"); }
-});
 // Not necessary to set item/element numbers properly as the __SendResults__ controller
 // doesn't add any lines to the results file.
 if (! conf_manualSendResults)
@@ -522,7 +531,7 @@ function sendResults(resultsLines, success, failure)
         contentType: "text/html; charset=UTF-8",
         data: data,
         type: "POST",
-        success: failure, //success,
+        success: success,
         error: failure
     });
 }

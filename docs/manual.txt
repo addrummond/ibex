@@ -585,6 +585,9 @@ to your items list and insert it somewhere in your shuffle sequence. There is so
 code in `data_includes/example_data.js`.  Note that you may only
 send results once per experiment -- it is not possible to incrementally upload results.
 
+If you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
+your shuffle sequence, then the results will never get sent at all.
+
 =Communication between elements=
 Ibex allows for a limited amount of communication between elements.  Each
 element may set keys in a hashtable which is passed to the next element.  The
