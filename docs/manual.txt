@@ -578,14 +578,14 @@ a more general way of implementing more complex latin square designs.
 New in Ibex 0.3-beta9.
 
 You can now control the point in the experiment at which Ibex sends the results to the server.
-This allows you to e.g. present the participant with a link to another website after the
+This allows you to (e.g.) present the participant with a link to another website after the
 results have been successfully uploaded. In order to use this feature, you must first set
 the `manualSendResults` config variable to `true`. Then, add a `__SendResults__` controller
 to your items list and insert it somewhere in your shuffle sequence. There is some example
 code in `data_includes/example_data.js`.  Note that you may only
 send results once per experiment -- it is not possible to incrementally upload results.
 
-If you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
+Note that if you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
 your shuffle sequence, then the results will never get sent at all.
 
 =Communication between elements=
@@ -818,7 +818,7 @@ experiment.  The most important of these is the data file in `data_includes`
 containing the list of items for the experiment, but each controller also has
 its own file in `js_includes` (for example, the `DashedSentence` controller
 lives in `dashed_sentence.js`).  Many controllers also define some CSS classes
-in corresponding files in `css_includes` (e.g. `dashed_sentence.css`). If you
+in corresponding files in `css_includes` (e.g. `DashedSentence.css`). If you
 write your own controllers, you need to put the !JavaScript and CSS files in
 these directories.
 
@@ -833,7 +833,7 @@ in order to reduce the size of the file that needs to be downloaded. Since the
 files in both directories are named after the controllers with which they are
 associated, it is easy to see which files are superfluous.
 
-*However:* note that the file `global_main.css` is required by all
+*Important:* the file `global_main.css` is required by all
 controllers.
 
 =HTML Code=
