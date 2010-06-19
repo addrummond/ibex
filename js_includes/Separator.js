@@ -36,10 +36,11 @@ $.widget("ui.Separator", {
         }
 
         if (this.transfer == "keypress") {
-            this.options._eventHandlers = handleKey = function(code, time) {
-                this.finishedCallback(null);
-                return false;
-            }
+	    var t = this;
+	    this.safeBind($(document), 'keydown', function () {
+		t.finishedCallback(null);
+		return false;
+	    });
         }
         else {
             var t = this;
