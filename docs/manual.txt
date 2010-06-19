@@ -585,7 +585,7 @@ to your items list and insert it somewhere in your shuffle sequence. There is so
 code in `data_includes/example_data.js`.  Note that you may only
 send results once per experiment -- it is not possible to incrementally upload results.
 
-Note that if you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
+If you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
 your shuffle sequence, then the results will never get sent at all.
 
 =Communication between elements=
@@ -1030,8 +1030,7 @@ error message by looking at the !JavaScript console.
 
 =Changes=
 Changes between 0.3-beta9 (current version) and 0.3-beta8:
-    * It is now possible to control the point in the experiment at which results are sent to the server
-      using the special `__SendResults__` controller.
+    * It is now possible to control the point in the experiment at which results are sent to the server using the special `__SendResults__` controller.
     * Upgrade from jQuery 1.4.0 to 1.4.2.
     * Fix bug which prevented "keypress" transfer working with the `Separator` controller.
     * Minor fixes.
