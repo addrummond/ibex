@@ -54,7 +54,10 @@ $.widget("ui.DashedSentence", {
             this.sentenceDesc = hex_md5(canonicalSentence);
         }
         else {
-            this.sentenceDesc = csv_url_encode(this.options.s);
+	    if (typeof(this.options.s) == "string")
+		this.sentenceDesc = csv_url_encode(this.options.s);
+	    else
+		this.sentenceDesc = csv_url_encode(this.options.s.join(' '));
         }
 
         this.mainDiv.addClass(this.cssPrefix + "sentence");
