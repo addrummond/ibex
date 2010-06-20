@@ -92,8 +92,8 @@ $.widget("ui.DashedSentence", {
             }
             function wordPauseTimeout() {
                 t.showWord(t.currentWord);
-                this.utils.clearTimeout(wordPauseTimeout);
-                this.utils.setTimeout(wordTimeout, t.wordTime);
+                t.utils.clearTimeout(wordPauseTimeout);
+                t.utils.setTimeout(wordTimeout, t.wordTime);
             }
             this.utils.setTimeout(wordTimeout, this.wordTime);
         }
