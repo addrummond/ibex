@@ -1033,6 +1033,7 @@ Changes between 0.3-beta9 (current version) and 0.3-beta8:
     * It is now possible to control the point in the experiment at which results are sent to the server using the special `__SendResults__` controller.
     * Upgrade from jQuery 1.4.0 to 1.4.2.
     * Fix bug which prevented "keypress" transfer working with the `Separator` controller.
+    * Fix bug which prevented the `DashedSentence` controller from being able to display text one "chunk" at a time.
     * Minor fixes.
 
 Changes between 0.3-beta8 and 0.3-beta7:
