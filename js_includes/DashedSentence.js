@@ -65,7 +65,7 @@ $.widget("ui.DashedSentence", {
         this.resultsLines = [];
         if (this.mode == "self-paced reading") {
             // Don't want to be allocating arrays in time-critical code.
-            this.sprResults = new Array(this.words.length - 1);
+            this.sprResults = new Array(this.words.length);
             for (var i = 0; i < this.sprResults.length; ++i)
                 this.sprResults[i] = new Array(2);
         }
@@ -128,7 +128,7 @@ $.widget("ui.DashedSentence", {
                     // *** goToNext() ***
 //                    t.recordSprResult(time, t.currentWord);
                     var word = t.currentWord;
-                    if (word > 0 && word < t.stoppingPoint) {
+                    if (word > 0 && word <= t.stoppingPoint) {
                         var rs = t.sprResults[word-1];
                         rs[0] = time;
                         rs[1] = t.previousTime;
@@ -223,8 +223,8 @@ $.widget("ui.DashedSentence", {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(this.words[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", boolToInt(((i+1) > 0) && (this.wordDivs[i].offsetTop !=
-                                                       this.wordDivs[i+1].offsetTop))],
+                ["Newline?", boolToInt(((i+1) > 0 && (i+1) < this.wordDivs.length) &&
+				       (this.wordDivs[i].offsetTop != this.wordDivs[i+1].offsetTop))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }
