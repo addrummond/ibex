@@ -223,7 +223,7 @@ $.widget("ui.DashedSentence", {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(this.words[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", boolToInt(((i+1) > 0 && (i+1) < this.wordDivs.length) &&
+                ["Newline?", boolToInt(((i+1) < this.wordDivs.length) &&
                                        (this.wordDivs[i].offsetTop != this.wordDivs[i+1].offsetTop))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
