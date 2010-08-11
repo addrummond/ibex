@@ -18,6 +18,7 @@ var conf_showOverview = false;
 var conf_centerItems = true;
 var conf_equalGroupSizes = false;
 var conf_manualSendResults = false;
+var conf_modifyRunningOrder = null;
 
 if (typeof(sendingResultsMessage) != "undefined")
     conf_sendingResultsMessage = sendingResultsMessage;
@@ -47,6 +48,8 @@ if (typeof(equalGroupSizes) != "undefined")
     conf_equalGroupSizes = equalGroupSizes;
 if (typeof(manualSendResults) != "undefined")
     conf_manualSendResults = manualSendResults;
+if (typeof(modifyRunningOrder) != "undefined")
+    conf_modifyRunningOrder = modifyRunningOrder;
 
 // Undocumented. By default, counters set using ?withsquare=XXXX are forgotten
 // as soon as experiment.html is loaded again. Using this option you can modify
@@ -59,5 +62,6 @@ var CONFIG_VARS = [
     "sendingResultsMessage", "serverURI", "completionMessage", "completionErrorMessage",
     "pageTitle", "shuffleSequence", "showProgressBar", "progressBarText",
     "practiceItemTypes", "practiceMessage", "showOverview", "centerItems",
-    "equalGroupSizes", "manualSendResults", "withsquareCounterStoreForWholeSession"
+    "equalGroupSizes", "manualSendResults", "withsquareCounterStoreForWholeSession",
+    "modifyRunningOrdr"
 ];

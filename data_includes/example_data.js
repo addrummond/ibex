@@ -1,6 +1,15 @@
 var shuffleSequence = seq("intro", "info", sepWith("sep", seq("practice", rshuffle("f", rshuffle("s1", "s2")))), "break", sepWith("sep", rshuffle("q1", "q2", "qf")));
 var practiceItemTypes = ["practice"];
 
+/*function modifyRunningOrder(ro) {
+    for (var i = 0; i < ro.length; ++i) {
+        if (i % 2 == 0) {
+            ro[i].push(new DynamicItem("Message", { html: "<p>Pause</p>", transfer: 10 }));
+        }
+    }
+    return ro;
+}*/
+
 var ds = "DashedSentence";
 var q = "AcceptabilityJudgment";
 

@@ -376,6 +376,13 @@ function ibex_controller_name_to_css_prefix(cname) {
 // Test whether they're using an iPhone/iPod touch.
 var isIPhone = navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i);
 
+// Useful in data files when definite a 'modifyRunningOrder' function.
+function DynamicItem(controller, options, hideResults) {
+    this.controller = controller;
+    this.options = options;
+    this.hideResults = hideResults;
+}
+
 
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

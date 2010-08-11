@@ -85,9 +85,11 @@ if (typeof(defaults) != "undefined") {
     }
 }
 
-function Item(itemNumber, elementNumber, controller, options) {
+function Item(itemNumber, elementNumber, type, group, controller, options) {
     this.itemNumber = itemNumber;
     this.elementNumber = elementNumber;
+    this.type = type;
+    this.group = group;
     this.controller = controller;
     this.options = options;
 }
@@ -193,7 +195,7 @@ $.each(items, function(_, it) {
             });
         }
 
-        currentItemSet.push(new Item(itemNumber, elementNumber, controller, opts));
+        currentItemSet.push(new Item(itemNumber, elementNumber, type, group, controller, opts));
     }
     currentItemSet.type = type;
     currentItemSet.group = group;
@@ -206,10 +208,15 @@ var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
+// Hook to allow manual manipulation of the running order in the data file.
+if (conf_modifyRunningOrder) {
+    runningOrder = conf_modifyRunningOrder(runningOrder);
+}
+
 // Not necessary to set item/element numbers properly as the __SendResults__ controller
 // doesn't add any lines to the results file.
 if (! conf_manualSendResults)
-    runningOrder.push([new Item(-1, -1, "__SendResults__", { })]);
+    runningOrder.push([new Item(-1, -1, null, null, "__SendResults__", { })]);
 
 if (conf_showOverview) {
     var l = $(document.createElement("ol"));
@@ -387,16 +394,16 @@ function namesToIndices(results_line) {
 function finishedCallback(resultsLines) {
     var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
 
-    if (resultsLines != null) {
+    if (resultsLines != null && ! currentItem.hideResults) {
         for (var i = 0; i < resultsLines.length; ++i) {
-            var group = runningOrder[posInRunningOrder].group;
+            var group = currentItem.group;
             if (group && group.length)
                 group = group[0]
             var preamble = [ [0, currentItem.controller ? currentItem.controller : "UNKNOWN"],
-                             [1, currentItem.itemNumber],
-                             [2, currentItem.elementNumber],
-                             [3, runningOrder[posInRunningOrder].type],
-                             [4, group == null ? "NULL" : group ] ];
+                             [1, (currentItem.itemNumber || currentItem.itemNumber == 0) ? currentItem.itemNumber : "DYNAMIC"],
+                             [2, (currentItem.elementNumber || currentItem.elementNumber == 0) ? currentItem.elementNumber : "DYNAMIC"],
+                             [3, (currentItem.type || currentItem.type == 0) ? currentItem.type : "DYNAMIC"],
+                             [4, (group == null) ? (currentItem.itemNumber ? "NULL" : "DYNAMIC") : group ] ];
             resultsLines[i] = namesToIndices(resultsLines[i]);
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
