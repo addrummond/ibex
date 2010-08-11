@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta10. The 0.1.x
+This documentation covers 0.3-beta11. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -1074,7 +1074,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta10 (current version) and 0.3-beta9:
+Changes between 0.3-beta11 (current version) and 0.3-beta10:
+    * Added the `modifyRunningOrder` config option.
+
+Changes between 0.3-beta10 and 0.3-beta9:
     * Time is now recorded for the last word in a sentence in self-paced reading experiments.
 
 Changes between 0.3-beta9 and 0.3-beta8:
