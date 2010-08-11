@@ -1076,6 +1076,7 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.3-beta11 (current version) and 0.3-beta10:
     * Added the `modifyRunningOrder` config option.
+    * `example_data.js` has been slimmed down and reformatted.
 
 Changes between 0.3-beta10 and 0.3-beta9:
     * Time is now recorded for the last word in a sentence in self-paced reading experiments.
