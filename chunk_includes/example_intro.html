@@ -1,3 +1,4 @@
+<div style="width: 40em;">
 <p>
 This experiment has two parts. In the first part, you will be required to read
 a number of English sentences one word at a time. You can advance to the next
@@ -10,3 +11,53 @@ on a scale of 1-7 (with 1 bad and 7 good).
 <p>
 [Privacy statement, etc., etc.]
 </p>
+
+<table>
+<tr>
+<td colspan="2" style="width: 30em; padding-bottom: 1em;">
+<i>(The form below is just a rough example showing all of the input controls that work properly
+with Ibex. Obviously it would not necessarily be appropriate to collect all of this
+data on subjects.)</i>
+</td>
+</tr>
+<tr>
+  <td>Name:</td><td><input name="name" type="text" size="30" class="obligatory" /></td>
+</tr>
+<tr>
+<td colspan="2"><label class="error" for="name"></label></td>
+</tr>
+<tr>
+  <td>Age:</td><td><input name="age" type="text" size="30" class="obligatory" /></td>
+</tr>
+<tr>
+<td colspan="2"><label class="error" for="age"></label></td>
+</tr>
+<tr>
+  <td>Sex:</td><td><input name="sex" type="radio" value="male" class="obligatory" id="csexmale" /><label for="csexmale">Male </label>
+                   <input name="sex" type="radio" value="female" id="csexfemale"/><label for="csexfemale"> Female</label>
+</tr>
+<tr>
+<td colspan="2"><label class="error" for="sex"></label></td>
+</tr>
+<tr>
+<td colspan="2" style="padding-bottom: 1em;"><input type="checkbox" name="credit" id="creditcx" /><label for="creditcx"> I am doing this experiment for credit</label></td>
+</tr>
+<tr>
+<td colspan="2" style="padding-bottom: 1em;"><input type="checkbox" class="obligatory" name="consent" id="consentcx" /><label for="consentcx"> I consent</label></td>
+</tr>
+<tr>
+<td colspan="2">
+<label class="error" for="consent"></label>
+</td>
+</tr>
+<tr>
+  <td colspan="2">Write something:</td>
+</tr>
+<tr>
+  <td colspan="2">
+    <textarea name="write_something" rows="5" cols="40"></textarea>
+  </td>
+</tr>
+</table>
+
+</div>
