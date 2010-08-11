@@ -377,7 +377,7 @@ function ibex_controller_name_to_css_prefix(cname) {
 var isIPhone = navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i);
 
 // Useful in data files when definite a 'modifyRunningOrder' function.
-function DynamicItem(controller, options, hideResults) {
+function DynamicElement(controller, options, hideResults) {
     this.controller = controller;
     this.options = options;
     this.hideResults = hideResults;

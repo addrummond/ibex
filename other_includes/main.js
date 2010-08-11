@@ -85,7 +85,7 @@ if (typeof(defaults) != "undefined") {
     }
 }
 
-function Item(itemNumber, elementNumber, type, group, controller, options) {
+function Element(itemNumber, elementNumber, type, group, controller, options) {
     this.itemNumber = itemNumber;
     this.elementNumber = elementNumber;
     this.type = type;
@@ -155,17 +155,17 @@ ibex_controller_set_properties("__SendResults__", {
     htmlDescription: function () { return $("<div>").text("[SEND RESULTS]"); }
 });
 
-// Now create our initial list of item sets (lists of Items), merging in default options.
+// Now create our initial list of item sets (lists of Elements), merging in default options.
 assert(typeof(items) != "undefined", "You must define the 'items' variable.");
 assert_is_arraylike(items, "The 'items' variable must be set to an Array.");
-var listOfItemSets = [];
+var listOfElementSets = [];
 var itemNumber = 0;
 $.each(items, function(_, it) {
     assert_is_arraylike(it, "Every element in the 'items' Array must be an Array.");
 
     assert(((it.length - 1) % 2) == 0, "Following the item/group specifier, each element of the 'items' array must contain an even number of elements.")
     var typeAndGroup = it[0];
-    var currentItemSet = [];
+    var currentElementSet = [];
     for (var setIndex = 1, elementNumber = 0; setIndex < it.length; setIndex += 2, ++elementNumber) {
         var controller = it[setIndex];
         var options = it[setIndex + 1];
@@ -195,28 +195,36 @@ $.each(items, function(_, it) {
             });
         }
 
-        currentItemSet.push(new Item(itemNumber, elementNumber, type, group, controller, opts));
+        currentElementSet.push(new Element(itemNumber, elementNumber, type, group, controller, opts));
     }
-    currentItemSet.type = type;
-    currentItemSet.group = group;
-    listOfItemSets.push(currentItemSet); 
+    currentElementSet.type = type;
+    currentElementSet.group = group;
+    listOfElementSets.push(currentElementSet); 
 
     ++itemNumber;
  });
 
-var runningOrder = runShuffleSequence(mungGroups(listOfItemSets, counter), conf_shuffleSequence);
+var runningOrder = runShuffleSequence(mungGroups(listOfElementSets, counter), conf_shuffleSequence);
 assert(runningOrder.length > 0 && runningOrder[0].length > 0,
        "There must be some items in the running order!");
 
 // Hook to allow manual manipulation of the running order in the data file.
 if (conf_modifyRunningOrder) {
+    // We now can't share structure between element sets.
+    for (var i = 0; i < runningOrder.length; ++i) {
+        var l = new Array(runningOrder[i].length);
+        for (var j = 0; j < l.length; ++j)
+            l[j] = runningOrder[i][j];
+        runningOrder[i] = l;
+    }
+
     runningOrder = conf_modifyRunningOrder(runningOrder);
 }
 
 // Not necessary to set item/element numbers properly as the __SendResults__ controller
 // doesn't add any lines to the results file.
 if (! conf_manualSendResults)
-    runningOrder.push([new Item(-1, -1, null, null, "__SendResults__", { })]);
+    runningOrder.push([new Element(-1, -1, null, null, "__SendResults__", { })]);
 
 if (conf_showOverview) {
     var l = $(document.createElement("ol"));
@@ -364,7 +372,7 @@ function showProgressBar() {
 }
 
 var posInRunningOrder = 0;
-var posInCurrentItemSet = 0;
+var posInCurrentElementSet = 0;
 var currentUtilsInstance = null;
 var currentControllerOptions = null;
 // A list of result lines.
@@ -392,18 +400,18 @@ function namesToIndices(results_line) {
 }
 
 function finishedCallback(resultsLines) {
-    var currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
+    var currentElement = runningOrder[posInRunningOrder][posInCurrentElementSet];
 
-    if (resultsLines != null && ! currentItem.hideResults) {
+    if (resultsLines != null && ! currentElement.hideResults) {
         for (var i = 0; i < resultsLines.length; ++i) {
-            var group = currentItem.group;
+            var group = currentElement.group;
             if (group && group.length)
                 group = group[0]
-            var preamble = [ [0, currentItem.controller ? currentItem.controller : "UNKNOWN"],
-                             [1, (currentItem.itemNumber || currentItem.itemNumber == 0) ? currentItem.itemNumber : "DYNAMIC"],
-                             [2, (currentItem.elementNumber || currentItem.elementNumber == 0) ? currentItem.elementNumber : "DYNAMIC"],
-                             [3, (currentItem.type || currentItem.type == 0) ? currentItem.type : "DYNAMIC"],
-                             [4, (group == null) ? (currentItem.itemNumber ? "NULL" : "DYNAMIC") : group ] ];
+            var preamble = [ [0, currentElement.controller ? currentElement.controller : "UNKNOWN"],
+                             [1, (currentElement.itemNumber || currentElement.itemNumber == 0) ? currentElement.itemNumber : "DYNAMIC"],
+                             [2, (currentElement.elementNumber || currentElement.elementNumber == 0) ? currentElement.elementNumber : "DYNAMIC"],
+                             [3, (currentElement.type || currentElement.type == 0) ? currentElement.type : "DYNAMIC"],
+                             [4, (group == null) ? (currentElement.itemNumber ? "NULL" : "DYNAMIC") : group ] ];
             resultsLines[i] = namesToIndices(resultsLines[i]);
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
@@ -413,30 +421,30 @@ function finishedCallback(resultsLines) {
     }
 
     // Update progress bar if applicable.
-    if (ibex_controller_get_property(currentItem.controller, "countsForProgressBar") === undefined ||
-        ibex_controller_get_property(currentItem.controller, "countsForProgressBar")) {
+    if (ibex_controller_get_property(currentElement.controller, "countsForProgressBar") === undefined ||
+        ibex_controller_get_property(currentElement.controller, "countsForProgressBar")) {
         updateProgressBar();
     }
 
-    ++posInCurrentItemSet;
-    if (posInCurrentItemSet >= runningOrder[posInRunningOrder].length) {
+    ++posInCurrentElementSet;
+    if (posInCurrentElementSet >= runningOrder[posInRunningOrder].length) {
         ++posInRunningOrder;
         if (posInRunningOrder >= runningOrder.length) {
             // We've finished the experiment.
             document.onkeydown = null; // Stop listening for keypresses.
             return;
         }
-        posInCurrentItemSet = 0;
+        posInCurrentElementSet = 0;
     }
 
-    currentItem = runningOrder[posInRunningOrder][posInCurrentItemSet];
+    currentElement = runningOrder[posInRunningOrder][posInCurrentElementSet];
 
-    var pForItem;
+    var pForElement;
     if (dget(currentControllerOptions, "displayMode", "overwrite") != "append") {
         renewInner();
     }
-    pForItem = $(document.createElement("p")).css('clear', 'both');
-    inner.append(pForItem);
+    pForElement = $(document.createElement("p")).css('clear', 'both');
+    inner.append(pForElement);
 
     // Is this a practice item?
     if (practiceBox) {
@@ -452,15 +460,15 @@ function finishedCallback(resultsLines) {
 
     currentUtilsInstance.gc();
     currentUtilsInstance = new Utils(currentUtilsInstance.valuesForNextElement);
-    var os = currentItem.options;
+    var os = currentElement.options;
     os._finishedCallback = finishedCallback;
     os._utils = currentUtilsInstance;
-    os._cssPrefix = ibex_controller_name_to_css_prefix(currentItem.controller);
+    os._cssPrefix = ibex_controller_name_to_css_prefix(currentElement.controller);
     os._controllerDefaults = ht_defaults;
     os._utilsClass = Utils;
     currentControllerOptions = os;
-    addSafeBindMethodPair(currentItem.controller);
-    pForItem[currentItem.controller](os);
+    addSafeBindMethodPair(currentElement.controller);
+    pForElement[currentElement.controller](os);
 
     // Should we show the progress bar with this item?
     if (currentControllerOptions.hideProgressBar)
@@ -468,8 +476,8 @@ function finishedCallback(resultsLines) {
     else
         showProgressBar();
 }
-var pForItem = $(document.createElement("p")).css('clear', 'both');
-inner.append(pForItem);
+var pForElement = $(document.createElement("p")).css('clear', 'both');
+inner.append(pForElement);
 currentUtilsInstance = new Utils({});
 var os = runningOrder[0][0].options;
 os._finishedCallback = finishedCallback;
@@ -479,7 +487,7 @@ os._controllerDefaults = ht_defaults;
 os._utilsClass = Utils;
 currentControllerOptions = os;
 addSafeBindMethodPair(runningOrder[0][0].controller);
-pForItem[runningOrder[0][0].controller](os);
+pForElement[runningOrder[0][0].controller](os);
 // Should we show the progress bar with the first item?
 if (currentControllerOptions.hideProgressBar)
     hideProgressBar();
