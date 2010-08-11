@@ -1,6 +1,6 @@
 // (This example file has been slimmed down and reformatted for ibex 0.3-beta11.)
 
-var shuffleSequence = seq("intro", sepWith("sep", "practice", rshuffle("s1", "s2")), "break", sepWith("sep", rshuffle("q1", "q2")));
+var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var defaults = [
@@ -39,11 +39,6 @@ var items = [
         validators: {
             age: function (s) { if (s.match(/^\d+$/)) return true; else return "Bad value for \u2018age\u2019"; }
         }
-    } ],
-
-    ["break", "Message", {
-        transfer: 10000,
-        html: { include: "example_transfer.html" }
     } ],
 
     //
