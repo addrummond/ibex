@@ -574,8 +574,6 @@ Note that the second number in the pair must be the same for all items in the gr
 a more general way of implementing more complex latin square designs.
 
 ==Sending results early==
-New in Ibex 0.3-beta9.
-
 You can now control the point in the experiment at which Ibex sends the results to the server.
 This allows you to (e.g.) present the participant with a link to another website after the
 results have been successfully uploaded. In order to use this feature, you must first set
@@ -588,8 +586,6 @@ If you set `manualSendResults` to `true`, but do not add a `__SendResults__` con
 your shuffle sequence, then the results will never get sent at all.
 
 ==Modifying the running order manually==
-New in Ibex 0.3-beta11.
-
 Occasionally, shuffle sequences aren't powerful enough to arrange
 items in the order you wish.  To perform abritrary rearrangements of
 items, you can define a `modifyRunningOrder' function in your data
@@ -927,8 +923,6 @@ following example:
 Spaces are _not_ automatically inserted before and after elements.
 
 ==Method 3: HTML in a separate file==
-(New in 0.3-beta3.)
-
 Place the HTML in a file in the `chunk_includes` dir.
 Files in this directory can be included as follows:
 {{{
@@ -1015,8 +1009,6 @@ Similarly, a `safeBind` method has been added to jQuery, which ensures that even
 are automatically unregistered once a controller instance is finished.
 
 ==CSS mangling==
-(New in version 0.3.)
-
 Every class/id name in a CSS file in the `css_includes` directory is prepended
 with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`.
 This ensures that there are no namespace
