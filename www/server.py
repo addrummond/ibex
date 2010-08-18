@@ -1343,6 +1343,11 @@ def control(env, start_response):
     # Sometimes the query string likes to stick around.
     base = base.split('?')[0]
 
+    if not base:
+        # Redirect to experiment.html by default.
+        start_response('302 Found', [('Location', '/experiment.html')])
+        return []
+
     last = filter(lambda x: x != [], base.split('/'))[-1];
 
     if last == PY_SCRIPT_NAME:
