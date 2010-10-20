@@ -1215,7 +1215,7 @@ def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulato
 
     val = s.getvalue()
 
-    # If a cache key was give, create a cache of the result before returning it.
+    # If a cache key was given, create a cache of the result before returning it.
     if cacheKey:
         f = None
         try:
