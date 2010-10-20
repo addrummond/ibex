@@ -1087,7 +1087,6 @@ def rearrange(parsed_json, thetime, ip, user_agent):
                     break
                 else:
                     # Add columns common to all lines.
-                    uid = ip + ':' + user_agent + unique_md5
                     rs.extend(map(lambda l: [int(round(thetime)), uid_hexdigest] + map(lambda x: x[1], l), sub))
                     main_index += phase
             if len(rs) == 1:
