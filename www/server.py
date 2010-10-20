@@ -1049,6 +1049,8 @@ def rearrange(parsed_json, thetime, ip, user_agent):
     if (type(unique_md5) != type("") and type(unique_md5) != type(u"")) or \
        len(unique_md5) != 22:
         raise HighLevelParseError()
+    uid = ip + ':' + user_agent + unique_md5
+    uid_hexdigest = md5.md5(uid).hexdigest()
 
     #
     # This is a fairly horrible bit of code that does most of the work
@@ -1086,7 +1088,7 @@ def rearrange(parsed_json, thetime, ip, user_agent):
                 else:
                     # Add columns common to all lines.
                     uid = ip + ':' + user_agent + unique_md5
-                    rs.extend(map(lambda l: [int(round(thetime)), md5.md5(uid).hexdigest()] + map(lambda x: x[1], l), sub))
+                    rs.extend(map(lambda l: [int(round(thetime)), uid_hexdigest] + map(lambda x: x[1], l), sub))
                     main_index += phase
             if len(rs) == 1:
                 main_index -= phase
@@ -1101,7 +1103,7 @@ def rearrange(parsed_json, thetime, ip, user_agent):
         # Fallback to commenting each line.
         if old_main_index == main_index:
             for line, i in itertools.izip(itertools.islice(parsed_json[3], main_index, None), itertools.count(0)):
-                new_results.append([int(round(thetime)), md5.md5(ip).hexdigest()] + map(lambda x: x[1], line))
+                new_results.append([int(round(thetime)), uid_hexdigest] + map(lambda x: x[1], line))
                 column_names.append([main_index + i, [map(lambda x: getname(x[0]), line)]])
             break
      
@@ -1213,7 +1215,7 @@ def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulato
 
     val = s.getvalue()
 
-    # If a cache key was given, create a cache of the result before returning it.
+    # If a cache key was give, create a cache of the result before returning it.
     if cacheKey:
         f = None
         try:
