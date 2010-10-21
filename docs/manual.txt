@@ -1,5 +1,5 @@
 =Versions=
-This documentation covers 0.3-beta11. The 0.1.x
+This documentation covers 0.3-beta12. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -1066,7 +1066,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta11 (current version) and 0.3-beta10:
+Changes between 0.3-beta12 (current version) and 0.3-beta11:
+    * Fixed a bug which occasionally led to inconsistent values for the unique user ID in the results file (second column in each line).
+
+Changes between 0.3-beta11 and 0.3-beta10:
     * Added the `modifyRunningOrder` config option.
     * `example_data.js` has been slimmed down and reformatted.
 
