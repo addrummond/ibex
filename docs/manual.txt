@@ -1105,6 +1105,7 @@ Changes between 0.3-beta5 and 0.3-beta4:
     * In the results file, the MD5 hash of the subject's IP address has been replaced with a hash based on the IP address together with a variety of other identifying information (e.g. user agent string, subject's screen size). This both provides a better unique identifier, and is preferable from a privacy point of view. (It isn't difficult to reverse an IP address hash, but it would be pretty difficult to reverse the new hashes.)
 
 Changes between 0.3-beta4 and 0.3-beta3:
+    * Fix a minor bug which caused 'DYNAMIC' to be used instead of 'NULL' in some cases in the results file.
     * Fix a bug in the `Form` controller that caused values for radio buttons to be incorrectly recorded in the results file.
 
 Changes between 0.3-beta3 and 0.3-beta2:

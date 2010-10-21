@@ -411,7 +411,7 @@ function finishedCallback(resultsLines) {
                              [1, (currentElement.itemNumber || currentElement.itemNumber == 0) ? currentElement.itemNumber : "DYNAMIC"],
                              [2, (currentElement.elementNumber || currentElement.elementNumber == 0) ? currentElement.elementNumber : "DYNAMIC"],
                              [3, (currentElement.type || currentElement.type == 0) ? currentElement.type : "DYNAMIC"],
-                             [4, (group == null) ? (currentElement.itemNumber ? "NULL" : "DYNAMIC") : group ] ];
+                             [4, (group == null) ? ((currentElement.itemNumber || currentElement.itemNumber == 0) ? "NULL" : "DYNAMIC") : group ] ];
             resultsLines[i] = namesToIndices(resultsLines[i]);
             for (var j = 0; j < resultsLines[i].length; ++j) {
                 preamble.push(resultsLines[i][j]);
