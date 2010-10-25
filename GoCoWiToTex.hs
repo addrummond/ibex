@@ -130,12 +130,12 @@ instance Node_ Text where
       concatMap (\(p, (s, e)) -> if p (_style t) then e else "") preds ++ " "
 
 instance Node_ Bullets where
-  texify (Bullets bs) = concatMapM (\b -> do { r <- liftM concat $ mapM texify b
+  texify (Bullets bs) = concatMapM (\b -> do { r <- concatMapM texify b
                                              ; return $ "\n\\item\n" ++ r
                                              }) bs >>= (\s -> return $ "\\begin{itemize}\n" ++ s ++ "\\end{itemize}\n")
 
 instance Node_ Numbered where
-  texify (Numbered bs) = concatMapM (\b -> do { r <- liftM concat $ mapM texify b
+  texify (Numbered bs) = concatMapM (\b -> do { r <- concatMapM texify b
                                               ; return $ "\n\\item\n" ++ r
                                               }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\\end{enumerate}\n")
 
