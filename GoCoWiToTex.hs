@@ -21,7 +21,15 @@ import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
 
 ---------- CONFIGURABLE OPTIONS ----------
-preamble = "\\documentclass[12pt,letterpaper]{article}\n\\usepackage{parskip}\n\\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}\n\\usepackage[T1]{fontenc}\n\\usepackage{sectsty}\n\\usepackage{verbatim}\n\\sectionfont{\\large \\bf}\n\\subsectionfont{\\normalsize \\bf}\n\\subsubsectionfont{\\normalsize \\it}\n"
+preamble = " \\documentclass[12pt,letterpaper]{article}\n\
+           \ \\usepackage{parskip}\n\
+           \ \\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}\n\
+           \ \\usepackage[T1]{fontenc}\n\
+           \ \\usepackage{sectsty}\n\
+           \ \\usepackage{verbatim}\n\
+           \ \\sectionfont{\\large \\bf}\n\
+           \ \\subsectionfont{\\normalsize \\bf}\n\
+           \ \\subsubsectionfont{\\normalsize \\it}\n"
 
 verbatimMaxLineLength = 80
 ------------------------------------------
