@@ -4,7 +4,6 @@
 --
 --     ghc GoCoWiToTex.hs -o executable_name -package parsec -package mtl
 --
---
 -- Then run like this:
 --
 --     executable_name foo.txt > output.tex
@@ -138,7 +137,7 @@ instance Node_ Bullets where
 instance Node_ Numbered where
   texify (Numbered bs) = concatMapM (\b -> do { r <- liftM concat $ mapM texify b
                                               ; return $ "\n\\item\n" ++ r
-                                              }) bs
+                                              }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\\end{enumerate}\n")
 
 data ParseState = ParseState {  
   _firstChar :: Bool,
