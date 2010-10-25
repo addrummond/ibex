@@ -148,7 +148,7 @@ data ParseState = ParseState {
 
 type Parser a = P.GenParser Char ParseState a
 
--- Lifts a simple parser to one which keeps track of whether or not we're on the first char of a line.x
+-- Lifts a simple parser to one which keeps track of whether or not we're on the first char of a line.
 liftp :: Parser a -> (a -> Char) -> Parser a
 liftp p lastChar = do
   r <- p
