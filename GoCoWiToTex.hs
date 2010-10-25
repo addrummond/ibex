@@ -11,7 +11,7 @@
 --
 -- Then run like this:
 --
---     executable_name foo.txt > output.tex
+--     executable_name foo.txt IBEX_VERSION > output.tex
 --
 -- (Get GHC at http://www.haskell.org/ghc/)
 --
@@ -22,13 +22,13 @@ module Main where
 
 import IO
 import Data.List
---import Debug.Trace
+import Debug.Trace
 import System (getArgs)
 import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
 
 ---------- CONFIGURABLE OPTIONS ----------
-preamble = " \\documentclass[12pt,letterpaper]{article}\n\
+preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage{parskip}\n\
            \ \\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}\n\
            \ \\usepackage[T1]{fontenc}\n\
@@ -39,6 +39,8 @@ preamble = " \\documentclass[12pt,letterpaper]{article}\n\
            \ \\subsubsectionfont{\\normalsize \\it}\n"
 
 verbatimMaxLineLength = 80
+availablePageWidthIn = 6.5 :: Float
+author = "Alex Drummond"
 ------------------------------------------
 
 capLines :: String -> String
@@ -91,7 +93,9 @@ texescape s = concatMapM f s
                   modify (\s -> s { _dquoteOpen = not (_dquoteOpen s) })
                   s <- get
                   return (if (_dquoteOpen s) then "``" else "''")
-                _ -> return (escapeTexChar c)    
+                _ -> return (escapeTexChar c)
+
+texescape' = concatMap escapeTexChar
 
 instance Show Node where
   show (Node x) = show x
@@ -112,6 +116,7 @@ plainStyle = Style {
 }
 data Bullets = Bullets [[Text]] deriving Show
 data Numbered = Numbered [[Text]] deriving Show
+data Table = Table [[[Text]]] deriving Show
 
 data MultiNode = forall a . Node_ a => MultiNode [a]
 instance Show MultiNode where
@@ -154,6 +159,21 @@ instance Node_ Numbered where
                                               ; return $ "\n\\item\n" ++ r
                                               }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\\end{enumerate}\n")
 
+makecspec numCols = "{|" ++ (concat $ (take numCols (repeat ("p{" ++ cw ++ "}|")))) ++ "}"
+  where cw = (show ((availablePageWidthIn - 0.5) / (fromIntegral numCols))) ++ "in"
+
+instance Node_ Table where
+  texify (Table rows) = do {
+      rs <- mapM (\cols -> do { ss <- mapM (concatMapM texify) cols
+                              ; return $ concat $ intersperse " & " ss
+                              })
+                 rows
+    ; s <- return $ concat $ intersperse "\\\\\n\\hline\n" rs
+    ; return $ "\n\n\\footnotesize\n\\begin{tabular}" ++
+               makecspec (length (head rows)) ++
+               "\n\\hline\n" ++ s ++ "\n\\\\\\hline\n\\end{tabular}\n\n\\normalsize\n"
+    }
+
 data ParseState = ParseState {  
   _firstChar :: Bool,
   _oddUnderscore :: Bool
@@ -183,6 +203,7 @@ ensureFirstChar p = do
 heading :: Parser Node
 heading = ensureFirstChar $ do
   level <- P.many1 (myChar '=')
+  P.many (P.satisfy (\c -> c == ' ' || c == '\t' || c == '!')) -- Bit of a hack here for ignoring intial ! in section titles.
   title <- P.many1 (mySatisfy (/= '='))
   P.many1 (myChar '=')
   return $ Node $ Heading { _level = length level, _title = title }
@@ -220,44 +241,54 @@ many1Until m u = do
 
 -- Underscores are a PITA, since when they're word-internal we don't want to treat
 -- them as the start of italics.
-underscore :: Parser Char
+underscore :: Parser String
 underscore = do
   s <- P.getState
   c <- (case _firstChar s of
-          True -> myChar '_'
+          True -> myString "_"
           False ->
             case _oddUnderscore s of
-              True -> (mySatisfy (\c -> c == ' ' || c == '\t')) >> (myChar '_')
-              False -> myChar '_')
+              True -> (mySatisfy (\c -> c == ' ' || c == '\t')) >> (myString "_")
+              False -> myString "_")
   P.updateState (\s -> s { _oddUnderscore = not (_oddUnderscore s) })
   return c
 
 -- Fiddle to get '!'s ignored in the right places.
 -- This is slightly wrong, as it would ignore the '!' in a line such as "! Blah blah blah",
 -- but since no-one would ever write something like this, it doesn't really matter.
-bang :: Parser Char
+bang :: Parser String
 bang = do
   s <- P.getState
   c <- (case _firstChar s of
-          True -> myChar '!'
-          False -> ((myString " !") <|> (myString "\t !")) >> return '!')
+          True -> myString "!"
+          False -> ((myString " !") <|> (myString "\t !")) >> return "!")
   return c
 
+-- Note inclusion of "||" as an Op -- helpful when parsing tables.
 text' :: [Elt] -> Parser [Elt]
 text' elts = (do {
-  (l, m) <- many1Until (mySatisfy (/= '\n')) ((myChar '*') <|> (myChar '`') <|> (P.try underscore) <|> (P.try bang));
+  (l, m) <- (many1Until (mySatisfy (/= '\n'))
+                        ((myString "*") <|> (myString "`") <|> (P.try underscore) <|> (P.try bang) <|> (P.try (myString "||"))));
   (case m of
-     Just x -> text' ((Op [x]):(Lit l):elts)
+     Just x ->
+       case x of -- Special behavior: stop entirely when we get to "||".
+         "||" -> return ((Op x):(Lit l):elts)
+         _    -> text' ((Op x):(Lit l):elts)
      Nothing -> text' ((Lit l):elts));
   }) <|> (return elts)
 
 addFormatting' :: [Elt] -> (Style, [Text])
 addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "" }])
   where f (style,ts@(t:t')) elt = case elt of
-                             Op "*" -> let s' = style { _bold = not (_bold style) } in (s', (Text { _style = s', _text = "" }):ts)
-                             Op "_" -> let s' = style { _italic = not (_italic style) } in (s', (Text { _style = s', _text = ""}):ts)
-                             Op "`"  -> let s' = style { _inline = not (_inline style) } in (s', (Text { _style = s', _text = ""}):ts)
+                             Op "*" -> let s' = style { _bold = not (_bold style) }
+                                       in (s', (Text { _style = s', _text = "" }):ts)
+                             Op "_" -> let s' = style { _italic = not (_italic style) }
+                                       in (s', (Text { _style = s', _text = ""}):ts)
+                             Op "`"  -> let s' = style { _inline = not (_inline style) }
+                                        in (s', (Text { _style = s', _text = ""}):ts)
                              Op "!" -> (style, ts) -- Ignore it.
+                             -- Handle the unlikely case where this appears outside a table.
+                             Op "||" -> (style, (Text { _style=style, _text = "||" }):ts)
                              Lit txt   -> (style, (t { _text = txt }):t')
 
 -- You can use `*` to escape an asterisk, for example.
@@ -300,8 +331,36 @@ bullets = P.sepEndBy1 (P.try (bulletp '*')) (myChar '\n') >>= (return . Node . B
 numbered :: Parser Node
 numbered = P.sepEndBy1 (P.try (bulletp '#')) (myChar '\n') >>= (return . Node . Numbered)
 
+addhead :: [[a]] -> [a] -> [[a]]
+addhead [] x = [x]
+addhead (xs:ys) l = (xs ++ l):ys
+
+butlast [] = []
+butlast (x:[]) = []
+butlast (x:xs) = x:(butlast xs)
+
+tableRow' :: [[Text]] -> Parser [[Text]]
+tableRow' rows = do
+  t <- text' [] >>= (return . reverse)
+  (case t of
+     [] -> return rows
+     _  -> case last t of
+             Lit _   -> return $ addhead rows (addFormatting t)
+             Op "||" -> tableRow' ([]:(addhead rows (addFormatting (butlast t))))
+             _       -> tableRow' (addhead rows (addFormatting t)))
+
+tableRow :: Parser [[Text]]
+tableRow = ensureFirstChar $ do
+  P.many (mySatisfy (\c -> c == ' ' || c == '\t'))
+  myString "||"
+  r <- tableRow' []
+  return $ reverse $ filter (not . null) $ r
+
+table :: Parser Node
+table = P.sepEndBy1 (P.try tableRow) (myChar '\n') >>= (return . Node . Table . (filter (not . null)))
+
 document :: Parser [Node]
-document = P.many (foldl1 (<|>) (map P.try [heading, paragraphBreak, singleBlank, literal, numbered, bullets, text]))
+document = P.many (foldl1 (<|>) (map P.try [heading, paragraphBreak, singleBlank, literal, numbered, bullets, table, text]))
 
 parseDocs :: String -> Either P.ParseError [Node]
 parseDocs = P.runParser document (ParseState { _firstChar = True, _oddUnderscore = True }) ""
@@ -325,10 +384,17 @@ main = do
      Right nodes -> do
        putStr preamble
        putStr "\n"
-       putStr "\\begin{document}\n\n"
+       putStr $ "\\begin{document}\n\n\\date{}\\author{" ++
+                (texescape' author) ++
+                "}\\title{Ibex " ++
+                (texescape' (args!!1)) ++
+                " Documentation}\n\n\\maketitle\n\n\\tableofcontents\n\n"
        nodesToTex nodes
        putStr "\\end{document}\\n")
   hClose h
+
+testp :: Parser a -> String -> a
+testp p s = fromRight (P.runParser p (ParseState { _firstChar = True, _oddUnderscore = True}) "" s)
 
 test :: String -> IO ()
 test s = do
