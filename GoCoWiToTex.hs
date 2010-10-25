@@ -1,5 +1,10 @@
 {-# OPTIONS -XExistentialQuantification #-}
 --
+-- This is a quick-and-dirty Haskell script for convering docs/manual.txt from
+-- the GoogleCode wiki format to LaTeX. It contains a fairly complete parser
+-- for the wiki format, but should only be expected to give good results with
+-- docs/manual.txt.
+--
 -- Compile like this:
 --
 --     ghc GoCoWiToTex.hs -o executable_name -package parsec -package mtl
@@ -7,6 +12,8 @@
 -- Then run like this:
 --
 --     executable_name foo.txt > output.tex
+--
+-- (Get GHC at http://www.haskell.org/ghc/)
 --
 -- The tex file should compile using 'pdflatex' with a standard LaTeX install.
 -- Edit the 'preamble' definition below to change general formatting/layout options.
