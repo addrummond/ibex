@@ -35,6 +35,7 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage[sc]{mathpazo}\n\
            \ \\usepackage{sectsty}\n\
            \ \\usepackage{verbatim}\n\
+           \ \\usepackage{hyperref}\n\
            \ \\sectionfont{\\large \\bf}\n\
            \ \\subsectionfont{\\normalsize \\bf}\n\
            \ \\subsubsectionfont{\\normalsize \\it}\n"
@@ -396,7 +397,7 @@ main = do
                 (texescape' author) ++
                 "}\n\\title{Ibex " ++
                 (texescape' (args!!1)) ++
-                " Documentation}\n\n\\maketitle\n\n\\tableofcontents\n\n"
+                " Manual}\n\n\\maketitle\n\n\\tableofcontents\n\n"
        nodesToTex nodes
        putStr "\n\\end{document}\\n")
   hClose h
