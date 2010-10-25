@@ -32,13 +32,14 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage{parskip}\n\
            \ \\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}\n\
            \ \\usepackage[T1]{fontenc}\n\
+           \ \\usepackage[sc]{mathpazo}\n\
            \ \\usepackage{sectsty}\n\
            \ \\usepackage{verbatim}\n\
            \ \\sectionfont{\\large \\bf}\n\
            \ \\subsectionfont{\\normalsize \\bf}\n\
            \ \\subsubsectionfont{\\normalsize \\it}\n"
 
-verbatimMaxLineLength = 80
+verbatimMaxLineLength = 95
 availablePageWidthIn = 6.5 :: Float
 author = "Alex Drummond"
 ------------------------------------------
@@ -152,12 +153,12 @@ instance Node_ Text where
 instance Node_ Bullets where
   texify (Bullets bs) = concatMapM (\b -> do { r <- concatMapM texify b
                                              ; return $ "\n\\item\n" ++ r
-                                             }) bs >>= (\s -> return $ "\\begin{itemize}\n" ++ s ++ "\\end{itemize}\n")
+                                             }) bs >>= (\s -> return $ "\\begin{itemize}\n" ++ s ++ "\n\\end{itemize}\n")
 
 instance Node_ Numbered where
   texify (Numbered bs) = concatMapM (\b -> do { r <- concatMapM texify b
                                               ; return $ "\n\\item\n" ++ r
-                                              }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\\end{enumerate}\n")
+                                              }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\n\\end{enumerate}\n")
 
 makecspec numCols = "{|" ++ (concat $ (take numCols (repeat ("p{" ++ cw ++ "}|")))) ++ "}"
   where cw = (show ((availablePageWidthIn - 0.5) / (fromIntegral numCols))) ++ "in"
@@ -314,11 +315,10 @@ text = do
   return $ Node $ MultiNode r
 
 bullet :: Char -> Parser ()
-bullet c = ensureFirstChar $ do
-  myString "  "
-  P.many (mySatisfy (\c -> c == ' ' || c == '\t'))
-  myChar c
-  return ()
+bullet c = ensureFirstChar $
+  (P.try (myString "  " >> P.many (mySatisfy (\c -> c == ' ' || c == '\t')) >> myChar c >> return ()))
+  <|>
+  (P.try (myChar c >> P.many1 (mySatisfy (\c -> c == ' ' || c == '\t')) >> return ()))
 
 bulletp :: Char -> Parser [Text]
 bulletp c = do
@@ -392,13 +392,13 @@ main = do
      Right nodes -> do
        putStr preamble
        putStr "\n"
-       putStr $ "\\begin{document}\n\n\\date{}\\author{" ++
+       putStr $ "\\begin{document}\n\n\\date{}\n\\author{" ++
                 (texescape' author) ++
-                "}\\title{Ibex " ++
+                "}\n\\title{Ibex " ++
                 (texescape' (args!!1)) ++
                 " Documentation}\n\n\\maketitle\n\n\\tableofcontents\n\n"
        nodesToTex nodes
-       putStr "\\end{document}\\n")
+       putStr "\n\\end{document}\\n")
   hClose h
 
 testp :: Parser a -> String -> a
