@@ -359,8 +359,16 @@ tableRow = ensureFirstChar $ do
 table :: Parser Node
 table = P.sepEndBy1 (P.try tableRow) (myChar '\n') >>= (return . Node . Table . (filter (not . null)))
 
+-- We ignore lines that begin with 10 spaces. This allows a link to the PDF
+-- to be placed in the manual source code without it appearing in the PDF itself.
+special :: Parser Node
+special = ensureFirstChar $ do
+  myString "          "
+  P.many (mySatisfy (\c -> c /= '\n'))
+  return (Node (Text { _style=plainStyle, _text="" }))
+
 document :: Parser [Node]
-document = P.many (foldl1 (<|>) (map P.try [heading, paragraphBreak, singleBlank, literal, numbered, bullets, table, text]))
+document = P.many (foldl1 (<|>) (map P.try [special, heading, paragraphBreak, singleBlank, literal, numbered, bullets, table, text]))
 
 parseDocs :: String -> Either P.ParseError [Node]
 parseDocs = P.runParser document (ParseState { _firstChar = True, _oddUnderscore = True }) ""
