@@ -7,7 +7,7 @@
 --
 -- Compile like this:
 --
---     ghc GoCoWiToTex.hs -o executable_name -package parsec -package mtl
+--     ghc GoCoWiToTex.hs -o executable_name -package parsec -package mtl -package regex-posix
 --
 -- Then run like this:
 --
@@ -22,11 +22,17 @@ module Main where
 
 import IO
 import Data.List
-import Debug.Trace
+--import Debug.Trace
 import System (getArgs)
 import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
 import Char
+import Maybe
+import Text.Regex.Base
+import Text.Regex.Posix -- This will be super inefficient, especially since we're
+                        -- using String rather than ByteString, but this is the
+                        -- only regex implementation that comes as standard with
+                        -- GHC.
 
 ---------- CONFIGURABLE OPTIONS ----------
 preamble = " \\documentclass[11pt,letterpaper]{article}\n\
@@ -37,7 +43,9 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage{sectsty}\n\
            \ \\usepackage{verbatim}\n\
            \ \\usepackage{ulem}\n\
+           \ \\usepackage{breakurl}\n\
            \ \\usepackage{hyperref}\n\
+           \ \\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}\n\
            \ \\sectionfont{\\large \\bf}\n\
            \ \\subsectionfont{\\normalsize \\bf}\n\
            \ \\subsubsectionfont{\\normalsize \\it}\n"
@@ -116,7 +124,7 @@ instance Show Node where
 data Heading = Heading { _level :: Int, _title :: String } deriving Show
 data ParagraphBreak = ParagraphBreak deriving Show
 data Literal = Literal { _contents :: String } deriving Show
-data Text = Text { _text :: String, _style :: Style } deriving Show
+data Text = Text { _text :: String, _style :: Style, _url :: Maybe String } deriving Show
 data Style = Style {
     _bold :: Bool,
     _italic :: Bool,
@@ -164,12 +172,17 @@ preds = [ (_bold, ("\\textbf{", "}")),
           (_strikeout, ("\\sout{", "}")) ]
 
 instance Node_ Text where
-  texify t = do
-    txt <- texescape (_text t)
-    return $
-      concatMap (\(p, (s, e)) -> if p (_style t) then s else "") preds ++
-      txt ++
-      concatMap (\(p, (s, e)) -> if p (_style t) then e else "") preds
+  texify t
+    | isNothing (_url t) = nourl t
+    | True               = url t
+    where nourl t = do txt <- texescape (_text t)
+                       return $
+                         concatMap (\(p, (s, _)) -> if p (_style t) then s else "") preds ++
+                         txt ++
+                         concatMap (\(p, (_, e)) -> if p (_style t) then e else "") preds
+          url t = do return () -- txt <- nourl t
+                     -- TODO: Currently only handles cases where the URL is identical to the hyperlink text.
+                     return $ "\\url{" ++ texescape' (fromJust (_url t)) ++ "}" --{"  ++ txt ++ "}"
 
 instance Node_ Bullets where
   texify (Bullets bs) = concatMapM (\b -> do { r <- concatMapM texify b
@@ -236,7 +249,7 @@ paragraphBreak = P.try (myChar '\n' >> P.many1 (myChar '\n') >>
                  return (Node ParagraphBreak))
 
 singleBlank :: Parser Node
-singleBlank = myChar '\n' >> return (Node (Text { _text = "\n", _style = plainStyle }))
+singleBlank = myChar '\n' >> return (Node (Text { _text = "\n", _style = plainStyle, _url=Nothing }))
 
 literal :: Parser Node
 literal = ensureFirstChar $ do
@@ -244,7 +257,7 @@ literal = ensureFirstChar $ do
     contents <- P.manyTill myAnyChar (P.try (ensureFirstChar (myString "}}}")))
     return $ Node $ Literal { _contents = contents }
 
-data Elt = Lit String | Op String deriving Show
+data Elt = Lit String | Op String String | UrlElt String String deriving Show
 
 many1Until' :: Parser a -> Parser b -> [a] -> Parser ([a], Maybe b)
 many1Until' m u l =
@@ -261,54 +274,73 @@ many1Until m u = do
          _ -> return ([], f)
      _  -> return (reverse l, f))
 
+myString' :: String -> String -> Parser (String, String)
+myString' op s = myString s >>= \s -> return (op, s)
+
+myString'' x  = myString' x x
+
 -- Underscores are a PITA, since when they're word-internal we don't want to treat
 -- them as the start of italics.
-underscore :: Parser String
+underscore :: Parser (String, String)
 underscore = do
   s <- P.getState
   c <- (case _firstChar s of
-          True -> myString "_"
+          True  -> myString' "_" "_"
           False ->
             case _oddUnderscore s of
-              True -> (mySatisfy (\c -> c == ' ' || c == '\t')) >> (myString "_")
-              False -> myString "_")
+              True  -> (mySatisfy (\c -> c == ' ' || c == '\t')) >>= \w -> myChar '_' >> return ("_", [w])
+              False -> myString' "_" "_")
   P.updateState (\s -> s { _oddUnderscore = not (_oddUnderscore s) })
   return c
+
+urlRegex = "((https?)|(ftp))://[^][()[:space:]]+"
+
+-- TODO: Currently only finds one URL per line.
+urlify :: String -> [Elt]
+urlify s = case s =~ urlRegex :: (String,String,String) of
+             (b4, url, af) -> (if af == "" then [] else [Lit af]) ++
+                              (if url == "" then [] else [UrlElt url url]) ++
+                              (if b4 == "" then [] else [Lit b4]) -- b4 and af in reverse because
+                                                                  -- list is being constructed in
+                                                                  -- reverse.
 
 -- Note inclusion of "||" as an Op -- helpful when parsing tables.
 text' :: [Elt] -> Parser [Elt]
 text' elts = (do {
   (l, m) <- (many1Until (mySatisfy (/= '\n'))
-                        ((myString "*") <|> (myString "`") <|>
-                         (P.try (myString "~~")) <|> (myString "^") <|>
-                         (P.try (myString ",,")) <|> (P.try underscore) <|>
-                         (P.try (myString "||"))));
+                        ((myString'' "*") <|> (myString'' "`") <|>
+                         (P.try (myString'' "~~")) <|> (myString'' "^") <|>
+                         (P.try (myString'' ",,")) <|> (P.try underscore) <|>
+                         (P.try (myString'' "||"))));
   (case m of
      Just x ->
        case x of -- Special behavior: stop entirely when we get to "||".
-         "||" -> return ((Op x):(Lit l):elts)
-         _    -> text' ((Op x):(Lit l):elts)
-     Nothing -> text' ((Lit l):elts));
+         ("||", _) -> return ((uncurry Op x):(Lit l):elts)
+         _         -> text' ((uncurry Op x):(Lit l):elts)
+     Nothing -> text' (urlify l ++ elts));
   }) <|> (return elts)
 
 addFormatting' :: [Elt] -> (Style, [Text])
-addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "" }])
+addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "", _url=Nothing }])
   where f (style,ts@(t:t')) elt = case elt of
-                             Op "*"  -> let s' = style { _bold = not (_bold style) }
-                                        in (s', (Text { _style = s', _text = "" }):ts)
-                             Op "_"  -> let s' = style { _italic = not (_italic style) }
-                                        in (s', (Text { _style = s', _text = ""}):ts)
-                             Op "`"  -> let s' = style { _inline = not (_inline style) }
-                                        in (s', (Text { _style = s', _text = ""}):ts)
-                             Op "~~" -> let s' = style { _strikeout = not (_strikeout style) }
-                                        in (s', (Text { _style = s', _text = "" }):ts)
-                             Op "^"  -> let s' = style { _superscript = not (_superscript style) }
-                                        in (s', (Text { _style = s', _text = "" }):ts)
-                             Op ",," -> let s' = style { _subscript = not (_subscript style) }
-                                        in (s', (Text { _style = s', _text = "" }):ts)
+                             Op "*" _   -> let s' = style { _bold = not (_bold style) }
+                                           in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
+                             -- Special treatment for '_' (preserve trailing ws swallowed up by 'underscore' above).
+                             Op "_" w   -> let s' = style { _italic = not (_italic style) }
+                                           in (s', (Text { _style = s', _text = " ", _url=Nothing }):ts)
+                             Op "`" _   -> let s' = style { _inline = not (_inline style) }
+                                           in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
+                             Op "~~" _  -> let s' = style { _strikeout = not (_strikeout style) }
+                                           in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
+                             Op "^" _   -> let s' = style { _superscript = not (_superscript style) }
+                                           in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
+                             Op ",," _  -> let s' = style { _subscript = not (_subscript style) }
+                                           in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
                              -- Handle the unlikely case where this appears outside a table.
-                             Op "||" -> (style, (Text { _style=style, _text = "||" }):ts)
-                             Lit txt   -> (style, (t { _text = removeBangs txt }):t')
+                             Op "||" _  -> (style, (Text { _style=style, _text = "||", _url=Nothing }):ts)
+                             Op x y -> error (show (x,y))
+                             Lit txt  -> (style, (t { _text = (_text t) ++ removeBangs txt }):t') -- (_text t) guaranteed to be ws only.
+                             UrlElt u l -> (plainStyle, (Text { _style=plainStyle, _text = l, _url = Just u }):ts)
 
 -- You can use `*` to escape an asterisk, for example.
 doEscapes :: [Text] -> [Text]
@@ -363,9 +395,9 @@ tableRow' rows = do
   (case t of
      [] -> return rows
      _  -> case last t of
-             Lit _   -> return $ addhead rows (addFormatting t)
-             Op "||" -> tableRow' ([]:(addhead rows (addFormatting (butlast t))))
-             _       -> tableRow' (addhead rows (addFormatting t)))
+             Lit _     -> return $ addhead rows (addFormatting t)
+             Op "||" _ -> tableRow' ([]:(addhead rows (addFormatting (butlast t))))
+             _         -> tableRow' (addhead rows (addFormatting t)))
 
 tableRow :: Parser [[Text]]
 tableRow = ensureFirstChar $ do
@@ -383,7 +415,7 @@ special :: Parser Node
 special = ensureFirstChar $ do
   myString "          "
   P.many (mySatisfy (\c -> c /= '\n'))
-  return (Node (Text { _style=plainStyle, _text="" }))
+  return (Node (Text { _style=plainStyle, _text="", _url=Nothing }))
 
 ignorePragmas :: Parser ()
 ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (P.char '\n') >>
