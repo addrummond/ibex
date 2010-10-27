@@ -364,7 +364,9 @@ addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "", _
 -- You can use `*` to escape an asterisk, for example.
 doEscapes :: [Text] -> [Text]
 doEscapes = map esc
-  where esc t = if _inline (_style t) && (_text t) == "*" || (_text t) == "_" || (_text t == "`") || (_text t == "~~") || (_text t == "^") || (_text t == ",,")
+  where esc t = if _inline (_style t) &&
+                  ((_text t) == "*" || (_text t) == "_" || (_text t == "`") ||
+                   (_text t == "~~") || (_text t == "^") || (_text t == ",,"))
                   then t { _style = plainStyle }
                   else t
 
