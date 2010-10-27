@@ -7,11 +7,11 @@
 --
 -- Compile like this:
 --
---     ghc GoCoWiToTex.hs -o executable_name -package parsec -package mtl -package regex-posix
+--     ghc GoCoWiToTex.hs -o gcwttx -package parsec -package mtl -package regex-posix
 --
 -- Then run like this:
 --
---     executable_name foo.txt IBEX_VERSION > output.tex
+--     gcwttx docs/manual.txt IBEX_VERSION >docs/manual.tex
 --
 -- (Get GHC at http://www.haskell.org/ghc/)
 --
