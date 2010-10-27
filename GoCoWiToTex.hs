@@ -26,6 +26,7 @@ import Debug.Trace
 import System (getArgs)
 import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
+import Char
 
 ---------- CONFIGURABLE OPTIONS ----------
 preamble = " \\documentclass[11pt,letterpaper]{article}\n\
@@ -35,6 +36,7 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage[sc]{mathpazo}\n\
            \ \\usepackage{sectsty}\n\
            \ \\usepackage{verbatim}\n\
+           \ \\usepackage{ulem}\n\
            \ \\usepackage{hyperref}\n\
            \ \\sectionfont{\\large \\bf}\n\
            \ \\subsectionfont{\\normalsize \\bf}\n\
@@ -66,6 +68,15 @@ escapeTexChar c =
     '_'  -> "\\_"
     '#'  -> "\\#"
     _    -> [c]
+
+removeBangs :: String -> String
+removeBangs cs = rec (span (/= '!') cs)
+  where rec (b4, []) = cs
+        rec (b4, (c:cs)) = b4 ++ stripBang cs
+          where stripBang "" = ""
+                stripBang (c:cs)
+                  | isAlphaNum c = removeBangs (dropWhile isAlphaNum cs)
+                  | True         = "!" ++ removeBangs cs
 
 data TexifyState = TexifyState {
   _squoteOpen :: Bool,
@@ -109,12 +120,18 @@ data Text = Text { _text :: String, _style :: Style } deriving Show
 data Style = Style {
     _bold :: Bool,
     _italic :: Bool,
-    _inline :: Bool
+    _inline :: Bool,
+    _strikeout :: Bool,
+    _superscript :: Bool,
+    _subscript :: Bool
 } deriving Show
 plainStyle = Style {
     _bold = False,
     _italic = False,
-    _inline = False
+    _inline = False,
+    _strikeout = False,
+    _superscript = False,
+    _subscript = False
 }
 data Bullets = Bullets [[Text]] deriving Show
 data Numbered = Numbered [[Text]] deriving Show
@@ -141,7 +158,10 @@ instance Node_ Literal where
 
 preds = [ (_bold, ("\\textbf{", "}")),
           (_italic, ("\\textit{", "}")),
-          (_inline, ("\\texttt{", "}")) ]
+          (_inline, ("\\texttt{", "}")),
+          (_superscript, ("$^{\\mbox{\\footnotesize ", "}}$")),
+          (_subscript, ("$_{\\mbox{\\footnotesize ", "}}$")),
+          (_strikeout, ("\\sout{", "}")) ]
 
 instance Node_ Text where
   texify t = do
@@ -149,7 +169,7 @@ instance Node_ Text where
     return $
       concatMap (\(p, (s, e)) -> if p (_style t) then s else "") preds ++
       txt ++
-      concatMap (\(p, (s, e)) -> if p (_style t) then e else "") preds ++ " "
+      concatMap (\(p, (s, e)) -> if p (_style t) then e else "") preds
 
 instance Node_ Bullets where
   texify (Bullets bs) = concatMapM (\b -> do { r <- concatMapM texify b
@@ -205,10 +225,10 @@ ensureFirstChar p = do
 heading :: Parser Node
 heading = ensureFirstChar $ do
   level <- P.many1 (myChar '=')
-  P.many (P.satisfy (\c -> c == ' ' || c == '\t' || c == '!')) -- Bit of a hack here for ignoring intial ! in section titles.
+  P.many (P.satisfy (\c -> c == ' ' || c == '\t'))
   title <- P.many1 (mySatisfy (/= '='))
   P.many1 (myChar '=')
-  return $ Node $ Heading { _level = length level, _title = title }
+  return $ Node $ Heading { _level = length level, _title = removeBangs title }
 
 paragraphBreak :: Parser Node
 paragraphBreak = P.try (myChar '\n' >> P.many1 (myChar '\n') >>
@@ -216,7 +236,7 @@ paragraphBreak = P.try (myChar '\n' >> P.many1 (myChar '\n') >>
                  return (Node ParagraphBreak))
 
 singleBlank :: Parser Node
-singleBlank = myChar '\n' >> return (Node (Text { _text = "", _style = plainStyle }))
+singleBlank = myChar '\n' >> return (Node (Text { _text = "\n", _style = plainStyle }))
 
 literal :: Parser Node
 literal = ensureFirstChar $ do
@@ -255,22 +275,14 @@ underscore = do
   P.updateState (\s -> s { _oddUnderscore = not (_oddUnderscore s) })
   return c
 
--- Fiddle to get '!'s ignored in the right places.
--- This is slightly wrong, as it would ignore the '!' in a line such as "! Blah blah blah",
--- but since no-one would ever write something like this, it doesn't really matter.
-bang :: Parser String
-bang = do
-  s <- P.getState
-  c <- (case _firstChar s of
-          True -> myString "!"
-          False -> ((myString " !") <|> (myString "\t !")) >> return "!")
-  return c
-
 -- Note inclusion of "||" as an Op -- helpful when parsing tables.
 text' :: [Elt] -> Parser [Elt]
 text' elts = (do {
   (l, m) <- (many1Until (mySatisfy (/= '\n'))
-                        ((myString "*") <|> (myString "`") <|> (P.try underscore) <|> (P.try bang) <|> (P.try (myString "||"))));
+                        ((myString "*") <|> (myString "`") <|>
+                         (P.try (myString "~~")) <|> (myString "^") <|>
+                         (P.try (myString ",,")) <|> (P.try underscore) <|>
+                         (P.try (myString "||"))));
   (case m of
      Just x ->
        case x of -- Special behavior: stop entirely when we get to "||".
@@ -282,21 +294,26 @@ text' elts = (do {
 addFormatting' :: [Elt] -> (Style, [Text])
 addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "" }])
   where f (style,ts@(t:t')) elt = case elt of
-                             Op "*" -> let s' = style { _bold = not (_bold style) }
-                                       in (s', (Text { _style = s', _text = "" }):ts)
-                             Op "_" -> let s' = style { _italic = not (_italic style) }
-                                       in (s', (Text { _style = s', _text = ""}):ts)
+                             Op "*"  -> let s' = style { _bold = not (_bold style) }
+                                        in (s', (Text { _style = s', _text = "" }):ts)
+                             Op "_"  -> let s' = style { _italic = not (_italic style) }
+                                        in (s', (Text { _style = s', _text = ""}):ts)
                              Op "`"  -> let s' = style { _inline = not (_inline style) }
                                         in (s', (Text { _style = s', _text = ""}):ts)
-                             Op "!" -> (style, ts) -- Ignore it.
+                             Op "~~" -> let s' = style { _strikeout = not (_strikeout style) }
+                                        in (s', (Text { _style = s', _text = "" }):ts)
+                             Op "^"  -> let s' = style { _superscript = not (_superscript style) }
+                                        in (s', (Text { _style = s', _text = "" }):ts)
+                             Op ",," -> let s' = style { _subscript = not (_subscript style) }
+                                        in (s', (Text { _style = s', _text = "" }):ts)
                              -- Handle the unlikely case where this appears outside a table.
                              Op "||" -> (style, (Text { _style=style, _text = "||" }):ts)
-                             Lit txt   -> (style, (t { _text = txt }):t')
+                             Lit txt   -> (style, (t { _text = removeBangs txt }):t')
 
 -- You can use `*` to escape an asterisk, for example.
 doEscapes :: [Text] -> [Text]
 doEscapes = map esc
-  where esc t = if _inline (_style t) && (_text t) == "*" || (_text t) == "_"
+  where esc t = if _inline (_style t) && (_text t) == "*" || (_text t) == "_" || (_text t == "`") || (_text t == "~~") || (_text t == "^") || (_text t == ",,")
                   then t { _style = plainStyle }
                   else t
 

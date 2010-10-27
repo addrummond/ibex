@@ -130,28 +130,17 @@ scratch.  Since the particulars of different web servers differ, some parts are
 necessarily rather vague. There are many possible ways of organizing the
 files/directories; the setup described below is just the simplest.
 
-*Step 1:* Ensure that the `www` directory is somewhere within the root
-directory of your HTTP server. You may want to place the entire `webspr`
-directory within the root directory, or you may want to copy the files in `www`
-to a new location within the root directory. All of these files are ordinary
-static files except for `server.py`, which needs to be run as a CGI app.
+    # Ensure that the `www` directory is somewhere within the root directory of your HTTP server. You may want to place the entire `webspr` directory within the root directory, or you may want to copy the files in `www` to a new location within the root directory. All of these files are ordinary static files except for `server.py`, which needs to be run as a CGI app.
 
-*Step 2:* Decide on a location for the main webspr directory. Depending on the
-details of your setup, you may be able to leave it in place, or you may need to
-copy it to a directory which the HTTP server has permission to access (so that
-`server.py` may access files in this directory when it is executed).
+    # Decide on a location for the main webspr directory. Depending on the details of your setup, you may be able to leave it in place, or you may need to copy it to a directory which the HTTP server has permission to access (so that `server.py` may access files in this directory when it is executed).
 
-*Step 3:* Edit `server.py` and change the value of
-`SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
+    # Edit `server.py` and change the value of `SERVER_CONF_PY_FILE` to point to the new location of server_conf.py.
 
-*Step 4:* Edit `server_conf.py` and change the value of
-`IBEX_WORKING_DIR` to the new location of the main `webspr` dir.
+    # Edit `server_conf.py` and change the value of `IBEX_WORKING_DIR` to the new location of the main `webspr` dir.
 
-*Step 5:* Edit `server_conf.py` and change change the value of
-`SERVER_MODE` to `"cgi"`.
+    # Edit `server_conf.py` and change change the value of `SERVER_MODE` to `"cgi"`.
 
-*Step 6:* If the version of Python you wish to use is not the default used by
-the HTTP server, add a `#!` line at the beginning of `server.py`.
+    # If the version of Python you wish to use is not the default used by the HTTP server, add a `#!` line at the beginning of `server.py`.
 
 Once these steps are complete, it's just a matter of configuring your HTTP
 server correctly. If you are using shared hosting, there is a reasonably good
