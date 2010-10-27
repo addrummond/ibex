@@ -717,7 +717,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || `null`       || The question to pose.                                             ||
-|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that this will be ignored if presentAsScale is `true`. ||
+|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if presentAsScale is `true`. ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || autoFirstChar  || `false`      || If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) ||
