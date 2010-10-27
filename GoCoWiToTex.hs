@@ -385,8 +385,15 @@ special = ensureFirstChar $ do
   P.many (mySatisfy (\c -> c /= '\n'))
   return (Node (Text { _style=plainStyle, _text="" }))
 
+ignorePragmas :: Parser ()
+ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (P.char '\n') >>
+                return ()
+
 document :: Parser [Node]
-document = P.many (foldl1 (<|>) (map P.try [special, heading, paragraphBreak, singleBlank, literal, numbered, bullets, table, text]))
+document = ignorePragmas >>
+           P.many (foldl1 (<|>) (map P.try [special, heading, paragraphBreak,
+                                            singleBlank, literal, numbered,
+                                            bullets, table, text]))
 
 parseDocs :: String -> Either P.ParseError [Node]
 parseDocs = P.runParser document (ParseState { _firstChar = True, _oddUnderscore = True }) ""
