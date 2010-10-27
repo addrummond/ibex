@@ -358,7 +358,6 @@ addFormatting' = foldl f (plainStyle, [Text { _style = plainStyle, _text = "", _
                                            in (s', (Text { _style = s', _text = "", _url=Nothing }):ts)
                              -- Handle the unlikely case where this appears outside a table.
                              Op "||" _  -> (style, (Text { _style=style, _text = "||", _url=Nothing }):ts)
-                             Op x y -> error (show (x,y))
                              Lit txt  -> (style, (t { _text = (_text t) ++ removeBangs txt }):t') -- (_text t) guaranteed to be ws only.
                              UrlElt u l -> (plainStyle, (Text { _style=plainStyle, _text = l, _url = Just u }):ts)
 
