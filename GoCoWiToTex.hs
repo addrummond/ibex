@@ -46,9 +46,9 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage{breakurl}\n\
            \ \\usepackage{hyperref}\n\
            \ \\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}\n\
-           \ \\sectionfont{\\large \\bf}\n\
-           \ \\subsectionfont{\\normalsize \\bf}\n\
-           \ \\subsubsectionfont{\\normalsize \\it}\n"
+           \ \\sectionfont{\\Large \\bf}\n\
+           \ \\subsectionfont{\\large \\bf}\n\
+           \ \\subsubsectionfont{\\normalsize \\bf}\n"
 
 verbatimMaxLineLength = 95
 availablePageWidthIn = 6.5 :: Float
@@ -121,25 +121,29 @@ texescape' = concatMap escapeTexChar
 instance Show Node where
   show (Node x) = show x
 
-data Heading = Heading { _level :: Int, _title :: String } deriving Show
+data Heading = Heading {
+  _level :: Int,
+  _title :: String,
+  _numbered :: Bool
+} deriving Show
 data ParagraphBreak = ParagraphBreak deriving Show
 data Literal = Literal { _contents :: String } deriving Show
 data Text = Text { _text :: String, _style :: Style, _url :: Maybe String } deriving Show
 data Style = Style {
-    _bold :: Bool,
-    _italic :: Bool,
-    _inline :: Bool,
-    _strikeout :: Bool,
-    _superscript :: Bool,
-    _subscript :: Bool
+  _bold :: Bool,
+  _italic :: Bool,
+  _inline :: Bool,
+  _strikeout :: Bool,
+  _superscript :: Bool,
+  _subscript :: Bool
 } deriving Show
 plainStyle = Style {
-    _bold = False,
-    _italic = False,
-    _inline = False,
-    _strikeout = False,
-    _superscript = False,
-    _subscript = False
+  _bold = False,
+  _italic = False,
+  _inline = False,
+  _strikeout = False,
+  _superscript = False,
+  _subscript = False
 }
 data Bullets = Bullets [[Text]] deriving Show
 data Numbered = Numbered [[Text]] deriving Show
@@ -155,7 +159,7 @@ instance Node_ MultiNode where
 instance Node_ Heading where
   texify n = do
     t <- texescape (_title n)
-    return $ "\\" ++ (take (((_level n)-1)*3) (cycle "sub")) ++ "section{" ++ t ++ "}\n"
+    return $ "\\" ++ (take (((_level n)-1)*3) (cycle "sub")) ++ "section" ++ (if _numbered n then "" else "*") ++ "{" ++ t ++ "}\n"
 
 instance Node_ ParagraphBreak where
   texify pb = modify (\s -> s { _squoteOpen = False, _dquoteOpen = False }) >>
@@ -211,7 +215,8 @@ instance Node_ Table where
 
 data ParseState = ParseState {  
   _firstChar :: Bool,
-  _oddUnderscore :: Bool
+  _oddUnderscore :: Bool,
+  _currentHeadingLevel :: Int
 }
 
 (<|>) = (P.<|>)
@@ -235,13 +240,28 @@ ensureFirstChar p = do
   s <- P.getState
   (if _firstChar s then p else fail "Not first char")
 
-heading :: Parser Node
-heading = ensureFirstChar $ do
+-- A normal ==foo== heading.
+heading1 :: Parser Node
+heading1 = ensureFirstChar $ do
   level <- P.many1 (myChar '=')
   P.many (P.satisfy (\c -> c == ' ' || c == '\t'))
   title <- P.many1 (mySatisfy (/= '='))
   P.many1 (myChar '=')
-  return $ Node $ Heading { _level = length level, _title = removeBangs title }
+  P.updateState (\s -> s { _currentHeadingLevel = length level })
+  return $ Node $ Heading { _level = length level, _title = removeBangs title, _numbered = True }
+
+-- Special handling of *foo* when used as the only thing on a line.
+-- This enables nicer translation of minor headings into LaTeX (especially w.r.t.
+-- optimal placement of page breaks).
+heading2 :: Parser Node
+heading2 = ensureFirstChar $ do
+  myChar '*'
+  title <- P.many (mySatisfy (\c -> c /= '\n' && c /= '*'))
+  myChar '*'
+  P.many (mySatisfy (\c -> c == ' ' || c == '\t'))
+  myChar '\n'
+  s <- P.getState
+  return $ Node $ Heading { _level = _currentHeadingLevel s + 1, _title = removeBangs title, _numbered = False }
 
 paragraphBreak :: Parser Node
 paragraphBreak = P.try (myChar '\n' >> P.many1 (myChar '\n') >>
@@ -423,12 +443,15 @@ ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (P.char 
 
 document :: Parser [Node]
 document = ignorePragmas >>
-           P.many (foldl1 (<|>) (map P.try [special, heading, paragraphBreak,
-                                            singleBlank, literal, numbered,
-                                            bullets, table, text]))
+           P.many (foldl1 (<|>) (map P.try [special, heading1, heading2,
+                                            paragraphBreak, singleBlank,
+                                            literal, numbered, bullets,
+                                            table, text]))
 
 parseDocs :: String -> Either P.ParseError [Node]
-parseDocs = P.runParser document (ParseState { _firstChar = True, _oddUnderscore = True }) ""
+parseDocs = P.runParser document (ParseState { _firstChar = True,
+                                               _oddUnderscore = True,
+                                               _currentHeadingLevel = 0 }) ""
 
 fromRight :: Either a b -> b
 fromRight (Right x) = x
@@ -459,7 +482,9 @@ main = do
   hClose h
 
 testp :: Parser a -> String -> a
-testp p s = fromRight (P.runParser p (ParseState { _firstChar = True, _oddUnderscore = True}) "" s)
+testp p s = fromRight (P.runParser p (ParseState { _firstChar = True,
+                                                   _oddUnderscore = True,
+                                                   _currentHeadingLevel = 0 }) "" s)
 
 test :: String -> IO ()
 test s = do
