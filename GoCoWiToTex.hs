@@ -82,9 +82,9 @@ removeBangs cs = rec (span (/= '!') cs)
   where rec (b4, []) = cs
         rec (b4, (c:cs)) = b4 ++ stripBang cs
           where stripBang "" = ""
-                stripBang (c:cs)
-                  | isAlphaNum c = removeBangs (dropWhile isAlphaNum cs)
-                  | True         = "!" ++ removeBangs cs
+                stripBang xs@(c:cs)
+                  | isAlphaNum c = removeBangs xs
+                  | True         = '!' : (removeBangs xs)
 
 data TexifyState = TexifyState {
   _squoteOpen :: Bool,
