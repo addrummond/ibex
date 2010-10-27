@@ -797,7 +797,7 @@ before the user can continue. (This is useful for consent checkboxes.)
 
 By default, failure to fill in an obligatory field is signaled by an alert dialog.
 However, you can indicate that the error message is to be displayed on the page
-by inserting an empty label tag in your form of the following sort:
+by inserting an empty label tag in your form:
 {{{
 <label class="error" for="FIELD_NAME"></label>
 }}}
