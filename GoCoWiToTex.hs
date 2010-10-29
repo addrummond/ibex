@@ -11,7 +11,11 @@
 --
 -- The tex file should compile using 'pdflatex' with a standard LaTeX install.
 -- Edit the 'preamble' definition below to change general formatting/layout options.
--- 
+--
+-- TODO:
+--
+--     * Handling of ` ` quotes in section headings.
+--     * Some URLs not being recognized as such.
 module Main where
 
 import IO
