@@ -7,7 +7,7 @@
 --
 -- Compile like this:
 --
---     ghc GoCoWiToTex.hs -o gcwttx -package parsec -package mtl -package regex-posix
+--     ghc GoCoWiToTex.hs -o gcwttx -package parsec -package mtl -package regex-posix -package regex-compat
 --
 -- Then run like this:
 --
@@ -28,22 +28,24 @@ import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
 import Char
 import Maybe
-import Text.Regex.Base
+import Text.Regex
 import Text.Regex.Posix -- This will be super inefficient, especially since we're
                         -- using String rather than ByteString, but this is the
                         -- only regex implementation that comes as standard with
                         -- GHC.
+import Text.Printf
 
 ---------- CONFIGURABLE OPTIONS ----------
 preamble = " \\documentclass[11pt,letterpaper]{article}\n\
            \ \\usepackage{parskip}\n\
            \ \\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}\n\
            \ \\usepackage[T1]{fontenc}\n\
-           \ \\usepackage[sc]{mathpazo}\n\
+           \ \\usepackage[]{mathptmx}\n\
            \ \\usepackage{sectsty}\n\
            \ \\usepackage{verbatim}\n\
            \ \\usepackage{ulem}\n\
            \ \\usepackage{breakurl}\n\
+           \ \\usepackage{ragged2e}\n\
            \ \\usepackage{hyperref}\n\
            \ \\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}\n\
            \ \\sectionfont{\\Large \\bf}\n\
@@ -52,6 +54,7 @@ preamble = " \\documentclass[11pt,letterpaper]{article}\n\
 
 verbatimMaxLineLength = 95
 availablePageWidthIn = 6.5 :: Float
+minimumColumnWidthIn = 1.0 :: Float
 author = "Alex Drummond"
 ------------------------------------------
 
@@ -77,14 +80,9 @@ escapeTexChar c =
     '#'  -> "\\#"
     _    -> [c]
 
+removeBangsRegex = mkRegex "!([[:alnum:]])"
 removeBangs :: String -> String
-removeBangs cs = rec (span (/= '!') cs)
-  where rec (b4, []) = cs
-        rec (b4, (c:cs)) = b4 ++ stripBang cs
-          where stripBang "" = ""
-                stripBang xs@(c:cs)
-                  | isAlphaNum c = removeBangs xs
-                  | True         = '!' : (removeBangs xs)
+removeBangs s = subRegex removeBangsRegex s "\\1"
 
 data TexifyState = TexifyState {
   _squoteOpen :: Bool,
@@ -198,8 +196,25 @@ instance Node_ Numbered where
                                               ; return $ "\n\\item\n" ++ r
                                               }) bs >>= (\s -> return $ "\\begin{enumerate}\n" ++ s ++ "\n\\end{enumerate}\n")
 
-makecspec numCols = "{|" ++ (concat $ (take numCols (repeat ("p{" ++ cw ++ "}|")))) ++ "}"
-  where cw = (show ((availablePageWidthIn - 0.5) / (fromIntegral numCols))) ++ "in"
+balanceWidths :: [Float] -> [Float]
+balanceWidths lengths = map (\l -> max minimumColumnWidthIn (((l/totalSqLength)*spare) + minimumColumnWidthIn)) sqLengths
+  where spare = availablePageWidthIn - 1.0 - (fromIntegral (length lengths) * minimumColumnWidthIn)
+        sqLengths = map sq lengths
+        totalSqLength = sum sqLengths
+        sq x = x*x
+
+makecspec' :: [Float] -> String
+makecspec' widths = "{|" ++ (concat $ (map (\w -> "p{" ++ (printf "%.4f" w) ++ "in}|") widths)) ++ "}"
+
+makecspec :: [[[Text]]] -> String
+makecspec ts = makecspec' $ balanceWidths $ map (\ll -> sum $ map (\l -> fromIntegral $ sum (map (length . _text) l)) ll) ts
+
+trans [] = []
+trans xs = map (\n -> map (!! n) xs) [0..length (head xs) - 1]
+
+sloppyTexify t = do
+  r <- texify t
+  return $ "\\begin{sloppypar}" ++ r ++ "\\end{sloppypar}"
 
 instance Node_ Table where
   texify (Table rows) = do {
@@ -208,9 +223,9 @@ instance Node_ Table where
                               })
                  rows
     ; s <- return $ concat $ intersperse "\\\\\n\\hline\n" rs
-    ; return $ "\n\n\\footnotesize\n\\begin{tabular}" ++
-               makecspec (length (head rows)) ++
-               "\n\\hline\n" ++ s ++ "\n\\\\\\hline\n\\end{tabular}\n\n\\normalsize\n"
+    ; return $ "\n\n\\footnotesize\n\\begin{RaggedRight}\n\\sloppy\n\\begin{tabular}" ++
+               makecspec (trans rows) ++
+               "\n\\hline\n" ++ s ++ "\n\\\\\\hline\n\\end{tabular}\n\\end{RaggedRight}\n\\fussy\n\n\\normalsize\n"
     }
 
 data ParseState = ParseState {  
@@ -313,16 +328,16 @@ underscore = do
   P.updateState (\s -> s { _oddUnderscore = not (_oddUnderscore s) })
   return c
 
-urlRegex = "((https?)|(ftp))://[^][()[:space:]]+"
+urlRegex = "((https?)|(ftp))://[^][()[:space:]]+([[]()[:space:]]*)"
 
 -- TODO: Currently only finds one URL per line.
 urlify :: String -> [Elt]
-urlify s = case s =~ urlRegex :: (String,String,String) of
-             (b4, url, af) -> (if af == "" then [] else [Lit af]) ++
-                              (if url == "" then [] else [UrlElt url url]) ++
-                              (if b4 == "" then [] else [Lit b4]) -- b4 and af in reverse because
-                                                                  -- list is being constructed in
-                                                                  -- reverse.
+urlify s = case s =~ urlRegex :: (String,String,String,[String]) of
+             (b4, url, af, subs) -> (if af == "" then [] else [Lit (af ++ (subs !! 3))]) ++
+                                    (if url == "" then [] else [UrlElt url url]) ++
+                                    (if b4 == "" then [] else [Lit b4]) -- b4 and af in reverse because
+                                                                        -- list is being constructed in
+                                                                        -- reverse.
 
 -- Note inclusion of "||" as an Op -- helpful when parsing tables.
 text' :: [Elt] -> Parser [Elt]
@@ -397,10 +412,10 @@ bulletp c = do
   text'';
 
 bullets :: Parser Node
-bullets = P.sepEndBy1 (P.try (bulletp '*')) (myChar '\n') >>= (return . Node . Bullets)
+bullets = P.sepEndBy1 (P.try (bulletp '*')) (myChar '\n' >> P.option '\n' (myChar '\n')) >>= (return . Node . Bullets)
 
 numbered :: Parser Node
-numbered = P.sepEndBy1 (P.try (bulletp '#')) (myChar '\n') >>= (return . Node . Numbered)
+numbered = P.sepEndBy1 (P.try (bulletp '#')) (myChar '\n' >> P.option '\n' (myChar '\n')) >>= (return . Node . Numbered)
 
 addhead :: [[a]] -> [a] -> [[a]]
 addhead [] x = [x]
@@ -439,7 +454,7 @@ special = ensureFirstChar $ do
   return (Node (Text { _style=plainStyle, _text="", _url=Nothing }))
 
 ignorePragmas :: Parser ()
-ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (P.char '\n') >>
+ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (myChar '\n') >>
                 return ()
 
 document :: Parser [Node]
