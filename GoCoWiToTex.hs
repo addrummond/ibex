@@ -395,10 +395,15 @@ text'' = do
      [] -> fail "Must get some text"
      _  ->  return $ addFormatting $ reverse r)
 
+long `endsWith` short = (reverse short) `isPrefixOf` (reverse long)
 text :: Parser Node
 text = do
   r <- text''
-  return $ Node $ MultiNode r
+  -- When a line ends with 10 spaces, we ignore it. This allows us to link to the PDF
+  -- from the wiki page without this link appearing in the PDF itself.
+  (if endsWith (_text (last r)) "          "
+     then return $ Node $ Text { _style=plainStyle, _text="", _url=Nothing }
+     else return $ Node $ MultiNode r)
 
 bullet :: Char -> Parser ()
 bullet c = ensureFirstChar $
@@ -445,21 +450,13 @@ tableRow = ensureFirstChar $ do
 table :: Parser Node
 table = P.sepEndBy1 (P.try tableRow) (myChar '\n') >>= (return . Node . Table . (filter (not . null)))
 
--- We ignore lines that begin with 10 spaces. This allows a link to the PDF
--- to be placed in the manual source code without it appearing in the PDF itself.
-special :: Parser Node
-special = ensureFirstChar $ do
-  myString "          "
-  P.many (mySatisfy (\c -> c /= '\n'))
-  return (Node (Text { _style=plainStyle, _text="", _url=Nothing }))
-
 ignorePragmas :: Parser ()
 ignorePragmas = P.sepEndBy (myChar '#' >> P.many (mySatisfy (/= '\n'))) (myChar '\n') >>
                 return ()
 
 document :: Parser [Node]
 document = ignorePragmas >>
-           P.many (foldl1 (<|>) (map P.try [special, heading1, heading2,
+           P.many (foldl1 (<|>) (map P.try [heading1, heading2,
                                             paragraphBreak, singleBlank,
                                             literal, numbered, bullets,
                                             table, text]))
