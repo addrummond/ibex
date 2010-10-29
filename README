@@ -1,8 +1,7 @@
 Documentation at http://code.google.com/p/webspr/wiki/Documentation03
 
-You can generate a printable PDF of the documentation by compiling
-GoCoWiToTex.hs and executing the following command from the main ibex
-directory:
+You can generate a printable PDF of the documentation by executing the
+following command from the main ibex directory:
 
     runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >/tmp/manual
 
