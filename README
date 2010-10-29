@@ -1,12 +1,10 @@
 Documentation at http://code.google.com/p/webspr/wiki/Documentation03
 
 You can generate a printable PDF of the documentation by compiling
-GoCoWiToTex.hs and executing the following commands from the main ibex
+GoCoWiToTex.hs and executing the following command from the main ibex
 directory:
 
-    ./gcwttx docs/manual.txt 0.3-beta12 >docs/manual.tex
-    cd docs
-    pdflatex manual.tex
+    runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >/tmp/manual
 
 This creates docs/manual.pdf. The automatic conversion is still a little
 buggy in places, but the resulting PDF is pretty usable.
@@ -15,7 +13,6 @@ To do this, you'll need:
 
     * A standard LaTeX install (with all the usual packages).
 
-    * GHC (Haskell compiler). See the comment at the top of GoCoWiToTex.hs
-      for instructions on how to obtain GHC and compile GoCoWiToTex.hs.
+    * GHC (Haskell compiler). http://www.haskell.org/ghc
 
 

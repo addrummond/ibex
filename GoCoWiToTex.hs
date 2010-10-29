@@ -5,15 +5,9 @@
 -- for the wiki format, but should only be expected to give good results with
 -- docs/manual.txt.
 --
--- Compile like this:
+-- Obtain GHC from http://www.haskell.org/ghc and then run like this:
 --
---     ghc GoCoWiToTex.hs -o gcwttx -package parsec -package mtl -package regex-posix -package regex-compat
---
--- Then run like this:
---
---     gcwttx docs/manual.txt IBEX_VERSION >docs/manual.tex
---
--- (Get GHC at http://www.haskell.org/ghc/)
+--     runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >/tmp/manual
 --
 -- The tex file should compile using 'pdflatex' with a standard LaTeX install.
 -- Edit the 'preamble' definition below to change general formatting/layout options.
@@ -102,12 +96,17 @@ concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]
 concatMapM f xs = liftM concat $ mapM f xs
 
 texescape :: String -> TexifyStateM
-texescape s = concatMapM f s
-  where f c = case c of
-                '\'' -> do
-                  modify (\s -> s { _squoteOpen = not (_squoteOpen s) })
-                  s <- get
-                  return (if (_squoteOpen s) then "`" else "'")
+texescape s = concatMapM f (contextualize Nothing s)
+  where contextualize _ [] = []
+        contextualize prev [c] = [(prev, c, Nothing)]
+        contextualize prev (c:c':cs) = (prev, c, Just c') : (contextualize (Just c) (c':cs))
+        f (l, c, r) = case c of
+                '\'' -> if isJust l && isJust r && isAlpha (fromJust l) && isAlpha (fromJust r) -- Detect apostrophes.
+                          then return "'"
+                          else do
+                            modify (\s -> s { _squoteOpen = not (_squoteOpen s) })
+                            s <- get
+                            return (if (_squoteOpen s) then "`" else "'")
                 '"' -> do
                   modify (\s -> s { _dquoteOpen = not (_dquoteOpen s) })
                   s <- get

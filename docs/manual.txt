@@ -1,4 +1,4 @@
- *Check out the printable PDF version of this manual: http://spellout.net/latest_ibex_manual.pdf *           
+_*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
 This documentation covers 0.3-beta12. The 0.1.x
