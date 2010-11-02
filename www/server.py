@@ -32,6 +32,7 @@ SERVER_CONF_PY_FILE = "../server_conf.py"
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 import sys
 import os
 import os.path
@@ -1519,7 +1520,6 @@ def control(env, start_response):
 
         content_length = None
         content_encoding = None
-        print env
         try:
             content_length = int(env['CONTENT_LENGTH'])
             encoding_re = re.compile(r"((charset)|(encoding))\s*=\s*(?P<encoding>[A-Za-z0-9_-]+)")
