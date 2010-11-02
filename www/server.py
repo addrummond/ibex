@@ -32,8 +32,100 @@ SERVER_CONF_PY_FILE = "../server_conf.py"
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 import sys
+import os
+import os.path
+import getopt
+
+# Function for generating overview.html and experiment.html.
+#
+# Doing it this weird way because:
+#     * We need to keep experiment.html and overview.html as static files for
+#       backwards compatibility.
+#     * We want to generat them automatically, since they're almost identical.
+#     * We also want server.py to be able to generate the same HTML dynamically
+#       in order to implement the 'withsquare' option.
+def generate_html(setcounter=None, overview=False):
+    html = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv = "Content-Type" content = "text/html; charset=utf-8">
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery-ui.min.js"></script>
+
+    <!-- Script for detecting plugins used to create unique MD5 hash. -->
+    <script type="text/javascript" src="PluginDetect.js"></script>
+
+    <!-- General utilities (map, filter, ...) -->
+    <script type="text/javascript" src="util.js"></script>
+    <!-- Code for executing shuffle sequences. -->
+    <script type="text/javascript" src="shuffle.js"></script>
+    <!-- JSON serialization code. -->
+    <script type="text/javascript" src="json.js"></script>
+    <!-- Backwards compatability cruft to ensure that old JS data files work. -->
+    <script type="text/javascript" src="backcompatcruft.js"></script>
+    <!-- JS includes. -->
+    <script type="text/javascript" src="server.py?include=js"></script>
+    <!-- Data file JS includes. -->
+    <script type="text/javascript" src="server.py?include=data"></script>
+    <!-- Set up configuration variables. -->
+    <script type="text/javascript" src="conf.js"></script>
+
+    <!-- The main body of JS code. -->
+    <script type="text/javascript" src="server.py?include=main.js%s%s"></script>
+
+    <link rel="stylesheet" type="text/css" href="server.py?include=css">
+
+    <!-- To be reset by JavaScript. -->
+    <title>Experiment</title>
+    <script type="text/javascript">
+    <!--
+    document.title = conf_pageTitle;
+    -->
+    </script>
+</head>
+<body id="bod">
+
+<script type="text/javascript">
+<!--
+-->
+</script>
+<noscript>
+<p>You need to have Javascript enabled in order to use this page.</p>
+</noscript>
+</body>
+</html>
+"""
+    return html % (setcounter is not None and "&withsquare=%i" % setcounter or "",
+                   overview and "&overview=yes" or "")
+
+command_line_options = None
+try:
+    command_line_options, _ = getopt.getopt(sys.argv[1:], "m:p:r:", ["genhtml="])
+except getopt.GetoptError:
+    sys.stderr.write("Bad arguments\n")
+    sys.exit(1)
+             
+if __name__ == "__main__":
+    gh = [x for x in command_line_options if x[0] == '--genhtml']
+    gh.reverse()
+
+    if gh:
+        # Not much point catching exceptions here, since this is just going
+        # to be run on the command line, and the default Python errors will be fine.
+        experiment_html = generate_html(setcounter=None, overview=False)
+        overview_html = generate_html(setcounter=None, overview=True)
+        ef = open(os.path.join(gh[0][1], 'experiment.html'), "w")
+        ef.write(experiment_html)
+        ef.close()
+        of = open(os.path.join(gh[0][1], 'overview.html'), "w")
+        of.write(overview_html)
+        of.close()
+        sys.exit(0)
+
+
 import types
 import logging
 import getopt
@@ -45,8 +137,6 @@ else:
     import md5
 import time as time_module
 import types
-import os
-import os.path
 import cgi
 import string
 import urllib
@@ -903,17 +993,13 @@ c['MINIFY_JS'] = c.has_key('MINIFY_JS') and c['MINIFY_JS'] or False
 # Also check for "-r" option (resest counter on startup).
 COUNTER_SHOULD_BE_RESET = False
 try:
-    opts, _ = getopt.getopt(sys.argv[1:], "m:p:r")
-    for k,v in opts:
+    for k,v in command_line_options:
         if k == "-m":
             c['SERVER_MODE'] = v
         elif k == "-p":
             c['PORT'] = int(v)
         elif k == "-r":
             COUNTER_SHOULD_BE_RESET = True
-except getopt.GetoptError:
-    logger.error("Bad arguments")
-    sys.exit(1)
 except ValueError:
     logger.error("Argument to -p must be an integer")
     sys.exit(1)
@@ -1320,10 +1406,6 @@ def control(env, start_response):
     # Save the time the results were received.
     thetime = time_module.time()
 
-    def cc_start_response(status, headers, count=None, cookiename="counter"):
-        count = count and count or get_counter()
-        start_response(status, headers + [counter_cookie_header(count, cookiename)])
-
     ip = None
     if env.has_key('HTTP_X_FORWARDED_FOR'):
         ip = env['HTTP_X_FORWARDED_FOR']
@@ -1382,12 +1464,26 @@ def control(env, start_response):
                         return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
                 finally:
                     if f: f.close()
+
+                # UGLY: Will hold some var defs that we may prepend to the main.js
+                defs = []
+
                 # Do we set the 'overview' option?
                 retlist = [contents]
                 if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
-                    # UGLY: We just prepend a variable declaration to the file.
-                    retlist = ["var conf_showOverview = true;\n\n"] + retlist
-                cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
+                    defs.append("var conf_showOverview = true;\n\n")
+
+                # Set the value of the counter (either saved, or provided as part of the URL).
+                counter_value = None
+                try:
+                    counter_value = (qs_hash.has_key('withsquare') and (int(qs_hash['withsquare'][0]),) or (get_counter(),))[0]
+                except ValueError:
+                    start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
+                    return ["<html><body><h1>400 Bad Request</h1></body></html>"]
+                defs.append("var __counter_value_from_server__ = %i\n\n" % counter_value)
+
+                retlist = defs + retlist
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
                 return retlist
 
         # Is it a request for an HTML chunk?
@@ -1400,18 +1496,11 @@ def control(env, start_response):
             except IOError:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
-            cc_start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
+            start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
             return [contents]
 
         # (All branches above end with a return from this function.)
-        #
-        # Is it a request to forward to experiment.html with the counter set to a particular value?
-        #
-        #     NOTE: This is (as you may have noticed) a rather odd way of doing things. We just do
-        #     it this way so that experiment.html can remain as a static file (for no other reason
-        #     than keeping things the same as they used to be unless we absolutely have to change
-        #     them).
-        #
+
         if qs_hash.has_key('withsquare'):
             ivalue = None
             try:
@@ -1420,17 +1509,17 @@ def control(env, start_response):
                 start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
-            cc_start_response('200 OK', [('Content-Type', 'text/html; charset=UTF-8'), ('Refresh', '0; url=experiment.html')],
-                              ivalue, "counter_override")
-            return []
+            start_response('200 OK', [('Content-Type', 'text/html; charset=UTF-8')])
+            return [generate_html(setcounter=ivalue, overview=False)]
 
         # ...if none of the above, it's some results.
-        if not (env['REQUEST_METHOD'] == 'POST') and (env.has_key('CONTENT_LENGTH')):
+        if not (env['REQUEST_METHOD'] == 'POST' and env.has_key('CONTENT_LENGTH')):
             start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
             return ["<html><body><h1>400 Bad Request</h1></body></html>"]
 
         content_length = None
         content_encoding = None
+        print env
         try:
             content_length = int(env['CONTENT_LENGTH'])
             encoding_re = re.compile(r"((charset)|(encoding))\s*=\s*(?P<encoding>[A-Za-z0-9_-]+)")

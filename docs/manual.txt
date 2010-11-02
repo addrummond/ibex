@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3-beta12. The 0.1.x
+This documentation covers 0.3-beta13. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -530,20 +530,25 @@ same group using the following code:
 }}}
 Now, any given participant will see only one of these
 sentences. Designs are rotated using a counter stored on the
-server. This mechanism requires the participant to have cookies enabled;
-otherwise, a random counter will be used. Groups, like types, may either be strings or numbers. By
+server.
+Groups, like types, may either be strings or numbers. By
 default, webspr does not check that all groups contain the same number
 of items (this behavior is new in 0.2.4). You can set the
 `equalGroupSizes` variable to `true` in order to revert to the old
 behavior, where an error is raised if groups contain differing number
 of items. (See the "Miscellaneous options" subsection below.)
 
-*New:* You may now choose which latin square a participant will be placed in
-by using a URL of the following form: ".../server.py?withsquare=XXXX". This
-will set the latin square to XXXX for the current participant and then redirect to ".../experiment.html".
-Selecting the latin square in this manner does *not* modify the master counter stored on the server.
-Again, cookies are required for this feature to work, and if the participant does
-not have cookies enabled a random counter will be used.
+*New:* You may now choose which latin square a participant will be
+placed in by using a URL of the following form:
+".../server.py?withsquare=XXXX". This will set the latin square to
+XXXX for the current participant and then display the main experiment
+page.  Selecting the latin square in this manner does *not* modify the
+master counter stored on the server.
+
+*Newer:* You can also set the counter in the data file, with a
+statement such as `var counterOverride = 18;`. Again, the server's
+latin square counter is not modified.  This method takes priority over
+the URL method described in the previous paragraph, if both are used.
 
 A new (and not very well-tested) feature allows for more complex designs where
 selection of an item from one group is dependent on selection of an item from
@@ -1057,7 +1062,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta12 (current version) and 0.3-beta11:
+Changes between 0.3-beta13 (current version) and 0.3-beta12:
+    * Ibex no longer depends on cookies to set the value of the latin square counter.
+
+Changes between 0.3-beta12 and 0.3-beta11:
     * Fix a minor bug which caused 'DYNAMIC' to be used instead of 'NULL' in some cases in the results file.
     * Fixed a bug which occasionally led to inconsistent values for the unique user ID in the results file (second column in each line).
 

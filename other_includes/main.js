@@ -55,20 +55,11 @@ function renewInner() {
 
 renewInner();
 
-var counter = parseInt(readCookie("counter"));
-var counter_override = parseInt(readCookie("counter_override"));
-var randomCounter = false;
-if (isNaN(counter) && (! counter_override)) {
-    counter = Math.floor(Math.random() * 10000);
-    randomCounter = true;
+var counter = __counter_value_from_server__;
+if (typeof(counterOverride) != "undefined") {
+    assert(! isNaN(parseInt(counterOverride)), "Bad value for 'counterOverride' config variable.");
+    counter = parseInt(counterOverride);
 }
-if (counter_override) {
-    counter = parseInt(counter_override);
-    // Remove the override cookie immediately.
-    if (! conf_withsquareCounterStoreForWholeSession)
-        createCookie("counter_override", "", -1);
-}
-// alert(counter)
 
 // Convert the "defaults" variable to a hash.
 var ht_defaults = { };
@@ -535,7 +526,7 @@ function uniqueMD5() {
 function sendResults(resultsLines, success, failure)
 {
     // Prepare the post data.
-    var data = JSON.stringify([randomCounter ? true : false,
+    var data = JSON.stringify([false, // Now that we're not using cookies, it's never a random counter.
                                counter, 
                                columnNamesArray,
                                resultsLines,

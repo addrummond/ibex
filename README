@@ -1,4 +1,10 @@
-Documentation at http://code.google.com/p/webspr/wiki/Documentation03
+User documentation at http://code.google.com/p/webspr/wiki/Documentation03
+
+The following are some notes intended for developers.
+
+
+1. Generating PDF documentation.
+------------------------------------------------------------------------
 
 You can generate a printable PDF of the documentation by executing the
 following command from the main ibex directory:
@@ -15,3 +21,17 @@ To do this, you'll need:
     * GHC (Haskell compiler). http://www.haskell.org/ghc
 
 
+2. Packaging a release.
+------------------------------------------------------------------------
+
+You need to:
+
+    * Run server.py with the --genhtml option to generate
+      'experiment.html' and 'overview.html' in www/. For example, if
+      you are in www/:
+
+          python server.py --genhtml ./
+
+    * Execute the following command from the root dir of the repo:
+
+          sh mkdist.sh 0.3-beta-1234

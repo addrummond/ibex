@@ -2,6 +2,10 @@
 
 # This software is licensed under a BSD license; see the LICENSE file for details.
 
+echo
+echo "*** Remember to run server.py with the --genhtml option if necessary. ***"
+echo
+
 if [ ! -d dist ]; then
     mkdir dist
 fi
