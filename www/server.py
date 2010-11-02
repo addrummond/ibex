@@ -47,7 +47,7 @@ import getopt
 #     * We also want server.py to be able to generate the same HTML dynamically
 #       in order to implement the 'withsquare' option.
 def generate_html(setcounter=None, overview=False):
-    html = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+    html = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
     <meta http-equiv = "Content-Type" content = "text/html; charset=utf-8">
@@ -99,8 +99,8 @@ def generate_html(setcounter=None, overview=False):
 </body>
 </html>
 """
-    return html % (setcounter is not None and "&withsquare=%i" % setcounter or "",
-                   overview and "&overview=yes" or "")
+    return html % (setcounter is not None and u"&withsquare=%i" % setcounter or u"",
+                   overview and u"&overview=yes" or u"")
 
 command_line_options = None
 try:
