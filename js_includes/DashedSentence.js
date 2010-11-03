@@ -71,15 +71,17 @@ $.widget("ui.DashedSentence", {
         }
         this.previousTime = null;
 
-        this.wordDivs = new Array(this.words.length);
+        this.wordSpans = new Array(this.words.length);
         this.wdnjq = new Array(this.words.length); // 'word divs no jQuery'.
         for (var j = 0; j < this.words.length; ++j) {
-            var div = $(document.createElement("div")).text(this.words[j]);
+            var span = $(document.createElement("span")).text(this.words[j]);
             if (! this.showAhead)
-                div.css('border-color', this.background);
-            this.mainDiv.append(div);
-            this.wordDivs[j] = div;
-            this.wdnjq[j] = div[0];
+                span.css('border-color', this.background);
+            this.mainDiv.append(span);
+            if (j + 1 < this.words.length)
+                this.mainDiv.append("&nbsp;&nbsp;");
+            this.wordSpans[j] = span;
+            this.wdnjq[j] = span[0];
         }
 
         if (this.mode == "speeded acceptability") {
@@ -223,8 +225,8 @@ $.widget("ui.DashedSentence", {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(this.words[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", boolToInt(((i+1) < this.wordDivs.length) &&
-                                       (this.wordDivs[i].offsetTop != this.wordDivs[i+1].offsetTop))],
+                ["Newline?", boolToInt(((i+1) < this.wordSpans.length) &&
+                                       (this.wordSpans[i].offsetTop != this.wordSpans[i+1].offsetTop))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }

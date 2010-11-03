@@ -8,14 +8,10 @@
 .rating {
     padding-left: 0.6em;
 }
-.sentence div {
+.sentence span {
      background-color: white;
-     border-bottom: 1px solid;
+     border-bottom: 1px solid #9ea4b1;
      color: white;
-     border-color: #9ea4b1;
-     float: left;
-     margin-right: 0.6em;
-     margin-bottom: 2em;
 }
 .practice-text {
     color: blue; 
