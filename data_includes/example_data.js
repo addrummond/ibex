@@ -131,5 +131,5 @@ var items = [
           "Question",       {q: "Which of the following is true?",
                              as: ["The patient still has severe pain in his left leg",
                                   "The patient still has severe pain in his right leg",
-                                  "The patient no longer suffers from pain in his left leg"]}],
+                                  "The patient no longer suffers from pain in his left leg"]}]
 ];
