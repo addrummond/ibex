@@ -71,17 +71,26 @@ $.widget("ui.DashedSentence", {
         }
         this.previousTime = null;
 
-        this.wordSpans = new Array(this.words.length);
-        this.wdnjq = new Array(this.words.length); // 'word divs no jQuery'.
+        this.wordISpans = new Array(this.words.length); // Inner spans.
+        this.wordOSpans = new Array(this.words.length); // Outer spans.
+        this.owsnjq = new Array(this.words.length); // 'outer word spans no jQuery'.
+        this.iwsnjq = new Array(this.words.length);
         for (var j = 0; j < this.words.length; ++j) {
-            var span = $(document.createElement("span")).text(this.words[j]);
+            var ispan;
+            var ospan = $(document.createElement("span"))
+                        .addClass(this.cssPrefix + 'ospan')
+                        .append(ispan = $(document.createElement("span"))
+                                        .addClass(this.cssPrefix + 'ispan')
+                                        .text(this.words[j]));
             if (! this.showAhead)
                 span.css('border-color', this.background);
-            this.mainDiv.append(span);
+            this.mainDiv.append(ospan);
             if (j + 1 < this.words.length)
-                this.mainDiv.append("&nbsp;&nbsp;");
-            this.wordSpans[j] = span;
-            this.wdnjq[j] = span[0];
+                this.mainDiv.append("&nbsp; ");
+            this.wordISpans[j] = ispan;
+            this.wordOSpans[j] = ospan;
+            this.iwsnjq[j] = ispan[0];
+            this.owsnjq[j] = ospan[0];
         }
 
         if (this.mode == "speeded acceptability") {
@@ -195,17 +204,17 @@ $.widget("ui.DashedSentence", {
     // NOTE: [0] subscript gets DOM object from JQuery selector.
     blankWord: function(w) {
         if (this.currentWord <= this.stoppingPoint) {
-            this.wdnjq[w].style.borderColor = this.unshownBorderColor;
-            this.wdnjq[w].style.color = this.unshownWordColor;
+            this.owsnjq[w].style.borderColor = this.unshownBorderColor;
+            this.iwsnjq[w].style.visibility = "hidden";
             if (! this.showBehind)
-                this.wdnjq[w].style.borderColor = this.background;
+                this.owsnjq[w].style.borderColor = this.background;
         }
     },
     showWord: function(w) {
         if (this.currentWord < this.stoppingPoint) {
             if (this.showAhead || this.showBehind)
-                this.wdnjq[w].style.borderColor = this.shownBorderColor;
-            this.wdnjq[w].style.color = this.shownWordColor;
+                this.owsnjq[w].style.borderColor = this.shownBorderColor;
+            this.iwsnjq[w].style.visibility = "visible";
         }
     },
 
@@ -225,8 +234,8 @@ $.widget("ui.DashedSentence", {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(this.words[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", boolToInt(((i+1) < this.wordSpans.length) &&
-                                       (this.wordSpans[i].offsetTop != this.wordSpans[i+1].offsetTop))],
+                ["Newline?", boolToInt(((i+1) < this.wordOSpans.length) &&
+                                       (this.wordOSpans[i].offset().top != this.wordOSpans[i+1].offset().top))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }

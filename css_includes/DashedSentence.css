@@ -8,10 +8,15 @@
 .rating {
     padding-left: 0.6em;
 }
-.sentence span {
-     background-color: white;
+.sentence {
+    line-height: 400%;
+}
+.ospan {
      border-bottom: 1px solid #9ea4b1;
-     color: white;
+     background-color: white;
+}
+.ispan {
+     visibility: hidden;
 }
 .practice-text {
     color: blue; 
