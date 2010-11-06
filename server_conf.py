@@ -88,7 +88,7 @@ DATA_INCLUDES_LIST = ["block"]  # Ditto.
 MINIFY_JS = False
 
 # **********
-# Most users sould ignore the following options and skip to those
+# Most users should ignore the following options and skip to those
 # in the rest of the file. See documentation. Note that if one
 # of these options is defined, all must be defined.
 # **********
