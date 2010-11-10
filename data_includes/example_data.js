@@ -1,5 +1,3 @@
-// (This example file has been slimmed down and reformatted for ibex 0.3-beta11.)
-
 var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
