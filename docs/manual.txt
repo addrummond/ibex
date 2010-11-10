@@ -639,7 +639,10 @@ they answered incorrectly.
 
 =Controllers=
 For all controllers, the `hideProgressBar` option may be set to true, in order to prevent the progress
-bar being displayed while the controller is in action.
+bar being displayed while the controller is in action. Similarly, the `countsForProgressBar` option
+may be set to determine whether or not completion of the controller causes the indicator in the
+progress bar to move to the right. (Different controllers have a different default setting for
+`countsForProgressBar`.)
 
 ==Separator==
 *Options*
@@ -976,7 +979,9 @@ be given an `"html"` option. The `obligatory` key must be present in the object
 passed to `ibex_controller_set_properties`.
 The `countsForProgressBar` property is optional and is `true`
 by default. It determines whether instances of the controller count towards
-the size of the progress bar. The `htmlDescription` function should return
+the size of the progress bar. (This option can be overriden on an item-by-item
+basis by setting the `countsForProgressBar` property of an item.)
+The `htmlDescription` function should return
 either HTML or a DOM node which gives a brief summary of the content of
 an instance of the controller for use in overviews.
 
