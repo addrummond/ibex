@@ -1067,7 +1067,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta13 (current version) and 0.3-beta12:
+Changes between 0.3-beta14 (current version) and 0.3-beta13:
+    * It is now possible to set the `countsForProgressBar` option at the level of individual items.
+
+Changes between 0.3-beta13 and 0.3-beta12:
     * Ibex no longer depends on cookies to set the value of the latin square counter.
     * Trailing comma removed in example_data.js.
     * `DashedSentence` controller now uses spans instead of divs for the individual words. This should make things work more smoothly with right-to-left languages (though I haven't tested this yet).
