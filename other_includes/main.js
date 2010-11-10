@@ -413,7 +413,8 @@ function finishedCallback(resultsLines) {
 
     // Update progress bar if applicable.
     if (ibex_controller_get_property(currentElement.controller, "countsForProgressBar") === undefined ||
-        ibex_controller_get_property(currentElement.controller, "countsForProgressBar")) {
+        ibex_controller_get_property(currentElement.controller, "countsForProgressBar") ||
+        currentElementOptions.countsForProgressBar) {
         updateProgressBar();
     }
 
