@@ -365,7 +365,7 @@ function showProgressBar() {
 var posInRunningOrder = 0;
 var posInCurrentElementSet = 0;
 var currentUtilsInstance = null;
-var currentControllerOptions = null;
+var currentElementOptions = null;
 // A list of result lines.
 var allResults = [];
 // Array for column names.
@@ -431,7 +431,7 @@ function finishedCallback(resultsLines) {
     currentElement = runningOrder[posInRunningOrder][posInCurrentElementSet];
 
     var pForElement;
-    if (dget(currentControllerOptions, "displayMode", "overwrite") != "append") {
+    if (dget(currentElementOptions, "displayMode", "overwrite") != "append") {
         renewInner();
     }
     pForElement = $(document.createElement("p")).css('clear', 'both');
@@ -457,12 +457,12 @@ function finishedCallback(resultsLines) {
     os._cssPrefix = ibex_controller_name_to_css_prefix(currentElement.controller);
     os._controllerDefaults = ht_defaults;
     os._utilsClass = Utils;
-    currentControllerOptions = os;
+    currentElementOptions = os;
     addSafeBindMethodPair(currentElement.controller);
     pForElement[currentElement.controller](os);
 
     // Should we show the progress bar with this item?
-    if (currentControllerOptions.hideProgressBar)
+    if (currentElementOptions.hideProgressBar)
         hideProgressBar();
     else
         showProgressBar();
@@ -476,11 +476,11 @@ os._utils = currentUtilsInstance;
 os._cssPrefix = runningOrder[0][0].controller + "-";
 os._controllerDefaults = ht_defaults;
 os._utilsClass = Utils;
-currentControllerOptions = os;
+currentElementOptions = os;
 addSafeBindMethodPair(runningOrder[0][0].controller);
 pForElement[runningOrder[0][0].controller](os);
 // Should we show the progress bar with the first item?
-if (currentControllerOptions.hideProgressBar)
+if (currentElementOptions.hideProgressBar)
     hideProgressBar();
 
 // Attempt to generate a unique MD5 hash based on various features of the user's
