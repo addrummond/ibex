@@ -1481,7 +1481,7 @@ def control(env, start_response):
                 except ValueError:
                     start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                     return ["<html><body><h1>400 Bad Request</h1></body></html>"]
-                defs.append("var __counter_value_from_server__ = %i\n\n" % counter_value)
+                defs.append("var __counter_value_from_server__ = %i;\n\n" % counter_value)
 
                 retlist = defs + retlist
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
