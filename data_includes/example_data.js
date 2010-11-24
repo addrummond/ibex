@@ -23,7 +23,8 @@ var defaults = [
         hideProgressBar: true
     },
     "Form", {
-        hideProgressBar: true
+        hideProgressBar: true,
+        continueOnReturn: true
     }
 ];
 

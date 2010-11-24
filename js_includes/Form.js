@@ -7,6 +7,7 @@ $.widget("ui.Form", {
         this.utils = this.options._utils;
 
         this.html = dget(this.options, "html");
+        this.continueOnReturn = dget(this.options, "continueOnReturn", false);
         this.continueMessage = dget(this.options, "continueMessage", "Click here to continue");
         this.checkedValue = dget(this.options, "checkedValue", "yes");
         this.uncheckedValue = dget(this.options, "uncheckedValue", "no");
@@ -127,11 +128,18 @@ $.widget("ui.Form", {
             }
         }
 
-        var dom = htmlCodeToDOM(this.html, function (dom) { HAS_LOADED = true; });
-        t.element.append(dom);
-        t.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
-                                         .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
-                                         .click(handleClick(dom))));
+        var dom = htmlCodeToDOM(this.html, function (dom) {
+            HAS_LOADED = true;
+
+            if (t.continueOnReturn)
+                t.safeBind(t.element.find("input[type=text]"), 'keydown', function (e) { if (e.keyCode == 13) return handler(e); });
+        });
+
+        var handler = handleClick(dom);
+        this.element.append(dom);
+        this.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
+                                            .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
+                                            .click(handler)));
     }
 });
 
