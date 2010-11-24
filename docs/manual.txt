@@ -816,6 +816,7 @@ be displayed in the same location, add a `<label>` with 'for' set to "__ALL_FIEL
 
 || *Option* || *Default* || *Description* ||
 || html || _obligatory_ || As for the `Message` controller. ||
+|| continueOnReturn || `false` || If `true`, the user can complete the form by pressing the return key when a single-line text field is focused. ||
 || continueMessage ||  "Click here to continue" || ||
 || checkedValue || `"yes"` || The value stored in the results file when a checkbox is checked. ||
 || uncheckedValue || `"no"` || The value stored in the results file when a checkbox is unchecked. ||
@@ -1069,6 +1070,7 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.3-beta14 (current version) and 0.3-beta13:
     * It is now possible to set the `countsForProgressBar` option at the level of individual items.
+    * Add 'continueOnReturn' option to the `Form` controller.
 
 Changes between 0.3-beta13 and 0.3-beta12:
     * Ibex no longer depends on cookies to set the value of the latin square counter.
