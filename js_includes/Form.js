@@ -128,6 +128,8 @@ $.widget("ui.Form", {
             }
         }
 
+        var handler = handleClick(dom);
+
         var dom = htmlCodeToDOM(this.html, function (dom) {
             HAS_LOADED = true;
 
@@ -135,7 +137,6 @@ $.widget("ui.Form", {
                 t.safeBind(t.element.find("input[type=text]"), 'keydown', function (e) { if (e.keyCode == 13) return handler(e); });
         });
 
-        var handler = handleClick(dom);
         this.element.append(dom);
         this.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
                                             .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
