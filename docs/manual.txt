@@ -1098,6 +1098,7 @@ Changes between 0.3-beta14 (current version) and 0.3-beta13:
     * Add 'continueOnReturn' option to the `Form` controller.
     * Add the option to display all words at the center of the screen with the `DashedSentence` controller.
     * Automatic generation of `experiment.html` and `overview.html` can now deal with installations where `sever.py` has been renamed.
+    * Upgrade to jquery 1.5.1 and jquery-ui 1.8.10
     * Minor bug fixes.
 
 Changes between 0.3-beta13 and 0.3-beta12:
