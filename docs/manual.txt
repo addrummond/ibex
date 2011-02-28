@@ -142,7 +142,7 @@ files/directories; the setup described below is just the simplest.
 
     # If the version of Python you wish to use is not the default used by the HTTP server, add a `#!` line at the beginning of `server.py`.
 
-    # You may need to rename `server.py` (e.g. some servers may only execute CGI scripts with the extension `.cgi`. If this is the case, follow the instructions in the subsection below.
+    # You may need to rename `server.py` (e.g. some servers may only execute CGI scripts with the extension `.cgi`). If this is the case, follow the instructions in the subsection below.
 
 Once these steps are complete, it's just a matter of configuring your HTTP
 server correctly. If you are using shared hosting, there is a reasonably good
