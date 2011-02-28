@@ -7,7 +7,7 @@
 --
 -- Obtain GHC from http://www.haskell.org/ghc and then run like this:
 --
---     runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.pdf
+--     runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.tex
 --
 -- The tex file should compile using 'pdflatex' with a standard LaTeX install.
 -- Edit the 'preamble' definition below to change general formatting/layout options.
