@@ -38,12 +38,15 @@ import os
 import os.path
 import getopt
 
+PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
+PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
+
 # Function for generating overview.html and experiment.html.
 #
 # Doing it this weird way because:
 #     * We need to keep experiment.html and overview.html as static files for
 #       backwards compatibility.
-#     * We want to generat them automatically, since they're almost identical.
+#     * We want to generate them automatically, since they're almost identical.
 #     * We also want server.py to be able to generate the same HTML dynamically
 #       in order to implement the 'withsquare' option.
 def generate_html(setcounter=None, overview=False):
@@ -68,16 +71,16 @@ def generate_html(setcounter=None, overview=False):
     <!-- Backwards compatability cruft to ensure that old JS data files work. -->
     <script type="text/javascript" src="backcompatcruft.js"></script>
     <!-- JS includes. -->
-    <script type="text/javascript" src="server.py?include=js"></script>
+    <script type="text/javascript" src="%s?include=js"></script>
     <!-- Data file JS includes. -->
-    <script type="text/javascript" src="server.py?include=data"></script>
+    <script type="text/javascript" src="%s?include=data"></script>
     <!-- Set up configuration variables. -->
     <script type="text/javascript" src="conf.js"></script>
 
     <!-- The main body of JS code. -->
-    <script type="text/javascript" src="server.py?include=main.js%s%s"></script>
+    <script type="text/javascript" src="%s?include=main.js%s%s"></script>
 
-    <link rel="stylesheet" type="text/css" href="server.py?include=css">
+    <link rel="stylesheet" type="text/css" href="%s?include=css">
 
     <!-- To be reset by JavaScript. -->
     <title>Experiment</title>
@@ -99,8 +102,10 @@ def generate_html(setcounter=None, overview=False):
 </body>
 </html>
 """
-    return html % (setcounter is not None and u"&withsquare=%i" % setcounter or u"",
-                   overview and u"&overview=yes" or u"")
+    return html % (PY_SCRIPT_NAME, PY_SCRIPT_NAME, PY_SCRIPT_NAME,
+                   setcounter is not None and u"&withsquare=%i" % setcounter or u"",
+                   overview and u"&overview=yes" or u"",
+                   PY_SCRIPT_NAME)
 
 command_line_options = None
 try:
@@ -141,9 +146,6 @@ import types
 import cgi
 import string
 import urllib
-
-PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
-PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
 
 
 #
@@ -903,41 +905,41 @@ def css_spit_out(css_definitions, ofile):
 
 # If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
 # to open SERVER_CONF_PY_FILE, even if it's defined.
-c = { }
-if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+CFG = { }
+if (not (globals().has_key('EXTERNAL_CONFIG_URL') and globals()['EXTERNAL_CONFIG_URL'])) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
     try:
-        execfile(SERVER_CONF_PY_FILE, c)
+        execfile(SERVER_CONF_PY_FILE, CFG)
     except Exception, e:
         print "Could not open/load config file: %s" % e
         sys.exit(1)
 else:
-    c = globals()
+    CFG = globals()
 
 # Check if we're using external or internal config.
 extkeys = ['EXTERNAL_CONFIG_URL', 'EXTERNAL_CONFIG_METHOD', 'EXTERNAL_CONFIG_PASS_PARAMS']
 for k in extkeys: # Note that logging can't be set up till config is parsed, so we use sys.stderr here.
-    if c.has_key(k) and c[k]:
+    if CFG.has_key(k) and CFG[k]:
         for kk in extkeys:
-            if not (c.has_key(kk) and c[kk]):
+            if not (CFG.has_key(kk) and CFG[kk]):
                 vs = ', '.join(map(lambda x: "'%s'" % x))
                 sys.stderr.write("If one of the configuration variables %s is present, then all %i must be present." % (vs, len(vs)))
                 sys.exit(1)
 
         # Check that EXTERNAL_CONFIG_METHOD IS 'GET' (haven't added support for POST yet).
-        if not c['EXTERNAL_CONFIG_METHOD'] == 'GET':
+        if not CFG['EXTERNAL_CONFIG_METHOD'] == 'GET':
             sys.stderr.write("'GET' is currently the only supported method for getting external config via HTTP.")
             sys.exit(1)
 
         # Make a request to the external config HTTP server, receiving a JSON record as a reply (we hope).
         r = None
         try:
-            url = c['EXTERNAL_CONFIG_URL']
-            if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "GET":
+            url = CFG['EXTERNAL_CONFIG_URL']
+            if CFG['EXTERNAL_CONFIG_PASS_PARAMS'] and CFG['EXTERNAL_CONFIG_METHOD'].upper() == "GET":
                 sepchr = '?' in url and '&' or '?' # Don't screw it up if the url already has params.
                 url += sepchr + "dir=" + urllib.quote(PY_SCRIPT_DIR)
             try:
                 req_data = None
-#                if c['EXTERNAL_CONFIG_PASS_PARAMS'] and c['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
+#                if CFG['EXTERNAL_CONFIG_PASS_PARAMS'] and CFG['EXTERNAL_CONFIG_METHOD'].upper() == "POST":
 #                    sys.stderr.write("NOT IMPLEMENTED!!!!\n")
 #                    sys.exit(1)
                 r = urllib.urlopen(url)
@@ -961,13 +963,13 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
         break
 
 # Back compat.
-if c.has_key('WEBSPR_WORKING_DIR') and not c.has_key('IBEX_WORKING_DIR'):
-    c['IBEX_WORKING_DIR'] = c['WEBSPR_WORKING_DIR']
+if CFG.has_key('WEBSPR_WORKING_DIR') and not CFG.has_key('IBEX_WORKING_DIR'):
+    CFG['IBEX_WORKING_DIR'] = CFG['WEBSPR_WORKING_DIR']
 
 logging.basicConfig()
 logger = logging.getLogger("server")
 logger.addHandler(logging.StreamHandler())
-log_filename = os.path.join(c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or '', 'server.log')
+log_filename = os.path.join(CFG.has_key('IBEX_WORKING_DIR') and CFG['IBEX_WORKING_DIR'] or '', 'server.log')
 try:
     open(log_filename, "w").close();
 except:
@@ -982,13 +984,13 @@ for k in ['RESULT_FILE_NAME',
           'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'CACHE_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR', 'INCLUDE_COMMENTS_IN_RESULTS_FILE',
           'INCLUDE_HEADERS_IN_RESULTS_FILE']:
-    if not c.has_key(k):
+    if not CFG.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
 # Define optional variables if they are not already defined.
-c['PORT'] = c.has_key('PORT') and c['PORT'] or None
-c['IBEX_WORKING_DIR'] = c.has_key('IBEX_WORKING_DIR') and c['IBEX_WORKING_DIR'] or None
-c['MINIFY_JS'] = c.has_key('MINIFY_JS') and c['MINIFY_JS'] or False
+CFG['PORT'] = CFG.has_key('PORT') and CFG['PORT'] or None
+CFG['IBEX_WORKING_DIR'] = CFG.has_key('IBEX_WORKING_DIR') and CFG['IBEX_WORKING_DIR'] or None
+CFG['MINIFY_JS'] = CFG.has_key('MINIFY_JS') and CFG['MINIFY_JS'] or False
 
 # Check for "-m" and "-p" options (sets server mode and port respectively).
 # Also check for "-r" option (resest counter on startup).
@@ -996,9 +998,9 @@ COUNTER_SHOULD_BE_RESET = False
 try:
     for k,v in command_line_options:
         if k == "-m":
-            c['SERVER_MODE'] = v
+            CFG['SERVER_MODE'] = v
         elif k == "-p":
-            c['PORT'] = int(v)
+            CFG['PORT'] = int(v)
         elif k == "-r":
             COUNTER_SHOULD_BE_RESET = True
 except ValueError:
@@ -1006,16 +1008,16 @@ except ValueError:
     sys.exit(1)
 
 # Check values of (some) conf variables.
-if c['SERVER_MODE'] != "cgi" and type(c['PORT']) != types.IntType:
+if CFG['SERVER_MODE'] != "cgi" and type(CFG['PORT']) != types.IntType:
     logger.error("Bad value (or no value) for server port.")
     sys.exit(1)
-if type(c['JS_INCLUDES_LIST']) != types.ListType or len(c['JS_INCLUDES_LIST']) < 1 or (c['JS_INCLUDES_LIST'][0] not in ["block", "allow"]):
+if type(CFG['JS_INCLUDES_LIST']) != types.ListType or len(CFG['JS_INCLUDES_LIST']) < 1 or (CFG['JS_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'JS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
-if type(c['CSS_INCLUDES_LIST']) != types.ListType or len(c['CSS_INCLUDES_LIST']) < 1 or (c['CSS_INCLUDES_LIST'][0] not in ["block", "allow"]):
+if type(CFG['CSS_INCLUDES_LIST']) != types.ListType or len(CFG['CSS_INCLUDES_LIST']) < 1 or (CFG['CSS_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'CSS_INCLUDES_LIST' conf variable.")
     sys.exit(1)
-if type(c['DATA_INCLUDES_LIST']) != types.ListType or len(c['DATA_INCLUDES_LIST']) < 1 or (c['DATA_INCLUDES_LIST'][0] not in ["block", "allow"]):
+if type(CFG['DATA_INCLUDES_LIST']) != types.ListType or len(CFG['DATA_INCLUDES_LIST']) < 1 or (CFG['DATA_INCLUDES_LIST'][0] not in ["block", "allow"]):
     logger.error("Bad value for 'DATA_INCLUDES_LIST' conf variable.")
     sys.exit(1)
 
@@ -1032,19 +1034,19 @@ if (sys.version.split(' ')[0]) >= '2.4': # File locking doesn't seem to work wel
         pass
 
 # Configuration.
-if c['SERVER_MODE'] not in ["paste", "toy", "cgi"]:
+if CFG['SERVER_MODE'] not in ["paste", "toy", "cgi"]:
     logger.error("Unrecognized value for SERVER_MODE configuration variable (or '-m' command line option).")
     sys.exit(1)
 
-if c['SERVER_MODE'] in ["toy", "paste"]:
+if CFG['SERVER_MODE'] in ["toy", "paste"]:
     import threading
     import BaseHTTPServer
     import SimpleHTTPServer
     import SocketServer
 
 PWD = None
-if c.has_key('IBEX_WORKING_DIR'):
-    PWD = c['IBEX_WORKING_DIR']
+if CFG.has_key('IBEX_WORKING_DIR'):
+    PWD = CFG['IBEX_WORKING_DIR']
 if os.environ.get("IBEX_WORKING_DIR"):
     PWD = os.environ.get("IBEX_WORKING_DIR")
 if PWD is None:
@@ -1074,7 +1076,7 @@ def unlock_and_close(f):
 
 def get_counter():
     try:
-        f = lock_and_open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "r")
+        f = lock_and_open(os.path.join(PWD, CFG['SERVER_STATE_DIR'], 'counter'), "r")
         n = int(f.read().strip())
         unlock_and_close(f)
         return n
@@ -1083,7 +1085,7 @@ def get_counter():
         sys.exit(1)
 def set_counter(n):
     try:
-        f = lock_and_open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
+        f = lock_and_open(os.path.join(PWD, CFG['SERVER_STATE_DIR'], 'counter'), "w")
         f.write(str(n))
         unlock_and_close(f)
     except IOError, e:
@@ -1247,8 +1249,8 @@ def counter_cookie_header(c, cookiename):
     )
 
 def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulator=None):
-    if cacheKey and os.path.isfile(os.path.join(PWD, c['CACHE_DIR'], cacheKey)):
-        cacheCreatedTime = os.path.getmtime(os.path.join(PWD, c['CACHE_DIR'], cacheKey))
+    if cacheKey and os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey)):
+        cacheCreatedTime = os.path.getmtime(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey))
         try:
             ds = os.listdir(dir)
             canUseCache = True
@@ -1257,7 +1259,7 @@ def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulato
                     canUseCache = False
                     break
             if canUseCache:
-                f = open(os.path.join(PWD, c['CACHE_DIR'], cacheKey))
+                f = open(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey))
                 return f.read()
         except IOError:
             # Just ignore the error -- it just means we won't use the cache this time.
@@ -1306,7 +1308,7 @@ def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulato
         f = None
         try:
             try:
-                f = open(os.path.join(PWD, c['CACHE_DIR'], cacheKey), 'w')
+                f = open(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey), 'w')
                 f.write(val)
             except IOError:
                 # Ignore errors -- it just means that a cache won't be created.
@@ -1318,7 +1320,7 @@ def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulato
 
 def js_create_monster_string(dir, extension, block_allow, cacheKey=None):
     def manipulator(filename, content, ofile):
-        if c['MINIFY_JS']:
+        if CFG['MINIFY_JS']:
             ofile.write(jsmin(content))
         else:
             ofile.write(content)
@@ -1338,68 +1340,68 @@ def css_create_monster_string(dir, extension, block_allow, cacheKey=None):
 # Create a directory for storing results (if it doesn't already exist).
 try:
     # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c['RESULT_FILES_DIR'])):
-        logger.error("'%s' is a file, so could not create results directory" % c['RESULT_FILES_DIR'])
+    if os.path.isfile(os.path.join(PWD, CFG['RESULT_FILES_DIR'])):
+        logger.error("'%s' is a file, so could not create results directory" % CFG['RESULT_FILES_DIR'])
         sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c['RESULT_FILES_DIR'])):
-        os.mkdir(os.path.join(PWD, c['RESULT_FILES_DIR']))
+    elif not os.path.isdir(os.path.join(PWD, CFG['RESULT_FILES_DIR'])):
+        os.mkdir(os.path.join(PWD, CFG['RESULT_FILES_DIR']))
 except os.error, IOError:
-    logger.error("Could not create results directory at %s" % os.path.join(PWD, c['RESULT_FILES_DIR']))
+    logger.error("Could not create results directory at %s" % os.path.join(PWD, CFG['RESULT_FILES_DIR']))
     sys.exit(1)
 
 # Create a directory for storing the server state
 # (if it doesn't already exist), and initialize the counter.
 try:
     # Create the directory.
-    if os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'])):
-        logger.error("'%s' is a file, so could not create server state directory" % c['SERVER_STATE_DIR'])
+    if os.path.isfile(os.path.join(PWD, CFG['SERVER_STATE_DIR'])):
+        logger.error("'%s' is a file, so could not create server state directory" % CFG['SERVER_STATE_DIR'])
         sys.exit(1)
-    elif not os.path.isdir(os.path.join(PWD, c['SERVER_STATE_DIR'])):
-        os.mkdir(os.path.join(PWD, c['SERVER_STATE_DIR']))
+    elif not os.path.isdir(os.path.join(PWD, CFG['SERVER_STATE_DIR'])):
+        os.mkdir(os.path.join(PWD, CFG['SERVER_STATE_DIR']))
 
     # Initialize the counter, if there isn't one already.
-    if not os.path.isfile(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter')):
-        f = open(os.path.join(PWD, c['SERVER_STATE_DIR'], 'counter'), "w")
+    if not os.path.isfile(os.path.join(PWD, CFG['SERVER_STATE_DIR'], 'counter')):
+        f = open(os.path.join(PWD, CFG['SERVER_STATE_DIR'], 'counter'), "w")
         f.write("0")
         f.close()
 except os.error, IOError:
-    logger.error("Could not create server state directory at %s" % os.path.join(PWD, c['SERVER_STATE_DIR']))
+    logger.error("Could not create server state directory at %s" % os.path.join(PWD, CFG['SERVER_STATE_DIR']))
     sys.exit(1)
 
 # Create a cache directory (if it doesn't already exist).
 mjs = None # To get this in the scope of finally.
 try:
     try:
-        if os.path.isfile(os.path.join(PWD, c['CACHE_DIR'])):
-            logger.error("'%s' is a file, so could not create cache directory" % c['CACHE_DIR'])
+        if os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'])):
+            logger.error("'%s' is a file, so could not create cache directory" % CFG['CACHE_DIR'])
             sys.exit(1)
-        elif not os.path.isdir(os.path.join(PWD, c['CACHE_DIR'])):
-            os.mkdir(os.path.join(PWD, c['CACHE_DIR']))
+        elif not os.path.isdir(os.path.join(PWD, CFG['CACHE_DIR'])):
+            os.mkdir(os.path.join(PWD, CFG['CACHE_DIR']))
 
         # We need to be careful to clear out the cache if the value of the MINIFY_JS config
         # variable has changed. Note that the lack of file locking here isn't too much of
         # a problem -- if the file is read when it's in an inconsistent state, all that will
         # happen is that the cache will be reset.
-        if not os.path.isfile(os.path.join(PWD, c['CACHE_DIR'], 'MINIFY_JS')):
-            mjs = open(os.path.join(PWD, c['CACHE_DIR'], 'MINIFY_JS'), 'w')
-            mjs.write(str(c['MINIFY_JS']) + '\r\n')
+        if not os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], 'MINIFY_JS')):
+            mjs = open(os.path.join(PWD, CFG['CACHE_DIR'], 'MINIFY_JS'), 'w')
+            mjs.write(str(CFG['MINIFY_JS']) + '\r\n')
         else:
-            mjs = open(os.path.join(PWD, c['CACHE_DIR'], 'MINIFY_JS'), 'r+')
+            mjs = open(os.path.join(PWD, CFG['CACHE_DIR'], 'MINIFY_JS'), 'r+')
             contents = mjs.read()
-            if contents != str(c['MINIFY_JS']):
+            if contents != str(CFG['MINIFY_JS']):
                 mjs.truncate(0)
                 mjs.seek(0)
-                mjs.write(str(c['MINIFY_JS']) + '\r\n')
+                mjs.write(str(CFG['MINIFY_JS']) + '\r\n')
 
                 # Clean out the cache. We do this because changes to the server configuration
                 # since the last time the server was run may have implications for what should
                 # be stored in the cache (e.g. if JS minification has been turned on/off).
-                fs = os.listdir(os.path.join(PWD, c['CACHE_DIR']))
+                fs = os.listdir(os.path.join(PWD, CFG['CACHE_DIR']))
                 for fname in fs:
-                    if fname != 'MINIFY_JS' and os.path.isfile(os.path.join(PWD, c['CACHE_DIR'], fname)):
-                        os.remove(os.path.join(PWD, c['CACHE_DIR'], fname))
+                    if fname != 'MINIFY_JS' and os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], fname)):
+                        os.remove(os.path.join(PWD, CFG['CACHE_DIR'], fname))
     except os.error, IOError:
-        logger.error("Could not create cache directory at %S" % os.path.join(PWD, c['CACHE_DIR']))
+        logger.error("Could not create cache directory at %S" % os.path.join(PWD, CFG['CACHE_DIR']))
 finally:
     if mjs: mjs.close()
 
@@ -1439,18 +1441,18 @@ def control(env, start_response):
         qs_hash = cgi.parse_qs(qs)
 
         # Is it a request for a JS/CSS include file?
-        if qs_hash.has_key('include'): 
+        if qs_hash.has_key('include'):
             if qs_hash['include'][0] == 'js':
-                m = js_create_monster_string(os.path.join(PWD, c['JS_INCLUDES_DIR']), '.js', c['JS_INCLUDES_LIST'], "js_includes")
+                m = js_create_monster_string(os.path.join(PWD, CFG['JS_INCLUDES_DIR']), '.js', CFG['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'css':
-                sys.stderr.write(os.path.join(PWD, c['CSS_INCLUDES_DIR']))
-                m = css_create_monster_string(os.path.join(PWD, c['CSS_INCLUDES_DIR']), '.css', c['CSS_INCLUDES_LIST'], "css_includes")
+                sys.stderr.write(os.path.join(PWD, CFG['CSS_INCLUDES_DIR']))
+                m = css_create_monster_string(os.path.join(PWD, CFG['CSS_INCLUDES_DIR']), '.css', CFG['CSS_INCLUDES_LIST'], "css_includes")
                 start_response('200 OK', [('Content-Type', 'text/css; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'data':
-                m = js_create_monster_string(os.path.join(PWD, c['DATA_INCLUDES_DIR']), '.js', c['DATA_INCLUDES_LIST'], "data_includes")
+                m = js_create_monster_string(os.path.join(PWD, CFG['DATA_INCLUDES_DIR']), '.js', CFG['DATA_INCLUDES_LIST'], "data_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
             elif qs_hash['include'][0] == 'main.js':
@@ -1458,7 +1460,7 @@ def control(env, start_response):
                 f = None
                 try:
                     try:
-                        f = open(os.path.join(PWD, c['OTHER_INCLUDES_DIR'], 'main.js'))
+                        f = open(os.path.join(PWD, CFG['OTHER_INCLUDES_DIR'], 'main.js'))
                         contents = f.read()
                     except IOError:
                         start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
@@ -1466,13 +1468,16 @@ def control(env, start_response):
                 finally:
                     if f: f.close()
 
-                # UGLY: Will hold some var defs that we may prepend to the main.js
-                defs = []
+                # UGLY: Holds some var defs that we'll prepend to the main.js
+                # (a few more are conditionally added below).
+                # Note: can't use generator expression here since we want to maintain
+                #       Python 2.3 compat.
+                defs = ["var __server_py_script_name__ = \"%s\";\n" % ''.join(["\\u%.4x" % ord(c) for c in PY_SCRIPT_NAME])]
 
                 # Do we set the 'overview' option?
                 retlist = [contents]
                 if qs_hash.has_key('overview') and qs_hash['overview'][0].upper() == "YES":
-                    defs.append("var conf_showOverview = true;\n\n")
+                    defs.append("var conf_showOverview = true;\n")
 
                 # Set the value of the counter (either saved, or provided as part of the URL).
                 counter_value = None
@@ -1481,7 +1486,7 @@ def control(env, start_response):
                 except ValueError:
                     start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
                     return ["<html><body><h1>400 Bad Request</h1></body></html>"]
-                defs.append("var __counter_value_from_server__ = %i;\n\n" % counter_value)
+                defs.append("var __counter_value_from_server__ = %i;\n" % counter_value)
 
                 retlist = defs + retlist
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
@@ -1492,7 +1497,7 @@ def control(env, start_response):
             f = None
             contents = None
             try:
-                f = open(os.path.join(PWD, c['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
+                f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
                 contents = f.read()
             except IOError:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
@@ -1541,7 +1546,7 @@ def control(env, start_response):
             bf = None
             try:
                 try:
-                    bf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RAW_RESULT_FILE_NAME']), "a")
+                    bf = lock_and_open(os.path.join(PWD, CFG['RESULT_FILES_DIR'], CFG['RAW_RESULT_FILE_NAME']), "a")
                     if header:
                         bf.write(u"\n")
                         bf.write(header.encode(DEFAULT_ENCODING))
@@ -1558,17 +1563,17 @@ def control(env, start_response):
                 parsed_json = dec.decode(post_data)
                 random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip, user_agent)
                 header = None
-                if c['INCLUDE_HEADERS_IN_RESULTS_FILE']:
+                if CFG['INCLUDE_HEADERS_IN_RESULTS_FILE']:
                     header = u'#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
                         (time_module.strftime(u"%A %B %d %Y %H:%M:%S UTC",
                                               time_module.gmtime(thetime)),
                          user_agent,
                          u"Design number was " + ((random_counter and u"random = " or u"non-random = ") + unicode(counter)))
                 backup_raw_post_data(header)
-                if c['INCLUDE_COMMENTS_IN_RESULTS_FILE']:
+                if CFG['INCLUDE_COMMENTS_IN_RESULTS_FILE']:
                     main_results = intersperse_comments(main_results, column_names)
                 csv_results = to_csv(main_results)
-                rf = lock_and_open(os.path.join(PWD, c['RESULT_FILES_DIR'], c['RESULT_FILE_NAME']), "a")
+                rf = lock_and_open(os.path.join(PWD, CFG['RESULT_FILES_DIR'], CFG['RESULT_FILE_NAME']), "a")
                 rf.write(header.encode(DEFAULT_ENCODING))
                 rf.write(csv_results.encode(DEFAULT_ENCODING))
 
@@ -1596,7 +1601,7 @@ def control(env, start_response):
         start_response('404 Not Found', [('Content-Type', 'text/html; charset=UTF-8')])
         return ["<html><body><h1>404 Not Found</h1></body></html>"]
 
-if c['SERVER_MODE'] != "cgi":
+if CFG['SERVER_MODE'] != "cgi":
     class ThreadedHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
         pass
 
@@ -1686,12 +1691,12 @@ if __name__ == "__main__":
         set_counter(0)
         print "Counter for latin square designs has been reset.\n"
 
-    if c['SERVER_MODE'] in ["paste", "toy"]:
-        server_address = ('', c['PORT'])
+    if CFG['SERVER_MODE'] in ["paste", "toy"]:
+        server_address = ('', CFG['PORT'])
         httpd = ThreadedHTTPServer(server_address, MyHTTPRequestHandler)
-        httpd.path = c['STATIC_FILES_DIR']
+        httpd.path = CFG['STATIC_FILES_DIR']
         httpd.serve_forever()
-    elif c['SERVER_MODE'] == "cgi":
+    elif CFG['SERVER_MODE'] == "cgi":
         #wsgiref.handlers.CGIHandler().run(control)
         env = { }
         for k in os.environ:

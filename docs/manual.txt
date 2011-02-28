@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3-beta13. The 0.1.x
+This documentation covers 0.3-beta14. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -142,12 +142,28 @@ files/directories; the setup described below is just the simplest.
 
     # If the version of Python you wish to use is not the default used by the HTTP server, add a `#!` line at the beginning of `server.py`.
 
+    # You may need to rename `server.py` (e.g. some servers may only execute CGI scripts with the extension `.cgi`. If this is the case, follow the instructions in the subsection below.
+
 Once these steps are complete, it's just a matter of configuring your HTTP
 server correctly. If you are using shared hosting, there is a reasonably good
 chance that the HTTP server will already have been configured to run Python CGI
 apps, in which case you won't need to do any additional configuration. There is
 an example configuration file for lighttpd included in the distribution
 (`example_lighttpd.conf`).
+
+===Renaming server.py===
+If you rename `server.py` ibex will stop working, since the files `experiment.html` and `overview.html`
+assume that the script has this name. (In older versions of ibex there were a few other files which
+made this assumption, but as of 0.3-beta14, this has been changed.)
+
+You can edit `experiment.html` and `overview.html` manually to replace all instances of `server.py`
+with the new name of the script. Alternatively, you can execute the renamed `server.py` script with the following options
+to automatically generate new `experiment.html` and `overview.html` files:
+{{{
+    python /path/to/renamed/server.py/script.py --genhtml /foo/webspr-XXXX/www
+}}}
+This command will produce no output if it executes successfully. Note that you must run this command *after*
+renaming `server.py`.
 
 =Basic concepts=
 An Ibex experiment is essentially a sequence of _items_.
@@ -678,6 +694,7 @@ progress bar to move to the right. (Different controllers have a different defau
 || *Option*      || *Default*              || *Description*                                               ||
 || s             || _obligatory_           || The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. ||
 || mode          || `"self-paced reading"` || Either `"self-paced reading"` or `"speeded acceptability"`. ||
+|| display       || `"dashed"`             || If set to `"dashed"`, the sentence is displayed as a sequence of dashes which are replaced one-at-a-time by the actual words as the participant presses the space bar. If set to `"in place"`, words are displayed one-by-one in the center of the screen. Setting to `"in place"` changes the default value of `wordPauseTime` from 100 to 0 and the default value of `wordTime` from 300 to 400, since otherwise the display flickers. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. ||
 || sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
@@ -1071,6 +1088,9 @@ error message by looking at the !JavaScript console.
 Changes between 0.3-beta14 (current version) and 0.3-beta13:
     * It is now possible to set the `countsForProgressBar` option at the level of individual items.
     * Add 'continueOnReturn' option to the `Form` controller.
+    * Add the option to display all words at the center of the screen with the `DashedSentence` controller.
+    * Automatic generation of `experiment.html` and `overview.html` can now deal with installations where `sever.py` has been renamed.
+    * Minor bug fixes.
 
 Changes between 0.3-beta13 and 0.3-beta12:
     * Ibex no longer depends on cookies to set the value of the latin square counter.

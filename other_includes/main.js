@@ -8,8 +8,6 @@ for (var _ in { }) {
 
 $(document).ready(function () {
 
-var serverURI = "server.py";
-
 var practiceBox;
 var inner;
 var mainTable; // Only set if conf_centerItems.
@@ -534,7 +532,7 @@ function sendResults(resultsLines, success, failure)
                                uniqueMD5()]);
 
     $.ajax({
-        url: serverURI,
+        url: __server_py_script_name__,
         cache: false,
         contentType: "text/html; charset=UTF-8",
         data: data,

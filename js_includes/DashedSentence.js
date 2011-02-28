@@ -15,10 +15,18 @@ $.widget("ui.DashedSentence", {
             this.words = this.options.s;
         }
         this.mode = dget(this.options, "mode", "self-paced reading");
-        this.wordTime = dget(this.options, "wordTime", 300); // Only for speeded accpetability.
-        this.wordPauseTime = dget(this.options, "wordPauseTime", 100); // Ditto.
+        assert(this.mode == "self-paced reading" || this.mode == "speeded acceptability",
+               "Value of 'mode' option for DashedSentence controller must be either " +
+               "'self-paced reading' or 'speeded acceptability'.");
+        this.display = dget(this.options, "display", "dashed");
+        this.wordTime = dget(this.options, "wordTime", this.display == "in place" ? 400 : 300); // Only for speeded accpetability.
+        this.wordPauseTime = dget(this.options, "wordPauseTime", this.display == "in place" ? 0 : 100); // Ditto.
         this.showAhead = dget(this.options, "showAhead", true);
         this.showBehind = dget(this.options, "showBehind", true);
+        assert(this.display == "dashed" || this.display == "in place",
+               "Value of 'display' option for DashedSentence controller must be either " +
+               "'dashed' (default) or 'in place'.");
+
         this.currentWord = 0;
 
         // Is there a "stopping point" specified?
@@ -71,26 +79,38 @@ $.widget("ui.DashedSentence", {
         }
         this.previousTime = null;
 
-        this.wordISpans = new Array(this.words.length); // Inner spans.
-        this.wordOSpans = new Array(this.words.length); // Outer spans.
-        this.owsnjq = new Array(this.words.length); // 'outer word spans no jQuery'.
-        this.iwsnjq = new Array(this.words.length);
-        for (var j = 0; j < this.words.length; ++j) {
-            var ispan;
-            var ospan = $(document.createElement("span"))
-                        .addClass(this.cssPrefix + 'ospan')
-                        .append(ispan = $(document.createElement("span"))
-                                        .addClass(this.cssPrefix + 'ispan')
-                                        .text(this.words[j]));
-            if (! this.showAhead)
-                span.css('border-color', this.background);
-            this.mainDiv.append(ospan);
-            if (j + 1 < this.words.length)
-                this.mainDiv.append("&nbsp; ");
-            this.wordISpans[j] = ispan;
-            this.wordOSpans[j] = ospan;
-            this.iwsnjq[j] = ispan[0];
-            this.owsnjq[j] = ospan[0];
+        if (this.display == "in place") {
+            this.wordSpan = $(document.createElement("span"));
+            this.mainDiv.append(this.wordSpan);
+
+            this.blankWord = this.blankWord_inplace;
+            this.showWord = this.showWord_inplace;
+        }
+        else { // dashed
+            this.blankWord = this.blankWord_dashed;
+            this.showWord = this.showWord_dashed;
+
+            this.wordISpans = new Array(this.words.length); // Inner spans.
+            this.wordOSpans = new Array(this.words.length); // Outer spans.
+            this.owsnjq = new Array(this.words.length); // 'outer word spans no jQuery'.
+            this.iwsnjq = new Array(this.words.length);
+            for (var j = 0; j < this.words.length; ++j) {
+                var ispan;
+                var ospan = $(document.createElement("span"))
+                            .addClass(this.cssPrefix + 'ospan')
+                            .append(ispan = $(document.createElement("span"))
+                                            .addClass(this.cssPrefix + 'ispan')
+                                            .text(this.words[j]));
+                if (! this.showAhead)
+                    span.css('border-color', this.background);
+                this.mainDiv.append(ospan);
+                if (j + 1 < this.words.length)
+                    this.mainDiv.append("&nbsp; ");
+                this.wordISpans[j] = ispan;
+                this.wordOSpans[j] = ospan;
+                this.iwsnjq[j] = ispan[0];
+                this.owsnjq[j] = ospan[0];
+            }
         }
 
         if (this.mode == "speeded acceptability") {
@@ -111,8 +131,7 @@ $.widget("ui.DashedSentence", {
             }
             this.utils.setTimeout(wordTimeout, this.wordTime);
         }
-
-        if (this.mode == "self-paced reading") {
+        else if (this.mode == "self-paced reading") {
             var t = this;
             // Inlining this to minimize function calls in code for updating screen after space is pressed.
 /*            function goToNext(time) {
@@ -202,7 +221,7 @@ $.widget("ui.DashedSentence", {
 
     // Not using JQuery in these two methods just in case it slows things down too much.
     // NOTE: [0] subscript gets DOM object from JQuery selector.
-    blankWord: function(w) {
+    blankWord_dashed: function(w) {
         if (this.currentWord <= this.stoppingPoint) {
             this.owsnjq[w].style.borderColor = this.unshownBorderColor;
             this.iwsnjq[w].style.visibility = "hidden";
@@ -210,11 +229,22 @@ $.widget("ui.DashedSentence", {
                 this.owsnjq[w].style.borderColor = this.background;
         }
     },
-    showWord: function(w) {
+    showWord_dashed: function(w) {
         if (this.currentWord < this.stoppingPoint) {
             if (this.showAhead || this.showBehind)
                 this.owsnjq[w].style.borderColor = this.shownBorderColor;
             this.iwsnjq[w].style.visibility = "visible";
+        }
+    },
+
+    blankWord_inplace: function (w) {
+        if (this.wordPauseTime > 0 && this.currentWord <= this.stoppingPoint) {
+            this.wordSpan.empty();
+        }
+    },
+    showWord_inplace: function (w) {
+        if (this.currentWord < this.stoppingPoint) {
+            this.wordSpan.text(this.words[this.currentWord]);
         }
     },
 
@@ -234,8 +264,9 @@ $.widget("ui.DashedSentence", {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(this.words[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", boolToInt(((i+1) < this.wordOSpans.length) &&
-                                       (this.wordOSpans[i].offset().top != this.wordOSpans[i+1].offset().top))],
+                ["Newline?", (! this.display == "in place") &&
+                             boolToInt(((i+1) < this.wordOSpans.length) &&
+                             (this.wordOSpans[i].offset().top != this.wordOSpans[i+1].offset().top))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
             ]);
         }
