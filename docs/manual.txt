@@ -152,7 +152,7 @@ an example configuration file for lighttpd included in the distribution
 (`example_lighttpd.conf`).
 
 ===Renaming server.py===
-If you rename `server.py` ibex will stop working, since the files `experiment.html` and `overview.html`
+Ibex will stop working if you rename `server.py`, since the files `experiment.html` and `overview.html`
 assume that the script has this name. (In older versions of ibex there were a few other files which
 made this assumption, but as of 0.3-beta14, this has been changed.)
 
@@ -160,7 +160,7 @@ You can edit `experiment.html` and `overview.html` manually to replace all insta
 with the new name of the script. Alternatively, you can execute the renamed `server.py` script with the following options
 to automatically generate new `experiment.html` and `overview.html` files:
 {{{
-    python /path/to/renamed/server.py/script.py --genhtml /foo/webspr-XXXX/www
+    python /path/to/renamed/server.py --genhtml /foo/webspr-XXXX/www
 }}}
 This command will produce no output if it executes successfully. Note that you must run this command *after*
 renaming `server.py`.
@@ -177,19 +177,19 @@ order to provide a pause between sentences. Schematically, the sequence of
 items would be as follows (the Wiki insists on displaying this in pretty
 colors):
 {{{
-ITEM 1:
-    ENTITY 1: Sentence
-    ENTITY 2: Comprehension question
-ITEM 2:
-    ENTITY 1: Pause for two seconds
-ITEM 3:
-    ENTITY 1: Sentence
-    ENTITY 2: Comprehension question
-ITEM 4:
-    ENTITY 1: Pause for two seconds
-ITEM 5:
-    ENTITY 1: Sentence
-    ENTITY 2: Comprehension question
+    ITEM 1:
+        ENTITY 1: Sentence
+        ENTITY 2: Comprehension question
+    ITEM 2:
+        ENTITY 1: Pause for two seconds
+    ITEM 3:
+        ENTITY 1: Sentence
+        ENTITY 2: Comprehension question
+    ITEM 4:
+        ENTITY 1: Pause for two seconds
+    ITEM 5:
+        ENTITY 1: Sentence
+        ENTITY 2: Comprehension question
 }}}
 It is not necessary to construct the full sequence of items and entities
 manually. Ibex provides tools for ordering items in various ways (e.g. for
@@ -252,14 +252,14 @@ necessary to know !JavaScript in order to write one.  The most important part
 of a data file is the declaration of the "items" array, as in the following
 example:
 {{{
-var items = [
+    var items = [
 
-["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
-["filler", "DashedSentence", {s: "And another silly filler sentence"}],
-["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
-["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
+    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
+    ["filler", "DashedSentence", {s: "And another silly filler sentence"}],
+    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
+    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
 
-]; // NOTE SEMICOLON HERE
+    ]; // NOTE SEMICOLON HERE
 }}}
 The "items" array is an array of arrays, where each subarray specifies a single
 item. In the example above, every item contains a single element (multiple
@@ -278,24 +278,24 @@ moment, let's just display the items in the order we gave them in the array.
 This can be achieved by adding the following definition (which won't make much
 sense yet):
 {{{
-var shuffleSequence = seq(anyType);
+    var shuffleSequence = seq(anyType);
 }}}
 
 Suppose we wanted to pair each sentence with a comprehension question.  The
 easiest way to do this is to add a second element to each item:
 {{{
-var items = [
+    var items = [
 
-["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-           "Question", {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
-["filler", "DashedSentence", {s: "And another silly filler sentence"},
-           "Question", {q: "Does this sentence have a relative clause?", as: ["Yes", "No"]],
-["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-              "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
-["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-              "Question", {q: "Was the first word of that sentence 'frog'?", ["Yes", "No"]}]
-
-]; // NOTE SEMICOLON HERE
+    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+               "Question", {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
+    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
+               "Question", {q: "Does this sentence have a relative clause?", as: ["Yes","No"]],
+    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+                  "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
+    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+                  "Question", {q: "Was the first word 'frog'?", ["Yes", "No"]}]
+    
+    ]; // NOTE SEMICOLON HERE
 }}}
 As shown above, this is done simply by adding to each item further pairs of
 controllers and associative arrays of options. It is rather tiresome to have to
@@ -304,33 +304,33 @@ by specifying this as the default for the Question controller. To give an
 example of how defaults for multiple controllers are specified, let's also set
 the `mode` option of `DashedSentence` to "speeded acceptability":
 {{{
-var defaults = [
-    "Question", {as: ["Yes", "No"]},
-    "DashedSentence", {mode: "speeded acceptability"}
-];
+    var defaults = [
+        "Question", {as: ["Yes", "No"]},
+        "DashedSentence", {mode: "speeded acceptability"}
+    ];
 }}}
 Once this definition is in place, we can drop the specification of the `as`
 option for each Question element. The final data file looks like this:
 {{{
-var shuffleSequence = seq(anyType);
+    var shuffleSequence = seq(anyType);
 
-var defaults = [
-    "Question", {as: ["Yes", "No"]},
-    "DashedSentence", {mode: "speeded acceptability"}
-];
+    var defaults = [
+        "Question", {as: ["Yes", "No"]},
+        "DashedSentence", {mode: "speeded acceptability"}
+    ];
 
-var items = [
+    var items = [
 
-["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-           "Question", {q: "Is this a filler sentence?"}],
-["filler", "DashedSentence", {s: "And another silly filler sentence"},
-           "Question", {q: "Does this sentence have a relative clause?"}],
-["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-              "Question", {q: "Was there movement through [Spec,CP]?"}],
-["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-              "Question", {q: "Was the first word of that sentence 'frog'?"}]
+    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+               "Question", {q: "Is this a filler sentence?"}],
+    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
+               "Question", {q: "Does this sentence have a relative clause?"}],
+    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+                  "Question", {q: "Was there movement through [Spec,CP]?"}],
+    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+                  "Question", {q: "Was the first word of that sentence 'frog'?"}]
 
-];
+    ];
 }}}
 *Where to put your data file*: Data files live in the `data_includes`
 directory, and must have a `.js` extension. You can only have data one file in
@@ -389,20 +389,20 @@ original order followed by evenly spaced real and filler items in random order.
 Assuming the types "practice", "real" and "filler", we could use the following
 shuffle sequence:
 {{{
-seq("practice", shuffle(randomize("real"), randomize("filler")))
+    seq("practice", shuffle(randomize("real"), randomize("filler")))
 }}}
 Now suppose that there are two types of real item ("real1" and "real2"), and we
 wish to order the items the same way as before:
 {{{
-seq("practice", shuffle(randomize(anyOf("real1", "real2")),
-                randomize("filler")))
+    seq("practice", shuffle(randomize(anyOf("real1", "real2")),
+                    randomize("filler")))
 }}}
 What if we also want the two types of real item to be evenly spaced?  The
 following formula will do the trick:
 {{{
-seq("practice", shuffle(randomize("filler"),
-                        shuffle(randomize("real1"),
-                                randomize("real2"))))
+    seq("practice", shuffle(randomize("filler"),
+                            shuffle(randomize("real1"),
+                                    randomize("real2"))))
 }}}
 
 This first shuffles items of type "real1" and items of type "real2" and then
@@ -413,12 +413,12 @@ Since it is often useful to apply `randomize` to every argument of `shuffle`,
 there is a utility function, `rshuffle`, which automates this. The following
 equivalence holds:
 {{{
-rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
+    rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
 }}}
 If no shuffle sequence is specified, Ibex uses the following default
 sequence:
 {{{
-seq(equalTo0, rshuffle(greaterThan0, lessThan0))
+    seq(equalTo0, rshuffle(greaterThan0, lessThan0))
 }}}
 
 This will seem rather cryptic to anyone not familiar with the behavior of
@@ -445,7 +445,7 @@ warn participants that they have finished one item and are starting another.
 Ibex provides the `Separator` item for this purpose. It can either work on a
 timeout or prompt for a keypress. Here's an example:
 {{{
-["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
+    ["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
 }}}
 When the `transfer` option is set to 1000, this specifies that there should be
 a 1000ms wait before the next item. The `normalMessage` option gives the
@@ -467,27 +467,27 @@ item. There are no failure conditions in this experiment (since there is no
 `normalMessage` option. For the moment, we'll still present the sentences in
 the order in which they appear in the `items` array. Here's the modified file:
 {{{
-var shuffleSequence = sepWith("sep", not("sep"));
+    var shuffleSequence = sepWith("sep", not("sep"));
 
-var defaults = [
-    "Question", {as: ["Yes", "No"]},
-    "DashedSentence", {mode: "speeded acceptability"}
-];
+    var defaults = [
+        "Question", {as: ["Yes", "No"]},
+        "DashedSentence", {mode: "speeded acceptability"}
+    ];
 
-var items = [
+    var items = [
 
-["sep", "Separator", {transfer: 1500, normalMessage: "Please wait for the next item."}],
+    ["sep", "Separator", {transfer: 1500, normalMessage: "Please wait for the next item."}],
 
-["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-           "Question", {q: "Is this a filler sentence?"}],
-["filler", "DashedSentence", {s: "And another silly filler sentence"},
-           "Question", {q: "Does this sentence have a relative clause?"}],
-["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-              "Question", {q: "Was there movement through [Spec,CP]?"}],
-["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-              "Question", {q: "Was the first word of that sentence 'frog'?"}]
+    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
+               "Question", {q: "Is this a filler sentence?"}],
+    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
+               "Question", {q: "Does this sentence have a relative clause?"}],
+    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
+                  "Question", {q: "Was there movement through [Spec,CP]?"}],
+    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
+                  "Question", {q: "Was the first word of that sentence 'frog'?"}]
 
-];
+    ];
 }}}
 
 ==Manipulating individual items==
@@ -508,23 +508,23 @@ every sentence is followed by the same acceptability question.  We'll also
 ensure that the sentences are randomly ordered, with the fillers and "real"
 sentences evenly spaced:
 {{{
-var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
+    var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
 
-var defaults = [
-    "DashedSentence", {mode: "speeded acceptability"}
-];
+    var defaults = [
+        "DashedSentence", {mode: "speeded acceptability"}
+    ];
 
-var items = [
+    var items = [
 
-["question", "Question", {q: "Was that a good sentence?", as: ["Yes", "No"]}],
+    ["question", "Question", {q: "Was that a good sentence?", as: ["Yes", "No"]}],
 
-["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
-["filler", "DashedSentence", {s: "And another silly filler sentence"}],
+    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
+    ["filler", "DashedSentence", {s: "And another silly filler sentence"}],
 
-["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
-["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
+    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
+    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
 
-];
+    ];
 }}}
 *Important:* `precedeEachWith` and `followEachWith` have a somewhat confusing
 behavior with respect to the format of the results file. Although in effect,
@@ -541,8 +541,8 @@ only one item out of all the items in any given group. To give an example, we
 could place both of the "relclause" sentences from the previous example in the
 same group using the following code:
 {{{
-[["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
-[["relclause", 1], "DashedSentence", {s: "Another sentence that has a relative clause"}]
+    [["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
+    [["relclause", 1], "DashedSentence", {s: "Another sentence that has a relative clause"}]
 }}}
 Now, any given participant will see only one of these
 sentences. Designs are rotated using a counter stored on the
@@ -578,8 +578,10 @@ example, suppose that we have another group (group 2), and we want choices from
 this group to be linked to choices from group 1 in the example above.  The
 following code will do the trick:
 {{{
-[["relclause", [2, 1]], "DashedSentence", {s: "I am paired with 'A sentence that has a relative clause'"}],
-[["relclause", [2, 1]], "DashedSentence", {s: "I am paired with 'Another sentence that has a relative clause'"}]
+    [["relclause", [2, 1]], "DashedSentence",
+      {s: "I am paired with 'A sentence that has a relative clause'"}],
+    [["relclause", [2, 1]], "DashedSentence",
+      {s: "I am paired with 'Another sentence that has a relative clause'"}]
 }}}
 Note that the second number in the pair must be the same for all items in the group.
 *Warning:* This feature may be removed in future releases if I get around to implementing
@@ -628,17 +630,21 @@ and as its second the controller's options. Optionally, `true` may be passed as 
 third argument to set the `hideResults` property to `true`.
 The following example inserts a "pause" `Message` at every tenth item:
 {{{
-function modifyRunningOrder(ro) {
-    for (var i = 0; i < ro.length; ++i) {
-        if (i % 10 == 0) {
-            // Passing 'true' as the third argument casues the results from this controller
-            // to be omitted from the results file. (Though in fact, the Message controller
-            // does not add any results in any case.)
-            ro[i].push(new DynamicElement("Message", { html: "<p>Pause</p>", transfer: 1000 }, true));
+    function modifyRunningOrder(ro) {
+        for (var i = 0; i < ro.length; ++i) {
+            if (i % 10 == 0) {
+                // Passing 'true' as the third argument casues the results from this controller
+                // to be omitted from the results file. (Though in fact, the Message controller
+                // does not add any results in any case.)
+                ro[i].push(new DynamicElement(
+                    "Message",
+                    { html: "<p>Pause</p>", transfer: 1000 },
+                    true
+                ));
+            }
         }
+        return ro;
     }
-    return ro;
-}
 }}}
 
 =Communication between elements=
@@ -824,7 +830,7 @@ By default, failure to fill in an obligatory field is signaled by an alert dialo
 However, you can indicate that the error message is to be displayed on the page
 by inserting an empty label tag in your form:
 {{{
-<label class="error" for="FIELD_NAME"></label>
+    <label class="error" for="FIELD_NAME"></label>
 }}}
 If you want all error messages to
 be displayed in the same location, add a `<label>` with 'for' set to "__ALL_FIELDS__".
@@ -906,36 +912,36 @@ Pass a
 !JavaScript data structure representing the HTML Code. For example, here is
 the representation of a `div` element containing two paragraphs:
 {{{
-["div",
-    ["p", "This is the first paragraph."],
-    ["p", "This is the second paragraph.", "Containing two text nodes."]
-]
+    ["div",
+        ["p", "This is the first paragraph."],
+        ["p", "This is the second paragraph.", "Containing two text nodes."]
+    ]
 }}}
 Note that a space will automatically be inserted between the two text nodes in
 the second paragraph. If you wanted to set the foreground color of the `div` to
 red, you could use the following code:
 {{{
-[["div", {style: "color: red;"}],
-    ["p", "This is the first paragraph."],
-    ["p", "This is the second paragraph.", "Containing two text nodes."]
-]
+    [["div", {style: "color: red;"}],
+        ["p", "This is the first paragraph."],
+        ["p", "This is the second paragraph.", "Containing two text nodes."]
+    ]
 }}}
 If you want to set DOM properties directly, you can use
 a key beginning with "@":
 {{{
-[["div", {"@style.color": "red"}],
-    ["p", "This is the first paragraph."],
-    ["p", "This is the second paragraph.", "Containing two text nodes."]
-]
+    [["div", {"@style.color": "red"}],
+        ["p", "This is the first paragraph."],
+        ["p", "This is the second paragraph.", "Containing two text nodes."]
+    ]
 }}}
 Elements (e.g. `&ldquo;` -- a left double quote) are specified as in the
 following example:
 {{{
-[["div", {"@style.color": "red"}],
-    ["p", "This is the first paragraph."],
-    ["p", "This is the second paragraph.", "Containing two text nodes."],
-    ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
-]
+    [["div", {"@style.color": "red"}],
+        ["p", "This is the first paragraph."],
+        ["p", "This is the second paragraph.", "Containing two text nodes."],
+        ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
+    ]
 }}}
 Spaces are _not_ automatically inserted before and after elements.
 
@@ -943,7 +949,7 @@ Spaces are _not_ automatically inserted before and after elements.
 Place the HTML in a file in the `chunk_includes` dir.
 Files in this directory can be included as follows:
 {{{
-{ html: { include: "file_name.html" } }
+    { html: { include: "file_name.html" } }
 }}}
 
 =Creating your own controllers=
@@ -953,42 +959,43 @@ from webspr 0.2 is that controllers are now JQuery.ui widgets.)
 As an example, here's the code for a simplified version of the
 `Message` controller:
 {{{
-$.widget("ui.Message", {
-    // Boilerplate code that appears in all controllers.
-    this.cssPrefix = this.options._cssPrefix;
-    this.utils = this.options._utils;
-    this.finishedCallback = this.options._finishedCallback;
+    $.widget("ui.Message", {
+        // Boilerplate code that appears in all controllers.
+        this.cssPrefix = this.options._cssPrefix;
+        this.utils = this.options._utils;
+        this.finishedCallback = this.options._finishedCallback;
 
-    this.html = this.options.html;
-    this.element.addClass(this.cssPrefix + "message");
-    this.element.append(htmlCodeToDOM(this.html));
+        this.html = this.options.html;
+        this.element.addClass(this.cssPrefix + "message");
+        this.element.append(htmlCodeToDOM(this.html));
 
-    this.transfer = dget(this.options, "transfer", "keypress");
-    assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
-           "Value of 'transfer' option of Message must either be the string 'keypress' or a number");
+        this.transfer = dget(this.options, "transfer", "keypress");
+        assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
+               "Value of 'transfer' option of Message must either be " +
+               "the string 'keypress' or a number");
 
-    if (this.transfer == "keypress") {
-        var t = this;
-        // See below for info on 'safeBind'.
-        this.safeBind($(document), 'keydown', function () {
-            t.finishedCallback(null);
-            return true;
-        });
+        if (this.transfer == "keypress") {
+            var t = this;
+            // See below for info on 'safeBind'.
+            this.safeBind($(document), 'keydown', function () {
+                t.finishedCallback(null);
+                return true;
+            });
+        }
+        else {
+            // See below for info on 'this.utils'.
+            this.utils.setTimeout(this.finishedCallback, this.transfer);
+        }
     }
-    else {
-        // See below for info on 'this.utils'.
-        this.utils.setTimeout(this.finishedCallback, this.transfer);
-    }
-}
 
-ibex_controller_set_properties("Message", {
-    obligatory: ["html"],
-    countsForProgressBar: false,
-    htmlDescription: function (opts) {
-        var d = htmlCodeToDOM(opts.html);
-        return truncateHTML(d, 100);
-    }
-});
+    ibex_controller_set_properties("Message", {
+        obligatory: ["html"],
+        countsForProgressBar: false,
+        htmlDescription: function (opts) {
+            var d = htmlCodeToDOM(opts.html);
+            return truncateHTML(d, 100);
+        }
+    });
 }}}
 The call to `ibex_controller_set_properties` sets some properties of the `Message` controller.
 The `obligatory` option specifies those options which must obligatorily be
@@ -1012,13 +1019,13 @@ In the case of `Message`, `_finishedCallback` is called with `null` as its argum
 because this controller does not add any lines to the results file.
 In general, the format of a non-null argument to `finishedCallback` is as follows:
 {{{
-[
-    // Line 1.
-    [ ["fieldname1", value1], ["fieldname2", value2], ["fieldname3", value3], ... ],
-    // Line 2.
-    [ ["fieldname2", value2], ["fieldname2", value2], ["fieldname3", value3], ... ],
-    ...
-]
+    [
+        // Line 1.
+        [ ["fieldname1", value1], ["fieldname2", value2], ["fieldname3", value3], ... ],
+        // Line 2.
+        [ ["fieldname2", value2], ["fieldname2", value2], ["fieldname3", value3], ... ],
+        ...
+    ]
 }}}
 
 As can be seen in the code for `Message`, the `utils` object provides a `setTimeout` method

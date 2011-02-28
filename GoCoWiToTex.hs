@@ -167,7 +167,7 @@ instance Node_ ParagraphBreak where
               return "\n\n"
 
 instance Node_ Literal where
-  texify l = return $ "\\footnotesize\\begin{verbatim}\n" ++ capLines (_contents l) ++ "\n\\end{verbatim}\n\\normalsize\n"
+  texify l = return $ "\\footnotesize\\begin{verbatim}\n" ++ capLines (_contents l) ++ "\n\\end{verbatim}\n\n\\smallskip\\noindent\\normalsize\n"
 
 preds = [ (_bold, ("\\textbf{", "}")),
           (_italic, ("\\textit{", "}")),
