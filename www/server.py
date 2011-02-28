@@ -908,7 +908,7 @@ def css_spit_out(css_definitions, ofile):
 # If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
 # to open SERVER_CONF_PY_FILE, even if it's defined.
 CFG = { }
-if (not (globals().has_key('EXTERNAL_CONFIG_URL') and globals()['EXTERNAL_CONFIG_URL'])) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
     try:
         execfile(SERVER_CONF_PY_FILE, CFG)
     except Exception, e:
