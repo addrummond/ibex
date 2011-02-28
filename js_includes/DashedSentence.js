@@ -19,6 +19,7 @@ $.widget("ui.DashedSentence", {
                "Value of 'mode' option for DashedSentence controller must be either " +
                "'self-paced reading' or 'speeded acceptability'.");
         this.display = dget(this.options, "display", "dashed");
+        this.blankText = dget(this.options, "blankText", "\u2014\u2014"/*mdash*/);
         this.wordTime = dget(this.options, "wordTime", this.display == "in place" ? 400 : 300); // Only for speeded accpetability.
         this.wordPauseTime = dget(this.options, "wordPauseTime", this.display == "in place" ? 0 : 100); // Ditto.
         this.showAhead = dget(this.options, "showAhead", true);
@@ -80,7 +81,11 @@ $.widget("ui.DashedSentence", {
         this.previousTime = null;
 
         if (this.display == "in place") {
-            this.wordSpan = $(document.createElement("span"));
+            this.wordSpan = $(document.createElement("span")).text(this.blankText);
+            if (conf_centerItems) {
+                this.mainDiv.css('text-align', 'center');
+                this.wordSpan.css('text-align', 'center');
+            }
             this.mainDiv.append(this.wordSpan);
 
             this.blankWord = this.blankWord_inplace;
