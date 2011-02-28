@@ -624,7 +624,7 @@ the controller adds lines to the results file, then the "item",
 "element", "type" and "group" columns will all have the value
 "DYNAMIC".
 
-The convenince constructor `DynamicItem` is provided to ease the construction
+The convenince constructor `DynamicElement` is provided to ease the construction
 of typical element objects. This takes as its first argument a controller name,
 and as its second the controller's options. Optionally, `true` may be passed as the
 third argument to set the `hideResults` property to `true`.
