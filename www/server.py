@@ -62,6 +62,8 @@ def generate_html(setcounter=None, overview=False):
     <!-- Script for detecting plugins used to create unique MD5 hash. -->
     <script type="text/javascript" src="PluginDetect.js"></script>
 
+    <!-- Gives us the name of the server.py script. -->
+    <script type="text/javascript" src="%s?include=serverinfo_js"></script>
     <!-- General utilities (map, filter, ...) -->
     <script type="text/javascript" src="util.js"></script>
     <!-- Code for executing shuffle sequences. -->
@@ -102,7 +104,7 @@ def generate_html(setcounter=None, overview=False):
 </body>
 </html>
 """
-    return html % (PY_SCRIPT_NAME, PY_SCRIPT_NAME, PY_SCRIPT_NAME,
+    return html % (PY_SCRIPT_NAME, PY_SCRIPT_NAME, PY_SCRIPT_NAME, PY_SCRIPT_NAME,
                    setcounter is not None and u"&withsquare=%i" % setcounter or u"",
                    overview and u"&overview=yes" or u"",
                    PY_SCRIPT_NAME)
@@ -1442,7 +1444,11 @@ def control(env, start_response):
 
         # Is it a request for a JS/CSS include file?
         if qs_hash.has_key('include'):
-            if qs_hash['include'][0] == 'js':
+            if qs_hash['include'][0] == 'serverinfo_js':
+                start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
+                # Can't use a generator expression here because we need to maintain Python 2.3 compat.
+                return ["var __server_py_script_name__ = \"%s\";\n" % ''.join(["\\u%.4x" % ord(c) for c in PY_SCRIPT_NAME])]
+            elif qs_hash['include'][0] == 'js':
                 m = js_create_monster_string(os.path.join(PWD, CFG['JS_INCLUDES_DIR']), '.js', CFG['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
                 return [m]
@@ -1469,10 +1475,7 @@ def control(env, start_response):
                     if f: f.close()
 
                 # UGLY: Holds some var defs that we'll prepend to the main.js
-                # (a few more are conditionally added below).
-                # Note: can't use generator expression here since we want to maintain
-                #       Python 2.3 compat.
-                defs = ["var __server_py_script_name__ = \"%s\";\n" % ''.join(["\\u%.4x" % ord(c) for c in PY_SCRIPT_NAME])]
+                defs = []
 
                 # Do we set the 'overview' option?
                 retlist = [contents]

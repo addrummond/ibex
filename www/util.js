@@ -94,7 +94,7 @@ function htmlCodeToDOM(html, readyCallback) {
         $.ajax({
             cache: false,
             async: true,
-            url: 'server.py?chunk=' + escape(html.include),
+            url:  __server_py_script_name__ + '?chunk=' + escape(html.include),
             dataType: "text",
             error: function () { alert("ERROR: Could not retreive HTML from server."); },
             success: function (data) {
