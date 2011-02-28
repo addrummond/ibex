@@ -908,7 +908,7 @@ def css_spit_out(css_definitions, ofile):
 # If EXTERNAL_CONFIG_URL has already been defined in this file, don't attempt
 # to open SERVER_CONF_PY_FILE, even if it's defined.
 CFG = { }
-if (not globals().has_key('EXTERNAL_CONFIG_URL') and globals()['SERVER_CONF_PY_FILE']) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
+if (not globals().has_key('EXTERNAL_CONFIG_URL') or (not globals()['EXTERNAL_CONFIG_URL'])) and globals().has_key('SERVER_CONF_PY_FILE') and globals()['SERVER_CONF_PY_FILE']:
     try:
         execfile(SERVER_CONF_PY_FILE, CFG)
     except Exception, e:
@@ -952,7 +952,7 @@ for k in extkeys: # Note that logging can't be set up till config is parsed, so 
                      if type(json) != type({}):
                          sys.stderr.write("JSON data received from the following external configuration URL parsed correctly but was not a dictionary as required: %s" % url)
                          sys.exit(1)
-                     c = json
+                     CFG = json
                 except ValueError:
                     sys.stderr.write("Bad JSON data received from the following external configuration URL: %s" % url)
                     sys.exit(1)
