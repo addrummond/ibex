@@ -65,7 +65,7 @@ capLines s = concat (intersperse "\n" (map ns (lines s)))
 
 escapeTexChar c =
   case c of
-    '\\' -> "\\textbackslash"
+    '\\' -> "{\\textbackslash}"
     '%'  -> "\\%"
     '~'  -> "\\textasciitilde"
     '{'  -> "\\{"
