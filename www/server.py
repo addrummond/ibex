@@ -1474,7 +1474,7 @@ def control(env, start_response):
                 finally:
                     if f: f.close()
 
-                # UGLY: Holds some var defs that we'll prepend to the main.js
+                # UGLY: Holds some var defs that we'll prepend to the main.js.
                 defs = []
 
                 # Do we set the 'overview' option?
