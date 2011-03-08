@@ -154,7 +154,7 @@ import urllib
 # ========== START OF jsmin.py FROM http://www.crockford.com/javascript/jsmin.py.txt ==========
 #
 #
-# This code is original from jsmin by Douglas Crockford, it was translated to
+# This code is originally from jsmin by Douglas Crockford, it was translated to
 # Python by Baruch Even. The original code had the following copyright and
 # license.
 #
