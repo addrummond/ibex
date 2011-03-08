@@ -1243,13 +1243,6 @@ def to_csv(lines):
 # The server itself.
 #
 
-def counter_cookie_header(c, cookiename):
-    return (
-        "Set-Cookie",
-        "%s=%i; path=/" % \
-        (cookiename, c)
-    )
-
 def create_monster_string(dir, extension, block_allow, cacheKey=None, manipulator=None):
     if cacheKey and os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey)):
         cacheCreatedTime = os.path.getmtime(os.path.join(PWD, CFG['CACHE_DIR'], cacheKey))
