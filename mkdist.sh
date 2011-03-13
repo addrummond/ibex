@@ -20,4 +20,10 @@ cp -XR $O $NO
 cd /tmp
 NO=ibex-${1}
 
-tar -cz $NO/LICENSE $NO/README $NO/www/conf.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/mkdist.sh $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/PluginDetect.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/GoCoWiToTex.hs $NO/other_includes/main.js $NO/chunk_includes/*.html > $OO/dist/ibex-${1}.tar.gz 
+# To save space on the Ibex farm server, we omit non-essential files from the archive.
+OPTIONALS=""
+if [ ! $SLIM ]; then
+   OPTIONALS="$NO/LICENSE $NO/README $NO/mkdist.sh $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/GoCoWiToTex.hs"
+fi
+
+tar -cz $OPTIONALS $NO/www/conf.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/PluginDetect.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/other_includes/main.js $NO/chunk_includes/*.html > $OO/dist/ibex-${1}.tar.gz 
