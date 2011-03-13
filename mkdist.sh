@@ -21,6 +21,9 @@ cd /tmp
 NO=ibex-${1}
 
 # To save space on the Ibex farm server, we omit non-essential files from the archive.
+# To generate the slim distribution tarball:
+#
+#    SLIM=1 sh mkdist.sh dist
 OPTIONALS=""
 if [ ! $SLIM ]; then
    OPTIONALS="$NO/LICENSE $NO/README $NO/mkdist.sh $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/GoCoWiToTex.hs"
