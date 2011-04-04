@@ -1,3 +1,6 @@
+# You may need to add a #! line at the beginning of this file, eg.:
+#     #!/usr/bin/python
+
 #
 # You may need to edit this.
 #
@@ -1060,17 +1063,10 @@ if PWD is None:
 #
 
 def lock_and_open(filename, mode):
-    if os.path.exists(filename):
-        f = open(filename, "r") # Open first as read-only.
-        if HAVE_FLOCK:
-            fcntl.flock(f.fileno(), 2)
-        if mode != "r": # If necessary, reopen with the given mode.
-            f.close()
-            f = open(filename, mode)
-        return f
-    else:
-        f = open(filename, mode)
-        return f
+    f = open(filename, mode)
+    if HAVE_FLOCK:
+        fcntl.flock(f.fileno(), 2)
+    return f
 def unlock_and_close(f):
     if HAVE_FLOCK:
         fcntl.flock(f.fileno(), 8)
