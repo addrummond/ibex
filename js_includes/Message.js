@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.Message", {
+define_ibex_controller({
+name: "Message",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -86,12 +89,13 @@ $.widget("ui.Message", {
             this.utils.setTimeout(this.finishedCallback, this.transfer);
         }
     }
-});
+},
 
-ibex_controller_set_properties("Message", {
+properties: {
     obligatory: ["html"],
     countsForProgressBar: false,
     htmlDescription: function (opts) {
         return truncateHTML(htmlCodeToDOM(opts.html), 100);
     }
+}
 });

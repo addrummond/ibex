@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.Separator", {
+define_ibex_controller({
+name: "Separator",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -49,11 +52,12 @@ $.widget("ui.Separator", {
             }, this.transfer);
         }
     }
-});
+},
 
-ibex_controller_set_properties("Separator", {
+properties: {
     countsForProgressBar: false,
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.normalMessage)[0];
     }
+}
 });

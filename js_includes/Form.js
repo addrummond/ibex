@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.Form", {
+define_ibex_controller({
+name: "Form",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.finishedCallback = this.options._finishedCallback;
@@ -141,12 +144,13 @@ $.widget("ui.Form", {
                                             .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
                                             .click(handler)));
     }
-});
+},
 
-ibex_controller_set_properties("Form", {
+properties: {
     obligatory: ["html"],
     countsForProgressBar: false,
     htmlDescription: function (opts) {
         return htmlCodeToDOM(opts.html);
     }
+}
 });

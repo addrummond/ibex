@@ -5,7 +5,10 @@
 var __Question_callback__ = null;
 var __Questions_answers__ = null;
 
-$.widget("ui.Question", {
+define_ibex_controller({
+name: "Question",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -233,13 +236,16 @@ $.widget("ui.Question", {
         // Store the time when this was first displayed.
         this.creationTime = new Date().getTime();
     }
-});
+},
 
-})();
-
-ibex_controller_set_properties("Question", {
+properties: {
     obligatory: ["as"],
     htmlDescription: function(opts) {
         return $(document.createElement("div")).text(opts.q || "");
     }
+}
 });
+
+})();
+
+

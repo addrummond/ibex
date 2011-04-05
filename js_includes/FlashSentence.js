@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.FlashSentence", {
+define_ibex_controller({
+name: "FlashSentence",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.finishedCallback = this.options._finishedCallback;
@@ -34,11 +37,12 @@ $.widget("ui.FlashSentence", {
                 this.utils.setResults([[["Sentence (or sentence MD5)", this.sentenceMD5]]]);
         }
     }
-});
+},
 
-ibex_controller_set_properties("FlashSentence", {
+properties: {
     obligatory: ["s"],
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.s)[0];
     }
+}
 });

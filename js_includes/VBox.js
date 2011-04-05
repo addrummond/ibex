@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.VBox", {
+define_ibex_controller({
+name: "VBox",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options.options._cssPrefix;
         this.utils = this.options.options._utils;
@@ -140,6 +143,8 @@ $.widget("ui.VBox", {
         }
         return res;
     }
-});
+},
 
-ibex_controller_set_properties("VBox", { obligatory: ["children", "triggers"] });
+properties: { obligatory: ["children", "triggers"] }
+
+});

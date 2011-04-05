@@ -1,6 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
-$.widget("ui.AcceptabilityJudgment", {
+define_ibex_controller({
+name: "AcceptabilityJudgment",
+
+jqueryWidget: {
     _init: function () {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -28,25 +31,24 @@ $.widget("ui.AcceptabilityJudgment", {
 
         this.element.VBox(opts);
     }
+},
+
+properties: {
+    obligatory: ["s", "as"],
+    htmlDescription:
+        function (opts) {
+            var s = ibex_controller_get_property("FlashSentence", "htmlDescription")(opts);
+            var q = ibex_controller_get_property("Question", "htmlDescription")(opts);
+            var p =
+                $(document.createElement("p"))
+                .append($(document.createElement("b"))
+                        .append("Q: ")
+                        .append($(q)))
+                .append($(document.createElement("br")))
+                .append($(document.createElement("b"))
+                        .append("S: "))
+                .append($(s));
+             return p;
+        }
+}
 });
-
-ibex_controller_set_properties("AcceptabilityJudgment",
-    { obligatory: ["s", "as"],
-      htmlDescription:
-          function (opts) {
-              var s = ibex_controller_get_property("FlashSentence", "htmlDescription")(opts);
-              var q = ibex_controller_get_property("Question", "htmlDescription")(opts);
-              var p =
-                  $(document.createElement("p"))
-                  .append($(document.createElement("b"))
-                          .append("Q: ")
-                          .append($(q)))
-                  .append($(document.createElement("br")))
-                  .append($(document.createElement("b"))
-                          .append("S: "))
-                  .append($(s));
-
-              return p;
-          }
-    }
-);

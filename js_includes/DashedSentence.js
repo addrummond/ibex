@@ -2,7 +2,10 @@
 
 function boolToInt(x) { if (x) return 1; else return 0; }
 
-$.widget("ui.DashedSentence", {
+define_ibex_controller({
+name: "DashedSentence",
+
+jqueryWidget: {
     _init: function() {
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -276,11 +279,12 @@ $.widget("ui.DashedSentence", {
             ]);
         }
     }
-});
+},
 
-ibex_controller_set_properties("DashedSentence", {
+properties: {
     obligatory: ["s"],
     htmlDescription: function (opts) {
         return $(document.createElement("div")).text(opts.s);
     }
+}
 });

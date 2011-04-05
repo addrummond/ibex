@@ -373,6 +373,15 @@ function ibex_controller_name_to_css_prefix(cname) {
     return cname + '-';
 }
 
+function define_ibex_controller(opts) {
+    var name = opts.name;
+    var jqueryWidget = opts.jqueryWidget;
+    var properties = opts.properties;
+
+    $.widget("ui." + name, jqueryWidget);
+    ibex_controller_set_properties(name, properties);
+}
+
 // Test whether they're using an iPhone/iPod touch.
 var isIPhone = navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i);
 
