@@ -8,6 +8,9 @@ define_ibex_controller({
             var dclass = ibex_controller_name_to_css_prefix("DashedSentence") + "DashedSentence";
 
             var opts = this.options;
+            if (! opts.mode)
+                opts.mode = "speeded acceptability";
+
             opts._dashed = true;
             opts._vboxCallbackWhenChildFinishes = function (index) {
                 if (index == 0) {
