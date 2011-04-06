@@ -19,8 +19,6 @@ jqueryWidget: {
         var correctField = "Whether or not answer was correct (NULL if N/A)";
         var timeField = "Time taken to answer.";
 
-        this.element.addClass(this.cssPrefix + "question");
-
         this.question = dget(this.options, "q");
         this.answers = this.options.as;
 

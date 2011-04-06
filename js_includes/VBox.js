@@ -10,6 +10,7 @@ jqueryWidget: {
         this.finishedCallback = this.options.options._finishedCallback;
         this.controllerDefaults = this.options.options._controllerDefaults;
         this.utilsClass = this.options.options._utilsClass;
+        this.callbackWhenChildFinishes = this.options.options._vboxCallbackWhenChildFinishes;
 
         this.children = this.options.children;
         this.triggers = this.options.triggers;
@@ -128,6 +129,8 @@ jqueryWidget: {
 
             this.finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
+
+        this.callbackWhenChildFinishes(index, results);
     },
 
     concatResults: function(iar) {

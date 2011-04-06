@@ -378,6 +378,16 @@ function define_ibex_controller(opts) {
     var jqueryWidget = opts.jqueryWidget;
     var properties = opts.properties;
 
+    // Automatically add a CSS class corresponding to the controller name to the main div
+    // for the controller.
+    var oldInit = jqueryWidget._init;
+    function newInit() {
+        $(this.element).addClass(ibex_controller_name_to_css_prefix(name) + name);
+        if (oldInit)
+            return oldInit.apply(this, arguments);
+    }
+    jqueryWidget._init = newInit;
+
     $.widget("ui." + name, jqueryWidget);
     ibex_controller_set_properties(name, properties);
 }

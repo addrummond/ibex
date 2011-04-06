@@ -5,14 +5,25 @@ name: "AcceptabilityJudgment",
 
 jqueryWidget: {
     _init: function () {
-        this.cssPrefix = this.options._cssPrefix;
-        this.utils = this.options._utils;
-        this.finishedCallback = this.options._finishedCallback;
-
         var opts = {
             options:     this.options,
             triggers:    [1],
-            children:    ["FlashSentence", {s: this.options.s, timeout: dget(this.options, "timeout", null)},
+            children:    [this.options._dashed ? "DashedSentence" : "FlashSentence",
+                          this.options._dashed ? {
+                                                     s: this.options.s,
+                                                     mode: this.options.mode,
+                                                     display: this.options.display,
+                                                     blankText: this.options.blankText,
+                                                     wordTime: this.options.wordTime,
+                                                     wordPauseTime: this.options.wordPauseTime,
+                                                     sentenceDescType: this.options.sentenceDescType,
+                                                     showAhead: this.options.showAhead,
+                                                     showBehind: this.options.showBehind,
+                                                 } : 
+                                                 {
+                                                     s: this.options.s,
+                                                     timeout: dget(this.options, "timeout", null)
+                                                 },
                           "Question", { q:              this.options.q,
                                         as:             this.options.as,
                                         hasCorrect:     dget(this.options, "hasCorrect", false),
@@ -40,13 +51,9 @@ properties: {
             var s = ibex_controller_get_property("FlashSentence", "htmlDescription")(opts);
             var q = ibex_controller_get_property("Question", "htmlDescription")(opts);
             var p =
-                $(document.createElement("p"))
-                .append($(document.createElement("b"))
-                        .append("Q: ")
-                        .append($(q)))
-                .append($(document.createElement("br")))
-                .append($(document.createElement("b"))
-                        .append("S: "))
+                $("<p>")
+                .append($("<p>").append("Q: ").append($(q)))
+                .append("<br>").append($("<b>").text("S:"))
                 .append($(s));
              return p;
         }
