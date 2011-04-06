@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3-beta14. The 0.1.x
+This documentation covers 0.3-beta15. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -769,11 +769,16 @@ If `mode` is set to "self-paced reading", the results look like this:
 || 4        || The time the participant took to answer the question (ms). ||
 
 ==!AcceptabilityJudgment==
+The `AcceptabilityJudgment` controller makes it straightforward to present a sentence together
+with a rating scale. It is a combination of the `FlashSentence` and `Message` controllers.
+
 || *Option*       || *Default*           || *Description*                ||
 || s              || _obligatory_        || The sentence.                ||
 || q              || _obligatory_        || The question.                ||
 || as             || _obligatory_        || Answers (as for `Question`). ||
+|| instructions   || `null`              || As for `Question`            ||
 || hasCorrect     || `false`             || As for `Question`            ||
+|| autoFirstChar  || `false`             || As for `Question`            ||
 || showNumbers    || `true`              || As for `Question`            ||
 || randomOrder    || _as for `Question`_ || As for `Question`            ||
 || presentAsScale || `false`             || As for `Question`            ||
@@ -786,6 +791,43 @@ If `mode` is set to "self-paced reading", the results look like this:
 Each `AcceptabilityJudgment` adds *two* lines to the results file. The first
 line is the same as for the `FlashSentence` controller; the second line is the
 same as for the `Question` controller.
+
+==!DashedAcceptabilityJudgment==
+This is like `AcceptabilityJudgment`, but it uses `DashedSentence`
+instead of `FlashSentence`.  This is useful for running speeded
+acceptability judgment tasks (which otherwise require some rather
+creative use of shuffle sequences).
+
+|| *Option*         || *Default*                 || *Description*                                        ||
+|| s                || _obligatory_              || The sentence.                                        ||
+|| q                || _obligatory_              || The question.                                        ||
+|| as               || _obligatory_              || Answers (as for `Question`).                         ||
+|| instructions     || `null`                    || As for `Question`                                    ||
+|| hasCorrect       || `false`                   || As for `Question`                                    ||
+|| autoFirstChar    || `false`                   || As for `Question`                                    ||
+|| showNumbers      || `true`                    || As for `Question`                                    ||
+|| randomOrder      || _as for `Question`_       || As for `Question`                                    ||
+|| presentAsScale   || `false`                   || As for `Question`                                    ||
+|| leftComment      || `null`                    || As for `Question`                                    ||
+|| rightComment     || `null`                    || As for `Question`                                    ||
+|| timeout          || `null`                    || As for `Question`                                    ||
+|| mode             || `"speeded acceptability"` || As for `DashedSentence` (but with different default) ||
+|| display          || `"dashed"`                || As for `DashedSentence`                              ||
+|| blankText        || `"\u2014\u2014"`          || As for `DahsedSentence`                              ||
+|| wordTime         || `300`                     || As for `DashedSentence`                              ||
+|| wordPauseTime    || `100`                     || As for `DashedSentence`                              ||
+|| sentenceDescType || `"literal"`               || As for `DashedSentence`                              ||
+|| showAhead        || `true`                    || As for `DashedSentence`                              ||
+|| showBehind       || `true`                    || As for `DashedSentence`                              ||
+
+*Results*
+
+Each `DashedAcceptabilityJudgment` adds *two* lines to the results
+file if the "mode" option is set to "speeded acceptability". If it is
+set to "self-paced reading", the number of lines is 1 + the number of
+words in the sentence.  The first line(s) are the same as for the
+`DashedSentence` controller; the last line is the same as for the
+`Question` controller.
 
 ==VBox==
 The `VBox` controller makes it possible to combine multiple controllers to form
@@ -1093,7 +1135,12 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta14 (current version) and 0.3-beta13:
+Changes between 0.3-beta15 (current version) and 0.3-beta14:
+    * Added the `DashedAcceptabilityJudgment` controller for easy speeded acceptability judgments.
+    * Cleaned up the way controllers are defined (not a user-visible change).
+    * Fixed a bug in the file-locking code in `server.py`.
+
+Changes between 0.3-beta14 and 0.3-beta13:
     * It is now possible to set the `countsForProgressBar` option at the level of individual items.
     * Add 'continueOnReturn' option to the `Form` controller.
     * Add the option to display all words at the center of the screen with the `DashedSentence` controller.
