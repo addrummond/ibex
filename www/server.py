@@ -1229,7 +1229,15 @@ def intersperse_comments(main, name_specs):
 
 def simple_intersperse_comments(main, name_specs):
     """Just adds one comment per line."""
-    newr = []
+    newr = [["#"],
+            ["# IMPORTANT NOTE: As of ibex 0.3-beta15, the default format of the"],
+            ["# comments in this file has changed, so that a comment is inserted"],
+            ["# for each individual line giving the names of the columns (except"],
+            ["# the first seven, which are always the same; see manual). The format"],
+            ["# of the results themselves has not changed. You can revert to the"],
+            ["# old-style comments by setting the 'SIMPLE_RESULTS_FILE_COMMENTS'"],
+            ["# configuration variable to False."],
+            ["#"]]
     name_specs_index = 0
     start_i = 0
     for line, i in itertools.izip(main, itertools.count(0)):
