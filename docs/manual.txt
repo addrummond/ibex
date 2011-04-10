@@ -1002,7 +1002,11 @@ from webspr 0.2 is that controllers are now JQuery.ui widgets.)
 As an example, here's the code for a simplified version of the
 `Message` controller:
 {{{
-    $.widget("ui.Message", {
+define_ibex_controller({
+name: "Message",
+
+jqueryWidget: {
+    _init: function() {
         // Boilerplate code that appears in all controllers.
         this.cssPrefix = this.options._cssPrefix;
         this.utils = this.options._utils;
@@ -1014,8 +1018,7 @@ As an example, here's the code for a simplified version of the
 
         this.transfer = dget(this.options, "transfer", "keypress");
         assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
-               "Value of 'transfer' option of Message must either be " +
-               "the string 'keypress' or a number");
+               "Value of 'transfer' option of Message must either be the string 'keypress' or a number");
 
         if (this.transfer == "keypress") {
             var t = this;
@@ -1030,15 +1033,17 @@ As an example, here's the code for a simplified version of the
             this.utils.setTimeout(this.finishedCallback, this.transfer);
         }
     }
+},
 
-    ibex_controller_set_properties("Message", {
-        obligatory: ["html"],
-        countsForProgressBar: false,
-        htmlDescription: function (opts) {
-            var d = htmlCodeToDOM(opts.html);
-            return truncateHTML(d, 100);
-        }
-    });
+properties: {
+    obligatory: ["html"],
+    countsForProgressBar: false,
+    htmlDescription: function (opts) {
+        var d = htmlCodeToDOM(opts.html);
+        return truncateHTML(d, 100);
+    }
+}
+});
 }}}
 The call to `ibex_controller_set_properties` sets some properties of the `Message` controller.
 The `obligatory` option specifies those options which must obligatorily be
