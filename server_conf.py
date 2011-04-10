@@ -46,6 +46,11 @@ INCLUDE_HEADERS_IN_RESULTS_FILE = True
 # Should the server insert comments in the results file documenting the values
 # in each column?
 INCLUDE_COMMENTS_IN_RESULTS_FILE = True
+# Only applicable if 'INCLUDE_COMMENTS_IN_RESULTS_FILE' is set to True.
+# If the following is set to True, the server uses a simple line-by-line
+# commenting system instead of the somewhat fallible system that was the only
+# option prior to 0.3-beta15.
+SIMPLE_RESULTS_FILE_COMMENTS = False
 
 # The name of the directory where Javascript includes are stored.
 # ***** Relative to IBEX_WORKING_DIR unless absolute path. *****

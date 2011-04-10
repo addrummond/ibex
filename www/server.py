@@ -988,7 +988,7 @@ for k in ['RESULT_FILE_NAME',
           'SERVER_MODE', 'JS_INCLUDES_DIR', 'DATA_INCLUDES_DIR', 'CHUNK_INCLUDES_DIR',
           'CSS_INCLUDES_DIR', 'OTHER_INCLUDES_DIR', 'CACHE_DIR', 'JS_INCLUDES_LIST', 'DATA_INCLUDES_LIST',
           'CSS_INCLUDES_LIST', 'STATIC_FILES_DIR', 'INCLUDE_COMMENTS_IN_RESULTS_FILE',
-          'INCLUDE_HEADERS_IN_RESULTS_FILE']:
+          'SIMPLE_RESULTS_FILE_COMMENTS', 'INCLUDE_HEADERS_IN_RESULTS_FILE']:
     if not CFG.has_key(k):
         logger.error("Configuration variable '%s' was not defined." % k)
         sys.exit(1)
@@ -1226,6 +1226,31 @@ def intersperse_comments(main, name_specs):
                     break
         newr.append(line)
     return newr
+
+def simple_intersperse_comments(main, name_specs):
+    """Just adds one comment per line."""
+    newr = []
+    name_specs_index = 0
+    start_i = 0
+    for line, i in itertools.izip(main, itertools.count(0)):
+        if name_specs_index < len(name_specs)-1 and \
+           name_specs[name_specs_index+1][0] == i:
+            start_i = i
+            name_specs_index += 1
+
+        ns = name_specs[name_specs_index][1]
+        cns = ns[(i - start_i) % len(ns)]
+        assert len(cns) == len(line) - 2 # -2 because of time and IP MD5 columns.
+        assert len(cns) >= 5
+        newr.append([u"# ...First 7... " + u" -- ".join([("[%i] %s" % (i+8,s)) for i,s in itertools.izip(itertools.count(0), cns[5:])])])
+        newr.append(line)
+    return newr
+
+def get_comment_intersperser():
+    if CFG['SIMPLE_RESULTS_FILE_COMMENTS']:
+        return simple_intersperse_comments
+    else:
+        return intersperse_comments
 
 def to_csv(lines):
     s = StringIO()
@@ -1563,7 +1588,7 @@ def control(env, start_response):
                          u"Design number was " + ((random_counter and u"random = " or u"non-random = ") + unicode(counter)))
                 backup_raw_post_data(header)
                 if CFG['INCLUDE_COMMENTS_IN_RESULTS_FILE']:
-                    main_results = intersperse_comments(main_results, column_names)
+                    main_results = get_comment_intersperser()(main_results, column_names)
                 csv_results = to_csv(main_results)
                 rf = lock_and_open(os.path.join(PWD, CFG['RESULT_FILES_DIR'], CFG['RESULT_FILE_NAME']), "a")
                 rf.write(header.encode(DEFAULT_ENCODING))
