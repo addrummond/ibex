@@ -33,42 +33,19 @@ jqueryWidget: {
 //        this.childInstances = [];
         this.childUtils = [];
 
+        this.childElements = new Array(this.children.length / 2);
         for (var i = 0; i < this.children.length; i += 2) {
             var controllerClass = this.children[i];
+            var addImmediately = true;
+            var removePrevious = false;
+            if (controllerClass.charAt(0) == "*" || controllerClass.charAt(0) == "!") {
+                addImmediately = false;
+                if (controllerClass.charAt(0) == "!")
+                    removePrevious = true;
+                controllerClass = controllerClass.substr(1);
+            }
             var childOptions = this.children[i + 1];
             childOptions = merge_dicts(this.controllerDefaults[controllerClass], childOptions);
-
-            var d = $(document.createElement("p")).css('clear', 'both');
-
-            // Call a manipulator if one was supplied.
-            if (! (this.options.manipulators === undefined)) {
-                for (var j = 0; j < this.options.manipulators.length; ++j) {
-                    if (this.options.manipulators[j][0] == (i / 2))
-                        d = this.options.manipulators[j][1](d);
-                }
-            }
-
-            // Add padding if requested.
-            var dd = null;
-            if (this.padding && i > 0) {
-                dd = $(document.createElement("div"))
-                     .css('margin-top', this.padding)
-                     .css('margin-bottom', 0)
-                     .append(d);
-            }
-
-            // Wrap in a table if we're centering things.
-            var ddd = null;
-            if (conf_centerItems) {
-                ddd = $("<table align='center'>");
-                var tr = $(document.createElement("tr"));
-                var td = $(document.createElement("td"));
-                ddd.append(tr.append(td.append(dd ? dd : d)));
-            }
-
-            // Add the actual child.
-            var ac = ddd ? ddd : (dd ? dd : d);
-            this.element.append(ac);    
 
             var u = new this.utilsClass(this.utils.getValuesFromPreviousElement());
             this.childUtils.push(u);
@@ -78,27 +55,61 @@ jqueryWidget: {
                 };
             })(i);
 
-            var t = this;
-            var l = this.childUtils.length - 1;
-            // Get around JavaScript's silly closure capture behavior (deriving
-            // from weird variable scoping rules).
-            // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
-            (function(l) {
-                childOptions._finishedCallback = function (r) { t.myFinishedCallback(l, r); };
-                childOptions._cssPrefix = ibex_controller_name_to_css_prefix(controllerClass);
-                childOptions._utils = u;
-                addSafeBindMethodPair(controllerClass);
-                d[controllerClass](childOptions);
+            function makeDiv() {
+                var d = $(document.createElement("p")).css('clear', 'both');
 
-/*                t.childInstances.push(
-                    new controllerClass(
-                        d,
-                        childOptions,
-                        function (r) { t.myFinishedCallback(l, r); },
-                        u
-                    )
-                );*/
-            })(l);
+                // Call a manipulator if one was supplied.
+                if (! (t.options.manipulators === undefined)) {
+                    for (var j = 0; j < t.options.manipulators.length; ++j) {
+                        if (t.options.manipulators[j][0] == (i / 2))
+                            d = t.options.manipulators[j][1](d);
+                    }
+                }
+
+                // Add padding if requested.
+                var dd = null;
+                if (t.padding && i > 0) {
+                    dd = $(document.createElement("div"))
+                        .css('margin-top', t.padding)
+                        .css('margin-bottom', 0)
+                        .append(d);
+                }
+
+                // Wrap in a table if we're centering things.
+                var ddd = null;
+                if (conf_centerItems) {
+                    ddd = $("<table align='center'>");
+                    var tr = $(document.createElement("tr"));
+                    var td = $(document.createElement("td"));
+                    ddd.append(tr.append(td.append(dd ? dd : d)));
+                }
+                
+                // Add the actual child.
+                var ac = ddd ? ddd : (dd ? dd : d);
+
+                var l = t.childUtils.length - 1;
+                // Get around JavaScript's silly closure capture behavior (deriving
+                // from weird variable scoping rules).
+                // See http://calculist.blogspot.com/2005/12/gotcha-gotcha.html
+                (function(l) {
+                    childOptions._finishedCallback = function (r) { t.myFinishedCallback(l, r); };
+                    childOptions._cssPrefix = ibex_controller_name_to_css_prefix(controllerClass);
+                    childOptions._utils = u;
+                    addSafeBindMethodPair(controllerClass);
+                    d[controllerClass](childOptions);
+                })(l);
+
+                return ac;
+            }
+
+            if (addImmediately) {
+                var ac = makeDiv()
+                this.childElements[i/2] = { child: ac, addImmediately: true, removePrevious: false };
+                this.element.append(ac);
+            }
+            else {
+                this.childElements[i/2] = { makeDiv: makeDiv, addImmediately: false, removePrevious: removePrevious };
+            }
         }
     },
 
@@ -130,7 +141,20 @@ jqueryWidget: {
             this.finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
 
-        this.callbackWhenChildFinishes(index, results);
+        if (this.callbackWhenChildFinishes)
+            this.callbackWhenChildFinishes(index, this.childElements[index].child, results);
+
+        // Add next child if it wasn't added at the beginning.
+        if (index + 1 < this.childElements.length) {
+            var ce = this.childElements[index+1];
+            if (! ce.addImmediately) {
+                var ac = ce.makeDiv();
+                ce.child = ac;
+                ce.child.insertAfter(this.childElements[index].child);
+                if (ce.removePrevious)
+                    this.childElements[index].child.remove();
+            }
+        }
     },
 
     concatResults: function(iar) {
