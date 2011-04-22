@@ -62,6 +62,9 @@ def generate_html(setcounter=None, overview=False):
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery-ui.min.js"></script>
 
+    <!-- JSDump debugging utility. -->
+    <script type="text/javascript" src="jsDump.js"></script>
+
     <!-- Script for detecting plugins used to create unique MD5 hash. -->
     <script type="text/javascript" src="PluginDetect.js"></script>
 
@@ -1641,7 +1644,8 @@ if CFG['SERVER_MODE'] != "cgi":
             'backcompatcruft.js',
             'jquery.min.js',
             'jquery-ui.min.js',
-            'PluginDetect.js'
+            'PluginDetect.js',
+            'jsDump.js'
         ]
 
         def __init__(self, request, client_address, server):
