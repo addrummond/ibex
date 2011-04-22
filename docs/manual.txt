@@ -845,6 +845,7 @@ a VBox directly in your data file instead of creating a new controller in the
 || children  || _obligatory_ || An array of child controllers. Has exactly the same format as an array of elements for an item ||
 || triggers  || _obligatory_ || In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. ||
 || padding   || `"2em"`      || The amount of vertical padding to place between the children. This should be a CSS dimension. ||
+|| _vboxCallbackWhenChildFinishes || `null` || If set, this function is called every time one of the VBox's children finishes. It is called with two paramaters: the index of the child, and an array of arrays (= array of lines) giving the results for that child. ||
 
 *Results*
 
