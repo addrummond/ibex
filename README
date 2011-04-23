@@ -7,9 +7,11 @@ The following are some notes intended for developers.
 ------------------------------------------------------------------------
 
 You can generate a printable PDF of the documentation by executing the
-following command from the main ibex directory:
+following commands from the main ibex directory:
 
-    runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.pdf
+    runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.tex
+    cd docs
+    pdflatex manual.tex
 
 This creates docs/manual.pdf. The automatic conversion is still a little
 buggy in places, but the resulting PDF is pretty usable.
