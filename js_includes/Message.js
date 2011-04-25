@@ -15,7 +15,7 @@ jqueryWidget: {
 
         // Bit of copy/pasting from 'Separator' here.
         this.transfer = dget(this.options, "transfer", "click");
-        assert(this.transfer == "click" || this.transfer == "keypress" || typeof(this.transfer) == "number",
+        assert((! this.transfer) || this.transfer == "click" || this.transfer == "keypress" || typeof(this.transfer) == "number",
                "Value of 'transfer' option of Message must either be the string 'click' or a number");
 
         if (this.transfer == "click") {
@@ -84,7 +84,7 @@ jqueryWidget: {
                 return false;
             });
         }
-        else {
+        else if (typeof(this.transfer) == "number") {
             assert(! this.consentRequired, "The 'consentRequired' option of the Message controller can only be set to true if the 'transfer' option is set to 'click'.");
             this.utils.setTimeout(this.finishedCallback, this.transfer);
         }

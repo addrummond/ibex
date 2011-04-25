@@ -140,9 +140,12 @@ jqueryWidget: {
         var handler = handleClick(dom);
 
         this.element.append(dom);
-        this.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + t.continueMessage)
-                                            .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
-                                            .click(handler)));
+
+        if (this.continueMessage) {
+            this.element.append($("<p>").append($("<a>").attr('href', '').text("\u2192 " + this.continueMessage)
+                                                .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
+                                                .click(handler)));
+        }
     }
 },
 
