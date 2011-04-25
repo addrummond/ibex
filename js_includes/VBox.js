@@ -164,7 +164,7 @@ jqueryWidget: {
             for (var j = 0; iar[i][1] && j < iar[i][1].length; ++j) {
                 var line = [];
                 for (var k = 0; k < iar[i][1][j].length; ++k)
-                      line.push(iar[i][1][j][k]);
+                    line.push(iar[i][1][j][k]);
                 res.push(line);
             }
         }
