@@ -835,9 +835,29 @@ a single controller. Each controller in the VBox is displayed at the same time,
 one on top of the other. This allows the functionality of simple controllers to
 be reused in the construction of more complex controllers. For an example of a
 controller constructed using a VBox, see
-`js_includes/acceptability_judgment.js`. For simpler cases, you can just create
-a VBox directly in your data file instead of creating a new controller in the
-`js_includes` directory.
+`js_includes/acceptability_judgment.js`.
+
+Currently, you canno create VBox controllers inline in your data file. Instead,
+you must create a new controller which passes its `options` dictionary to the VBox.
+E.g.:
+{{{
+var CONTROLLER_NAME = "MyController";
+$.widget("ui." + CONTROLLER_NAME, {
+    _init: function () {
+       this.element.VBox({
+           options: this.options,
+           triggers: [1],
+           children: [
+               "Message", this.options,
+               "AcceptabilityJudgment", this.options,
+           ]
+       });
+    }
+});
+ibex_controller_set_properties(CONTROLLER_NAME, {});
+}}}
+
+*TODO: Provide more info.*
 
 *Options*
 
@@ -1142,6 +1162,8 @@ Changes between 0.3-beta15 (current version) and 0.3-beta14:
     * Added the `DashedAcceptabilityJudgment` controller for easy speeded acceptability judgments.
     * Cleaned up the way controllers are defined (not a user-visible change).
     * Fixed a bug in the file-locking code in `server.py`.
+    * Fixed a bug with result concatenation in the `VBox` controller which surface on Chrome/Safari.
+    * Make it possible to create `Form` and `Message` controllers which can't be completed (useful in VBoxes).
 
 Changes between 0.3-beta14 and 0.3-beta13:
     * It is now possible to set the `countsForProgressBar` option at the level of individual items.
