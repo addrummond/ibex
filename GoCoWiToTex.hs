@@ -9,6 +9,12 @@
 --
 --     runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.tex
 --
+-- You may need to install the following packages first:
+--
+--     cabal install regex-posix
+--     cabal install regex-compat
+--     cabal install parsec
+--
 -- The tex file should compile using 'pdflatex' with a standard LaTeX install.
 -- Edit the 'preamble' definition below to change general formatting/layout options.
 --

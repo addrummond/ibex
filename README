@@ -13,8 +13,16 @@ following commands from the main ibex directory:
     cd docs
     pdflatex manual.tex
 
-This creates docs/manual.pdf. The automatic conversion is still a little
-buggy in places, but the resulting PDF is pretty usable.
+In order for the 'runhaskell' command to work, you may need to install
+the following Haskell packages first:
+
+    cabal install regex-posix
+    cabal install regex-compat
+    cabal install parsec
+
+Executing the first set of commands should create docs/manual.pdf.
+The automatic conversion is still a little buggy in places, but the
+resulting PDF is pretty usable.
 
 To do this, you'll need:
 
