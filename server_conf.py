@@ -50,7 +50,7 @@ INCLUDE_COMMENTS_IN_RESULTS_FILE = True
 # If the following is set to True, the server uses a simple line-by-line
 # commenting system instead of the somewhat fallible system that was the only
 # option prior to 0.3-beta15.
-SIMPLE_RESULTS_FILE_COMMENTS = True
+SIMPLE_RESULTS_FILE_COMMENTS = False
 
 # The name of the directory where Javascript includes are stored.
 # ***** Relative to IBEX_WORKING_DIR unless absolute path. *****
