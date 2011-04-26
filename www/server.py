@@ -1071,8 +1071,9 @@ def lock_and_open(filename, mode):
         fcntl.flock(f.fileno(), 2)
     return f
 def unlock_and_close(f):
-    if HAVE_FLOCK:
-        fcntl.flock(f.fileno(), 8)
+    # Apparently, unlocking prior to closing is unnecessary and can lead to data loss.
+#    if HAVE_FLOCK:
+#        fcntl.flock(f.fileno(), 8)
     f.close()
 
 def get_counter():
