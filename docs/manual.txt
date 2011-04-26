@@ -246,6 +246,16 @@ and lines.
 the results file. It is now able to handle cases where there are repeating
 patterns of lines in a results file.
 
+*Newer:* As of 0.3-beta15, there is another commenting algorithm
+available, which can be turned on by setting the
+`SIMPLE_RESULTS_FILE_COMMENTS` variable to `True` in `server_conf.py`
+(it defaults to `False`). This algorithm simply adds a comment for
+every line in the results file. This simpler method generally works
+better than the old algorithm, which tried to be clever but didn't
+really succeed. If you are using the Ibex Farm, there is currently
+no way of changing this configuration option using the web interface,
+but this should be fixed soon.
+
 =Format of a data file=
 Data files for Ibex are !JavaScript source files, but it is not really
 necessary to know !JavaScript in order to write one.  The most important part
