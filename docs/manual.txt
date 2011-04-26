@@ -839,25 +839,28 @@ controller constructed using a VBox, see
 
 Currently, you canno create VBox controllers inline in your data file. Instead,
 you must create a new controller which passes its `options` dictionary to the VBox.
-E.g.:
+E.g., by placing something like the following at the beginning of your data file:
 {{{
-var CONTROLLER_NAME = "MyController";
-$.widget("ui." + CONTROLLER_NAME, {
-    _init: function () {
-       this.element.VBox({
-           options: this.options,
-           triggers: [1],
-           children: [
-               "Message", this.options,
-               "AcceptabilityJudgment", this.options,
-           ]
-       });
-    }
-});
-ibex_controller_set_properties(CONTROLLER_NAME, {});
-}}}
+define_ibex_controller({
+    name: "MyController",
 
-*TODO: Provide more info.*
+    jqueryWidget: {
+        _init: function () {
+            this.options.transfer = null; // Remove 'click to continue message'.         
+            this.element.VBox({
+                options: this.options,
+                triggers: [1],
+                children: [
+                    "Message", this.options,
+                    "AcceptabilityJudgment", this.options,
+                ]
+            });
+        }
+    },
+
+    properties: { }
+});
+}}}
 
 *Options*
 
