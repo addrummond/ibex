@@ -161,11 +161,13 @@ jqueryWidget: {
         iar = iar.sort(function(x, y) { return x[0] - y[0]; });
         var res = [];
         for (var i = 0; i < iar.length; ++i) {
-            for (var j = 0; iar[i][1] && j < iar[i][1].length; ++j) {
-                var line = [];
-                for (var k = 0; k < iar[i][1][j].length; ++k)
-                    line.push(iar[i][1][j][k]);
-                res.push(line);
+            for (var j = 0; j < iar[i][1].length; ++j) {
+                if (iar[i][1]) {
+                    var line = [];
+                    for (var k = 0; k < iar[i][1][j].length; ++k)
+                        line.push(iar[i][1][j][k]);
+                    res.push(line);
+                }
             }
         }
         return res;
