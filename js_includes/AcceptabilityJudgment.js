@@ -18,7 +18,7 @@ jqueryWidget: {
                                                      wordPauseTime: this.options.wordPauseTime,
                                                      sentenceDescType: this.options.sentenceDescType,
                                                      showAhead: this.options.showAhead,
-                                                     showBehind: this.options.showBehind,
+                                                     showBehind: this.options.showBehind
                                                  } : 
                                                  {
                                                      s: this.options.s,
