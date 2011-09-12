@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3-beta15. The 0.1.x
+This documentation covers 0.3-beta16. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -1171,7 +1171,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta15 (current version) and 0.3-beta14:
+Changes between 0.3-beta16 (current version) and 0.3-beta15:
+    * Fix bug which stopped ibex working on Internet Explorer.
+
+Changes between 0.3-beta15 and 0.3-beta14:
     * Added the `DashedAcceptabilityJudgment` controller for easy speeded acceptability judgments.
     * Cleaned up the way controllers are defined (not a user-visible change).
     * Fixed a bug in the file-locking code in `server.py`.
