@@ -48,6 +48,7 @@ jqueryWidget: {
         this.leftComment = dget(this.options, "leftComment");
         this.rightComment = dget(this.options, "rightComment");
         this.autoFirstChar = dget(this.options, "autoFirstChar", false);
+        this.explicitAnswers = dget(this.options, "explicitAnswers", false);
 
         if (! (this.hasCorrect === false))
             assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
@@ -173,7 +174,7 @@ jqueryWidget: {
             var time = new Date().getTime();
 
             var answerTime = new Date().getTime();
-            if ((! t.presentAsScale) && t.showNumbers &&
+            if ((!t.presentAsScale || t.explicitAnswers) && t.showNumbers &&
                 ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
                 // Convert numeric keypad codes to ordinary keypad codes.
                 var n = code >= 96 ? code - 96 : code - 48;
@@ -202,13 +203,11 @@ jqueryWidget: {
                 code = (code >= 96 && code <= 105) ? code - 48 : code;
                 for (var i = 0; i < t.answers.length; ++i) {
                     var ans = null;
-                    if (typeof(t.answers[i]) == "string") {
-                        if (t.autoFirstChar && code == t.answers[i].toUpperCase().charCodeAt(0))
-                            ans = t.answers[i];
+                    if (t.autoFirstChar && typeof(t.answers[i]) == "string" && code == t.answers[i].toUpperCase().charCodeAt(0)) {
+                        ans = t.answers[i];
                     }
-                    else {
-                        if (code == t.answers[i][0].toUpperCase().charCodeAt(0))
-                            ans = t.answers[i][1];
+                    else if (code == t.answers[i][0].toUpperCase().charCodeAt(0)) {
+                        ans = t.answers[i][1];
                     }
 
                     if (ans) {
