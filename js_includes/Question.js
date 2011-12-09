@@ -188,7 +188,7 @@ jqueryWidget: {
                     t.finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
                                          [answerField, csv_url_encode(ans)],
                                          [correctField, correct],
-                                         [timeField, answerTime = t.creationTime]]]);
+                                         [timeField, answerTime - t.creationTime]]]);
 
                     return false;
                 }
