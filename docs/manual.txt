@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3-beta16. The 0.1.x
+This documentation covers 0.3-beta17. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -759,13 +759,14 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 || *Option*       || *Default*    || *Description*                                                     ||
 || q              || `null`       || The question to pose.                                             ||
-|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if presentAsScale is `true`. ||
+|| as             || _obligatory_ || A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if `presentAsScale` is `true` (but they will not be ignored if `presentHorizontally` is true). ||
 || instructions   || `null`       || Instructions for answering the question, displayed following the question and the answer selection. ||
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || autoFirstChar  || `false`      || If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
 || randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
+|| presentHorizontally || `false`  || Note that at most one of `presentAsScale` and `presentHorizontally` should be set to `true`. `presentHorizontally` is like `presentAsScale` except that it does not override the usual means of specifying which key presses trigger which answers. In particular, if your scale contains words, you may use the `autoFirstChar` option, and in all cases, you may explicitly specify answer keys, as described in the comment on the `as` option. ||
 || leftComment    || `null`       || _Only valid if `presentAsScale` is `true`._ This option specifies text to be displayed at the left edge of a scale (e.g. "Bad"). ||
 || rightComment   || `null`       || As for "leftComment", but for the right edge of the scale. ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
@@ -1171,7 +1172,11 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta16 (current version) and 0.3-beta15:
+Changes between 0.3-beta17 (current version) and 0.3-beta16:
+    * Fix a bug which caused timings for question answers to be recorded incorrectly in some instances.
+    * Add the `presentHorizontally` option to the `Question` controller.
+
+Changes between 0.3-beta16 and 0.3-beta15:
     * Fix bug which stopped ibex working on Internet Explorer.
 
 Changes between 0.3-beta15 and 0.3-beta14:
