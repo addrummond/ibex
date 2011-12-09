@@ -48,7 +48,7 @@ jqueryWidget: {
         this.leftComment = dget(this.options, "leftComment");
         this.rightComment = dget(this.options, "rightComment");
         this.autoFirstChar = dget(this.options, "autoFirstChar", false);
-        this.explicitAnswers = dget(this.options, "explicitAnswers", false);
+        this.presentHorizontally = dget(this.options, "presentHorizontally", false);
 
         if (! (this.hasCorrect === false))
             assert(typeof(this.hasCorrect) == "number" && this.hasCorrect < this.answers.length,
@@ -76,11 +76,11 @@ jqueryWidget: {
             .css('text-align', conf_centerItems ? 'center' : 'left')
             .append(this.question);
         }
-        this.xl = $(document.createElement(((! this.presentAsScale) && this.showNumbers) ? "ol" : "ul"))
+        this.xl = $(document.createElement(((!this.presentAsScale && !this.presentHorizontally) && this.showNumbers) ? "ol" : "ul"))
             .css('margin-left', "2em").css('padding-left', 0);
         __Question_answers__ = new Array(this.answers.length);
 
-        if (this.presentAsScale && this.leftComment) {
+        if ((this.presentAsScale || this.presentHorizontally) && this.leftComment) {
             var lcd = $(document.createElement("li"))
                       .addClass(this.cssPrefix + "scale-comment-box")
                       .append(this.leftComment);
@@ -89,7 +89,7 @@ jqueryWidget: {
         for (var i = 0; i < this.orderedAnswers.length; ++i) {
             var li;
             li = $(document.createElement("li"));
-            if (this.presentAsScale) {
+            if (this.presentAsScale || this.presentHorizontally) {
                 li.addClass(this.cssPrefix + "scale-box");
                 var t = this;
                  // IE doesn't support :hover for anything other than links, so we
@@ -132,7 +132,7 @@ jqueryWidget: {
             };
             this.xl.append(li.append(a.append(ans)));
         }
-        if (this.presentAsScale && this.rightComment) {
+        if ((this.presentAsScale || this.presentHorizontally) && this.rightComment) {
             this.xl.append($(document.createElement("li"))
                            .addClass(this.cssPrefix + 'scale-comment-box')
                            .append(this.rightComment));
@@ -174,7 +174,7 @@ jqueryWidget: {
             var time = new Date().getTime();
 
             var answerTime = new Date().getTime();
-            if ((!t.presentAsScale || t.explicitAnswers) && t.showNumbers &&
+            if ((! t.presentAsScale && !t.presentHorizontally) && t.showNumbers &&
                 ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
                 // Convert numeric keypad codes to ordinary keypad codes.
                 var n = code >= 96 ? code - 96 : code - 48;
