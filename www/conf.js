@@ -63,5 +63,5 @@ var CONFIG_VARS = [
     "pageTitle", "shuffleSequence", "showProgressBar", "progressBarText",
     "practiceItemTypes", "practiceMessage", "showOverview", "centerItems",
     "equalGroupSizes", "manualSendResults", "withsquareCounterStoreForWholeSession",
-    "modifyRunningOrdr"
+    "modifyRunningOrder"
 ];
