@@ -1,4 +1,4 @@
-var shuffleSequence = seq(/*"intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", */rshuffle("q1", "q2"));//);
+var shuffleSequence = seq(/*"intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", */rshuffle("q1", "q2"));
 var practiceItemTypes = ["practice"];
 
 var defaults = [
@@ -11,8 +11,10 @@ var defaults = [
         mode: "self-paced reading"
     },
     "AcceptabilityJudgment", {
-        as: ["1", "2", "3", "4", "5", "6", "7"],
-        autoFirstChar: true,
+        //as: ["1", "2", "3", "4", "5", "6", "7"],
+        as: ["Yes", "No"],
+    randomOrder: ["f", "j"],
+//        autoFirstChar: true,
         presentHorizontally: true,
         instructions: "Use number keys or click boxes to answer.",
         leftComment: "(Bad)", rightComment: "(Good)"

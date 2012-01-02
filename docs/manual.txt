@@ -764,9 +764,9 @@ If `mode` is set to "self-paced reading", the results look like this:
 || hasCorrect     || `false`      || If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. ||
 || autoFirstChar  || `false`      || If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) ||
 || showNumbers    || `true`       || If `true`, answers are numbered and participants can use number keys to select them. ||
-|| randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. ||
+|| randomOrder    || `true` if the question has a correct answer, false otherwise. || Whether or not to randomize the order of the answers before displaying them. If `presentAsScale` or `presentHorizontally` are set to `true`, `randomOrder` can also be set to a list of keys. This list should be the same length as `as`. It specifies keys in a left-to-right order. This makes it possible for the mapping from keys to answers to correspond to the (random) order in which the answers are presented. ||
 || presentAsScale || `false`      || If `true`, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. ||
-|| presentHorizontally || `false`  || Note that at most one of `presentAsScale` and `presentHorizontally` should be set to `true`. `presentHorizontally` is like `presentAsScale` except that it does not override the usual means of specifying which key presses trigger which answers. In particular, if your scale contains words, you may use the `autoFirstChar` option, and in all cases, you may explicitly specify answer keys, as described in the comment on the `as` option. ||
+|| presentHorizontally || `false`  || Note that at most one of `presentAsScale` and `presentHorizontally` should be set to `true`. `presentHorizontally` is like `presentAsScale` except that it does not override the usual means of specifying which key presses trigger which answers, and it leaves `randomOrder` on by default for questions which have correct answers. If your scale contains words, you may use the `autoFirstChar` option, and in all cases, you may explicitly specify answer keys, as described in the comment on the `as` option. ||
 || leftComment    || `null`       || _Only valid if `presentAsScale` is `true`._ This option specifies text to be displayed at the left edge of a scale (e.g. "Bad"). ||
 || rightComment   || `null`       || As for "leftComment", but for the right edge of the scale. ||
 || timeout        || `null`       || If `null`, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. ||
@@ -1175,6 +1175,7 @@ error message by looking at the !JavaScript console.
 Changes between 0.3-beta17 (current version) and 0.3-beta16:
     * Fix a bug which caused timings for question answers to be recorded incorrectly in some instances.
     * Add the `presentHorizontally` option to the `Question` controller.
+    * Add the option to assign keys to answers based on the (random) order in which they are presented.
 
 Changes between 0.3-beta16 and 0.3-beta15:
     * Fix bug which stopped ibex working on Internet Explorer.

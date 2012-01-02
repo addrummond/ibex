@@ -1,5 +1,9 @@
 /* This software is licensed under a BSD license; see the LICENSE file for details. */
 
+//
+// TODO: Replace this controller with something that's not such a horrible mess!
+// 
+
 (function () {
 
 var __Question_callback__ = null;
@@ -55,6 +59,11 @@ jqueryWidget: {
                    "Bad index for correct answer in Question");
 
         if (this.randomOrder) {
+            assert(typeof(this.answers[0]) != "object",
+                  "Cannot set 'randomOrder' option to a list of keys when keys are included with the 'as' option.");
+            assert(typeof(this.answers[0]) != "object" || this.answers.length == this.randomOrder.length,
+                   "Length of 'randomOrder' doesn't match length of 'as'.");
+
             this.orderedAnswers = new Array(this.answers.length);
             for (var i = 0; i < this.answers.length; ++i)
                 this.orderedAnswers[i] = this.answers[i];
@@ -201,29 +210,42 @@ jqueryWidget: {
             else if ((code >= 65 && code <= 90) || (t.presentAsScale && ((code >= 48 && code <= 57) || (code >= 96 && code <= 105)))) {
                 // Convert numeric keypad codes to ordinary keypad codes.
                 code = (code >= 96 && code <= 105) ? code - 48 : code;
-                for (var i = 0; i < t.answers.length; ++i) {
-                    var ans = null;
-                    if (t.autoFirstChar && typeof(t.answers[i]) == "string" && code == t.answers[i].toUpperCase().charCodeAt(0)) {
-                        ans = t.answers[i];
-                    }
-                    else if (code == t.answers[i][0].toUpperCase().charCodeAt(0)) {
-                        ans = t.answers[i][1];
-                    }
+                var ans = null;
 
-                    if (ans) {
-                        var correct = "NULL";
-                        if (! (t.hasCorrect === false)) {
-                            var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
-                            correct = (correct_ans == ans ? 1 : 0);
-                            t.setFlag(correct);
+                if (typeof(t.randomOrder) != "object") {
+                    for (var i = 0; i < t.answers.length; ++i) {
+                        if (t.autoFirstChar && typeof(t.answers[i]) == "string" && code == t.answers[i].toUpperCase().charCodeAt(0)) {
+                            ans = t.answers[i];
+                            break;
                         }
-                        t.finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
-                                             [answerField, csv_url_encode(ans)],
-                                             [correctField, correct],
-                                             [timeField, answerTime - t.creationTime]]]);
-
-                        return false;
+                        else if (code == t.answers[i][0].toUpperCase().charCodeAt(0)) {
+                            ans = t.answers[i][1];
+                            break;
+                        }
                     }
+                }
+                else {
+                    for (var i = 0; i < t.randomOrder.length; ++i) {
+                        if (code == t.randomOrder[i].toUpperCase().charCodeAt(0)) {
+                            ans = t.orderedAnswers[i];
+                            break;
+                        }
+                    }
+                }
+
+                if (ans) {
+                    var correct = "NULL";
+                    if (! (t.hasCorrect === false)) {
+                        var correct_ans = typeof(t.answers[t.hasCorrect]) == "string" ? t.answers[t.hasCorrect] : t.answers[t.hasCorrect][1];
+                        correct = (correct_ans == ans ? 1 : 0);
+                        t.setFlag(correct);
+                    }
+                    t.finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
+                                         [answerField, csv_url_encode(ans)],
+                                         [correctField, correct],
+                                         [timeField, answerTime - t.creationTime]]]);
+                    
+                    return false;
                 }
             }
 
