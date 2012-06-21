@@ -16,6 +16,7 @@ jqueryWidget: {
         this.uncheckedValue = dget(this.options, "uncheckedValue", "no");
         this.validators = dget(this.options, "validators", { });
         this.errorCSSClass = dget(this.options, "errorCSSClass", "error");
+        this.saveReactionTime = dget(this.options, "saveReactionTime", false);
         this.obligatoryErrorGenerator =
             dget(this.options, "obligatoryErrorGenerator",
                  function (field) { return "The \u2018" + field + "\u2019 field is obligatory."; });
@@ -46,6 +47,8 @@ jqueryWidget: {
 
         function handleClick(dom) {
             return function (e) {
+                var answerTime = new Date().getTime();
+
                 e.preventDefault();
                 if (! HAS_LOADED) return;
 
@@ -127,6 +130,10 @@ jqueryWidget: {
                     }
                 }
 
+                if (t.saveReactionTime) {
+                    rlines.push([["Field name", "_REACTION_TIME_"],
+                                 ["Field value", answerTime - t.creationTime]]);
+                }
                 t.finishedCallback(rlines);
             }
         }
@@ -146,6 +153,8 @@ jqueryWidget: {
                                                 .addClass(ibex_controller_name_to_css_prefix("Message") + "continue-link")
                                                 .click(handler)));
         }
+
+        this.creationTime = new Date().getTime();
     }
 },
 

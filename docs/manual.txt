@@ -919,6 +919,7 @@ be displayed in the same location, add a `<label>` with 'for' set to "__ALL_FIEL
 || checkedValue || `"yes"` || The value stored in the results file when a checkbox is checked. ||
 || uncheckedValue || `"no"` || The value stored in the results file when a checkbox is unchecked. ||
 || validators || `{ }` || A !JavaScript dictionary mapping field names to validating functions. Functions take the field value as their sole argument, and return `true` if the value is valid or an error string otherwise. ||
+|| saveReactionTime || `false` || If `true`, controller saves the time elapsed between the form's being displayed and the participant's completing it. Reaction time appears in the results file as the value of a special `_REACTION_TIME_` field. ||
 || errorCSSClass || error || The CSS class used to indicate that a `<label>` tag is a placeholder for error messages. ||
 || obligatoryErrorGenerator || `...` || A function from field names to error messages (used when an obligatory text box or text area is not filled in). ||
 || obligatoryCheckboxErrorGenerator || `...` || A function from field names to error messages (used when an obligatory checkbox is not checked). ||

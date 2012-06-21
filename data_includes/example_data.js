@@ -24,7 +24,8 @@ var defaults = [
     },
     "Form", {
         hideProgressBar: true,
-        continueOnReturn: true
+        continueOnReturn: true,
+        saveReactionTime: true
     }
 ];
 
