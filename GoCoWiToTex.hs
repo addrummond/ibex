@@ -24,14 +24,14 @@
 --     * Some URLs not being recognized as such.
 module Main where
 
-import IO
+import System.IO
 import Data.List
 --import Debug.Trace
-import System (getArgs)
+import System.Environment (getArgs)
 import qualified Text.ParserCombinators.Parsec as P
 import Control.Monad.State
-import Char
-import Maybe
+import Data.Char
+import Data.Maybe
 import Text.Regex
 import Text.Regex.Posix -- This will be super inefficient, especially since we're
                         -- using String rather than ByteString, but this is the
