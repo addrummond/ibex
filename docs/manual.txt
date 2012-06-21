@@ -1173,7 +1173,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3-beta17 (current version) and 0.3-beta16:
+Changes between 0.3-beta18 (current version) and 0.3-beta17:
+    * Add option to save reaction times to `Form` controller.
+
+Changes between 0.3-beta17 and 0.3-beta16:
     * Fix a bug which caused timings for question answers to be recorded incorrectly in some instances.
     * Add the `presentHorizontally` option to the `Question` controller.
     * Add the option to assign keys to answers based on the (random) order in which they are presented.
