@@ -1093,6 +1093,18 @@ def set_counter(n):
     except IOError, e:
         logger.error("Error setting counter in server state: %s" % str(e))
         sys.exit(1)
+def update_counter(update_func):
+    try:
+        f = lock_and_open(os.path.join(PWD, CFG['SERVER_STATE_DIR'], 'counter'), "r+")
+        n = int(f.read().strip())
+        newn = update_func(n)
+        f.truncate(0)
+        f.seek(0)
+        f.write(str(newn))
+        unlock_and_close(f)
+    except IOError, e:
+        logger.error("Error updating counter in server state: %s" % str(e))
+        sys.exit(1)
 
 class HighLevelParseError(Exception):
     def __init__(self, *args):
@@ -1117,7 +1129,7 @@ def group_list(l, n):
     return newl
 
 def rearrange(parsed_json, thetime, ip, user_agent):
-    if type(parsed_json) != types.ListType or len(parsed_json) != 5:
+    if type(parsed_json) != types.ListType or len(parsed_json) != 6:
         raise HighLevelParseError()
 
     random_counter = parsed_json[0]
@@ -1142,6 +1154,10 @@ def rearrange(parsed_json, thetime, ip, user_agent):
         raise HighLevelParseError()
     uid = ip + ':' + user_agent + unique_md5
     uid_hexdigest = md5.md5(uid).hexdigest()
+
+    should_update_counter = parsed_json[5]
+    if (type(random_counter) != types.BooleanType):
+        raise HighLeveLParseError()
 
     #
     # This is a fairly horrible bit of code that does most of the work
@@ -1197,7 +1213,7 @@ def rearrange(parsed_json, thetime, ip, user_agent):
                 column_names.append([main_index + i, [map(lambda x: getname(x[0]), line)]])
             break
      
-    return random_counter, counter, new_results, column_names
+    return random_counter, counter, new_results, column_names, should_update_counter
 
 def ensure_period(s):
     if s.endswith(u".") or s.endswith(u"?") or s.endswith(u"!"):
@@ -1534,8 +1550,6 @@ def control(env, start_response):
             start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
             return [contents]
 
-        # (All branches above end with a return from this function.)
-
         if qs_hash.has_key('withsquare'):
             ivalue = None
             try:
@@ -1546,6 +1560,25 @@ def control(env, start_response):
 
             start_response('200 OK', [('Content-Type', 'text/html; charset=UTF-8')])
             return [generate_html(setcounter=ivalue, overview=False)]
+
+        if qs_hash.has_key('setsquare'):
+            updatef = None
+            setsquare = qs_hash['setsquare'][0]
+            try:
+                if setsquare.startswith('inc-'):
+                    ivalue = int(setsquare[4:])
+                    updatef = lambda x: x + ivalue
+                else:
+                    ivalue = int(setsquare)
+                    updatef = lambda x: ivalue
+            except ValueError, e:
+                start_response('400 Bad Request', [('Content-Type', 'text/html; charset=UTF-8')])
+                return ["<html><body><h1>400 Bad Request</h1></body></html>"]
+            update_counter(updatef)
+            start_response('200 OK', [('Content-Type', 'text/html; charset=UTF-8')])
+            return []
+
+        # (All branches above end with a return from this function.)
 
         # ...if none of the above, it's some results.
         if not (env['REQUEST_METHOD'] == 'POST' and env.has_key('CONTENT_LENGTH')):
@@ -1590,7 +1623,7 @@ def control(env, start_response):
             try:
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
-                random_counter, counter, main_results, column_names = rearrange(parsed_json, thetime, ip, user_agent)
+                random_counter, counter, main_results, column_names, should_update_counter = rearrange(parsed_json, thetime, ip, user_agent)
                 header = None
                 if CFG['INCLUDE_HEADERS_IN_RESULTS_FILE']:
                     header = u'#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \
@@ -1608,8 +1641,8 @@ def control(env, start_response):
 
                 # Everything went OK with receiving and recording the results, so
                 # update the counter.
-                count = get_counter()
-                set_counter(count + 1)
+                if should_update_counter:
+                    update_counter(lambda x: x + 1)
 
                 start_response('200 OK', [('Content-Type', 'text/plain; charset=ascii')])
                 return ["OK"]

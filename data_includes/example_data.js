@@ -43,6 +43,15 @@ var items = [
 
     ["sep", "Separator", { }],
 
+    // New in Ibex 0.3-beta19. You can now determine the point in the experiment at which the counter
+    // for latin square designs will be updated. (Previously, this was always updated upon completion
+    // of the experiment.) To do this, insert the special '__SetCounter__' controller at the desired
+    // point in your running order. If given no options, the counter is incremented by one. If given
+    // an 'inc' option, the counter is incremented by the specified amount. If given a 'set' option,
+    // the counter is set to the given number. (E.g., { set: 100 }, { inc: -1 })
+    //
+    //["setcounter", "__SetCounter__", { }],
+
     // NOTE: You could also use the 'Message' controller for the experiment intro (this provides a simple
     // consent checkbox).
 

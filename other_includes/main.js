@@ -83,6 +83,44 @@ function Element(itemNumber, elementNumber, type, group, controller, options) {
     this.options = options;
 }
 
+var COUNTER_HAS_ALREADY_BEEN_UPDATED = false;
+$.widget("ui.__SetCounter__", {
+    _init: function () {
+        var q = 'inc-1'; // Default
+        if (this.options.inc) {
+            assert(typeof(this.options.inc) == "number", "Bad value for option 'inc' of __SetCounter__");
+            q = 'inc-' + this.options.inc;
+        }
+        else if (this.options.set) {
+            assert(typeof(this.options.set) == "number", "Bad value for option 'set' of __SetCounter__");   
+            q = this.options.set + '';
+        }
+
+        $.ajax({
+            url: __server_py_script_name__ + '?setsquare=' + q,
+            cache: false,
+            success: function () {
+                if (COUNTER_HAS_ALREADY_BEEN_UPDATED) {
+                    alert("WARNING: Have you used __SetCounter__ twice?");
+                }
+                COUNTER_HAS_ALREADY_BEEN_UPDATED = true;
+            },
+            error: function () {
+                if (console.log) {
+                    console.log("WARNING: Error updating counter using __SetCounter__ controller");
+                }
+            }
+        });
+
+        this.options._finishedCallback();
+    }
+});
+ibex_controller_set_properties("__SetCounter__", {
+    obligatory: [],
+    countsForProgressBar: false,
+    htmlDescription: function () { return $("<div>").text("[SET COUNTER]"); }
+});
+
 (function () {
 var RESULTS_HAVE_ALREADY_BEEN_SENT = false;
 $.widget("ui.__SendResults__", {
@@ -529,7 +567,8 @@ function sendResults(resultsLines, success, failure)
                                counter, 
                                columnNamesArray,
                                resultsLines,
-                               uniqueMD5()]);
+                               uniqueMD5(),
+                               !COUNTER_HAS_ALREADY_BEEN_UPDATED]);
 
     $.ajax({
         url: __server_py_script_name__,
