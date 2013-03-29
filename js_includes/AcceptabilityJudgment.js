@@ -22,7 +22,7 @@ jqueryWidget: {
                                                  } : 
                                                  {
                                                      s: this.options.s,
-                                                     timeout: null, // Already present for 'Question'
+                                                     timeout: null // Already present for 'Question'
                                                  },
                           this.options._dashed ? "!Question" : "Question",
                           { q:                   this.options.q,
