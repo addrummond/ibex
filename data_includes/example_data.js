@@ -99,8 +99,8 @@ var items = [
                                                                       "Encourage his best students to succeed",
                                                                       "Treat struggling students like idiots"]}],
 
-    [["q1",[200,2]], "AcceptabilityJudgment", {s: "Which struggling students did the teacher encourage to succeed without treating their friends like idiots?"}],
-    [["q2",[200,2]], "AcceptabilityJudgment", {s: "Which struggling students did the teacher encourage their friends to succeed without treating like idiots?"}],
+    [["q1",[200,2]], "AcceptabilityJudgment", {s: {html: "<b>Which struggling students</b> did the teacher encourage to succeed without treating their friends like idiots?"}}],
+    [["q2",[200,2]], "AcceptabilityJudgment", {s: {html: "<b>Which struggling students</b> did the teacher encourage their friends to succeed without treating like idiots?"}}],
 
     //
     // 10 self-paced-reading filler sentences.

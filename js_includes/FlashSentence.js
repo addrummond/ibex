@@ -9,7 +9,11 @@ jqueryWidget: {
         this.finishedCallback = this.options._finishedCallback;
         this.utils = this.options._utils;
 
-        this.sentence = this.options.s;
+        if (typeof(this.options.s) != "string")
+            this.sentenceDom = htmlCodeToDOM(this.options.s)
+        else
+            this.sentenceDom = $("<div>").text(this.options.s);
+        
         this.timeout = dget(this.options, "timeout", 2000);
 
         this.sentenceDescType = dget(this.options, "sentenceDescType", "literal");
@@ -23,7 +27,7 @@ jqueryWidget: {
         }
 
         this.element.addClass(this.cssPrefix + "flashed-sentence");
-        this.element.append(this.sentence);
+        this.element.append(this.sentenceDom);
 
         if (this.timeout) {
             var t = this;
