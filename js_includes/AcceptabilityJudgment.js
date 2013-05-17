@@ -26,7 +26,7 @@ jqueryWidget: {
                                                      audioMessage: this.options.audioMessage,
                                                      audioTrigger: this.options.audioTrigger
                                                  },
-                          this.options._dashed ? "!Question" : "Question",
+                          this.options._dashed ? "!Question" : (this.options.s.audio ? "*Question" : "Question"),
                           { q:                   this.options.q,
                             as:                  this.options.as,
                             hasCorrect:          dget(this.options, "hasCorrect", false),

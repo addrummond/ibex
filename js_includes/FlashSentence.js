@@ -52,11 +52,15 @@ jqueryWidget: {
                 if (self.options.audioTrigger == "click") {
                     self.sentenceDom.css('cursor', 'pointer');
                     self.sentenceDom.click(function () {
-                        sm.play('sound' + self.sid);
+                        sm.play('sound' + self.sid, { onfinish: fin });
                     });
                 }
                 else { // Immediate
-                    sm.play('sound' + self.sid);
+                    sm.play('sound' + self.sid, { onfinish: fin });
+                }
+
+                function fin() {
+                    setTimeout(function () { self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]); }, 500);
                 }
             }
 
@@ -86,12 +90,11 @@ jqueryWidget: {
             }
 
             if (self.timeout) {
-                var t = this;
                 self.utils.setTimeout(function() {
-                    t.finishedCallback([[["Sentence (or sentence MD5)", t.sentenceMD5]]]);
+                    self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]);
                 }, self.timeout);
             }
-            else {
+            else if (! self.options.s.audio) {
                 // Give results without actually finishing.
                 if (self.utils.setResults)
                     self.utils.setResults([[["Sentence (or sentence MD5)", self.sentenceMD5]]]);
