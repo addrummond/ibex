@@ -714,7 +714,7 @@ progress bar to move to the right. (Different controllers have a different defau
 || blankText     || `"\u2014\u2014"` || Applicable only if "display" is set to `"in place"`. This is the text that is shown before the participant presses space for the first time. By default it is two horizontal dashes. ||
 || wordTime      || `300`                  || If mode is `"speeded acceptability"`, the time in ms each word should be displayed for. (See also description of "display" option.) ||
 || wordPauseTime || `100`                  || If mode is `"speeded acceptability"`, the time in ms a word should remain blank before it is shown. (See also description of "display" option.) ||
-|| sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
+|| sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Currently, this is the only possible value for this option. ||
 || showAhead     || `true`                 || Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. ||
 || showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
 

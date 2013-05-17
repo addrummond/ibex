@@ -1,4 +1,4 @@
-var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
+var shuffleSequence = seq(/*"intro",*/ /*sepWith("sep", seq("practice", rshuffle("s1", "s2"))),*/ sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var defaults = [
@@ -14,7 +14,9 @@ var defaults = [
         as: ["1", "2", "3", "4", "5", "6", "7"],
         presentAsScale: true,
         instructions: "Use number keys or click boxes to answer.",
-        leftComment: "(Bad)", rightComment: "(Good)"
+        leftComment: "(Bad)", rightComment: "(Good)",
+        audioMessage: {html: "<u>Click here to play audio</u>"},
+        audioTrigger: "click"
     },
     "Question", {
         hasCorrect: true
@@ -86,7 +88,8 @@ var items = [
 
     // The first question will be chosen if the first sentence from the previous two items is chosen;
     // the second question will be chosen if the second sentence from the previous pair of items is chosen.
-    [["q1",[100,1]], "AcceptabilityJudgment", {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
+//    [["q1",[100,1]], "AcceptabilityJudgment", {s: "Which actress did the journalist interview after meeting her PA on a previous occasion?"}],
+    [["q1",[100,1]], "AcceptabilityJudgment", {s: {audio: "test.mp3" } } ],
     [["q2",[100,1]], "AcceptabilityJudgment", {s: "Which actress did the journalist interview her husband after meeting on a previous occasion?"}],
 
     [["s1",2], "DashedSentence", {s: "The teacher helped struggling students who he encouraged to succeed without treating like idiots."},

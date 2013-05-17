@@ -19,6 +19,7 @@ var conf_centerItems = true;
 var conf_equalGroupSizes = false;
 var conf_manualSendResults = false;
 var conf_modifyRunningOrder = null;
+var conf_loadingMessage = "loading...";
 
 if (typeof(sendingResultsMessage) != "undefined")
     conf_sendingResultsMessage = sendingResultsMessage;
@@ -50,6 +51,8 @@ if (typeof(manualSendResults) != "undefined")
     conf_manualSendResults = manualSendResults;
 if (typeof(modifyRunningOrder) != "undefined")
     conf_modifyRunningOrder = modifyRunningOrder;
+if (typeof(loadingMessage) != "undefined")
+    conf_loadingMessage = loadingMessage;
 
 // Undocumented. By default, counters set using ?withsquare=XXXX are forgotten
 // as soon as experiment.html is loaded again. Using this option you can modify

@@ -76,6 +76,8 @@ def generate_html(setcounter=None, overview=False):
     <script type="text/javascript" src="shuffle.js"></script>
     <!-- JSON serialization code. -->
     <script type="text/javascript" src="json.js"></script>
+    <!-- Sound manager. -->
+    <script type="text/javascript" src="soundmanager2-jsmin.js"></script>
     <!-- Backwards compatability cruft to ensure that old JS data files work. -->
     <script type="text/javascript" src="backcompatcruft.js"></script>
     <!-- JS includes. -->
@@ -1542,13 +1544,42 @@ def control(env, start_response):
             f = None
             contents = None
             try:
-                f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
-                contents = f.read()
-            except IOError:
-                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
-                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                try:
+                    f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
+                    contents = f.read()
+                except IOError:
+                    start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                    return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+            finally:
+                if f: f.close()
             start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
             return [contents]
+
+        # or a resource?
+        if qs_hash.has_key('resource'):
+            f = None
+            try:
+                p = os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['resource'][0])
+                stats = os.stat(p)
+                # Don't allow files bigger than 10MB to be downloaded.
+                if stats.st_size > 10 * 1024 * 1024:
+                    start_response('500 Internal Server Error' [('Content-Type', 'text/html; charset=UTF-8')])
+                    return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                f = open(p, 'rb')
+                def it():
+                    block = None
+                    while block is None or len(block) > 0:
+                        block = f.read(2048)
+                        if len(block) == 0:
+                            f.close()
+                            raise StopIteration
+                        yield block
+
+                start_response('200 OK', [('Content-Type', 'audio/mpeg'), ('Content-Length', stats.st_size)])
+                return it()
+            except IOError, e:
+                start_response('500 Internal Server Error' [('Content-Type', 'text/html; charset=UTF-8')])
+                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
 
         if qs_hash.has_key('withsquare'):
             ivalue = None
@@ -1679,7 +1710,9 @@ if CFG['SERVER_MODE'] != "cgi":
             'jquery.min.js',
             'jquery-ui.min.js',
             'PluginDetect.js',
-            'jsDump.js'
+            'jsDump.js',
+            'soundmanager2-jsmin.js',
+            'soundmanager2_debug.swf'
         ]
 
         def __init__(self, request, client_address, server):
@@ -1687,7 +1720,8 @@ if CFG['SERVER_MODE'] != "cgi":
                 '' : "application/octet-stream",
                 ".html" : "text/html; charset=UTF-8",
                 ".css"  : "text/css",
-                ".js"   : "text/javascript"
+                ".js"   : "text/javascript",
+                ".swf"  : "application/x-shockwave-flash"
             }
 
             SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
@@ -1735,7 +1769,7 @@ if CFG['SERVER_MODE'] != "cgi":
                     if headers[0]:
                         for h in headers[0]:
                             self.send_header(h[0], h[1])
-                    self.wfile.write('\n\n')
+                    self.wfile.write('\n')
                     for cs in body:
                         self.wfile.write(cs)
                 except:

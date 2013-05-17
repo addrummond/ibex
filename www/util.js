@@ -660,3 +660,22 @@ function binl2b64(binarray)
   return str;
 }
 
+var withSoundManager;
+(function () {
+var sm;
+withSoundManager = function (callback) {
+    if (sm)
+        return callback(sm);
+    sm = soundManager.setup({
+        url: '/',
+        flashVersion: 8,
+        onready: function () {
+            callback(sm);
+        },
+        onerror: function () {
+            alert("Error initializing sound");
+            throw "Error initializing sound";
+        }
+    });
+}
+})();
