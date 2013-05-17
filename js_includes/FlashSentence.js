@@ -37,10 +37,15 @@ jqueryWidget: {
         function completeInit(sm) {
             if (sm) {
                 if (self.options.audioMessage) {
-                    if (typeof(self.options.audioMessage) != "string")
+                    if (typeof(self.options.audioMessage) != "string") {
+                        alert("HH");
                         self.sentenceDom = htmlCodeToDOM(self.options.audioMessage);
-                    else
+                    }
+                    else {
+                        alert("YY");
                         self.sentenceDom = $("<div>").text(self.options.audioMessage);
+                    }
+                    alert(self.sentenceDom);
                 }
                 var name = self.options.s.audio;
                 var url = __server_py_script_name__ + '?resource=' + escape(name);
