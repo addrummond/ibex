@@ -1735,7 +1735,7 @@ if CFG['SERVER_MODE'] != "cgi":
                     if headers[0]:
                         for h in headers[0]:
                             self.send_header(h[0], h[1])
-                    self.wfile.write('\n\n')
+                    self.wfile.write('\n')
                     for cs in body:
                         self.wfile.write(cs)
                 except:

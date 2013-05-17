@@ -110,7 +110,7 @@ function htmlCodeToDOM(html, readyCallback) {
         return d[0];
     }
     else {
-        var h = (typeof(html.html) == "string" ? html.html : jsHTML(html));
+        var h = (typeof(html.html) == "string" ? $("<div>").html(html.html) : jsHTML(html));
         if (readyCallback)
             readyCallback(h);
         return h;

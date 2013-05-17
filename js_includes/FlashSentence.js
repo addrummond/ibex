@@ -17,14 +17,8 @@ jqueryWidget: {
         this.timeout = dget(this.options, "timeout", 2000);
 
         this.sentenceDescType = dget(this.options, "sentenceDescType", "literal");
-        assert(this.sentenceDescType == "md5" || this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller.");
-        if (this.sentenceDescType == "md5") {
-            var canonicalSentence = this.sentence.split('/\s/').join(' ');
-            this.sentenceMD5 = hex_md5(canonicalSentence);
-        }
-        else {
-            this.sentenceMD5 = csv_url_encode(this.options.s);
-        }
+        assert(this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller ('md5' no longer supported).");
+        this.sentenceMD5 = csv_url_encode(this.options.s.html ? this.options.s.html : this.options.s+'');
 
         this.element.addClass(this.cssPrefix + "flashed-sentence");
         this.element.append(this.sentenceDom);
