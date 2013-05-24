@@ -43,6 +43,11 @@ jqueryWidget: {
             }
         }
 
+        this.hideUnderscores = dget(this.options, "hideUnderscores", true);
+        if (this.hideUnderscores) {
+            this.words = $.map(this.words, function(word) { return word.replace('_', ' ') });
+        }
+
         this.mainDiv = $("<div>");
         this.element.append(this.mainDiv);
 
