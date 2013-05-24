@@ -717,6 +717,7 @@ progress bar to move to the right. (Different controllers have a different defau
 || sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"md5"`, column contains hex digest of md5 hash of sentence. If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Earlier versions of webspr did not have this option and always stored md5 hashes. *Important:* The use of md5 hashes is not recommeded if you are using non-ASCII strings, since different browsers give inconsistent md5 hashes in this case! ||
 || showAhead     || `true`                 || Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. ||
 || showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
+|| hideUnderscores || `false`              || If this is set to `true`, the underscore character is interpreted as a space which does not trigger a break between words. This is an alternative to passing an array of strings as the value of the `s` option. ||
 
 *Note on right-to-left languages:* The current version of Ibex doesn't provide out-of-the-box support
 for doing self-paced reading experiments with languages that are displayed right to left (although
