@@ -47,7 +47,7 @@ jqueryWidget: {
 
         this.hideUnderscores = dget(this.options, "hideUnderscores", true);
         if (this.hideUnderscores) {
-            this.words = $.map(this.words, function(word) { return word.replace('_', ' ') });
+            this.words = $.map(this.words, function(word) { return word.replace(/_/g, ' ') });
         }
 
         this.mainDiv = $("<div>");
@@ -283,10 +283,16 @@ jqueryWidget: {
     },*/
 
     processSprResults: function () {
-        for (var i = 0; i < this.sprResults.length; ++i) {
+        var nonSpaceWords = [];
+        for (var i = 0; i < this.words.length; ++i) {
+        	if ( this.words[i] != "\r" )
+	            nonSpaceWords.push(this.words[i]);
+        }
+
+        for (var i = 0; i < nonSpaceWords.length; ++i) {
             this.resultsLines.push([
                 ["Word number", i+1],
-                ["Word", csv_url_encode(this.words[i])],
+                ["Word", csv_url_encode(nonSpaceWords[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
                 ["Newline?", (! this.display == "in place") &&
                              boolToInt(((i+1) < this.wordOSpans.length) &&
