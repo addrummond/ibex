@@ -1174,7 +1174,11 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3.3 (current version) and 0.3.2:
+Changes between 0.3.4 (current version) and 0.3.3:
+    * Fix a bug which caused commas to be unescaped in 'Form' controller results.
+    * Fix a minor bug in server.py (most likely did not have any user-visible effects).
+
+Changes between 0.3.3 and 0.3.2:
     * Improve recording of HTML sentences in results file with `AcceptabilityJudgment` and `FlashSentence`.
     * Fix a venerable bug in server.py which caused files to be served with a leading blank line with the toy server.
     * Remove 'md5' option for 'sentenceDescType'.
