@@ -1445,7 +1445,7 @@ try:
                     if fname != 'MINIFY_JS' and os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], fname)):
                         os.remove(os.path.join(PWD, CFG['CACHE_DIR'], fname))
     except os.error, IOError:
-        logger.error("Could not create cache directory at %S" % os.path.join(PWD, CFG['CACHE_DIR']))
+        logger.error("Could not create cache directory at %s" % os.path.join(PWD, CFG['CACHE_DIR']))
 finally:
     if mjs: mjs.close()
 
