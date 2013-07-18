@@ -218,7 +218,7 @@ jqueryWidget: {
                             ans = t.answers[i];
                             break;
                         }
-                        else if (code == t.answers[i][0].toUpperCase().charCodeAt(0)) {
+                        else if ($.isArray(t.answers[i]) && code == t.answers[i][0].toUpperCase().charCodeAt(0)) {
                             ans = t.answers[i][1];
                             break;
                         }
