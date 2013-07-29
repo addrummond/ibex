@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3.3. The 0.1.x
+This documentation covers 0.3.5. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -1174,6 +1174,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
+Changes between 0.3.5 (current version) and 0.3.4:
+    * Fix a bug in the recording of answers for certain options of the `Question` controller (thanks to Michael Yoshitaka Erlewine).
+    * Fix a bug in VBox which caused errors to appear on the console in some cases (thanks to Alexandre Cremers).
+
 Changes between 0.3.4 (current version) and 0.3.3:
     * Fix a bug which caused commas to be unescaped in 'Form' controller results.
     * Fix a minor bug in server.py (most likely did not have any user-visible effects).
