@@ -79,6 +79,11 @@ function jsHTML(html, namesHash) {
 }
 function jsHTMLWithNames(names, html) { return jsHTML(html, names); }
 
+var CHUNKS_DICT = { };
+function setChunks(cd) {
+    CHUNKS_DICT = cd;
+}
+
 function htmlCodeToDOM(html, readyCallback) {
     if (typeof(html) == "string") {
         var d = document.createElement("div");
@@ -88,26 +93,14 @@ function htmlCodeToDOM(html, readyCallback) {
         return d;
     }
     else if (typeof(html.include) == "string") {
-        var d = $("<div>");
-        var id = setTimeout(function () { d.append($("<span>").html('<i><small>loading...</small></i>')); }, 500);
-
-        $.ajax({
-            cache: false,
-            async: true,
-            url:  __server_py_script_name__ + '?chunk=' + escape(html.include),
-            dataType: "text",
-            error: function () { alert("ERROR: Could not retreive HTML from server."); },
-            success: function (data) {
-                clearTimeout(id);
-                // Setting innerHTML on d[0] can cause weird issues.
-                d.empty();
-                d.append(data);
-//                d.replaceWith($("<div>").html(data));
-                if (readyCallback)
-                    readyCallback(d[0]);
-            }
-        });
-        return d[0];
+        if (typeof(CHUNKS_DICT[html.include]) != 'string')
+            alert("Unknown chunk_include '" + html.include + "'");
+        var chunk = CHUNKS_DICT[html.include];
+        var d = document.createElement("div");
+        d.innerHTML = chunk;
+        if (readyCallback)
+            readyCallback(d);
+        return d;
     }
     else {
         var h = (typeof(html.html) == "string" ? $("<div>").html(html.html) : jsHTML(html));

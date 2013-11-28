@@ -40,6 +40,8 @@ import sys
 import os
 import os.path
 import getopt
+import errno
+import json
 
 PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
 PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
@@ -154,6 +156,31 @@ import types
 import cgi
 import string
 import urllib
+
+
+# The 'json' module was introduced in Python 2.6. If it's not available we use a simple
+# method to serialize a dict of strings to JSON.
+dict_to_json = None
+try:
+    import json
+    dict_to_json = json.dumps
+except ImportError:
+    def dtj(d):
+        out = StringIO()
+        out.write("{")
+        for k, v in d.iteritems():
+            if not isinstance(v, basestring):
+                raise TypeError("dict_to_json cannot handle non-string key values")
+            out.write('"')
+            for c in k:
+                out.write("\\u%04x" % ord(c))
+            out.write('":"')
+            for c in v:
+                out.write("\\u%04x" % ord(c))
+            out.write('"')
+        out.write("}")
+        return out.getvalue()
+    dict_to_json = dtj
 
 
 #
@@ -1537,18 +1564,26 @@ def control(env, start_response):
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
                 return retlist
 
-        # Is it a request for an HTML chunk?
-        if qs_hash.has_key('chunk'):
-            f = None
-            contents = None
+        # Is it a request for a JSON dict of all chunks? This should maybe be cached at some point.
+        if qs_hash.has_key('allchunks'):
+            jsondict = { }
             try:
-                f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
-                contents = f.read()
-            except IOError:
+                for fname in os.listdir(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'])):
+                    f = None
+                    try:
+                        f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
+                        jsondict[fname] = f.read()
+                    except IOError as e:
+                        if e.errno == errno.EISDOR:
+                            pass
+                        else:
+                            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                            return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+            except IOError as e:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
-            start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
-            return [contents]
+            start_response('200 OK', [('Content-Type', 'text/plain; charset=UTF-8')]) # Still trying to support IE 6 LOL
+            return [dict_to_json(jsondict)]
 
         if qs_hash.has_key('withsquare'):
             ivalue = None

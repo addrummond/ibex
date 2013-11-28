@@ -8,6 +8,49 @@ for (var _ in { }) {
 
 $(document).ready(function () {
 
+// Preload chunks.
+var loadingMessage;
+var alreadyLoaded = false;
+setTimeout(function () {
+    if (alreadyLoaded)
+        return;
+    loadingMessage = $("<p>Loading...</p>");
+    $("<body>").append(loadingMessage);
+}, 500);
+
+$.ajax({
+    url: __server_py_script_name__ + '?allchunks=1',
+    cache: false,
+    dataType: 'text', // We're still trying to support IE 6 LOL
+    success: function (data) {
+        if (alreadyLoaded)
+            loadingMessage.remove();
+        alreadyLoaded = true;
+
+        var cs;
+        try {
+            var o = JSON.parse(data);
+            if (typeof(o) != "object")
+                throw "error";
+            setChunks(o);
+            startup();
+        }
+        catch (e) {
+            $("<body>").append("Error loading experiment.");
+        }
+    },
+    error: function () {
+        if (loadingMessage)
+            loadingMessage.remove()
+        alreadyLoaded = true;
+        $("<body>").append("Error loading experiment. Please try refreshing the page");
+    }
+});
+
+});
+
+function startup() {
+
 var practiceBox;
 var inner;
 var mainTable; // Only set if conf_centerItems.
@@ -335,6 +378,7 @@ var showProgress;
 var barContainer;
 var bar;
 var nPoints = 0;
+
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
@@ -344,11 +388,10 @@ if (conf_showProgressBar) {
             }
         }
     }
-
+    
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
-
-    var showProgress;
+        
     var thingToPrependToBody;
     if (conf_centerItems) {
         thingToPrependToBody =
@@ -361,7 +404,7 @@ if (conf_showProgressBar) {
         thingToPrependToBody = showProgress =
             $(document.createElement("div")).css('margin-top', '2em').addClass("lindent");
     }
-
+        
     var bar;
     barContainer =
         $(document.createElement("div"))
@@ -377,10 +420,11 @@ if (conf_showProgressBar) {
         .addClass("progress-text")
         .css('text-align', conf_centerItems ? "center" : "left")
         .text(conf_progressBarText);
-
+    
     showProgress.append(barContainer).append(p);
     $("body").prepend(thingToPrependToBody);
 }
+
 function updateProgressBar() {
     if (conf_showProgressBar) {
         currentProgressBarWidth += progressBarMaxWidth / nPoints;
@@ -504,6 +548,7 @@ function finishedCallback(resultsLines) {
     else
         showProgressBar();
 }
+
 var pForElement = $(document.createElement("p")).css('clear', 'both');
 inner.append(pForElement);
 currentUtilsInstance = new Utils({});
@@ -583,4 +628,4 @@ function sendResults(resultsLines, success, failure)
 
 } // End of else for if (conf_showOverview).
 
-}); // End of $(document).ready(function { ...
+} // End of startup function
