@@ -41,7 +41,6 @@ import os
 import os.path
 import getopt
 import errno
-import json
 
 PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
 PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
