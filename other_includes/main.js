@@ -9,7 +9,7 @@ for (var _ in { }) {
 $(document).ready(function () {
 
 // Preload chunks.
-var loadingMessage;
+var loadingMessage = null;
 var alreadyLoaded = false;
 setTimeout(function () {
     if (alreadyLoaded)
@@ -23,7 +23,7 @@ $.ajax({
     cache: false,
     dataType: 'text', // We're still trying to support IE 6 LOL
     success: function (data) {
-        if (alreadyLoaded)
+        if (alreadyLoaded && loadingMessage)
             loadingMessage.remove();
         alreadyLoaded = true;
 
