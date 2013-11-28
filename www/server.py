@@ -1573,13 +1573,13 @@ def control(env, start_response):
                     try:
                         f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
                         jsondict[fname] = f.read()
-                    except IOError as e:
+                    except IOError, e:
                         if e.errno == errno.EISDOR:
                             pass
                         else:
                             start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                             return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
-            except IOError as e:
+            except IOError, e:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
             start_response('200 OK', [('Content-Type', 'text/plain; charset=UTF-8')]) # Still trying to support IE 6 LOL
