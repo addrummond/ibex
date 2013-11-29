@@ -1574,7 +1574,7 @@ def control(env, start_response):
                             f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
                             jsondict[fname] = f.read()
                         except IOError, e:
-                            if e.errno == errno.EISDOR:
+                            if e.errno == errno.EISDIR:
                                 pass
                             else:
                                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
