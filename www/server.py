@@ -1570,14 +1570,17 @@ def control(env, start_response):
                 for fname in os.listdir(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'])):
                     f = None
                     try:
-                        f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
-                        jsondict[fname] = f.read()
-                    except IOError, e:
-                        if e.errno == errno.EISDOR:
-                            pass
-                        else:
-                            start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
-                            return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                        try:
+                            f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
+                            jsondict[fname] = f.read()
+                        except IOError, e:
+                            if e.errno == errno.EISDOR:
+                                pass
+                            else:
+                                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                    finally:
+                        if f: f.close()
             except IOError, e:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
