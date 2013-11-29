@@ -19,6 +19,9 @@ var conf_centerItems = true;
 var conf_equalGroupSizes = false;
 var conf_manualSendResults = false;
 var conf_modifyRunningOrder = null;
+var conf_loadingMessage = "Loading...";
+var conf_loadingFatalErrorMessage = "There was an error loading the experiment.";
+var conf_loadingNonfatalErrorMessage = "There was an error loading the experiment. Please try refreshing the page.";
 
 if (typeof(sendingResultsMessage) != "undefined")
     conf_sendingResultsMessage = sendingResultsMessage;
@@ -50,6 +53,10 @@ if (typeof(manualSendResults) != "undefined")
     conf_manualSendResults = manualSendResults;
 if (typeof(modifyRunningOrder) != "undefined")
     conf_modifyRunningOrder = modifyRunningOrder;
+if (typeof(loadingFatalErrorMessage) != "undefined")
+    conf_loadingFatalErrorMessage = loadingFatalErrorMessage;
+if (typeof(loadingNonfatalErrorMessage != "undefined")
+    conf_loadingNonfatalErrorMessage = loadingNonfatalErrorMessage;
 
 // Undocumented. By default, counters set using ?withsquare=XXXX are forgotten
 // as soon as experiment.html is loaded again. Using this option you can modify
@@ -63,5 +70,5 @@ var CONFIG_VARS = [
     "pageTitle", "shuffleSequence", "showProgressBar", "progressBarText",
     "practiceItemTypes", "practiceMessage", "showOverview", "centerItems",
     "equalGroupSizes", "manualSendResults", "withsquareCounterStoreForWholeSession",
-    "modifyRunningOrder"
+    "modifyRunningOrder", "loadingFatalErrorMessage", "loadingNonfatalErrorMessage"
 ];

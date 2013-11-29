@@ -943,6 +943,8 @@ You can set the values of the following variables in your data file (e.g. `var s
 || showProgressBar || `true` || Whether or not to show a progress bar. ||
 || progressBarText || `progress` || The text that appears below the progress bar. ||
 || pageTitle || `"experiment"` || Page title. ||
+|| loadingFatalErrorMessage || `"..."` || The message shown when a fatal error is encountered while loading chunks ||
+|| loadingNonfatalErrorMessage || `"..."` || The message shown when a non-fatal error is encountered while loading chunks ||
 || sendingResultsMessage || `"..."` || The message shown while results are being sent to the server. ||
 || completionMessage || `"..."` || The message shown when the results are successfully sent to the server. ||
 || completionErrorMessage || `"..."` || The message shown when there is an error sending the results to the server. ||

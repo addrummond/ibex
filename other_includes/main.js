@@ -14,7 +14,7 @@ var alreadyLoaded = false;
 setTimeout(function () {
     if (alreadyLoaded)
         return;
-    loadingMessage = $("<p>Loading...</p>");
+    loadingMessage = $("<p>").text(conf_loadingMessage);
     $("<body>").append(loadingMessage);
 }, 500);
 
@@ -36,14 +36,14 @@ $.ajax({
             startup();
         }
         catch (e) {
-            $("<body>").append("Error loading experiment.");
+            $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage);
         }
     },
     error: function () {
         if (loadingMessage)
             loadingMessage.remove()
         alreadyLoaded = true;
-        $("<body>").append("Error loading experiment. Please try refreshing the page");
+        $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage));
     }
 });
 
