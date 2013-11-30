@@ -167,7 +167,9 @@ except ImportError:
     def dtj(d):
         out = StringIO()
         out.write("{")
-        for k, v in d.iteritems():
+        its = d.items()
+        count = 0
+        for k, v in its:
             if not isinstance(v, basestring):
                 raise TypeError("dict_to_json cannot handle non-string key values")
             out.write('"')
@@ -177,6 +179,9 @@ except ImportError:
             for c in v:
                 out.write("\\u%04x" % ord(c))
             out.write('"')
+            if count < len(its) - 1:
+                out.write(',')
+            count += 1
         out.write("}")
         return out.getvalue()
     dict_to_json = dtj
