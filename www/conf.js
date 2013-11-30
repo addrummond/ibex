@@ -55,7 +55,7 @@ if (typeof(modifyRunningOrder) != "undefined")
     conf_modifyRunningOrder = modifyRunningOrder;
 if (typeof(loadingFatalErrorMessage) != "undefined")
     conf_loadingFatalErrorMessage = loadingFatalErrorMessage;
-if (typeof(loadingNonfatalErrorMessage != "undefined")
+if (typeof(loadingNonfatalErrorMessage) != "undefined")
     conf_loadingNonfatalErrorMessage = loadingNonfatalErrorMessage;
 
 // Undocumented. By default, counters set using ?withsquare=XXXX are forgotten

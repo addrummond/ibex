@@ -36,7 +36,7 @@ $.ajax({
             startup();
         }
         catch (e) {
-            $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage);
+            $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage));
         }
     },
     error: function () {
