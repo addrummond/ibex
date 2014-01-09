@@ -1577,7 +1577,7 @@ def control(env, start_response):
                     try:
                         try:
                             f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
-                            jsondict[fname] = f.read()
+                            jsondict[fname] = f.read().decode('utf-8')
                         except IOError, e:
                             if e.errno == errno.EISDIR:
                                 pass
