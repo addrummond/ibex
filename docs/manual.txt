@@ -1176,7 +1176,10 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3.6 (current version) and 0.3.5:
+Changes between 0.3.7 (current version) and 0.3.6:
+    * Fix bug which prevents `countsForProgressBar` option taking effect.
+
+Changes between 0.3.6 and 0.3.5:
     * Improve loading of files in chunk_includes. Chunks are now preloaded so that experiments will not be disrupted.
 
 Changes between 0.3.5 and 0.3.4:
