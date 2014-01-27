@@ -1,7 +1,7 @@
 _*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
 
 =Versions=
-This documentation covers 0.3.6. The 0.1.x
+This documentation covers 0.3.7. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -949,6 +949,7 @@ You can set the values of the following variables in your data file (e.g. `var s
 || completionMessage || `"..."` || The message shown when the results are successfully sent to the server. ||
 || completionErrorMessage || `"..."` || The message shown when there is an error sending the results to the server. ||
 || practiceItemTypes || `[]` || A list of types for practice sentences. A sentence whose type is in this list will have a blue "practice" heading above it. ||
+|| practiceItemMessage || `"Practice"` || The message displayed for practice items ||
 || showOverview || false || See "Overviews" section ||
 || centerItems || true || Whether or not items should be centered on the page. ||
 || equalGroupSizes || false || If true, groups in latin square designs are required to contain equal numbers of items. ||
