@@ -383,7 +383,8 @@ if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
             if (ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
-                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar")) {
+                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") ||
+                runningOrder[i][j].options.countsForProgressBar) {
                 ++nPoints;
             }
         }
