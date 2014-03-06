@@ -13,7 +13,7 @@ jqueryWidget: {
 
         if (typeof(this.options.s) == "string") {
             // replace all linebreaks (and surrounding space) with 'space-return-space'
-            var inputString = this.options.s.replace(/\s*[\r\n]\s*/, " \r ");
+            var inputString = this.options.s.replace(/\s*[\r\n]\s*/g, " \r ");
             this.words = inputString.split(/[ \t]+/);
         } else {
             assert_is_arraylike(this.options.s, "Bad value for 's' option of DashedSentence.");
