@@ -292,7 +292,7 @@ jqueryWidget: {
 properties: {
     obligatory: ["html", "startValue", "endValue"],
     htmlDescription: function(opts) {
-        return $(document.createElement("div")).text(opts.s || "");
+        return $(document.createElement("div")).text(opts.html || "");
     }
 }
 });
