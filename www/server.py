@@ -1576,6 +1576,8 @@ def control(env, start_response):
             f = None
             try:
                 for fname in os.listdir(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'])):
+                    if fname.endswith(".wav") or fname.endswith(".mp3"):
+                        continue
                     f = None
                     try:
                         try:
