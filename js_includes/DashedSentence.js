@@ -11,9 +11,11 @@ jqueryWidget: {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        if (typeof(this.options.s) == "string")
-            this.words = this.options.s.split(/\s+/);
-        else {
+        if (typeof(this.options.s) == "string") {
+            // replace all linebreaks (and surrounding space) with 'space-return-space'
+            var inputString = this.options.s.replace(/\s*[\r\n]\s*/g, " \r ");
+            this.words = inputString.split(/[ \t]+/);
+        } else {
             assert_is_arraylike(this.options.s, "Bad value for 's' option of DashedSentence.");
             this.words = this.options.s;
         }
@@ -41,6 +43,11 @@ jqueryWidget: {
                 this.stoppingPoint = i + 1;
                 break;
             }
+        }
+
+        this.hideUnderscores = dget(this.options, "hideUnderscores", true);
+        if (this.hideUnderscores) {
+            this.words = $.map(this.words, function(word) { return word.replace(/_/g, ' ') });
         }
 
         this.mainDiv = $("<div>");
@@ -77,8 +84,8 @@ jqueryWidget: {
         this.resultsLines = [];
         if (this.mode == "self-paced reading") {
             // Don't want to be allocating arrays in time-critical code.
-            this.sprResults = new Array(this.words.length);
-            for (var i = 0; i < this.sprResults.length; ++i)
+            this.sprResults = [];
+            for (var i = 0; i < this.words.length; ++i)
                 this.sprResults[i] = new Array(2);
         }
         this.previousTime = null;
@@ -98,11 +105,20 @@ jqueryWidget: {
             this.blankWord = this.blankWord_dashed;
             this.showWord = this.showWord_dashed;
 
-            this.wordISpans = new Array(this.words.length); // Inner spans.
-            this.wordOSpans = new Array(this.words.length); // Outer spans.
-            this.owsnjq = new Array(this.words.length); // 'outer word spans no jQuery'.
-            this.iwsnjq = new Array(this.words.length);
+            this.wordISpans = []; // Inner spans.
+            this.wordOSpans = []; // Outer spans.
+            this.owsnjq = []; // 'outer word spans no jQuery'.
+            this.iwsnjq = []; // 'inner word spans no jQuery'.
             for (var j = 0; j < this.words.length; ++j) {
+                if ( this.words[j] == "\r" ) {
+                    this.mainDiv.append('<br/>');
+
+                    if (j <= this.stoppingPoint)
+                        this.stoppingPoint--;
+                    
+                    continue;
+                }
+
                 var ispan;
                 var ospan = $(document.createElement("span"))
                             .addClass(this.cssPrefix + 'ospan')
@@ -114,10 +130,10 @@ jqueryWidget: {
                 this.mainDiv.append(ospan);
                 if (j + 1 < this.words.length)
                     this.mainDiv.append("&nbsp; ");
-                this.wordISpans[j] = ispan;
-                this.wordOSpans[j] = ospan;
-                this.iwsnjq[j] = ispan[0];
-                this.owsnjq[j] = ospan[0];
+                this.wordISpans.push(ispan);
+                this.wordOSpans.push(ospan);
+                this.iwsnjq.push(ispan[0]);
+                this.owsnjq.push(ospan[0]);
             }
         }
 
@@ -267,10 +283,16 @@ jqueryWidget: {
     },*/
 
     processSprResults: function () {
-        for (var i = 0; i < this.sprResults.length; ++i) {
+        var nonSpaceWords = [];
+        for (var i = 0; i < this.words.length; ++i) {
+        	if ( this.words[i] != "\r" )
+	            nonSpaceWords.push(this.words[i]);
+        }
+
+        for (var i = 0; i < nonSpaceWords.length; ++i) {
             this.resultsLines.push([
                 ["Word number", i+1],
-                ["Word", csv_url_encode(this.words[i])],
+                ["Word", csv_url_encode(nonSpaceWords[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
                 ["Newline?", (! this.display == "in place") &&
                              boolToInt(((i+1) < this.wordOSpans.length) &&

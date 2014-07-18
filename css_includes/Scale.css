@@ -1,0 +1,35 @@
+.html {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.bar {
+    width: 300px;
+    height: 20px;
+    /*position: relative;*/
+    /*background: green;*/
+}
+
+.handle {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: default;
+    font-face: bold;
+    border: 1px solid white;
+}
+
+.button {
+    width: 7em;
+    height: 1.5em;
+    background: black;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    border-radius: 5px;
+    padding: 0.5em;
+    text-align: center;
+}

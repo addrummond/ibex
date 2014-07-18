@@ -1,7 +1,7 @@
-_*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf           
+_*Check out the printable PDF version of this manual:*_ http://spellout.net/latest_ibex_manual.pdf
 
 =Versions=
-This documentation covers 0.3.3. The 0.1.x
+This documentation covers 0.3.7. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
@@ -304,7 +304,7 @@ easiest way to do this is to add a second element to each item:
                   "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
     ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
                   "Question", {q: "Was the first word 'frog'?", ["Yes", "No"]}]
-    
+
     ]; // NOTE SEMICOLON HERE
 }}}
 As shown above, this is done simply by adding to each item further pairs of
@@ -717,6 +717,7 @@ progress bar to move to the right. (Different controllers have a different defau
 || sentenceDescType || `"literal"`         || Determines the format of column 1 of the results (see table below). If `"literal"`, column contains the sentence itself (encoded as a URL with %XX escapes). Currently, this is the only possible value for this option. ||
 || showAhead     || `true`                 || Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. ||
 || showBehind    || `true`                 || As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. ||
+|| hideUnderscores || `false`              || If this is set to `true`, the underscore character is interpreted as a space which does not trigger a break between words. This is an alternative to passing an array of strings as the value of the `s` option. ||
 
 *Note on right-to-left languages:* The current version of Ibex doesn't provide out-of-the-box support
 for doing self-paced reading experiments with languages that are displayed right to left (although
@@ -857,7 +858,7 @@ define_ibex_controller({
 
     jqueryWidget: {
         _init: function () {
-            this.options.transfer = null; // Remove 'click to continue message'.         
+            this.options.transfer = null; // Remove 'click to continue message'.
             this.element.VBox({
                 options: this.options,
                 triggers: [1],
@@ -942,10 +943,13 @@ You can set the values of the following variables in your data file (e.g. `var s
 || showProgressBar || `true` || Whether or not to show a progress bar. ||
 || progressBarText || `progress` || The text that appears below the progress bar. ||
 || pageTitle || `"experiment"` || Page title. ||
+|| loadingFatalErrorMessage || `"..."` || The message shown when a fatal error is encountered while loading chunks ||
+|| loadingNonfatalErrorMessage || `"..."` || The message shown when a non-fatal error is encountered while loading chunks ||
 || sendingResultsMessage || `"..."` || The message shown while results are being sent to the server. ||
 || completionMessage || `"..."` || The message shown when the results are successfully sent to the server. ||
 || completionErrorMessage || `"..."` || The message shown when there is an error sending the results to the server. ||
 || practiceItemTypes || `[]` || A list of types for practice sentences. A sentence whose type is in this list will have a blue "practice" heading above it. ||
+|| practiceItemMessage || `"Practice"` || The message displayed for practice items ||
 || showOverview || false || See "Overviews" section ||
 || centerItems || true || Whether or not items should be centered on the page. ||
 || equalGroupSizes || false || If true, groups in latin square designs are required to contain equal numbers of items. ||
@@ -1151,7 +1155,7 @@ Known cross-browser issues:
 =Terminological clarifications=
 Unfortunately, the terms I've used relating to the design of experiments (latin squares, etc.) are confusing as they use some non-standard terms, and make non-standard use of some standard terms. Specifically:
 
-    * The term 'item number' is used to describe the number assigned to a controller based on its position in the list of controllers in the data file. Of course, controllers are not normally in one-to-one correspondence with 'items' in the usual sense of the term. 
+    * The term 'item number' is used to describe the number assigned to a controller based on its position in the list of controllers in the data file. Of course, controllers are not normally in one-to-one correspondence with 'items' in the usual sense of the term.
 
     * The term 'group' is used to refer to what are usually called items (i.e. sets of conditions).
 
@@ -1173,7 +1177,21 @@ errors in a data file will result in an alert popping up with a warning that the
 error message by looking at the !JavaScript console.
 
 =Changes=
-Changes between 0.3.3 (current version) and 0.3.2:
+Changes between 0.3.7 (current version) and 0.3.6:
+    * Fix bug which prevents `countsForProgressBar` option taking effect.
+
+Changes between 0.3.6 and 0.3.5:
+    * Improve loading of files in chunk_includes. Chunks are now preloaded so that experiments will not be disrupted.
+
+Changes between 0.3.5 and 0.3.4:
+    * Fix a bug in the recording of answers for certain options of the `Question` controller (thanks to Michael Yoshitaka Erlewine).
+    * Fix a bug in VBox which caused errors to appear on the console in some cases (thanks to Alexandre Cremers).
+
+Changes between 0.3.4 (current version) and 0.3.3:
+    * Fix a bug which caused commas to be unescaped in 'Form' controller results.
+    * Fix a minor bug in server.py (most likely did not have any user-visible effects).
+
+Changes between 0.3.3 and 0.3.2:
     * Improve recording of HTML sentences in results file with `AcceptabilityJudgment` and `FlashSentence`.
     * Fix a venerable bug in server.py which caused files to be served with a leading blank line with the toy server.
     * Remove 'md5' option for 'sentenceDescType'.

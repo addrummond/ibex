@@ -77,8 +77,8 @@ jqueryWidget: {
                         }
                     }
 
-                    rlines.push([["Field name", custom_url_encode(inp.attr('name'))],
-                                 ["Field value", custom_url_encode(inp.attr('value'))]]);
+                    rlines.push([["Field name", csv_url_encode(inp.attr('name'))],
+                                 ["Field value", csv_url_encode(inp.attr('value'))]]);
                 }
 
                 var checks = $(dom).find("input[type=checkbox]");

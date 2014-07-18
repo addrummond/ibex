@@ -40,6 +40,7 @@ import sys
 import os
 import os.path
 import getopt
+import errno
 
 PY_SCRIPT_DIR = os.path.split(sys.argv[0])[0]
 PY_SCRIPT_NAME = os.path.split(sys.argv[0])[1]
@@ -123,7 +124,7 @@ try:
 except getopt.GetoptError:
     sys.stderr.write("Bad arguments\n")
     sys.exit(1)
-             
+
 if __name__ == "__main__":
     gh = [x for x in command_line_options if x[0] == '--genhtml']
     gh.reverse()
@@ -156,6 +157,36 @@ import types
 import cgi
 import string
 import urllib
+
+
+# The 'json' module was introduced in Python 2.6. If it's not available we use a simple
+# method to serialize a dict of strings to JSON.
+dict_to_json = None
+try:
+    import json
+    dict_to_json = json.dumps
+except ImportError:
+    def dtj(d):
+        out = StringIO()
+        out.write("{")
+        its = d.items()
+        count = 0
+        for k, v in its:
+            if not isinstance(v, basestring):
+                raise TypeError("dict_to_json cannot handle non-string key values")
+            out.write('"')
+            for c in k:
+                out.write("\\u%04x" % ord(c))
+            out.write('":"')
+            for c in v:
+                out.write("\\u%04x" % ord(c))
+            out.write('"')
+            if count < len(its) - 1:
+                out.write(',')
+            count += 1
+        out.write("}")
+        return out.getvalue()
+    dict_to_json = dtj
 
 
 #
@@ -442,7 +473,7 @@ class Scanner(object):
                     match = self.scanner.scanner(string, matchend).match
                 yield rval, matchend
             lastend = matchend
-            
+
 def pattern(pattern, flags=FLAGS):
     def decorator(fn):
         fn.pattern = pattern
@@ -601,7 +632,7 @@ def JSONObject(match, context, _w=WHITESPACE.match):
         pairs = object_hook(pairs)
     return pairs, end
 pattern(r'{')(JSONObject)
-            
+
 def JSONArray(match, context, _w=WHITESPACE.match):
     values = []
     s = match.string
@@ -627,7 +658,7 @@ def JSONArray(match, context, _w=WHITESPACE.match):
         end = _w(s, end).end()
     return values, end
 pattern(r'\[')(JSONArray)
- 
+
 ANYTHING = [
     JSONObject,
     JSONArray,
@@ -643,7 +674,7 @@ class JSONDecoder(object):
     Simple JSON <http://json.org> decoder
 
     Performs the following translations in decoding:
-    
+
     +---------------+-------------------+
     | JSON          | Python            |
     +===============+===================+
@@ -676,7 +707,7 @@ class JSONDecoder(object):
         ``encoding`` determines the encoding used to interpret any ``str``
         objects decoded by this instance (utf-8 by default).  It has no
         effect when decoding ``unicode`` objects.
-        
+
         Note that currently only encodings that are a superset of ASCII work,
         strings of other encodings should be passed in as ``unicode``.
 
@@ -907,7 +938,7 @@ def css_spit_out(css_definitions, ofile):
 #css_add_namespace(defs, "ns-")
 #css_spit_out(defs, sys.stdout)
 #sys.exit(0)
-            
+
 
 #
 # Logging and configuration variables.
@@ -1214,7 +1245,7 @@ def rearrange(parsed_json, thetime, ip, user_agent):
                 new_results.append([int(round(thetime)), uid_hexdigest] + map(lambda x: x[1], line))
                 column_names.append([main_index + i, [map(lambda x: getname(x[0]), line)]])
             break
-     
+
     return random_counter, counter, new_results, column_names, should_update_counter
 
 def ensure_period(s):
@@ -1447,7 +1478,7 @@ try:
                     if fname != 'MINIFY_JS' and os.path.isfile(os.path.join(PWD, CFG['CACHE_DIR'], fname)):
                         os.remove(os.path.join(PWD, CFG['CACHE_DIR'], fname))
     except os.error, IOError:
-        logger.error("Could not create cache directory at %S" % os.path.join(PWD, CFG['CACHE_DIR']))
+        logger.error("Could not create cache directory at %s" % os.path.join(PWD, CFG['CACHE_DIR']))
 finally:
     if mjs: mjs.close()
 
@@ -1539,21 +1570,30 @@ def control(env, start_response):
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
                 return retlist
 
-        # Is it a request for an HTML chunk?
-        if qs_hash.has_key('chunk'):
+        # Is it a request for a JSON dict of all chunks? This should maybe be cached at some point.
+        if qs_hash.has_key('allchunks'):
+            jsondict = { }
             f = None
-            contents = None
             try:
-                try:
-                    f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], qs_hash['chunk'][0]))
-                    contents = f.read()
-                except IOError:
-                    start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
-                    return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
-            finally:
-                if f: f.close()
-            start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
-            return [contents]
+                for fname in os.listdir(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'])):
+                    f = None
+                    try:
+                        try:
+                            f = open(os.path.join(PWD, CFG['CHUNK_INCLUDES_DIR'], fname))
+                            jsondict[fname] = f.read()
+                        except IOError, e:
+                            if e.errno == errno.EISDIR:
+                                pass
+                            else:
+                                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+                    finally:
+                        if f: f.close()
+            except IOError, e:
+                start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
+                return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+            start_response('200 OK', [('Content-Type', 'text/plain; charset=UTF-8')]) # Still trying to support IE 6 LOL
+            return [dict_to_json(jsondict)]
 
         # or a resource?
         if qs_hash.has_key('resource'):

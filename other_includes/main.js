@@ -8,6 +8,49 @@ for (var _ in { }) {
 
 $(document).ready(function () {
 
+// Preload chunks.
+var loadingMessage = null;
+var alreadyLoaded = false;
+setTimeout(function () {
+    if (alreadyLoaded)
+        return;
+    loadingMessage = $("<p>").text(conf_loadingMessage);
+    $("<body>").append(loadingMessage);
+}, 500);
+
+$.ajax({
+    url: __server_py_script_name__ + '?allchunks=1',
+    cache: false,
+    dataType: 'text', // We're still trying to support IE 6 LOL
+    success: function (data) {
+        if (alreadyLoaded && loadingMessage)
+            loadingMessage.remove();
+        alreadyLoaded = true;
+
+        var cs;
+        try {
+            var o = JSON.parse(data);
+            if (typeof(o) != "object")
+                throw "error";
+            setChunks(o);
+            startup();
+        }
+        catch (e) {
+            $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage));
+        }
+    },
+    error: function () {
+        if (loadingMessage)
+            loadingMessage.remove()
+        alreadyLoaded = true;
+        $("<body>").append($("<p>").text(conf_loadingFatalErrorMessage));
+    }
+});
+
+});
+
+function startup() {
+
 var practiceBox;
 var inner;
 var mainTable; // Only set if conf_centerItems.
@@ -64,7 +107,7 @@ var ht_defaults = { };
 if (typeof(defaults) != "undefined") {
     assert_is_arraylike(defaults, "'defaults' variable must be set to an Array.");
     assert(defaults.length % 2 == 0, "'defaults' Array must have an even number of elements.");
-    
+
     for (var i = 0; i < defaults.length; i += 2) {
         assert(typeof(defaults[i]) == "string", "Odd members of the 'defaults' array must be strings naming controllers.");
         assert_is_dict(defaults[i + 1], "Even members of the 'defaults' array must be dictionaries.");
@@ -92,7 +135,7 @@ $.widget("ui.__SetCounter__", {
             q = 'inc-' + this.options.inc;
         }
         else if (this.options.set) {
-            assert(typeof(this.options.set) == "number", "Bad value for option 'set' of __SetCounter__");   
+            assert(typeof(this.options.set) == "number", "Bad value for option 'set' of __SetCounter__");
             q = this.options.set + '';
         }
 
@@ -209,7 +252,7 @@ $.each(items, function(_, it) {
         else {
             type = typeAndGroup;
         }
-        
+
         var opts = ht_defaults[controller];
         opts = merge_dicts(opts, options);
 
@@ -226,7 +269,7 @@ $.each(items, function(_, it) {
     }
     currentElementSet.type = type;
     currentElementSet.group = group;
-    listOfElementSets.push(currentElementSet); 
+    listOfElementSets.push(currentElementSet);
 
     ++itemNumber;
  });
@@ -335,11 +378,13 @@ var showProgress;
 var barContainer;
 var bar;
 var nPoints = 0;
+
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
             if (ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
-                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar")) {
+                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") ||
+                runningOrder[i][j].options.countsForProgressBar) {
                 ++nPoints;
             }
         }
@@ -348,7 +393,6 @@ if (conf_showProgressBar) {
     progressBarHeight = "0.8em";
     progressBarMaxWidth = nPoints * 5 < 300 ? nPoints * 5 : 300;
 
-    var showProgress;
     var thingToPrependToBody;
     if (conf_centerItems) {
         thingToPrependToBody =
@@ -381,6 +425,7 @@ if (conf_showProgressBar) {
     showProgress.append(barContainer).append(p);
     $("body").prepend(thingToPrependToBody);
 }
+
 function updateProgressBar() {
     if (conf_showProgressBar) {
         currentProgressBarWidth += progressBarMaxWidth / nPoints;
@@ -504,6 +549,7 @@ function finishedCallback(resultsLines) {
     else
         showProgressBar();
 }
+
 var pForElement = $(document.createElement("p")).css('clear', 'both');
 inner.append(pForElement);
 currentUtilsInstance = new Utils({});
@@ -564,7 +610,7 @@ function sendResults(resultsLines, success, failure)
 {
     // Prepare the post data.
     var data = JSON.stringify([false, // Now that we're not using cookies, it's never a random counter.
-                               counter, 
+                               counter,
                                columnNamesArray,
                                resultsLines,
                                uniqueMD5(),

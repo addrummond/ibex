@@ -33,6 +33,8 @@ jqueryWidget: {
             self.sentenceDom = $("<div>").text(self.options.s);
             completeInit();
         }
+        this.sentenceDescType = dget(this.options, "sentenceDescType", "literal");
+        assert(this.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller ('md5' no longer supported).");
 
         function completeInit(sm) {
             if (sm) {
@@ -66,18 +68,10 @@ jqueryWidget: {
 
             self.finishedCallback = self.options._finishedCallback;
             self.utils = self.options._utils;
-        
+
             self.timeout = dget(self.options, "timeout", 2000);
 
-            self.sentenceDescType = dget(self.options, "sentenceDescType", "literal");
-            assert(self.sentenceDescType == "md5" || self.sentenceDescType == "literal", "Bad value for 'sentenceDescType' option of FlashSentence controller.");
-            if (self.sentenceDescType == "md5") {
-                alert("'md5' value no longer supported for 'sentenceDescType' option of FlashSentence controller");
-                throw "Bad option to FlashSentence";
-            }
-            else {
-                self.sentenceMD5 = csv_url_encode(self.options.s.html ? self.options.s.html : (self.options.s.audio ? self.options.s.audio : (self.options.s+'')));
-            }
+            self.sentenceMD5 = csv_url_encode(self.options.s.html ? self.options.s.html : (self.options.s.audio ? self.options.s.audio : (self.options.s+'')));
 
             self.element.addClass(self.cssPrefix + "flashed-sentence");
             if (self.sentenceDom) {
