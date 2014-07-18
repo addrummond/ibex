@@ -629,4 +629,4 @@ function sendResults(resultsLines, success, failure)
 
 } // End of else for if (conf_showOverview).
 
-}); // End of $(document).ready(function { ...
+} // End function startup() {
