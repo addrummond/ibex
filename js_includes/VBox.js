@@ -118,8 +118,6 @@ jqueryWidget: {
     myFinishedCallback: function(index, results) {
         if (this._finishedCalledAlready)
             return;
-        else
-            this._finishedCalledAlready = true;
 
         this.childUtils[index].gc();
         this.indicesAndResultsOfThingsThatHaveFinished.push([index, results]);
@@ -145,6 +143,7 @@ jqueryWidget: {
                                              function (x) { return x.valuesForNextElement; }));
             this.utils.valuesForNextElement = merged;
 
+            this._finishedCalledAlready = true;
             this.finishedCallback(this.concatResults(this.indicesAndResultsOfThingsThatHaveFinished));
         }
 
