@@ -77,7 +77,7 @@ jqueryWidget: {
 
                 function fin() {
                     if (nextSoundToPlayIndex >= names.length)
-                        setTimeout(function () { self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]); }, 500);
+                        setTimeout(function () { self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]); }, 200);
                     else
                         sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                 }
