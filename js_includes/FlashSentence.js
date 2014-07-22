@@ -46,23 +46,37 @@ jqueryWidget: {
                         self.sentenceDom = $("<div>").text(self.options.audioMessage);
                     }
                 }
-                var name = self.options.s.audio;
-                var url = __server_py_script_name__ + '?resource=' + escape(name);
-                self.sid = soundId++;
-                sm.createSound('sound' + self.sid, url);
+                var names = null;
+                if ($.isArray(self.options.s.audio))
+                    names = self.options.s.audio;
+                else
+                    names = [self.options.s.audio];
+                var urls = [ ];
+                for (var i = 0; i < names.length; ++i)
+                    urls.push(__server_py_script_name__ + '?resource=' + escape(names[i]));
+                var sids = [ ];
+                for (var i = 0; i < names.length; ++i)
+                    sids.push(soundId++);
+                for (var i = 0; i < names.length; ++i)
+                    sm.createSound('sound' + sids[i], urls[i]);
+
+                var nextSoundToPlayIndex = 0;
 
                 if (self.options.audioTrigger == "click") {
                     self.sentenceDom.css('cursor', 'pointer');
                     self.sentenceDom.click(function () {
-                        sm.play('sound' + self.sid, { onfinish: fin });
+                        sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                     });
                 }
                 else { // Immediate
-                    sm.play('sound' + self.sid, { onfinish: fin });
+                    sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                 }
 
                 function fin() {
-                    setTimeout(function () { self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]); }, 500);
+                    if (nextSoundToPlayIndex >= names.length)
+                        setTimeout(function () { self.finishedCallback([[["Sentence (or sentence MD5)", self.sentenceMD5]]]); }, 500);
+                    else
+                        sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                 }
             }
 
