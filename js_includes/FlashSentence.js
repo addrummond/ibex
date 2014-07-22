@@ -40,7 +40,7 @@ jqueryWidget: {
             if (sm) {
                 if (self.options.audioMessage) {
                     if (typeof(self.options.audioMessage) != "string") {
-                        self.sentenceDom = htmlCodeToDOM(self.options.audioMessage);
+                        self.sentenceDom = $(htmlCodeToDOM(self.options.audioMessage));
                     }
                     else {
                         self.sentenceDom = $("<div>").text(self.options.audioMessage);
@@ -62,13 +62,16 @@ jqueryWidget: {
 
                 var nextSoundToPlayIndex = 0;
 
+                function hideSD() { self.sentenceDom.hide(); }
                 if (self.options.audioTrigger == "click") {
                     self.sentenceDom.css('cursor', 'pointer');
                     self.sentenceDom.click(function () {
+                        hideSD();
                         sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                     });
                 }
                 else { // Immediate
+                    hideSD();
                     sm.play('sound' + sids[nextSoundToPlayIndex++], { onfinish: fin });
                 }
 
