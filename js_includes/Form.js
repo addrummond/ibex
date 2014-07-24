@@ -141,8 +141,9 @@ jqueryWidget: {
         var dom = htmlCodeToDOM(this.html, function (dom) {
             HAS_LOADED = true;
 
-            if (t.continueOnReturn)
-                t.safeBind(t.element.find("input[type=text]"), 'keydown', function (e) { if (e.keyCode == 13) return handler(e); });
+            if (t.continueOnReturn) {
+                t.safeBind($(dom).find("input[type=text]"), 'keydown', function (e) { if (e.keyCode == 13) { console.log("H"); return handler(e);  } });
+            }
         });
         var handler = handleClick(dom);
 
