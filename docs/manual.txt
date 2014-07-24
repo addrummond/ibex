@@ -1179,6 +1179,8 @@ error message by looking at the !JavaScript console.
 =Changes=
 Changes between 0.3.8 (current version and 0.3.7):
     * Fix bug with VBox controller which caused transition to next item to fail sometimes.
+    * Fix bug in `Form` controller which prevented the `continueOnReturn` option
+      from taking effect (thanks to Laurel Brehm).
     * Some preliminary support for playing sounds (not yet documented).
 
 Changes between 0.3.7 (current version) and 0.3.6:
