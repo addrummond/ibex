@@ -52,8 +52,12 @@ jqueryWidget: {
                 else
                     names = [self.options.s.audio];
                 var urls = [ ];
-                for (var i = 0; i < names.length; ++i)
-                    urls.push(__server_py_script_name__ + '?resource=' + escape(names[i]));
+                for (var i = 0; i < names.length; ++i) {
+                    if (names[i].match(/^(?:https?)|(?:ftps?):\/\//))
+                        urls.push(names[i]);
+                    else
+                        urls.push(__server_py_script_name__ + '?resource=' + escape(names[i]));
+                }
                 var sids = [ ];
                 for (var i = 0; i < names.length; ++i)
                     sids.push(soundId++);
