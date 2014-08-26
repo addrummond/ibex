@@ -6,6 +6,10 @@ var soundId = 0;
 define_ibex_controller({
 name: "FlashSentence",
 
+init: function () {
+
+},
+
 jqueryWidget: {
     _init: function () {
         var self = this;
