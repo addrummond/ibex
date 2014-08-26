@@ -1594,6 +1594,7 @@ def control(env, start_response):
             except IOError, e:
                 start_response('500 Internal Server Error', [('Content-Type', 'text/html; charset=UTF-8')])
                 return ["<html><body><h1>500 Internal Server Error</h1></body></html>"]
+
             start_response('200 OK', [('Content-Type', 'text/plain; charset=UTF-8')]) # Still trying to support IE 6 LOL
             return [dict_to_json(jsondict)]
 
