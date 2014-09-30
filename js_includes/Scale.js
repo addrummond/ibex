@@ -109,8 +109,8 @@ jqueryWidget: {
 
         this.html = this.options.html;
         this.decimalPlaces = (this.options.decimalPlaces == null ? 2 : this.options.decimalPlaces);
-        this.startColor = this.options.startColor ? parseColor(this.options.startColor) : [255, 30, 30];
-        this.endColor = this.options.endColor ? parseColor(this.options.endColor) : [120, 255, 120];
+        this.startColor = this.options.startColor ? parseColor(this.options.startColor) : parseColor("#5947FD");
+        this.endColor = this.options.endColor ? parseColor(this.options.endColor) : parseColor("#59BAFD");
 
         this.startValue = this.options.startValue;
         assert(typeof(this.startValue) == "number", "'startValue' option must be a number");
@@ -125,8 +125,14 @@ jqueryWidget: {
 
         var $bar = $("<div>").addClass(this.cssPrefix + 'bar');
         var $handle = $("<div>").addClass(this.cssPrefix + 'handle');
+        var $handleLabel = $("<div>").addClass(this.cssPrefix + 'handle-label');
+        var $leftLabel = $("<div>").addClass(this.cssPrefix + 'scale-label');
+        var $rightLabel = $("<div>").addClass(this.cssPrefix + 'scale-label');
         this.$bar = $bar;
         this.$handle = $handle;
+        this.$handleLabel = $handleLabel;
+        this.$leftLabel = $leftLabel;
+        this.$rightLabel = $rightLabel;
 
         this.scaleWidth = this.options.scaleWidth || 300;
         this.scaleHeight = this.options.scaleHeight || 20;
@@ -142,11 +148,19 @@ jqueryWidget: {
                       height: this.handleHeight + 'px' });
 
         $bar.append($handle);
+        if (this.options.scaleLabels) {
+            $bar.append($handleLabel);
+            $bar.append($leftLabel);
+            $bar.append($rightLabel);
+
+            this.$leftLabel.text(this.startValue.toFixed(this.decimalPlaces));
+            this.$rightLabel.text(this.endValue.toFixed(this.decimalPlaces));
+        }
         this.element.append($bar);
 
         this.handleLeft = parseInt(this.scaleWidth / 2);
-
-        this.setHandlePos(this.handleLeft);
+        this.fraction = 0.5;
+        this.setHandlePos();
         $handle.css('background', rgbToS(this.getHandleColor()));
 
         this.setLinearGradient($bar, this.startColor, this.endColor);
@@ -166,11 +180,15 @@ jqueryWidget: {
             e.stopPropagation();
             self.handleButtonClick(e);
         });
+
+        $(window).resize(function (e) {
+            console.log('RESIZE');
+            self.setHandlePos();
+        });
     },
 
     handleButtonClick: function () {
-        var fraction = this.handleLeft / this.scaleWidth;
-        var val = (fraction * (this.endValue - this.startValue)) + this.startValue;
+        var val = (this.fraction * (this.endValue - this.startValue)) + this.startValue;
         //console.log("VAL", val);
         this.finishedCallback([[
             ["html", csv_url_encode(this.$html.innerHTML)],
@@ -204,21 +222,48 @@ jqueryWidget: {
                 self.handleLeft = 0;
             else if (self.handleLeft > self.scaleWidth)
                 self.handleLeft = self.scaleWidth;
-            self.setHandlePos(self.handleLeft);
+            self.setFraction(self.handleLeft);
+            self.setHandlePos();
         }
     },
 
-    setHandlePos: function (x) {
+    getBarO: function () {
         var barO = this.$bar.offset();
         var barLeft = barO.left;
         var barTop = barO.top;
         barLeft += $(window).scrollLeft();
         barTop += $(window).scrollTop();
-        this.$handle.css('left', (barLeft + parseInt(x) - parseInt(Math.round(this.handleWidth/2))) + 'px');
-        this.$handle.css('top', (barTop - parseInt(Math.round((this.handleHeight - this.scaleHeight)/2.0))) + 'px');
+    },
+
+    setFraction: function (x) {
+        this.fraction = (x / this.scaleWidth);
+    },
+
+    setHandlePos: function () {
+        var x = this.fraction * this.scaleWidth;
+
+        var barO = this.$bar.offset();
+        var barLeft = barO.left;
+        var barTop = barO.top;
+        barLeft += $(window).scrollLeft();
+        barTop += $(window).scrollTop();
+        var hleft = (barLeft + parseInt(x) - parseInt(Math.round(this.handleWidth/2)));
+        var htop = (barTop - parseInt(Math.round((this.handleHeight - this.scaleHeight)/2.0)));
+        this.$handle.css('left', hleft + 'px');
+        this.$handle.css('top', htop + 'px');
+        this.$handleLabel.text(this.fraction.toFixed(this.decimalPlaces));
+        this.$handleLabel.css('left', parseInt(hleft + this.handleWidth/2 - this.$handleLabel.width()/2) + 'px');
+        this.$handleLabel.css('top', parseInt(htop - this.handleHeight) + 'px');
         // Set color for handle.
         var col = this.getHandleColor();
         this.$handle.css('background', rgbToS(col));
+
+        if (this.options.scaleLabels) {
+            this.$leftLabel.css('left', parseInt(barLeft - this.$leftLabel.width()/2) + 'px');
+            this.$leftLabel.css('top', (barTop + this.handleHeight) + 'px');
+            this.$rightLabel.css('left', parseInt(barLeft + this.scaleWidth - this.$rightLabel.width()/2) + 'px');
+            this.$rightLabel.css('top', (barTop + this.handleHeight) + 'px');
+        }
     },
 
     getHandleColor: function () {
@@ -255,7 +300,8 @@ jqueryWidget: {
                     self.handleLeft = 0;
                 else if (self.handleLeft >= self.scaleWidth)
                     self.handleLeft = self.scaleWidth;
-                self.setHandlePos(self.handleLeft);
+                self.setFraction(self.handleLeft);
+                self.setHandlePos();
             }
         });
 
@@ -292,7 +338,7 @@ jqueryWidget: {
 properties: {
     obligatory: ["html", "startValue", "endValue"],
     htmlDescription: function(opts) {
-        return $(document.createElement("div")).text(opts.html || "");
+        return $(document.createElement("div")).text(opts.s || "");
     }
 }
 });
