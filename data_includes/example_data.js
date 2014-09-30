@@ -1,4 +1,4 @@
-var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
+var shuffleSequence = seq(/*"intro",*/ sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var defaults = [
@@ -65,6 +65,12 @@ var items = [
     //
     // Three practice items for self-paced reading (one with a comprehension question).
     //
+    ["practice", "Scale", {
+        html: "Here is a <b>sentence</b> to rate",
+        startValue: 0,
+        endValue: 1,
+        scaleLabels: true
+    }],
     ["practice", "DashedSentence", {s: "This is a practice sentence to get you used to reading sentences like this."}],
     ["practice", "DashedSentence", {s: "This is another practice sentence with a practice question following it."},
                  "Question", {hasCorrect: false, randomOrder: false,

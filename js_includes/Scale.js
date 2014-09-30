@@ -181,8 +181,7 @@ jqueryWidget: {
             self.handleButtonClick(e);
         });
 
-        $(window).resize(function (e) {
-            console.log('RESIZE');
+        this.safeBind($(window), 'resize', function (e) {
             self.setHandlePos();
         });
     },
