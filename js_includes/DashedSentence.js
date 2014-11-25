@@ -126,7 +126,7 @@ jqueryWidget: {
                                             .addClass(this.cssPrefix + 'ispan')
                                             .text(this.words[j]));
                 if (! this.showAhead)
-                    span.css('border-color', this.background);
+                    ospan.css('border-color', this.background);
                 this.mainDiv.append(ospan);
                 if (j + 1 < this.words.length)
                     this.mainDiv.append("&nbsp; ");
