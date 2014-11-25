@@ -8,7 +8,7 @@ var defaults = [
         errorMessage: "Wrong. Please wait for the next sentence."
     },
     "DashedSentence", {
-        mode: "self-paced reading"
+        mode: "self-paced reading",
     },
     "AcceptabilityJudgment", {
         as: ["1", "2", "3", "4", "5", "6", "7"],
@@ -65,12 +65,6 @@ var items = [
     //
     // Three practice items for self-paced reading (one with a comprehension question).
     //
-    ["practice", "Scale", {
-        html: "Here is a <b>sentence</b> to rate",
-        startValue: 0,
-        endValue: 1,
-        scaleLabels: true
-    }],
     ["practice", "DashedSentence", {s: "This is a practice sentence to get you used to reading sentences like this."}],
     ["practice", "DashedSentence", {s: "This is another practice sentence with a practice question following it."},
                  "Question", {hasCorrect: false, randomOrder: false,
