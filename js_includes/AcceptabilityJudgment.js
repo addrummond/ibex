@@ -19,10 +19,11 @@ jqueryWidget: {
                                                      sentenceDescType: this.options.sentenceDescType,
                                                      showAhead: this.options.showAhead,
                                                      showBehind: this.options.showBehind
-                                                 } : 
+                                                 } :
                                                  {
                                                      s: this.options.s,
                                                      timeout: null, // Already present for 'Question'
+                                                     audio: this.options.audio,
                                                      audioMessage: this.options.audioMessage,
                                                      audioTrigger: this.options.audioTrigger
                                                  },
