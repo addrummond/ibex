@@ -70,7 +70,7 @@ jqueryWidget: {
 
                 var nextSoundToPlayIndex = 0;
 
-                function hideSD() { self.sentenceDom.hide(); }
+                function hideSD() { if (self.sentenceDom) self.sentenceDom.hide(); }
                 if (self.options.audioTrigger == "click") {
                     self.sentenceDom.css('cursor', 'pointer');
                     self.sentenceDom.click(function () {

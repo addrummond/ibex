@@ -29,4 +29,4 @@ if [ ! $SLIM ]; then
    OPTIONALS="$NO/LICENSE $NO/README $NO/mkdist.sh $NO/example_lighttpd.conf $NO/docs/manual.txt $NO/GoCoWiToTex.hs"
 fi
 
-tar -cz $OPTIONALS $NO/www/conf.js $NO/www/jsDump.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/PluginDetect.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/other_includes/main.js $NO/chunk_includes/*.html $NO/www/soundmanager2-jsmin.js > $OO/dist/ibex-${1}.tar.gz 
+tar -cz $OPTIONALS $NO/www/conf.js $NO/www/jsDump.js $NO/css_includes/*.css $NO/js_includes/*.js $NO/data_includes/*.js $NO/www/json.js $NO/www/server.py $NO/server_conf.py $NO/www/shuffle.js $NO/www/jquery*.js $NO/www/PluginDetect.js $NO/www/experiment.html $NO/www/overview.html $NO/www/util.js $NO/www/backcompatcruft.js $NO/other_includes/main.js $NO/chunk_includes/*.html $NO/www/soundmanager2-jsmin.js $NO/www/soundmanager2_debug.swf > $OO/dist/ibex-${1}.tar.gz 
