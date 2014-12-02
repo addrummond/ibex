@@ -660,7 +660,7 @@ withSoundManager = function (callback) {
     if (sm)
         return callback(sm);
     sm = soundManager.setup({
-        url: window.location.pathname.replace(/\/[^/]*$/, '/'),,
+        url: window.location.pathname.replace(/\/[^/]*$/, '/'),
         flashVersion: 8,
         onready: function () {
             callback(sm);
