@@ -1522,7 +1522,7 @@ def control(env, start_response):
             if qs_hash['include'][0] == 'serverinfo_js':
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8')])
                 # Can't use a generator expression here because we need to maintain Python 2.3 compat.
-                return ["var __server_py_script_name__ = \"%s\";\n" % ''.join(["\\u%.4x" % ord(c) for c in PY_SCRIPT_NAME])]
+                return ["var __server_py_script_name__ = \"%s\";\nvar __server_state_counter__ = %d;\n" % (''.join(["\\u%.4x" % ord(c) for c in PY_SCRIPT_NAME]), get_counter())]
             elif qs_hash['include'][0] == 'js':
                 m = js_create_monster_string(os.path.join(PWD, CFG['JS_INCLUDES_DIR']), '.js', CFG['JS_INCLUDES_LIST'], "js_includes")
                 start_response('200 OK', [('Content-Type', 'text/javascript; charset=UTF-8'), ('Pragma', 'no-cache')])
