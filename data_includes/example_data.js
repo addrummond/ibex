@@ -1,4 +1,4 @@
-var shuffleSequence = seq(/*"intro",*/ sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
+var shuffleSequence = seq("intro", sepWith("sep", seq("practice", rshuffle("s1", "s2"))), sepWith("sep", rshuffle("q1", "q2")));
 var practiceItemTypes = ["practice"];
 
 var defaults = [
@@ -8,15 +8,18 @@ var defaults = [
         errorMessage: "Wrong. Please wait for the next sentence."
     },
     "DashedSentence", {
-        mode: "self-paced reading",
+        countsForProgressBar: false,
+        mode: "self-paced reading"
     },
     "AcceptabilityJudgment", {
+        countsForProgressBar: true,
         as: ["1", "2", "3", "4", "5", "6", "7"],
         presentAsScale: true,
         instructions: "Use number keys or click boxes to answer.",
         leftComment: "(Bad)", rightComment: "(Good)"
     },
     "Question", {
+        countsForProgressBar: false,
         hasCorrect: true
     },
     "Message", {

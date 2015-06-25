@@ -382,10 +382,12 @@ var nPoints = 0;
 if (conf_showProgressBar) {
     for (var i = 0; i < runningOrder.length; ++i) {
         for (var j = 0; j < runningOrder[i].length; ++j) {
-            if (ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") === undefined ||
-                ibex_controller_get_property(runningOrder[i][j].controller, "countsForProgressBar") ||
-                runningOrder[i][j].options.countsForProgressBar) {
-                ++nPoints;
+            var currentElement = runningOrder[i][j];
+            if (! (currentElement.options.countsForProgressBar !== undefined && !currentElement.options.countsForProgressBar)) {
+                if (ibex_controller_get_property(currentElement.controller, "countsForProgressBar") === undefined ||
+                    ibex_controller_get_property(currentElement.controller, "countsForProgressBar")) {
+                    ++nPoints;
+                }
             }
         }
     }
