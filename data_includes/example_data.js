@@ -8,18 +8,15 @@ var defaults = [
         errorMessage: "Wrong. Please wait for the next sentence."
     },
     "DashedSentence", {
-        countsForProgressBar: false,
         mode: "self-paced reading"
     },
     "AcceptabilityJudgment", {
-        countsForProgressBar: true,
         as: ["1", "2", "3", "4", "5", "6", "7"],
         presentAsScale: true,
         instructions: "Use number keys or click boxes to answer.",
         leftComment: "(Bad)", rightComment: "(Good)"
     },
     "Question", {
-        countsForProgressBar: false,
         hasCorrect: true
     },
     "Message", {
