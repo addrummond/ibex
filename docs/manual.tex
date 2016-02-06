@@ -1,20 +1,88 @@
- \documentclass[11pt,letterpaper]{article}
- \usepackage{parskip}
- \usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
- \usepackage[T1]{fontenc}
- \usepackage[]{mathptmx}
- \usepackage{sectsty}
- \usepackage{verbatim}
- \usepackage{ulem}
- \usepackage{breakurl}
- \usepackage{ragged2e}
- \usepackage{hyperref}
- \hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
- \sectionfont{\Large \bf}
- \subsectionfont{\large \bf}
- \subsubsectionfont{\normalsize \bf}
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\date{}
+\usepackage[left=1.0in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage[]{mathptmx}
+\usepackage{sectsty}
+\usepackage{verbatim}
+\usepackage{ulem}
+\usepackage{breakurl}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\sectionfont{\Large \bf}
+\subsectionfont{\large \bf}
+\subsubsectionfont{\normalsize \bf}
 
 \begin{document}
+
 
 \date{}
 \author{Alex Drummond}
@@ -24,72 +92,74 @@
 
 \tableofcontents
 
-\textit{ }\textbf{\textit{Check out the printable PDF version of this manual:}}\textit{}  http://spellout.net/latest\_ibex\_manual.pdf
+\textbf{Check out the printable \href{manual.pdf}{PDF version} of this
+manual.}
 
-\section{Versions}
+\section{Versions}\label{versions}
 
-This documentation covers 0.3.7. The 0.1.x
-versions of Webspr come with a README containing full documentation.
-0.2.x versions are documented in another page on the wiki.
-The latest version of this document can be found at
-http://code.google.com/p/webspr/wiki/Documentation03
+This documentation covers 0.3.7. The 0.1.x versions of Webspr come with
+a README containing full documentation. 0.2.x versions are documented in
+another page on the wiki. The latest version of this document can be
+found at
+\url{https://github.com/addrummond/ibex/blob/master/docs/manual.md}
 
 See the end of this document for the changelog.
 
-Prior to version 0.3 this software was called ``webspr'',
-not ``Ibex''.
+Prior to version 0.3 this software was called ``webspr'', not ``Ibex''.
 
-\section{Requirements}
+\section{Requirements}\label{requirements}
 
 \begin{itemize}
-
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Python >= 2.3. (Python 3000 not currently supported.)
+  Python \textgreater{}= 2.3. (Python 3000 not currently supported.)
 \end{itemize}
-\section{Introduction}
 
-Ibex (``Internet Based EXperiments'') allows you to run various kinds of psycholinguistic experiment online.
-The system
-is modular and the range of possible experiments is steadily growing. Ibex
-uses JavaScript and HTML only, and doesn't require the use of plugins such as
-Java or Flash.
+\section{Introduction}\label{introduction}
 
-\section{Setting up the server}
+Ibex (``Internet Based EXperiments'') allows you to run various kinds of
+psycholinguistic experiment online. The system is modular and the range
+of possible experiments is steadily growing. Ibex uses JavaScript and
+HTML only, and doesn't require the use of plugins such as Java or Flash.
 
-\textbf{Note:} If you are using the Ibex Farm, you can skip to the ``Basic Concepts'' section
-below. For most applications you will only need to modify the file \texttt{example\_data.js}.
-(The Ibex Farm allows you to modify/upload some other files, but this rarely necessary.)
+\section{Setting up the server}\label{setting-up-the-server}
 
-There are two ways of running the server: either using the stand-alone toy HTTP server,
-or as a CGI process. By default, the server runs in stand-alone mode. To start
-it, change to the \texttt{www} directory and execute server.py:
-\footnotesize\begin{verbatim}
+\textbf{Note:} If you are using the Ibex Farm, you can skip to the
+``Basic Concepts'' section below. For most applications you will only
+need to modify the file \texttt{example\_data.js}. (The Ibex Farm allows
+you to modify/upload some other files, but this rarely necessary.)
 
+There are two ways of running the server: either using the stand-alone
+toy HTTP server, or as a CGI process. By default, the server runs in
+stand-alone mode. To start it, change to the \texttt{www} directory and
+execute server.py:
+
+\begin{verbatim}
     python server.py
 \end{verbatim}
 
-\smallskip\noindent\normalsize
+This will start the server on port 3000 by default (so the experiment
+will be at \url{http://localhost:3000/experiment.html}).
 
-This will start the server on port 3000 by default (so the
-experiment will be at http://localhost:3000/experiment.html).
+The stand-alone server is limited to serving files relating to Ibex, so
+it is unlikely to be useful for real work (unless perhaps you hide it
+behind a proxy). However, it is useful for testing experimental designs
+without setting up a real HTTP server, and for running experiments
+offline.
 
-The stand-alone server is limited to serving files relating to Ibex, so it is
-unlikely to be useful for real work (unless perhaps you hide it behind a proxy).
-However, it is useful for testing experimental designs without setting up a
-real HTTP server, and for running experiments offline.
-
-The server can be configured by editing \texttt{server\_conf.py}. Each of the
-options is commented. Change the \texttt{SERVER\_MODE} variable to determine
-whether the server runs in stand-alone mode or as a CGI
-application. When \texttt{SERVER\_MODE} is set to ``cgi'', \texttt{server.py} will work
-as a standard CGI program; when it is set to ``toy'', the server will
-run in stand-alone mode. (The value ``paste'' has the same effect as
-``toy'', for backwards compatibility with 0.2.x version.) The value of
-the \texttt{PORT} variable determines the port the server will listen on when
-operating in stand-alone mode. As an alternative to editing the
-configuration file, the \texttt{-m} and \texttt{-p} command-line options can also be
-used to set the server mode and port respectively. Command-line options
-override those set in \texttt{server\_conf.py}.
+The server can be configured by editing \texttt{server\_conf.py}. Each
+of the options is commented. Change the \texttt{SERVER\_MODE} variable
+to determine whether the server runs in stand-alone mode or as a CGI
+application. When \texttt{SERVER\_MODE} is set to ``cgi'',
+\texttt{server.py} will work as a standard CGI program; when it is set
+to ``toy'', the server will run in stand-alone mode. (The value
+``paste'' has the same effect as ``toy'', for backwards compatibility
+with 0.2.x version.) The value of the \texttt{PORT} variable determines
+the port the server will listen on when operating in stand-alone mode.
+As an alternative to editing the configuration file, the \texttt{-m} and
+\texttt{-p} command-line options can also be used to set the server mode
+and port respectively. Command-line options override those set in
+\texttt{server\_conf.py}.
 
 \textbf{New:} Version 0.3 adds some new ways of configuring the server.
 These are unlikely to be of interest to most users, but are documented
@@ -98,134 +168,160 @@ in the ``New Configuration Methods'' section below.
 If running the server as a CGI application, make sure that the web
 server can serve up \texttt{experiment.html}, and the other files in the
 \texttt{www} dir, as static files. All dynamic requests go through
-\texttt{server.py}, so as long as the files in \texttt{www} can be accessed, and the
-server recognizes \texttt{server.py} as a CGI application, everything should
-work. The ``Step-by-step CGI'' section below goes through the process
-of setting up webspr as a CGI app.
+\texttt{server.py}, so as long as the files in \texttt{www} can be
+accessed, and the server recognizes \texttt{server.py} as a CGI
+application, everything should work. The ``Step-by-step CGI'' section
+below goes through the process of setting up webspr as a CGI app.
 
-The directories \texttt{js\_includes}, \texttt{data\_includes} and \texttt{css\_includes}
-contain JavaScript and CSS files required for particular kinds of
-experiment. When an HTTP request is made for \texttt{server.py?include=js},
-\texttt{server.py?include=data} or \texttt{server.py?include=css}, the server
-concatenates all the files in the specified directory and serves up
-the result. Your data file(s) will live in \texttt{data\_includes}.
-\textbf{Note:} The server mangles CSS files by adding a prefix to each
-class/id name based on the name of the CSS file; see the section ``CSS
-mangling`` below for more details.
+The directories \texttt{js\_includes}, \texttt{data\_includes} and
+\texttt{css\_includes} contain JavaScript and CSS files required for
+particular kinds of experiment. When an HTTP request is made for
+\texttt{server.py?include=js}, \texttt{server.py?include=data} or
+\texttt{server.py?include=css}, the server concatenates all the files in
+the specified directory and serves up the result. Your data file(s) will
+live in \texttt{data\_includes}. \textbf{Note:} The server mangles CSS
+files by adding a prefix to each class/id name based on the name of the
+CSS file; see the section ``CSS mangling'' below for more details.
 
-The server stores some state in the \texttt{server\_state} directory. This
-directory is automatically created by the server if it does not
+The server stores some state in the \texttt{server\_state} directory.
+This directory is automatically created by the server if it does not
 already exist, and in order to start the server from a fresh state you
 may simply delete this directory and/or its contents. Currently, the
 directory just contains the counter used to alternate latin square
 designs (see ``Latin Square Designs'' section below). This counter can
 be reset on server startup using the \texttt{-r} option.
 
-The server logs messages in the file \texttt{server.log}. The default is to
-store all files in the same directory as \texttt{server.py} (i.e. logs,
-results, the \texttt{server\_state} directory, etc.), but the working
-directory of the server can be modified by setting the variable
-\texttt{IBEX\_WORKING\_DIR} in \texttt{server\_conf.py}. You can also set the
-environment variable of the same name.  The value of this environment
-variable overrides the value of the variable in \texttt{server\_conf.py}.
+The server logs messages in the file \texttt{server.log}. The default is
+to store all files in the same directory as \texttt{server.py}
+(i.e.~logs, results, the \texttt{server\_state} directory, etc.), but
+the working directory of the server can be modified by setting the
+variable \texttt{IBEX\_WORKING\_DIR} in \texttt{server\_conf.py}. You
+can also set the environment variable of the same name. The value of
+this environment variable overrides the value of the variable in
+\texttt{server\_conf.py}.
 
 On Linux/Unix/OS X, the server uses file locking to ensure that the
-results file and server state remain consistent. Currently, it does
-not do so on Windows, so there is a theoretical possibility of the
-server state or the results being corrupted if the server is deployed
-in a Windows environment (but unless there is very high traffic, it's
-purely theoretical).
+results file and server state remain consistent. Currently, it does not
+do so on Windows, so there is a theoretical possibility of the server
+state or the results being corrupted if the server is deployed in a
+Windows environment (but unless there is very high traffic, it's purely
+theoretical).
 
 The stand-alone server has been tested on Windows and OS X (but will
-almost certainly work on any system with Python 2.3-2.6).  The CGI
-server has been tested on OS X and Linux using the lighttpd web server
-in both cases.
+almost certainly work on any system with Python 2.3-2.6). The CGI server
+has been tested on OS X and Linux using the lighttpd web server in both
+cases.
 
-\subsection{New Configuration Methods}
+\subsection{New Configuration Methods}\label{new-configuration-methods}
 
 Version 0.3 of this software introduces two new methods of setting
 configuration variables. The first is simply to include the variable
-definitions in \texttt{server\_conf.py} directly in \texttt{server.py}, obviating the need
-to set the \texttt{SERVER\_CONF\_PY\_FILE} variables in \texttt{server.py}. The second
-is to specify that \texttt{server.py} should issue an HTTP GET request to a given
-URL, with the result obtained being interpreted as a JSON dictionary specifying the
-values of the configuration variables. This mode is configured by setting
-the configuration variables \texttt{EXTERNAL\_CONFIG\_URL}, \texttt{EXTERNAL\_CONFIG\_METHOD}
-and \texttt{EXTERNAL\_CONFIG\_PASS\_PARAMS}. The first of these variables is self-explanatory;
-the second must be set to \texttt{``GET''}; the third should be set to a boolean,
-specifying whether or not \texttt{server.py} should pass a \texttt{dir} paramater in the
-query string giving the directory in which \texttt{server.py} resides.
-Note that the values of these three variables may be set either in \texttt{server\_conf.py},
-or directly in \texttt{server.py}.
+definitions in \texttt{server\_conf.py} directly in \texttt{server.py},
+obviating the need to set the \texttt{SERVER\_CONF\_PY\_FILE} variables
+in \texttt{server.py}. The second is to specify that \texttt{server.py}
+should issue an HTTP GET request to a given URL, with the result
+obtained being interpreted as a JSON dictionary specifying the values of
+the configuration variables. This mode is configured by setting the
+configuration variables \texttt{EXTERNAL\_CONFIG\_URL},
+\texttt{EXTERNAL\_CONFIG\_METHOD} and
+\texttt{EXTERNAL\_CONFIG\_PASS\_PARAMS}. The first of these variables is
+self-explanatory; the second must be set to \texttt{"GET"}; the third
+should be set to a boolean, specifying whether or not \texttt{server.py}
+should pass a \texttt{dir} paramater in the query string giving the
+directory in which \texttt{server.py} resides. Note that the values of
+these three variables may be set either in \texttt{server\_conf.py}, or
+directly in \texttt{server.py}.
 
-The new configuration methods are used to handle the configuration
-of experiments in the Ibex Farm (http://spellout.net/ibexfarm).
-They are unlikely to be of interest to other users.
+The new configuration methods are used to handle the configuration of
+experiments in the Ibex Farm (\url{http://spellout.net/ibexfarm}). They
+are unlikely to be of interest to other users.
 
-\subsection{Step-by-step CGI}
+\subsection{Step-by-step CGI}\label{step-by-step-cgi}
 
 This subsection describes how to set up webspr as a CGI application from
-scratch.  Since the particulars of different web servers differ, some parts are
-necessarily rather vague. There are many possible ways of organizing the
-files/directories; the setup described below is just the simplest.
+scratch. Since the particulars of different web servers differ, some
+parts are necessarily rather vague. There are many possible ways of
+organizing the files/directories; the setup described below is just the
+simplest.
 
 \begin{enumerate}
-
 \item
- Ensure that the \texttt{www} directory is somewhere within the root directory of your HTTP server. You may want to place the entire \texttt{webspr} directory within the root directory, or you may want to copy the files in \texttt{www} to a new location within the root directory. All of these files are ordinary static files except for \texttt{server.py}, which needs to be run as a CGI app.
+  Ensure that the \texttt{www} directory is somewhere within the root
+  directory of your HTTP server. You may want to place the entire
+  \texttt{webspr} directory within the root directory, or you may want
+  to copy the files in \texttt{www} to a new location within the root
+  directory. All of these files are ordinary static files except for
+  \texttt{server.py}, which needs to be run as a CGI app.
 \item
- Decide on a location for the main webspr directory. Depending on the details of your setup, you may be able to leave it in place, or you may need to copy it to a directory which the HTTP server has permission to access (so that \texttt{server.py} may access files in this directory when it is executed).
+  Decide on a location for the main webspr directory. Depending on the
+  details of your setup, you may be able to leave it in place, or you
+  may need to copy it to a directory which the HTTP server has
+  permission to access (so that \texttt{server.py} may access files in
+  this directory when it is executed).
 \item
- Edit \texttt{server.py} and change the value of \texttt{SERVER\_CONF\_PY\_FILE} to point to the new location of server\_conf.py.
+  Edit \texttt{server.py} and change the value of
+  \texttt{SERVER\_CONF\_PY\_FILE} to point to the new location of
+  server\_conf.py.
 \item
- Edit \texttt{server\_conf.py} and change the value of \texttt{IBEX\_WORKING\_DIR} to the new location of the main \texttt{webspr} dir.
+  Edit \texttt{server\_conf.py} and change the value of
+  \texttt{IBEX\_WORKING\_DIR} to the new location of the main
+  \texttt{webspr} dir.
 \item
- Edit \texttt{server\_conf.py} and change change the value of \texttt{SERVER\_MODE} to \texttt{``cgi''}.
+  Edit \texttt{server\_conf.py} and change change the value of
+  \texttt{SERVER\_MODE} to \texttt{"cgi"}.
 \item
- If the version of Python you wish to use is not the default used by the HTTP server, add a \texttt{\#!} line at the beginning of \texttt{server.py}.
+  If the version of Python you wish to use is not the default used by
+  the HTTP server, add a \texttt{\#!} line at the beginning of
+  \texttt{server.py}.
 \item
- You may need to rename \texttt{server.py} (e.g. some servers may only execute CGI scripts with the extension \texttt{.cgi}). If this is the case, follow the instructions in the subsection below.
+  You may need to rename \texttt{server.py} (e.g.~some servers may only
+  execute CGI scripts with the extension \texttt{.cgi}). If this is the
+  case, follow the instructions in the subsection below.
 \end{enumerate}
-Once these steps are complete, it's just a matter of configuring your HTTP
-server correctly. If you are using shared hosting, there is a reasonably good
-chance that the HTTP server will already have been configured to run Python CGI
-apps, in which case you won't need to do any additional configuration. There is
-an example configuration file for lighttpd included in the distribution
-(\texttt{example\_lighttpd.conf}).
 
-\subsubsection{Renaming server.py}
+Once these steps are complete, it's just a matter of configuring your
+HTTP server correctly. If you are using shared hosting, there is a
+reasonably good chance that the HTTP server will already have been
+configured to run Python CGI apps, in which case you won't need to do
+any additional configuration. There is an example configuration file for
+lighttpd included in the distribution (\texttt{example\_lighttpd.conf}).
 
-Ibex will stop working if you rename \texttt{server.py}, since the files \texttt{experiment.html} and \texttt{overview.html}
-assume that the script has this name. (In older versions of ibex there were a few other files which
-made this assumption, but as of 0.3-beta14, this has been changed.)
+\subsubsection{Renaming server.py}\label{renaming-server.py}
 
-You can edit \texttt{experiment.html} and \texttt{overview.html} manually to replace all instances of \texttt{server.py}
-with the new name of the script. Alternatively, you can execute the renamed \texttt{server.py} script with the following options
-to automatically generate new \texttt{experiment.html} and \texttt{overview.html} files:
-\footnotesize\begin{verbatim}
+Ibex will stop working if you rename \texttt{server.py}, since the files
+\texttt{experiment.html} and \texttt{overview.html} assume that the
+script has this name. (In older versions of ibex there were a few other
+files which made this assumption, but as of 0.3-beta14, this has been
+changed.)
 
+You can edit \texttt{experiment.html} and \texttt{overview.html}
+manually to replace all instances of \texttt{server.py} with the new
+name of the script. Alternatively, you can execute the renamed
+\texttt{server.py} script with the following options to automatically
+generate new \texttt{experiment.html} and \texttt{overview.html} files:
+
+\begin{verbatim}
     python /path/to/renamed/server.py --genhtml /foo/webspr-XXXX/www
 \end{verbatim}
 
-\smallskip\noindent\normalsize
+This command will produce no output if it executes successfully. Note
+that you must run this command \textbf{after} renaming
+\texttt{server.py}.
 
-This command will produce no output if it executes successfully. Note that you must run this command \textbf{after}
-renaming \texttt{server.py}.
+\section{Basic concepts}\label{basic-concepts}
 
-\section{Basic concepts}
+An Ibex experiment is essentially a sequence of \emph{items}. Each item
+is itself a sequence of \emph{entities}. To give a concrete example,
+each item in a self-paced reading experiment might consist of two
+entities: an entity providing a sentence for the subject to step through
+word by word, followed by an entity posing a comprehension question.
+Some other items and entities would also be present under most
+circumstances. For example, there would probably be a ``separator''
+entity between each sentence/question pair in order to provide a pause
+between sentences. Schematically, the sequence of items would be as
+follows (the Wiki insists on displaying this in pretty colors):
 
-An Ibex experiment is essentially a sequence of\textit{ items} .
-Each item is itself a sequence of\textit{ entities} . To give a concrete example, each
-item in a self-paced reading experiment might consist of two entities: an
-entity providing a sentence for the subject to step through word by word,
-followed by an entity posing a comprehension question. Some other items and
-entities would also be present under most circumstances. For example, there
-would probably be a ``separator'' entity between each sentence/question pair in
-order to provide a pause between sentences. Schematically, the sequence of
-items would be as follows (the Wiki insists on displaying this in pretty
-colors):
-\footnotesize\begin{verbatim}
-
+\begin{verbatim}
     ITEM 1:
         ENTITY 1: Sentence
         ENTITY 2: Comprehension question
@@ -241,1767 +337,1944 @@ colors):
         ENTITY 2: Comprehension question
 \end{verbatim}
 
-\smallskip\noindent\normalsize
-
 It is not necessary to construct the full sequence of items and entities
-manually. Ibex provides tools for ordering items in various ways (e.g. for
-inserting a pause between each item) and for implementing latin square designs.
-More on these shortly.
+manually. Ibex provides tools for ordering items in various ways
+(e.g.~for inserting a pause between each item) and for implementing
+latin square designs. More on these shortly.
 
-Each entity is an instance of a\textit{ controller} , which determines the kind of
-experimental task that the entity will present.  For example, there is a
-\texttt{DashedSentence} controller useful for self-paced reading and speeded
-acceptability judgment tasks.  Ibex has a modular design, where each
-controller is a JavaScript object that follows a standard interface. This
-makes it quite easy to add new controllers if you are familiar with
-JavaScript/DHTML programming.
+Each entity is an instance of a \emph{controller}, which determines the
+kind of experimental task that the entity will present. For example,
+there is a \texttt{DashedSentence} controller useful for self-paced
+reading and speeded acceptability judgment tasks. Ibex has a modular
+design, where each controller is a JavaScript object that follows a
+standard interface. This makes it quite easy to add new controllers if
+you are familiar with JavaScript/DHTML programming.
 
-Ibex stores results in CSV format. This makes it easy to import results into
-spreadsheets, Matlab, R, etc. Each entity may contribute zero, one \textbf{or more}
-lines to the results file. The first seven columns of each line give generic
-information about the result (e.g. an MD5 hash identifying the subject) and
-the rest give information specific to the particular element (e.g. word reading
-times, comprehension question answers). The first seven columns are as follows:
+Ibex stores results in CSV format. This makes it easy to import results
+into spreadsheets, Matlab, R, etc. Each entity may contribute zero, one
+\textbf{or more} lines to the results file. The first seven columns of
+each line give generic information about the result (e.g.~an MD5 hash
+identifying the subject) and the rest give information specific to the
+particular element (e.g.~word reading times, comprehension question
+answers). The first seven columns are as follows:
 
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Information}\tabularnewline
+\midrule
+\endhead
+1 & Time results were received (seconds since Jan 1 1970)\tabularnewline
+2 & MD5 hash identifying subject. This is based on the subject's IP
+address and various properties of their browser. Together with the value
+of the first column, this value should uniquely identify each
+subject.\tabularnewline
+3 & Name of the controller for the entity (e.g.
+``DashedSentence'')\tabularnewline
+4 & Item number\tabularnewline
+5 & Element number\tabularnewline
+6 & Type\tabularnewline
+7 & Group\tabularnewline
+\bottomrule
+\end{longtable}
 
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0491in}|p{4.4509in}|}
-\hline
- \textbf{Column}  &  \textbf{Information}                                                  \\
-\hline
- 1         &  Time results were received (seconds since Jan 1 1970)          \\
-\hline
- 2         &  MD5 hash identifying subject. This is based on the subject's IP address and various properties of their browser. Together with the value of the first column, this value should uniquely identify each subject. \\
-\hline
- 3         &  Name of the controller for the entity (e.g. ``DashedSentence'') \\
-\hline
- 4         &  Item number                                                    \\
-\hline
- 5         &  Element number                                                 \\
-\hline
- 6         &  Type                                                           \\
-\hline
- 7         &  Group                                                          
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-Note that some information pertaining to an entire experiment (e.g. the time
-that the server received the results) is
-duplicated on each line of the results. This often makes it easier to parse the
-results, though it makes the format much more verbose.  The significance of the
-``type'' and ``group'' columns will be explained later; they are involved in
+Note that some information pertaining to an entire experiment (e.g.~the
+time that the server received the results) is duplicated on each line of
+the results. This often makes it easier to parse the results, though it
+makes the format much more verbose. The significance of the ``type'' and
+``group'' columns will be explained later; they are involved in
 specifying the ordering of items.
 
-There are two ways to find out what the values in each column mean.  The
-``manual'' method is to interpret the first seven columns of each line as
-specified above, and then to consult the documentation for the relevant
-controllers to determine the format of the subsequent columns. All of the
-controllers that are bundled with the Ibex distribution are fully documented
-here.  An easier method is to look at the comments in the results file: for
-each sequence of lines in the same format, the server adds comments describing
-the values contained in each column.
+There are two ways to find out what the values in each column mean. The
+``manual'' method is to interpret the first seven columns of each line
+as specified above, and then to consult the documentation for the
+relevant controllers to determine the format of the subsequent columns.
+All of the controllers that are bundled with the Ibex distribution are
+fully documented here. An easier method is to look at the comments in
+the results file: for each sequence of lines in the same format, the
+server adds comments describing the values contained in each column.
 
-\textbf{Important}: A single element my contribute multiple lines to the results file.
-For example, if the \texttt{DashedSentence} element is in ``self-paced reading'' mode, it
-will add a line to the results file for every word reading time it
-records. Thus, there is not a one-to-one correspondence between items/elements
-and lines.
+\textbf{Important}: A single element my contribute multiple lines to the
+results file. For example, if the \texttt{DashedSentence} element is in
+``self-paced reading'' mode, it will add a line to the results file for
+every word reading time it records. Thus, there is not a one-to-one
+correspondence between items/elements and lines.
 
-\textbf{New:} The server now uses a more sophisticated algorithm for commenting lines in
-the results file. It is now able to handle cases where there are repeating
-patterns of lines in a results file.
+\textbf{New:} The server now uses a more sophisticated algorithm for
+commenting lines in the results file. It is now able to handle cases
+where there are repeating patterns of lines in a results file.
 
 \textbf{Newer:} As of 0.3-beta15, there is another commenting algorithm
 available, which can be turned on by setting the
-\texttt{SIMPLE\_RESULTS\_FILE\_COMMENTS} variable to \texttt{True} in \texttt{server\_conf.py}
-(it defaults to \texttt{False}). This algorithm simply adds a comment for
-every line in the results file. This simpler method generally works
-better than the old algorithm, which tried to be clever but didn't
-really succeed. If you are using the Ibex Farm, there is currently
-no way of changing this configuration option using the web interface,
-but this should be fixed soon.
+\texttt{SIMPLE\_RESULTS\_FILE\_COMMENTS} variable to \texttt{True} in
+\texttt{server\_conf.py} (it defaults to \texttt{False}). This algorithm
+simply adds a comment for every line in the results file. This simpler
+method generally works better than the old algorithm, which tried to be
+clever but didn't really succeed. If you are using the Ibex Farm, there
+is currently no way of changing this configuration option using the web
+interface, but this should be fixed soon.
 
-\section{Format of a data file}
+\section{Format of a data file}\label{format-of-a-data-file}
 
 Data files for Ibex are JavaScript source files, but it is not really
-necessary to know JavaScript in order to write one.  The most important part
-of a data file is the declaration of the ``items'' array, as in the following
-example:
-\footnotesize\begin{verbatim}
+necessary to know JavaScript in order to write one. The most important
+part of a data file is the declaration of the ``items'' array, as in the
+following example:
 
-    var items = [
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{items = [}
 
-    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
-    ["filler", "DashedSentence", {s: "And another silly filler sentence"}],
-    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
-    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Here's a silly filler sentence"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"And another silly filler sentence"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\}]}
 
-    ]; // NOTE SEMICOLON HERE
-\end{verbatim}
+    \NormalTok{]; }\CommentTok{// NOTE SEMICOLON HERE}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
-
-The ``items'' array is an array of arrays, where each subarray specifies a single
-item. In the example above, every item contains a single element (multiple
-element items will be covered shortly).
-
-\begin{itemize}
-
-\item
- The first member of each subarray specifies the\textit{ type}  of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Ibex does not interpret these names in any way.
-\item
- The second member specifies the controller.
-\item
- The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option (``s''), which tells the \texttt{DashedSentence} controller which sentence it should display.
-\end{itemize}
-Once the items array has been created, Ibex must be told the order in which
-the items should be displayed. There are some moderately sophisticated
-facilities for creating random orderings and latin square designs, but for the
-moment, let's just display the items in the order we gave them in the array.
-This can be achieved by adding the following definition (which won't make much
-sense yet):
-\footnotesize\begin{verbatim}
-
-    var shuffleSequence = seq(anyType);
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-
-Suppose we wanted to pair each sentence with a comprehension question.  The
-easiest way to do this is to add a second element to each item:
-\footnotesize\begin{verbatim}
-
-    var items = [
-
-    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-               "Question", {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
-    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
-               "Question", {q: "Does this sentence have a relative clause?", as: ["Yes","No"]],
-    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-                  "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
-    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-                  "Question", {q: "Was the first word 'frog'?", ["Yes", "No"]}]
-
-    ]; // NOTE SEMICOLON HERE
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-As shown above, this is done simply by adding to each item further pairs of
-controllers and associative arrays of options. It is rather tiresome to have to
-set the \texttt{as} option to {[}``Yes'', ``No''{]} every time, but this can easily be avoided
-by specifying this as the default for the Question controller. To give an
-example of how defaults for multiple controllers are specified, let's also set
-the \texttt{mode} option of \texttt{DashedSentence} to ``speeded acceptability'':
-\footnotesize\begin{verbatim}
-
-    var defaults = [
-        "Question", {as: ["Yes", "No"]},
-        "DashedSentence", {mode: "speeded acceptability"}
-    ];
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-Once this definition is in place, we can drop the specification of the \texttt{as}
-option for each Question element. The final data file looks like this:
-\footnotesize\begin{verbatim}
-
-    var shuffleSequence = seq(anyType);
-
-    var defaults = [
-        "Question", {as: ["Yes", "No"]},
-        "DashedSentence", {mode: "speeded acceptability"}
-    ];
-
-    var items = [
-
-    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-               "Question", {q: "Is this a filler sentence?"}],
-    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
-               "Question", {q: "Does this sentence have a relative clause?"}],
-    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-                  "Question", {q: "Was there movement through [Spec,CP]?"}],
-    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-                  "Question", {q: "Was the first word of that sentence 'frog'?"}]
-
-    ];
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-\textbf{Where to put your data file}: Data files live in the \texttt{data\_includes}
-directory, and must have a \texttt{.js} extension. You can only have data one file in
-the directory at any one time, since if you have multiple files, they will just
-overwrite the definitions for \texttt{shuffleSequence}, \texttt{items} and \texttt{defaults}.
-However, you can tell the server to ignore some of the files in \texttt{data\_includes}
-(see the section ``Configuring \texttt{js\_includes}, \texttt{data\_includes} and \texttt{css\_includes}'').
-
-\section{Shuffle sequences}
-
-\subsection{`seq`, `randomize` and `shuffle`}
-
-
-A ``shuffle sequence'' is a JavaScript data structure describing a series of
-``shuffling'', randomizing and sequencing operations over an array of items.  A
-variable called \texttt{shuffleSequence} should be defined in your data file with a
-data structure of this sort as its value.
-
-Shuffle sequences are composed of three basic operations, \texttt{seq}, \texttt{randomize}
-and \texttt{shuffle}. Both take a series of ``type predicates'' as arguments, where each
-type predicate is the characteristic function of a set of types. A type
-predicate may be one of the following:
+The ``items'' array is an array of arrays, where each subarray specifies
+a single item. In the example above, every item contains a single
+element (multiple element items will be covered shortly).
 
 \begin{itemize}
-
 \item
- A string or integer, denoting the characteristic function of all items of the given type.
+  The first member of each subarray specifies the \emph{type} of the
+  item. Types can either be numbers or strings. Although the types in
+  the example above have descriptive names, Ibex does not interpret
+  these names in any way.
 \item
- A JavaScript function, returning a boolean value when given a type (either a string or integer).
+  The second member specifies the controller.
 \item
- Another shuffle sequence (shuffle sequences can be embedded inside bigger shuffle sequences).
+  The third member is an associative array of key/value pairs. This
+  array is passed to the controller and is used to customize its
+  behavior. In this case, we pass only one option (``s''), which tells
+  the \texttt{DashedSentence} controller which sentence it should
+  display.
 \end{itemize}
+
+Once the items array has been created, Ibex must be told the order in
+which the items should be displayed. There are some moderately
+sophisticated facilities for creating random orderings and latin square
+designs, but for the moment, let's just display the items in the order
+we gave them in the array. This can be achieved by adding the following
+definition (which won't make much sense yet):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{shuffleSequence = }\FunctionTok{seq}\NormalTok{(anyType);}
+\end{Highlighting}
+\end{Shaded}
+
+Suppose we wanted to pair each sentence with a comprehension question.
+The easiest way to do this is to add a second element to each item:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{items = [}
+
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Here's a silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Is this a filler sentence?"}\NormalTok{, }\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\}],}
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"And another silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Does this sentence have a relative clause?"}\NormalTok{, }\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{,}\StringTok{"No"}\NormalTok{]],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was there movement through [Spec,CP]?"}\NormalTok{, }\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was the first word 'frog'?"}\NormalTok{, [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\}]}
+
+    \NormalTok{]; }\CommentTok{// NOTE SEMICOLON HERE}
+\end{Highlighting}
+\end{Shaded}
+
+As shown above, this is done simply by adding to each item further pairs
+of controllers and associative arrays of options. It is rather tiresome
+to have to set the \texttt{as} option to {[}``Yes'', ``No''{]} every
+time, but this can easily be avoided by specifying this as the default
+for the Question controller. To give an example of how defaults for
+multiple controllers are specified, let's also set the \texttt{mode}
+option of \texttt{DashedSentence} to ``speeded acceptability'':
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{defaults = [}
+        \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\},}
+        \StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{mode}\NormalTok{: }\StringTok{"speeded acceptability"}\NormalTok{\}}
+    \NormalTok{];}
+\end{Highlighting}
+\end{Shaded}
+
+Once this definition is in place, we can drop the specification of the
+\texttt{as} option for each Question element. The final data file looks
+like this:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{shuffleSequence = }\FunctionTok{seq}\NormalTok{(anyType);}
+
+    \KeywordTok{var} \NormalTok{defaults = [}
+        \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\},}
+        \StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{mode}\NormalTok{: }\StringTok{"speeded acceptability"}\NormalTok{\}}
+    \NormalTok{];}
+
+    \KeywordTok{var} \NormalTok{items = [}
+
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Here's a silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Is this a filler sentence?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"And another silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Does this sentence have a relative clause?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was there movement through [Spec,CP]?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was the first word of that sentence 'frog'?"}\NormalTok{\}]}
+
+    \NormalTok{];}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Where to put your data file}: Data files live in the
+\texttt{data\_includes} directory, and must have a \texttt{.js}
+extension. You can only have data one file in the directory at any one
+time, since if you have multiple files, they will just overwrite the
+definitions for \texttt{shuffleSequence}, \texttt{items} and
+\texttt{defaults}. However, you can tell the server to ignore some of
+the files in \texttt{data\_includes} (see the section ``Configuring
+\texttt{js\_includes}, \texttt{data\_includes} and
+\texttt{css\_includes}'').
+
+\section{Shuffle sequences}\label{shuffle-sequences}
+
+\subsection{\texorpdfstring{\texttt{seq}, \texttt{randomize} and
+\texttt{shuffle}}{seq, randomize and shuffle}}\label{seq-randomize-and-shuffle}
+
+A ``shuffle sequence'' is a JavaScript data structure describing a
+series of ``shuffling'', randomizing and sequencing operations over an
+array of items. A variable called \texttt{shuffleSequence} should be
+defined in your data file with a data structure of this sort as its
+value.
+
+Shuffle sequences are composed of three basic operations, \texttt{seq},
+\texttt{randomize} and \texttt{shuffle}. Both take a series of ``type
+predicates'' as arguments, where each type predicate is the
+characteristic function of a set of types. A type predicate may be one
+of the following:
+
+\begin{itemize}
+\item
+  A string or integer, denoting the characteristic function of all items
+  of the given type.
+\item
+  A JavaScript function, returning a boolean value when given a type
+  (either a string or integer).
+\item
+  Another shuffle sequence (shuffle sequences can be embedded inside
+  bigger shuffle sequences).
+\end{itemize}
+
 The basic operations work as follows:
 
 \begin{itemize}
-
 \item
- A statement of the form \texttt{seq(pred1, pred2, pred3, ...)} specifies a sequence where all items matching \texttt{pred1} precede all items matching \texttt{pred2}, all items matching \texttt{pred2} precede all items matching \texttt{pred3}, and so on. The original relative ordering between items of the same type is preserved. A \texttt{seq} with only one argument is permissible.
+  A statement of the form \texttt{seq(pred1,\ pred2,\ pred3,\ ...)}
+  specifies a sequence where all items matching \texttt{pred1} precede
+  all items matching \texttt{pred2}, all items matching \texttt{pred2}
+  precede all items matching \texttt{pred3}, and so on. The original
+  relative ordering between items of the same type is preserved. A
+  \texttt{seq} with only one argument is permissible.
 \item
- A statement of the form \texttt{randomize(pred1)} specifies a randomly ordered sequence of all items matching pred1.
+  A statement of the form \texttt{randomize(pred1)} specifies a randomly
+  ordered sequence of all items matching pred1.
 \item
- A statement of the form \texttt{shuffle(pred1, pred2, pred3, ...)} specifies that items matching the given predicates should be shuffled together in such a way that items matching each predicate are evenly spaced. The original relative ordering between items of the same type is preserved.
+  A statement of the form \texttt{shuffle(pred1,\ pred2,\ pred3,\ ...)}
+  specifies that items matching the given predicates should be shuffled
+  together in such a way that items matching each predicate are evenly
+  spaced. The original relative ordering between items of the same type
+  is preserved.
 \end{itemize}
+
 The following type predicates are predefined as JavaScript functions:
 
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.3235in}|p{4.1765in}|}
-\hline
- \textbf{Function}            &  \textbf{Description}                                           \\
-\hline
- \texttt{anyType}             &  Matches any type.                                       \\
-\hline
- \texttt{lessThan0}           &  Matches any integer type < 0.                           \\
-\hline
- \texttt{greaterThan0}        &  Matches any integer type > 0.                           \\
-\hline
- \texttt{equalTo0}            &  Matches any integer type = 0.                           \\
-\hline
- \texttt{startsWith(s)}       &  Matches any string type starting with s.                \\
-\hline
- \texttt{endsWith(s)}         &  Matches any string type ending with s.                  \\
-\hline
- \texttt{not(pred)}           &  Matches anything that is not of a type matched by pred. \\
-\hline
- \texttt{anyOf(p1, p2, ...)}  &  Takes any number of type predicates as its arguments, and matches anything matching one of these predicates. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Function} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+\texttt{anyType} & Matches any type.\tabularnewline
+\texttt{lessThan0} & Matches any integer type \textless{}
+0.\tabularnewline
+\texttt{greaterThan0} & Matches any integer type \textgreater{}
+0.\tabularnewline
+\texttt{equalTo0} & Matches any integer type = 0.\tabularnewline
+\texttt{startsWith(s)} & Matches any string type starting with
+s.\tabularnewline
+\texttt{endsWith(s)} & Matches any string type ending with
+s.\tabularnewline
+\texttt{not(pred)} & Matches anything that is not of a type matched by
+pred.\tabularnewline
+\texttt{anyOf(p1,\ p2,\ ...)} & Takes any number of type predicates as
+its arguments, and matches anything matching one of these
+predicates.\tabularnewline
+\bottomrule
+\end{longtable}
 
 If you define your own predicates, be careful to test that they are
 cross-browser compatible. See the ``Cross-browser compatibility''
-section below for some pertinent advice.  The predicates above are
+section below for some pertinent advice. The predicates above are
 defined in \texttt{shuffle.js}.
 
-The power of shuffle sequences derives from the possibility of composing them
-without limit. Suppose we want the following order: all practice items in their
-original order followed by evenly spaced real and filler items in random order.
-Assuming the types ``practice'', ``real'' and ``filler'', we could use the following
-shuffle sequence:
-\footnotesize\begin{verbatim}
+The power of shuffle sequences derives from the possibility of composing
+them without limit. Suppose we want the following order: all practice
+items in their original order followed by evenly spaced real and filler
+items in random order. Assuming the types ``practice'', ``real'' and
+``filler'', we could use the following shuffle sequence:
 
-    seq("practice", shuffle(randomize("real"), randomize("filler")))
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{seq}\NormalTok{(}\StringTok{"practice"}\NormalTok{, }\FunctionTok{shuffle}\NormalTok{(}\FunctionTok{randomize}\NormalTok{(}\StringTok{"real"}\NormalTok{), }\FunctionTok{randomize}\NormalTok{(}\StringTok{"filler"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+Now suppose that there are two types of real item (``real1'' and
+``real2''), and we wish to order the items the same way as before:
 
-Now suppose that there are two types of real item (``real1'' and ``real2''), and we
-wish to order the items the same way as before:
-\footnotesize\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{seq}\NormalTok{(}\StringTok{"practice"}\NormalTok{, }\FunctionTok{shuffle}\NormalTok{(}\FunctionTok{randomize}\NormalTok{(}\FunctionTok{anyOf}\NormalTok{(}\StringTok{"real1"}\NormalTok{, }\StringTok{"real2"}\NormalTok{)),}
+                    \FunctionTok{randomize}\NormalTok{(}\StringTok{"filler"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
 
-    seq("practice", shuffle(randomize(anyOf("real1", "real2")),
-                    randomize("filler")))
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-What if we also want the two types of real item to be evenly spaced?  The
+What if we also want the two types of real item to be evenly spaced? The
 following formula will do the trick:
-\footnotesize\begin{verbatim}
 
-    seq("practice", shuffle(randomize("filler"),
-                            shuffle(randomize("real1"),
-                                    randomize("real2"))))
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{seq}\NormalTok{(}\StringTok{"practice"}\NormalTok{, }\FunctionTok{shuffle}\NormalTok{(}\FunctionTok{randomize}\NormalTok{(}\StringTok{"filler"}\NormalTok{),}
+                            \FunctionTok{shuffle}\NormalTok{(}\FunctionTok{randomize}\NormalTok{(}\StringTok{"real1"}\NormalTok{),}
+                                    \FunctionTok{randomize}\NormalTok{(}\StringTok{"real2"}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+This first shuffles items of type ``real1'' and items of type ``real2''
+and then shuffles filler items into the mix. Finally, practice items are
+prepended in the order they were given in \texttt{data.js}.
 
+Since it is often useful to apply \texttt{randomize} to every argument
+of \texttt{shuffle}, there is a utility function, \texttt{rshuffle},
+which automates this. The following equivalence holds:
 
-This first shuffles items of type ``real1'' and items of type ``real2'' and then
-shuffles filler items into the mix.  Finally, practice items are prepended in
-the order they were given in \texttt{data.js}.
-
-Since it is often useful to apply \texttt{randomize} to every argument of \texttt{shuffle},
-there is a utility function, \texttt{rshuffle}, which automates this. The following
-equivalence holds:
-\footnotesize\begin{verbatim}
-
-    rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
-\end{verbatim}
-
-\smallskip\noindent\normalsize
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{rshuffle}\NormalTok{(a1, a2, ...) = }\FunctionTok{shuffle}\NormalTok{(}\FunctionTok{randomize}\NormalTok{(a1), }\FunctionTok{randomize}\NormalTok{(a2), ...)}
+\end{Highlighting}
+\end{Shaded}
 
 If no shuffle sequence is specified, Ibex uses the following default
 sequence:
-\footnotesize\begin{verbatim}
 
-    seq(equalTo0, rshuffle(greaterThan0, lessThan0))
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{seq}\NormalTok{(equalTo0, }\FunctionTok{rshuffle}\NormalTok{(greaterThan0, lessThan0))}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+This will seem rather cryptic to anyone not familiar with the behavior
+of earlier versions of Ibex, where this ordering specification was built
+in and unchangeable. In short, it works well if practice items have type
+0, filler items have integer types \textless{} 0, and real items have
+integer types \textgreater{} 0.
 
+\textbf{Important}: A shuffle sequence must always have one of
+\texttt{seq}, \texttt{shuffle}, \texttt{randomize} or \texttt{rshuffle}
+as its outer element. A single string or integer is \emph{not} a valid
+shuffle sequence, and neither is a predicate expression such as
+\texttt{not("foo")}. Thus, one must use \texttt{seq("foo")}, not just
+\texttt{"foo"}, and \texttt{seq(not("foo"))}, not just
+\texttt{not("foo")}.
 
-This will seem rather cryptic to anyone not familiar with the behavior of
-earlier versions of Ibex, where this ordering specification was built in and
-unchangeable. In short, it works well if practice items have type 0, filler
-items have integer types < 0, and real items have integer types > 0.
-
-\textbf{Important}: A shuffle sequence must always have one of \texttt{seq}, \texttt{shuffle},
-\texttt{randomize} or \texttt{rshuffle} as its outer element. A single string or integer is
-\textit{ not}  a valid shuffle sequence, and neither is a predicate expression such as
-\texttt{not(``foo'')}. Thus, one must use \texttt{seq(``foo'')}, not just \texttt{``foo''}, and
-\texttt{seq(not(``foo''))}, not just \texttt{not(``foo'')}.
-
-It is possible to include duplicate items in the final sequence. For example,
-\texttt{seq(``foo'', ``foo'')} would include every item of type ``foo'' twice. For this
-reason, it is possible to accidentally include duplicate items if a number of
-your predicates overlap.  You can define your own shuffle sequence operators
-and predicates quite easily; see \texttt{shuffle.js} for the definitions of the \texttt{seq},
+It is possible to include duplicate items in the final sequence. For
+example, \texttt{seq("foo",\ "foo")} would include every item of type
+``foo'' twice. For this reason, it is possible to accidentally include
+duplicate items if a number of your predicates overlap. You can define
+your own shuffle sequence operators and predicates quite easily; see
+\texttt{shuffle.js} for the definitions of the \texttt{seq},
 \texttt{shuffle} and \texttt{randomize} operators.
 
-\subsection{Adding separators}
+\subsection{Adding separators}\label{adding-separators}
 
-Normally, it is a good idea to have some sort of padding in between items to
-warn participants that they have finished one item and are starting another.
-Ibex provides the \texttt{Separator} item for this purpose. It can either work on a
-timeout or prompt for a keypress. Here's an example:
-\footnotesize\begin{verbatim}
+Normally, it is a good idea to have some sort of padding in between
+items to warn participants that they have finished one item and are
+starting another. Ibex provides the \texttt{Separator} item for this
+purpose. It can either work on a timeout or prompt for a keypress.
+Here's an example:
 
-    ["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[}\StringTok{"sep"}\NormalTok{, }\StringTok{"Separator"}\NormalTok{, \{}\DataTypeTok{transfer}\NormalTok{: }\DecValTok{1000}\NormalTok{, }\DataTypeTok{normalMessage}\NormalTok{: }\StringTok{"Please wait for the next sentence."}\NormalTok{\}]}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+When the \texttt{transfer} option is set to 1000, this specifies that
+there should be a 1000ms wait before the next item. The
+\texttt{normalMessage} option gives the message that should be displayed
+if the participant didn't do anything wrong on the previous item (see
+the section ``Communication between elements'' for more details). If the
+other items have failure conditions, you should set the
+\texttt{errorMessage} option too. If you want the participant to proceed
+by pressing a key rather than waiting, set \texttt{transfer} to
+``keypress''.
 
-When the \texttt{transfer} option is set to 1000, this specifies that there should be
-a 1000ms wait before the next item. The \texttt{normalMessage} option gives the
-message that should be displayed if the participant didn't do anything wrong on
-the previous item (see the section ``Communication between elements'' for more
-details). If the other items have failure conditions, you should set the
-\texttt{errorMessage} option too. If you want the participant to proceed by pressing a
-key rather than waiting, set \texttt{transfer} to ``keypress''.
+The shuffle sequence operator \texttt{sepWith} is provided for the
+purpose of interpolating separators with other items. It takes two
+arguments: the first is a shuffle sequence specifying the sequence of
+items which should be used to separate the other items; the second
+argument is a shuffle sequence specifying the other items.
 
-The shuffle sequence operator \texttt{sepWith} is provided for the purpose of
-interpolating separators with other items. It takes two arguments: the first is
-a shuffle sequence specifying the sequence of items which should be used to
-separate the other items; the second argument is a shuffle sequence specifying
-the other items.
+Let's take the example data file above and add timeout Separators
+between each item. There are no failure conditions in this experiment
+(since there is no ``wrong'' answer for an acceptability judgment) so we
+only need to specify the \texttt{normalMessage} option. For the moment,
+we'll still present the sentences in the order in which they appear in
+the \texttt{items} array. Here's the modified file:
 
-Let's take the example data file above and add timeout Separators between each
-item. There are no failure conditions in this experiment (since there is no
-``wrong'' answer for an acceptability judgment) so we only need to specify the
-\texttt{normalMessage} option. For the moment, we'll still present the sentences in
-the order in which they appear in the \texttt{items} array. Here's the modified file:
-\footnotesize\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{shuffleSequence = }\FunctionTok{sepWith}\NormalTok{(}\StringTok{"sep"}\NormalTok{, }\FunctionTok{not}\NormalTok{(}\StringTok{"sep"}\NormalTok{));}
 
-    var shuffleSequence = sepWith("sep", not("sep"));
+    \KeywordTok{var} \NormalTok{defaults = [}
+        \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\},}
+        \StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{mode}\NormalTok{: }\StringTok{"speeded acceptability"}\NormalTok{\}}
+    \NormalTok{];}
 
-    var defaults = [
-        "Question", {as: ["Yes", "No"]},
-        "DashedSentence", {mode: "speeded acceptability"}
-    ];
+    \KeywordTok{var} \NormalTok{items = [}
 
-    var items = [
+    \NormalTok{[}\StringTok{"sep"}\NormalTok{, }\StringTok{"Separator"}\NormalTok{, \{}\DataTypeTok{transfer}\NormalTok{: }\DecValTok{1500}\NormalTok{, }\DataTypeTok{normalMessage}\NormalTok{: }\StringTok{"Please wait for the next item."}\NormalTok{\}],}
 
-    ["sep", "Separator", {transfer: 1500, normalMessage: "Please wait for the next item."}],
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Here's a silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Is this a filler sentence?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"And another silly filler sentence"}\NormalTok{\},}
+               \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Does this sentence have a relative clause?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was there movement through [Spec,CP]?"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\},}
+                  \StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was the first word of that sentence 'frog'?"}\NormalTok{\}]}
 
-    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
-               "Question", {q: "Is this a filler sentence?"}],
-    ["filler", "DashedSentence", {s: "And another silly filler sentence"},
-               "Question", {q: "Does this sentence have a relative clause?"}],
-    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
-                  "Question", {q: "Was there movement through [Spec,CP]?"}],
-    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
-                  "Question", {q: "Was the first word of that sentence 'frog'?"}]
+    \NormalTok{];}
+\end{Highlighting}
+\end{Shaded}
 
-    ];
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-
-\subsection{Manipulating individual items}
+\subsection{Manipulating individual
+items}\label{manipulating-individual-items}
 
 So far, we've been treating items as atoms for the purposes of shuffle
 sequences -- although an item might be composed of several elements, the
-operations \texttt{seq}, \texttt{randomize}, \texttt{shuffle} and \texttt{sepWith} ignore this internal structure.
-However, it is sometimes useful to be able to append or prepend a particular
-sequence of elements to every item.  For example, if you are doing a speeded
-acceptability judgment task, you might want every sentence to be followed by
-exactly the same question (``Was this a good sentence?''). To this end, webspr
-provides the \texttt{precedeEachWith} and \texttt{followEachWith} operations.
+operations \texttt{seq}, \texttt{randomize}, \texttt{shuffle} and
+\texttt{sepWith} ignore this internal structure. However, it is
+sometimes useful to be able to append or prepend a particular sequence
+of elements to every item. For example, if you are doing a speeded
+acceptability judgment task, you might want every sentence to be
+followed by exactly the same question (``Was this a good sentence?'').
+To this end, webspr provides the \texttt{precedeEachWith} and
+\texttt{followEachWith} operations.
 
-Both functions take two arguments, each of which should be a shuffle sequence.
-The first argument specifies the sequence of items which (when flattened to a
-sequence of elements) is to be appended/prepended to every item in the second
-argument.  Returning to the previous example data file, let's modify it so that
-every sentence is followed by the same acceptability question.  We'll also
-ensure that the sentences are randomly ordered, with the fillers and ``real''
-sentences evenly spaced:
-\footnotesize\begin{verbatim}
+Both functions take two arguments, each of which should be a shuffle
+sequence. The first argument specifies the sequence of items which (when
+flattened to a sequence of elements) is to be appended/prepended to
+every item in the second argument. Returning to the previous example
+data file, let's modify it so that every sentence is followed by the
+same acceptability question. We'll also ensure that the sentences are
+randomly ordered, with the fillers and ``real'' sentences evenly spaced:
 
-    var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{var} \NormalTok{shuffleSequence = }\FunctionTok{followEachWith}\NormalTok{(}\StringTok{"question"}\NormalTok{, }\FunctionTok{rshuffle}\NormalTok{(}\StringTok{"filler"}\NormalTok{, }\StringTok{"relclause"}\NormalTok{));}
 
-    var defaults = [
-        "DashedSentence", {mode: "speeded acceptability"}
-    ];
+    \KeywordTok{var} \NormalTok{defaults = [}
+        \StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{mode}\NormalTok{: }\StringTok{"speeded acceptability"}\NormalTok{\}}
+    \NormalTok{];}
 
-    var items = [
+    \KeywordTok{var} \NormalTok{items = [}
 
-    ["question", "Question", {q: "Was that a good sentence?", as: ["Yes", "No"]}],
+    \NormalTok{[}\StringTok{"question"}\NormalTok{, }\StringTok{"Question"}\NormalTok{, \{}\DataTypeTok{q}\NormalTok{: }\StringTok{"Was that a good sentence?"}\NormalTok{, }\DataTypeTok{as}\NormalTok{: [}\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{]\}],}
 
-    ["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
-    ["filler", "DashedSentence", {s: "And another silly filler sentence"}],
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Here's a silly filler sentence"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"filler"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"And another silly filler sentence"}\NormalTok{\}],}
 
-    ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"}],
-    ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"}]
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\}],}
+    \NormalTok{[}\StringTok{"relclause"}\NormalTok{, }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\}]}
 
-    ];
-\end{verbatim}
+    \NormalTok{];}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+\textbf{Important:} \texttt{precedeEachWith} and \texttt{followEachWith}
+have a somewhat confusing behavior with respect to the format of the
+results file. Although in effect, the first argument of
+\texttt{followEachWith} is appended to every item, the appended elements
+are not considered a part of the items they are appended to in the
+results file. Rather, every question in the preceding example will have
+the same item number and element number in the results file (that based
+on the position of the question item in the data file).
 
-\textbf{Important:} \texttt{precedeEachWith} and \texttt{followEachWith} have a somewhat confusing
-behavior with respect to the format of the results file. Although in effect,
-the first argument of \texttt{followEachWith} is appended to every item, the appended
-elements are not considered a part of the items they are appended to in the
-results file. Rather, every question in the preceding example will have the
-same item number and element number in the results file (that based on the
-position of the question item in the data file).
+\subsection{Latin square designs}\label{latin-square-designs}
 
-\subsection{Latin square designs}
+Ibex has built-in support for latin square designs. These are
+implemented by assigning each item a \emph{group} in addition to its
+type. Each participant sees only one item out of all the items in any
+given group. To give an example, we could place both of the
+``relclause'' sentences from the previous example in the same group
+using the following code:
 
-Ibex has built-in support for latin square designs. These are implemented by
-assigning each item a\textit{ group}  in addition to its type. Each participant sees
-only one item out of all the items in any given group. To give an example, we
-could place both of the ``relclause'' sentences from the previous example in the
-same group using the following code:
-\footnotesize\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[[}\StringTok{"relclause"}\NormalTok{, }\DecValTok{1}\NormalTok{], }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"A sentence that has a relative clause"}\NormalTok{\}],}
+    \NormalTok{[[}\StringTok{"relclause"}\NormalTok{, }\DecValTok{1}\NormalTok{], }\StringTok{"DashedSentence"}\NormalTok{, \{}\DataTypeTok{s}\NormalTok{: }\StringTok{"Another sentence that has a relative clause"}\NormalTok{\}]}
+\end{Highlighting}
+\end{Shaded}
 
-    [["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
-    [["relclause", 1], "DashedSentence", {s: "Another sentence that has a relative clause"}]
-\end{verbatim}
+Now, any given participant will see only one of these sentences. Designs
+are rotated using a counter stored on the server. Groups, like types,
+may either be strings or numbers. By default, webspr does not check that
+all groups contain the same number of items (this behavior is new in
+0.2.4). You can set the \texttt{equalGroupSizes} variable to
+\texttt{true} in order to revert to the old behavior, where an error is
+raised if groups contain differing number of items. (See the
+``Miscellaneous options'' subsection below.)
 
-\smallskip\noindent\normalsize
-
-Now, any given participant will see only one of these
-sentences. Designs are rotated using a counter stored on the
-server.
-Groups, like types, may either be strings or numbers. By
-default, webspr does not check that all groups contain the same number
-of items (this behavior is new in 0.2.4). You can set the
-\texttt{equalGroupSizes} variable to \texttt{true} in order to revert to the old
-behavior, where an error is raised if groups contain differing number
-of items. (See the ``Miscellaneous options'' subsection below.)
-
-\textbf{New:} You may now choose which latin square a participant will be
-placed in by using a URL of the following form:
-``.../server.py?withsquare=XXXX''. This will set the latin square to
-XXXX for the current participant and then display the main experiment
-page.  Selecting the latin square in this manner does \textbf{not} modify the
-master counter stored on the server.
+\textbf{New:} You may now choose which latin square a participant will
+be placed in by using a URL of the following form:
+``\ldots{}/server.py?withsquare=XXXX''. This will set the latin square
+to XXXX for the current participant and then display the main experiment
+page. Selecting the latin square in this manner does \textbf{not} modify
+the master counter stored on the server.
 
 \textbf{Newer:} You can also set the counter in the data file, with a
-statement such as \texttt{var counterOverride = 18;}. Again, the server's
-latin square counter is not modified.  This method takes priority over
-the URL method described in the previous paragraph, if both are used.
+statement such as \texttt{var\ counterOverride\ =\ 18;}. Again, the
+server's latin square counter is not modified. This method takes
+priority over the URL method described in the previous paragraph, if
+both are used.
 
-A new (and not very well-tested) feature allows for more complex designs where
-selection of an item from one group is dependent on selection of an item from
-another. For example, you can specify that the item chosen from group 3 should
-be the same as the item chosen from group 2 (i.e. if the first item is chosen
-from group 2, the first item will also be chosen from group 3). To use this
-feature, just replace each group specifier with a pair of group specifiers,
-where the first member of the pair is the original group specifier, and the
-second is the group which governs selection from the original group.  For
-example, suppose that we have another group (group 2), and we want choices from
-this group to be linked to choices from group 1 in the example above.  The
-following code will do the trick:
-\footnotesize\begin{verbatim}
+A new (and not very well-tested) feature allows for more complex designs
+where selection of an item from one group is dependent on selection of
+an item from another. For example, you can specify that the item chosen
+from group 3 should be the same as the item chosen from group 2 (i.e.~if
+the first item is chosen from group 2, the first item will also be
+chosen from group 3). To use this feature, just replace each group
+specifier with a pair of group specifiers, where the first member of the
+pair is the original group specifier, and the second is the group which
+governs selection from the original group. For example, suppose that we
+have another group (group 2), and we want choices from this group to be
+linked to choices from group 1 in the example above. The following code
+will do the trick:
 
-    [["relclause", [2, 1]], "DashedSentence",
-      {s: "I am paired with 'A sentence that has a relative clause'"}],
-    [["relclause", [2, 1]], "DashedSentence",
-      {s: "I am paired with 'Another sentence that has a relative clause'"}]
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[[}\StringTok{"relclause"}\NormalTok{, [}\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{]], }\StringTok{"DashedSentence"}\NormalTok{,}
+      \NormalTok{\{}\DataTypeTok{s}\NormalTok{: }\StringTok{"I am paired with 'A sentence that has a relative clause'"}\NormalTok{\}],}
+    \NormalTok{[[}\StringTok{"relclause"}\NormalTok{, [}\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{]], }\StringTok{"DashedSentence"}\NormalTok{,}
+      \NormalTok{\{}\DataTypeTok{s}\NormalTok{: }\StringTok{"I am paired with 'Another sentence that has a relative clause'"}\NormalTok{\}]}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+Note that the second number in the pair must be the same for all items
+in the group. \textbf{Warning:} This feature may be removed in future
+releases if I get around to implementing a more general way of
+implementing more complex latin square designs.
 
-Note that the second number in the pair must be the same for all items in the group.
-\textbf{Warning:} This feature may be removed in future releases if I get around to implementing
-a more general way of implementing more complex latin square designs.
+\subsection{Sending results early}\label{sending-results-early}
 
-\subsection{Sending results early}
+You can now control the point in the experiment at which Ibex sends the
+results to the server. This allows you to (e.g.) present the participant
+with a link to another website after the results have been successfully
+uploaded. In order to use this feature, you must first set the
+\texttt{manualSendResults} config variable to \texttt{true}. Then, add a
+\texttt{\_\_SendResults\_\_} controller to your items list and insert it
+somewhere in your shuffle sequence. There is some example code in
+\texttt{data\_includes/example\_data.js}. Note that you may only send
+results once per experiment -- it is not possible to incrementally
+upload results.
 
-You can now control the point in the experiment at which Ibex sends the results to the server.
-This allows you to (e.g.) present the participant with a link to another website after the
-results have been successfully uploaded. In order to use this feature, you must first set
-the \texttt{manualSendResults} config variable to \texttt{true}. Then, add a \texttt{\_\_SendResults\_\_} controller
-to your items list and insert it somewhere in your shuffle sequence. There is some example
-code in \texttt{data\_includes/example\_data.js}.  Note that you may only
-send results once per experiment -- it is not possible to incrementally upload results.
+If you set \texttt{manualSendResults} to \texttt{true}, but do not add a
+\texttt{\_\_SendResults\_\_} controller to your shuffle sequence, then
+the results will never get sent at all.
 
-If you set \texttt{manualSendResults} to \texttt{true}, but do not add a \texttt{\_\_SendResults\_\_} controller to
-your shuffle sequence, then the results will never get sent at all.
+\subsection{Modifying the running order
+manually}\label{modifying-the-running-order-manually}
 
-\subsection{Modifying the running order manually}
-
-Occasionally, shuffle sequences aren't powerful enough to arrange
-items in the order you wish.  To perform abritrary rearrangements of
-items, you can define a \texttt{modifyRunningOrder} function in your data
-file. This function takes as its input the running order generated by
-the shuffleSequence, and returns a new runningOrder. (The function is
-permitted to modify its argument, but it must return a running order.)
-A running order is an array of arrays of elements. Each element is an object
-with the following properties:
+Occasionally, shuffle sequences aren't powerful enough to arrange items
+in the order you wish. To perform abritrary rearrangements of items, you
+can define a \texttt{modifyRunningOrder} function in your data file.
+This function takes as its input the running order generated by the
+shuffleSequence, and returns a new runningOrder. (The function is
+permitted to modify its argument, but it must return a running order.) A
+running order is an array of arrays of elements. Each element is an
+object with the following properties:
 
 \begin{itemize}
-
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- \texttt{itemNumber}
+  \texttt{itemNumber}
 \item
- \texttt{elementNumber}
+  \texttt{elementNumber}
 \item
- \texttt{type}
+  \texttt{type}
 \item
- \texttt{group}
+  \texttt{group}
 \item
- \texttt{controller} (a string giving the name of the controller)
+  \texttt{controller} (a string giving the name of the controller)
 \item
- \texttt{options} (an object giving the options for the controller)
+  \texttt{options} (an object giving the options for the controller)
 \item
- \texttt{hideResults} (boolean; if true, results from this controller are not included in the results file)
+  \texttt{hideResults} (boolean; if true, results from this controller
+  are not included in the results file)
 \end{itemize}
+
 You can create new objects with these properties and insert them into
-the running order.  Typically, these objects would have \texttt{itemNumber},
-\texttt{elementNumber}, \texttt{type} and \texttt{group} set to \texttt{null}. In this case, if
-the controller adds lines to the results file, then the ``item'',
-``element'', ``type'' and ``group'' columns will all have the value
-``DYNAMIC''.
+the running order. Typically, these objects would have
+\texttt{itemNumber}, \texttt{elementNumber}, \texttt{type} and
+\texttt{group} set to \texttt{null}. In this case, if the controller
+adds lines to the results file, then the ``item'', ``element'', ``type''
+and ``group'' columns will all have the value ``DYNAMIC''.
 
-The convenince constructor \texttt{DynamicElement} is provided to ease the construction
-of typical element objects. This takes as its first argument a controller name,
-and as its second the controller's options. Optionally, \texttt{true} may be passed as the
-third argument to set the \texttt{hideResults} property to \texttt{true}.
-The following example inserts a ``pause'' \texttt{Message} at every tenth item:
-\footnotesize\begin{verbatim}
+The convenince constructor \texttt{DynamicElement} is provided to ease
+the construction of typical element objects. This takes as its first
+argument a controller name, and as its second the controller's options.
+Optionally, \texttt{true} may be passed as the third argument to set the
+\texttt{hideResults} property to \texttt{true}. The following example
+inserts a ``pause'' \texttt{Message} at every tenth item:
 
-    function modifyRunningOrder(ro) {
-        for (var i = 0; i < ro.length; ++i) {
-            if (i % 10 == 0) {
-                // Passing 'true' as the third argument casues the results from this controller
-                // to be omitted from the results file. (Though in fact, the Message controller
-                // does not add any results in any case.)
-                ro[i].push(new DynamicElement(
-                    "Message",
-                    { html: "<p>Pause</p>", transfer: 1000 },
-                    true
-                ));
-            }
-        }
-        return ro;
-    }
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{function} \FunctionTok{modifyRunningOrder}\NormalTok{(ro) \{}
+        \KeywordTok{for} \NormalTok{(}\KeywordTok{var} \NormalTok{i = }\DecValTok{0}\NormalTok{; i < }\OtherTok{ro}\NormalTok{.}\FunctionTok{length}\NormalTok{; ++i) \{}
+            \KeywordTok{if} \NormalTok{(i % }\DecValTok{10} \NormalTok{== }\DecValTok{0}\NormalTok{) \{}
+                \CommentTok{// Passing 'true' as the third argument casues the results from this controller}
+                \CommentTok{// to be omitted from the results file. (Though in fact, the Message controller}
+                \CommentTok{// does not add any results in any case.)}
+                \NormalTok{ro[i].}\FunctionTok{push}\NormalTok{(}\KeywordTok{new} \FunctionTok{DynamicElement}\NormalTok{(}
+                    \StringTok{"Message"}\NormalTok{,}
+                    \NormalTok{\{ }\DataTypeTok{html}\NormalTok{: }\StringTok{"<p>Pause</p>"}\NormalTok{, }\DataTypeTok{transfer}\NormalTok{: }\DecValTok{1000} \NormalTok{\},}
+                    \KeywordTok{true}
+                \NormalTok{));}
+            \NormalTok{\}}
+        \NormalTok{\}}
+        \KeywordTok{return} \NormalTok{ro;}
+    \NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+\section{Communication between
+elements}\label{communication-between-elements}
 
-
-\section{Communication between elements}
-
-Ibex allows for a limited amount of communication between elements.  Each
-element may set keys in a hashtable which is passed to the next element.  The
-hashtable is cleared between elements, so there is no possibility of
+Ibex allows for a limited amount of communication between elements. Each
+element may set keys in a hashtable which is passed to the next element.
+The hashtable is cleared between elements, so there is no possibility of
 long-distance communication.
 
-Currently, this system is used to provide feedback to participants when they
-(for example) answer a comprehension question incorrectly.  Controllers such as
-\texttt{Question} set the key ``failed'' if something goes wrong, and the next
-\texttt{Separator} item is then able to display a message warning the participant that
-they answered incorrectly.
+Currently, this system is used to provide feedback to participants when
+they (for example) answer a comprehension question incorrectly.
+Controllers such as \texttt{Question} set the key ``failed'' if
+something goes wrong, and the next \texttt{Separator} item is then able
+to display a message warning the participant that they answered
+incorrectly.
 
-\section{Controllers}
+\section{Controllers}\label{controllers}
 
-For all controllers, the \texttt{hideProgressBar} option may be set to true, in order to prevent the progress
-bar being displayed while the controller is in action. Similarly, the \texttt{countsForProgressBar} option
-may be set to determine whether or not completion of the controller causes the indicator in the
-progress bar to move to the right. (Different controllers have a different default setting for
+For all controllers, the \texttt{hideProgressBar} option may be set to
+true, in order to prevent the progress bar being displayed while the
+controller is in action. Similarly, the \texttt{countsForProgressBar}
+option may be set to determine whether or not completion of the
+controller causes the indicator in the progress bar to move to the
+right. (Different controllers have a different default setting for
 \texttt{countsForProgressBar}.)
 
-\subsection{Separator}
+\subsection{Separator}\label{separator}
 
-\subsubsection*{Options}
+\textbf{Options}
 
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+transfer & \texttt{"keypress"} & Must be either \texttt{"keypress"} or a
+number. If the former, participant goes to the next item by pressing any
+key. If the latter, specifies number of ms to wait before the next
+item.\tabularnewline
+normalMessage & \texttt{"Press\ any\ key\ to\ continue."} & Message to
+display if the previous item was completed normally.\tabularnewline
+errorMessage & \texttt{"Wrong.\ Press\ any\ key\ to\ continue."} &
+Message to display (in red) if the previous item was not completed
+normally (e.g.~timeout, incorrect answer).\tabularnewline
+ignoreFailure & \texttt{false} & If true, never displays an error
+message.\tabularnewline
+\bottomrule
+\end{longtable}
 
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0928in}|p{1.1429in}|p{3.2643in}|}
-\hline
- \textbf{Option}         &  \textbf{Default}     &  \textbf{Description} \\
-\hline
- transfer         &  \texttt{``keypress''}  &  Must be either \texttt{``keypress''} or a number. If the former, participant goes to the next item by pressing any key. If the latter, specifies number of ms to wait before the next item. \\
-\hline
- normalMessage    &  \texttt{``Press any key to continue.''}  &  Message to display if the previous item was completed normally. \\
-\hline
- errorMessage     &  \texttt{``Wrong. Press any key to continue.''}  &  Message to display (in red) if the previous item was not completed normally (e.g. timeout, incorrect answer). \\
-\hline
- ignoreFailure    &  \texttt{false}       &  If true, never displays an error message. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
+\textbf{Results}
 
 \texttt{Separator} does not add any lines to the results file.
 
-\subsection{Message}
+\subsection{Message}\label{message}
 
-\subsubsection*{Options}
+\textbf{Options}
 
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+html & \emph{obligatory} & The HTML for the message to display (see
+section ``HTML Code'' below).\tabularnewline
+transfer & \texttt{"click"} & Either \texttt{"click"},
+\texttt{"keypress}``, an integer, or \texttt{null}. If \texttt{"click"},
+the participant clicks a link at the bottom of the message to continue
+(see''continueMessage" option). If \texttt{"keypress"}, they press any
+key to continue. If an integer, the experiment continues after pausing
+for the specified number of milliseconds. If \texttt{null}, there is no
+way for the user to complete the controller (and no ``click to
+continue'' message is displayed). This is useful only when the
+controller is part of a larger \texttt{VBox}.\tabularnewline
+consentRequired & \texttt{false} & If true, the participant is required
+to tick a checkbox indicating that they consent to do the experiment (in
+this case, the message would probably be some sort of statement of
+terms/conditions). This option can only be set to \texttt{true} if the
+``transfer'' option is set go \texttt{"click"}. Note that it is also
+possible to create checkboxes like this using the more flexible
+\texttt{Form} controller.\tabularnewline
+continueMessage & \texttt{"..."} & Only valid if the ``consentRequired''
+option is set to \texttt{"true"}. This specifies the text that will
+appear in the link that the participant needs to click to continue with
+the experiment.\tabularnewline
+consentMessage & \texttt{"..."} & Only valid if the ``consentRequired''
+option is set to \texttt{"true"}. This specifies the text that will
+appear next to the checkbox.\tabularnewline
+consentErrorMessage & \texttt{"..."} & Only valid if the
+``consentRequired'' option is set to \texttt{"true"}. This specifies the
+error message that will be given if the participant attempts to continue
+without checking the consent checkbox.\tabularnewline
+\bottomrule
+\end{longtable}
 
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0228in}|p{1.0078in}|p{3.4694in}|}
-\hline
- \textbf{Option}             &  \textbf{Default}     &  \textbf{Description}                                                        \\
-\hline
- html                 & \textit{ obligatory}   &  The HTML for the message to display (see section ``HTML Code'' below). \\
-\hline
- transfer             &  \texttt{``click''}     &  Either \texttt{``click''}, \texttt{``keypress}'', an integer, or \texttt{null}. If \texttt{``click''}, the participant clicks a link at the bottom of the message to continue (see ``continueMessage'' option). If \texttt{``keypress''}, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. If \texttt{null}, there is no way for the user to complete the controller (and no ``click to continue'' message is displayed). This is useful only when the controller is part of a larger \texttt{VBox}. \\
-\hline
- consentRequired      &  \texttt{false}       &  If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to \texttt{true} if the ``transfer'' option is set go \texttt{``click''}. Note that it is also possible to create checkboxes like this using the more flexible \texttt{Form} controller. \\
-\hline
- continueMessage      &  \texttt{``...''}       &  Only valid if the ``consentRequired'' option is set to \texttt{``true''}. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. \\
-\hline
- consentMessage       &  \texttt{``...''}       &  Only valid if the ``consentRequired'' option is set to \texttt{``true''}. This specifies the text that will appear next to the checkbox. \\
-\hline
- consentErrorMessage  &  \texttt{``...''}       &  Only valid if the ``consentRequired'' option is set to \texttt{``true''}. This specifies the error message that will be given if the participant attempts to continue without checking the consent checkbox. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
+\textbf{Results}
 
 \texttt{Message} does not add any lines to the results file.
 
-\subsection{DashedSentence}
-
-\subsubsection*{Options}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0146in}|p{1.0279in}|p{3.4575in}|}
-\hline
- \textbf{Option}       &  \textbf{Default}               &  \textbf{Description}                                               \\
-\hline
- s              & \textit{ obligatory}             &  The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings (``chunks''), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character ``@'', then the controller will finish after the word beginning with ``@'' is displayed (the ``@'' will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. \\
-\hline
- mode           &  \texttt{``self-paced reading''}  &  Either \texttt{``self-paced reading''} or \texttt{``speeded acceptability''}. \\
-\hline
- display        &  \texttt{``dashed''}              &  If set to \texttt{``dashed''}, the sentence is displayed as a sequence of dashes; when the participant presses the space bar, the current  word is displayed above the corresponding dash, and no other words are displayed. If set to \texttt{``in place''}, words are displayed one-by-one in the center of the screen. Setting to \texttt{``in place''} changes the default value of \texttt{wordPauseTime} from 100 to 0 and the default value of \texttt{wordTime} from 300 to 400, since otherwise the display flickers. \\
-\hline
- blankText      &  \texttt{``{\textbackslash}u2014{\textbackslash}u2014''}  &  Applicable only if ``display'' is set to \texttt{``in place''}. This is the text that is shown before the participant presses space for the first time. By default it is two horizontal dashes. \\
-\hline
- wordTime       &  \texttt{300}                   &  If mode is \texttt{``speeded acceptability''}, the time in ms each word should be displayed for. (See also description of ``display'' option.) \\
-\hline
- wordPauseTime  &  \texttt{100}                   &  If mode is \texttt{``speeded acceptability''}, the time in ms a word should remain blank before it is shown. (See also description of ``display'' option.) \\
-\hline
- sentenceDescType  &  \texttt{``literal''}          &  Determines the format of column 1 of the results (see table below). If \texttt{``literal''}, column contains the sentence itself (encoded as a URL with \%XX escapes). Currently, this is the only possible value for this option. \\
-\hline
- showAhead      &  \texttt{true}                  &  Whether or not to use dashes to indicate the presence of words ahead of the reader's current position. \\
-\hline
- showBehind     &  \texttt{true}                  &  As above (but behind rather than ahead). If both showAhead and showBehind are set to \texttt{false}, no dashes are shown. \\
-\hline
- hideUnderscores  &  \texttt{false}               &  If this is set to \texttt{true}, the underscore character is interpreted as a space which does not trigger a break between words. This is an alternative to passing an array of strings as the value of the \texttt{s} option. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\textbf{Note on right-to-left languages:} The current version of Ibex doesn't provide out-of-the-box support
-for doing self-paced reading experiments with languages that are displayed right to left (although
-I hope to add support for this soon). However, it
-is possible to modify the code for the \texttt{DashedSentence} controller to display in right-to-left order.
-Please contact me (a.d.drummond@gmail.com) if you want to do this.
-
-\subsubsection*{Results}
-
-The format of the results depends on the setting of the \texttt{mode} option. If it is
-set to ``speeded acceptability'', results have the following format:
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.2230in}|p{4.2770in}|}
-\hline
- \textbf{Column}  &  \textbf{Description} \\
-\hline
- 1         &  See documentation for `sentenceDescType' option above. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-If \texttt{mode} is set to ``self-paced reading'', the results look like this:
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0504in}|p{4.4496in}|}
-\hline
- \textbf{Column}  &  \textbf{Description} \\
-\hline
- 1         &  Word number. For example, ``1'' indicates that this line gives the time it took to read the first word (i.e. the difference between <the time at which the first word appeared> and <the time at which it disappeared and the second word appeared>). \\
-\hline
- 2         &  The word. \\
-\hline
- 3         &  The reading time in ms. \\
-\hline
- 4         &  Either 1 or 0. Indicates whether or not there was a line break between word n and word n + 1 (where reading time is for word n). \\
-\hline
- 5         &  See documentation for `sentenceDescType' option above. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsection{FlashSentence}
-
-\subsubsection*{Options}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0726in}|p{1.0726in}|p{3.3548in}|}
-\hline
- \textbf{Option}  &  \textbf{Default}     &  \textbf{Description}                 \\
-\hline
- s         & \textit{ obligatory}   &  The sentence to be displayed. \\
-\hline
- timeout   &  2000          &  If \texttt{null}, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence.    \\
-\hline
- sentenceDescType  &  \texttt{``md5''}  &  See documentation for DashedSentence controller. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.1189in}|p{4.3811in}|}
-\hline
- \textbf{Column}  &  \textbf{Description} \\
-\hline
- 1         &  See documentation for `sentenceDescType' option of the DashedSentence controller. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsection{Question}
-
-\subsubsection*{Options}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0168in}|p{1.0154in}|p{3.4677in}|}
-\hline
- \textbf{Option}        &  \textbf{Default}     &  \textbf{Description}                                                     \\
-\hline
- q               &  \texttt{null}        &  The question to pose.                                             \\
-\hline
- as              & \textit{ obligatory}   &  A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. \texttt{{[}``y'', ``Yes''{]}}. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if \texttt{presentAsScale} is \texttt{true} (but they will not be ignored if \texttt{presentHorizontally} is true). \\
-\hline
- instructions    &  \texttt{null}        &  Instructions for answering the question, displayed following the question and the answer selection. \\
-\hline
- hasCorrect      &  \texttt{false}       &  If \texttt{false}, indicates that none of the answers is privileged as correct. Otherwise, is either \texttt{true}, indicating that the first answer in the \texttt{as} list is the correct one; an integer, giving the index of the correct answer in the \texttt{as} list (starting from 0); or a string, giving the correct answer. \\
-\hline
- autoFirstChar   &  \texttt{false}       &  If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) \\
-\hline
- showNumbers     &  \texttt{true}        &  If \texttt{true}, answers are numbered and participants can use number keys to select them. \\
-\hline
- randomOrder     &  \texttt{true} if the question has a correct answer, false otherwise.  &  Whether or not to randomize the order of the answers before displaying them. If \texttt{presentAsScale} or \texttt{presentHorizontally} are set to \texttt{true}, \texttt{randomOrder} can also be set to a list of keys. This list should be the same length as \texttt{as}. It specifies keys in a left-to-right order. This makes it possible for the mapping from keys to answers to correspond to the (random) order in which the answers are presented. \\
-\hline
- presentAsScale  &  \texttt{false}       &  If \texttt{true}, answers are presented as a scale (useful for acceptability ratings). If any of the points in the scale are integers 0-9, the participant may select them by pressing a number key. \\
-\hline
- presentHorizontally  &  \texttt{false}   &  Note that at most one of \texttt{presentAsScale} and \texttt{presentHorizontally} should be set to \texttt{true}. \texttt{presentHorizontally} is like \texttt{presentAsScale} except that it does not override the usual means of specifying which key presses trigger which answers, and it leaves \texttt{randomOrder} on by default for questions which have correct answers. If your scale contains words, you may use the \texttt{autoFirstChar} option, and in all cases, you may explicitly specify answer keys, as described in the comment on the \texttt{as} option. \\
-\hline
- leftComment     &  \texttt{null}        & \textit{ Only valid if }\textit{\texttt{presentAsScale}}\textit{ is }\textit{\texttt{true}}\textit{.}  This option specifies text to be displayed at the left edge of a scale (e.g. ``Bad''). \\
-\hline
- rightComment    &  \texttt{null}        &  As for ``leftComment'', but for the right edge of the scale. \\
-\hline
- timeout         &  \texttt{null}        &  If \texttt{null}, there is no time limit. Otherwise, should be a number giving the time in ms a participant has to answer the question. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0752in}|p{4.4248in}|}
-\hline
- \textbf{Column}  &  \textbf{Description} \\
-\hline
- 1         &  The question that was posed (encoded as a URL with \%XX escapes). \\
-\hline
- 2         &  The answer that the participant gave (also encoded as a URL).    \\
-\hline
- 3         &  ``NULL'' if the question as no correct answer. Otherwise, 1 if the participant answered correctly, or 0 if they didn't. \\
-\hline
- 4         &  The time the participant took to answer the question (ms). 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsection{AcceptabilityJudgment}
-
-The \texttt{AcceptabilityJudgment} controller makes it straightforward to present a sentence together
-with a rating scale. It is a combination of the \texttt{FlashSentence} and \texttt{Message} controllers.
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.4423in}|p{1.6462in}|p{2.4115in}|}
-\hline
- \textbf{Option}        &  \textbf{Default}            &  \textbf{Description}                \\
-\hline
- s               & \textit{ obligatory}          &  The sentence.                \\
-\hline
- q               & \textit{ obligatory}          &  The question.                \\
-\hline
- as              & \textit{ obligatory}          &  Answers (as for \texttt{Question}). \\
-\hline
- instructions    &  \texttt{null}               &  As for \texttt{Question}            \\
-\hline
- hasCorrect      &  \texttt{false}              &  As for \texttt{Question}            \\
-\hline
- autoFirstChar   &  \texttt{false}              &  As for \texttt{Question}            \\
-\hline
- showNumbers     &  \texttt{true}               &  As for \texttt{Question}            \\
-\hline
- randomOrder     & \textit{ as for }\textit{\texttt{Question}}\textit{}   &  As for \texttt{Question}            \\
-\hline
- presentAsScale  &  \texttt{false}              &  As for \texttt{Question}            \\
-\hline
- leftComment     &  \texttt{null}               &  As for \texttt{Question}            \\
-\hline
- rightComment    &  \texttt{null}               &  As for \texttt{Question}            \\
-\hline
- timeout         &  \texttt{null}               &  As for \texttt{Question}            
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
-
-Each \texttt{AcceptabilityJudgment} adds \textbf{two} lines to the results file. The first
-line is the same as for the \texttt{FlashSentence} controller; the second line is the
-same as for the \texttt{Question} controller.
-
-\subsection{DashedAcceptabilityJudgment}
-
-This is like \texttt{AcceptabilityJudgment}, but it uses \texttt{DashedSentence}
-instead of \texttt{FlashSentence}.  This is useful for running speeded
-acceptability judgment tasks (which otherwise require some rather
-creative use of shuffle sequences).
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.2181in}|p{1.4285in}|p{2.8534in}|}
-\hline
- \textbf{Option}          &  \textbf{Default}                  &  \textbf{Description}                                        \\
-\hline
- s                 & \textit{ obligatory}                &  The sentence.                                        \\
-\hline
- q                 & \textit{ obligatory}                &  The question.                                        \\
-\hline
- as                & \textit{ obligatory}                &  Answers (as for \texttt{Question}).                         \\
-\hline
- instructions      &  \texttt{null}                     &  As for \texttt{Question}                                    \\
-\hline
- hasCorrect        &  \texttt{false}                    &  As for \texttt{Question}                                    \\
-\hline
- autoFirstChar     &  \texttt{false}                    &  As for \texttt{Question}                                    \\
-\hline
- showNumbers       &  \texttt{true}                     &  As for \texttt{Question}                                    \\
-\hline
- randomOrder       & \textit{ as for }\textit{\texttt{Question}}\textit{}         &  As for \texttt{Question}                                    \\
-\hline
- presentAsScale    &  \texttt{false}                    &  As for \texttt{Question}                                    \\
-\hline
- leftComment       &  \texttt{null}                     &  As for \texttt{Question}                                    \\
-\hline
- rightComment      &  \texttt{null}                     &  As for \texttt{Question}                                    \\
-\hline
- timeout           &  \texttt{null}                     &  As for \texttt{Question}                                    \\
-\hline
- mode              &  \texttt{``speeded acceptability''}  &  As for \texttt{DashedSentence} (but with different default) \\
-\hline
- display           &  \texttt{``dashed''}                 &  As for \texttt{DashedSentence}                              \\
-\hline
- blankText         &  \texttt{``{\textbackslash}u2014{\textbackslash}u2014''}           &  As for \texttt{DahsedSentence}                              \\
-\hline
- wordTime          &  \texttt{300}                      &  As for \texttt{DashedSentence}                              \\
-\hline
- wordPauseTime     &  \texttt{100}                      &  As for \texttt{DashedSentence}                              \\
-\hline
- sentenceDescType  &  \texttt{``literal''}                &  As for \texttt{DashedSentence}                              \\
-\hline
- showAhead         &  \texttt{true}                     &  As for \texttt{DashedSentence}                              \\
-\hline
- showBehind        &  \texttt{true}                     &  As for \texttt{DashedSentence}                              
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
-
-Each \texttt{DashedAcceptabilityJudgment} adds \textbf{two} lines to the results
-file if the ``mode'' option is set to ``speeded acceptability''. If it is
-set to ``self-paced reading'', the number of lines is 1 + the number of
-words in the sentence.  The first line(s) are the same as for the
-\texttt{DashedSentence} controller; the last line is the same as for the
-\texttt{Question} controller.
-
-\subsection{VBox}
-
-The \texttt{VBox} controller makes it possible to combine multiple controllers to form
-a single controller. Each controller in the VBox is displayed at the same time,
-one on top of the other. This allows the functionality of simple controllers to
-be reused in the construction of more complex controllers. For an example of a
-controller constructed using a VBox, see
-\texttt{js\_includes/acceptability\_judgment.js}.
-
-Currently, you canno create VBox controllers inline in your data file. Instead,
-you must create a new controller which passes its \texttt{options} dictionary to the VBox.
-E.g., by placing something like the following at the beginning of your data file:
-\footnotesize\begin{verbatim}
-
-define_ibex_controller({
-    name: "MyController",
-
-    jqueryWidget: {
-        _init: function () {
-            this.options.transfer = null; // Remove 'click to continue message'.
-            this.element.VBox({
-                options: this.options,
-                triggers: [1],
-                children: [
-                    "Message", this.options,
-                    "AcceptabilityJudgment", this.options,
-                ]
-            });
-        }
-    },
-
-    properties: { }
-});
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-
-\subsubsection*{Options}
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0306in}|p{1.0180in}|p{3.4513in}|}
-\hline
- \textbf{Option}   &  \textbf{Default}     &  \textbf{Description} \\
-\hline
- children   & \textit{ obligatory}   &  An array of child controllers. Has exactly the same format as an array of elements for an item \\
-\hline
- triggers   & \textit{ obligatory}   &  In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are ``triggers'' (indices start from 0). When each of the trigger elements is complete, the VBox is complete. \\
-\hline
- padding    &  \texttt{``2em''}       &  The amount of vertical padding to place between the children. This should be a CSS dimension. \\
-\hline
-\textit{ vboxCallbackWhenChildFinishes } &  \texttt{null}  &  If set, this function is called every time one of the VBox's children finishes. It is called with two paramaters: the index of the child, and an array of arrays (= array of lines) giving the results for that child. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsubsection*{Results}
-
-The \texttt{VBox} controller simply concatenates the results of its children in the order that the children were given.
-
-\subsection{Form}
-
-The \texttt{Form} controller collects data from an HTML form presented to the participant.
-The form may contain any combination of text boxes (\texttt{<input type=``text''>}), text areas (\texttt{<textarea>}),
-checkboxes (\texttt{<input type=``checkbox''>}) or radio buttons (\texttt{<input type=``radio''>}).
-It isn't necessary to wrap the \texttt{<input>} tags within a \texttt{<form>} tag; nor should
-you include a submit button.
-
-You can indicate that a text area or radio button group is obligatory by adding
-the ``obligatory'' class to it (e.g. \texttt{<input type=``text'' class=``obligatory''>}).
+\subsection{DashedSentence}\label{dashedsentence}
+
+\textbf{Options}
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+s & \emph{obligatory} & The sentence. This is either a string, in which
+case the sentence will be presented word-by-word, or a list of strings
+(``chunks''), in which case the sentence will be presented
+chunk-by-chunk. If one of the words/chunks begins with the character
+\href{mailto:"@"}{\nolinkurl{"@"}}, then the controller will finish
+after the word beginning with ``@'' is displayed (the ``@'' will be
+stripped when the word is presented). This feature can be useful if you
+want (for example) to interrupt a self-paced reading item with a lexical
+decision task.\tabularnewline
+mode & \texttt{"self-paced\ reading"} & Either
+\texttt{"self-paced\ reading"} or
+\texttt{"speeded\ acceptability"}.\tabularnewline
+display & \texttt{"dashed"} & If set to \texttt{"dashed"}, the sentence
+is displayed as a sequence of dashes; when the participant presses the
+space bar, the current word is displayed above the corresponding dash,
+and no other words are displayed. If set to \texttt{"in\ place"}, words
+are displayed one-by-one in the center of the screen. Setting to
+\texttt{"in\ place"} changes the default value of \texttt{wordPauseTime}
+from 100 to 0 and the default value of \texttt{wordTime} from 300 to
+400, since otherwise the display flickers.\tabularnewline
+blankText & \texttt{"\textbackslash{}u2014\textbackslash{}u2014"} &
+Applicable only if ``display'' is set to \texttt{"in\ place"}. This is
+the text that is shown before the participant presses space for the
+first time. By default it is two horizontal dashes.\tabularnewline
+wordTime & \texttt{300} & If mode is \texttt{"speeded\ acceptability"},
+the time in ms each word should be displayed for. (See also description
+of ``display'' option.)\tabularnewline
+wordPauseTime & \texttt{100} & If mode is
+\texttt{"speeded\ acceptability"}, the time in ms a word should remain
+blank before it is shown. (See also description of ``display''
+option.)\tabularnewline
+sentenceDescType & \texttt{"literal"} & Determines the format of column
+1 of the results (see table below). If \texttt{"literal"}, column
+contains the sentence itself (encoded as a URL with \%XX escapes).
+Currently, this is the only possible value for this
+option.\tabularnewline
+showAhead & \texttt{true} & Whether or not to use dashes to indicate the
+presence of words ahead of the reader's current position.\tabularnewline
+showBehind & \texttt{true} & As above (but behind rather than ahead). If
+both showAhead and showBehind are set to \texttt{false}, no dashes are
+shown.\tabularnewline
+hideUnderscores & \texttt{false} & If this is set to \texttt{true}, the
+underscore character is interpreted as a space which does not trigger a
+break between words. This is an alternative to passing an array of
+strings as the value of the \texttt{s} option.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Note on right-to-left languages:} The current version of Ibex
+doesn't provide out-of-the-box support for doing self-paced reading
+experiments with languages that are displayed right to left (although I
+hope to add support for this soon). However, it is possible to modify
+the code for the \texttt{DashedSentence} controller to display in
+right-to-left order. Please contact me
+(\href{mailto:a.d.drummond@gmail.com}{\nolinkurl{a.d.drummond@gmail.com}})
+if you want to do this.
+
+\textbf{Results}
+
+The format of the results depends on the setting of the \texttt{mode}
+option. If it is set to ``speeded acceptability'', results have the
+following format:
+
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+1 & See documentation for `sentenceDescType' option
+above.\tabularnewline
+\bottomrule
+\end{longtable}
+
+If \texttt{mode} is set to ``self-paced reading'', the results look like
+this:
+
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+1 & Word number. For example, ``1'' indicates that this line gives the
+time it took to read the first word (i.e.~the difference between and
+).\tabularnewline
+2 & The word.\tabularnewline
+3 & The reading time in ms.\tabularnewline
+4 & Either 1 or 0. Indicates whether or not there was a line break
+between word n and word n + 1 (where reading time is for word
+n).\tabularnewline
+5 & See documentation for `sentenceDescType' option
+above.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsection{FlashSentence}\label{flashsentence}
+
+\textbf{Options}
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+s & \emph{obligatory} & The sentence to be displayed.\tabularnewline
+timeout & 2000 & If \texttt{null}, the sentence is displayed
+indefinitely (only useful if part of a VBox). Otherwise, a number giving
+the time in ms to display the sentence.\tabularnewline
+sentenceDescType & \texttt{"md5"} & See documentation for DashedSentence
+controller.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Results}
+
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+1 & See documentation for `sentenceDescType' option of the
+DashedSentence controller.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsection{Question}\label{question}
+
+\textbf{Options}
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+q & \texttt{null} & The question to pose.\tabularnewline
+as & \emph{obligatory} & A list of strings giving the answers the user
+has to choose from. May also be a list of pairs of strings (e.g.
+\texttt{{[}"y",\ "Yes"{]}}. In this case, the second string gives the
+answer, and the first string specifies a key which the user may press to
+select that answer. Note that these key assignments will be ignored if
+\texttt{presentAsScale} is \texttt{true} (but they will not be ignored
+if \texttt{presentHorizontally} is true).\tabularnewline
+instructions & \texttt{null} & Instructions for answering the question,
+displayed following the question and the answer
+selection.\tabularnewline
+hasCorrect & \texttt{false} & If \texttt{false}, indicates that none of
+the answers is privileged as correct. Otherwise, is either
+\texttt{true}, indicating that the first answer in the \texttt{as} list
+is the correct one; an integer, giving the index of the correct answer
+in the \texttt{as} list (starting from 0); or a string, giving the
+correct answer.\tabularnewline
+autoFirstChar & \texttt{false} & If set to true, users can select
+answers by pressing the key corresponding to the first letter in the
+answer. (This is useful e.g.~for yes/no questions.)\tabularnewline
+showNumbers & \texttt{true} & If \texttt{true}, answers are numbered and
+participants can use number keys to select them.\tabularnewline
+randomOrder & \texttt{true} if the question has a correct answer, false
+otherwise. & Whether or not to randomize the order of the answers before
+displaying them. If \texttt{presentAsScale} or
+\texttt{presentHorizontally} are set to \texttt{true},
+\texttt{randomOrder} can also be set to a list of keys. This list should
+be the same length as \texttt{as}. It specifies keys in a left-to-right
+order. This makes it possible for the mapping from keys to answers to
+correspond to the (random) order in which the answers are
+presented.\tabularnewline
+presentAsScale & \texttt{false} & If \texttt{true}, answers are
+presented as a scale (useful for acceptability ratings). If any of the
+points in the scale are integers 0-9, the participant may select them by
+pressing a number key.\tabularnewline
+presentHorizontally & \texttt{false} & Note that at most one of
+\texttt{presentAsScale} and \texttt{presentHorizontally} should be set
+to \texttt{true}. \texttt{presentHorizontally} is like
+\texttt{presentAsScale} except that it does not override the usual means
+of specifying which key presses trigger which answers, and it leaves
+\texttt{randomOrder} on by default for questions which have correct
+answers. If your scale contains words, you may use the
+\texttt{autoFirstChar} option, and in all cases, you may explicitly
+specify answer keys, as described in the comment on the \texttt{as}
+option.\tabularnewline
+leftComment & \texttt{null} & \emph{Only valid if
+\texttt{presentAsScale} is \texttt{true}.} This option specifies text to
+be displayed at the left edge of a scale (e.g. ``Bad'').\tabularnewline
+rightComment & \texttt{null} & As for ``leftComment'', but for the right
+edge of the scale.\tabularnewline
+timeout & \texttt{null} & If \texttt{null}, there is no time limit.
+Otherwise, should be a number giving the time in ms a participant has to
+answer the question.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Results}
+
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+1 & The question that was posed (encoded as a URL with \%XX
+escapes).\tabularnewline
+2 & The answer that the participant gave (also encoded as a
+URL).\tabularnewline
+3 & ``NULL'' if the question as no correct answer. Otherwise, 1 if the
+participant answered correctly, or 0 if they didn't.\tabularnewline
+4 & The time the participant took to answer the question
+(ms).\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsection{AcceptabilityJudgment}\label{acceptabilityjudgment}
+
+The \texttt{AcceptabilityJudgment} controller makes it straightforward
+to present a sentence together with a rating scale. It is a combination
+of the \texttt{FlashSentence} and \texttt{Message} controllers.
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+s & \emph{obligatory} & The sentence.\tabularnewline
+q & \emph{obligatory} & The question.\tabularnewline
+as & \emph{obligatory} & Answers (as for
+\texttt{Question}).\tabularnewline
+instructions & \texttt{null} & As for \texttt{Question}\tabularnewline
+hasCorrect & \texttt{false} & As for \texttt{Question}\tabularnewline
+autoFirstChar & \texttt{false} & As for \texttt{Question}\tabularnewline
+showNumbers & \texttt{true} & As for \texttt{Question}\tabularnewline
+randomOrder & \emph{as for \texttt{Question}} & As for
+\texttt{Question}\tabularnewline
+presentAsScale & \texttt{false} & As for
+\texttt{Question}\tabularnewline
+leftComment & \texttt{null} & As for \texttt{Question}\tabularnewline
+rightComment & \texttt{null} & As for \texttt{Question}\tabularnewline
+timeout & \texttt{null} & As for \texttt{Question}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Results}
+
+Each \texttt{AcceptabilityJudgment} adds \textbf{two} lines to the
+results file. The first line is the same as for the
+\texttt{FlashSentence} controller; the second line is the same as for
+the \texttt{Question} controller.
+
+\subsection{DashedAcceptabilityJudgment}\label{dashedacceptabilityjudgment}
+
+This is like \texttt{AcceptabilityJudgment}, but it uses
+\texttt{DashedSentence} instead of \texttt{FlashSentence}. This is
+useful for running speeded acceptability judgment tasks (which otherwise
+require some rather creative use of shuffle sequences).
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+s & \emph{obligatory} & The sentence.\tabularnewline
+q & \emph{obligatory} & The question.\tabularnewline
+as & \emph{obligatory} & Answers (as for
+\texttt{Question}).\tabularnewline
+instructions & \texttt{null} & As for \texttt{Question}\tabularnewline
+hasCorrect & \texttt{false} & As for \texttt{Question}\tabularnewline
+autoFirstChar & \texttt{false} & As for \texttt{Question}\tabularnewline
+showNumbers & \texttt{true} & As for \texttt{Question}\tabularnewline
+randomOrder & \emph{as for \texttt{Question}} & As for
+\texttt{Question}\tabularnewline
+presentAsScale & \texttt{false} & As for
+\texttt{Question}\tabularnewline
+leftComment & \texttt{null} & As for \texttt{Question}\tabularnewline
+rightComment & \texttt{null} & As for \texttt{Question}\tabularnewline
+timeout & \texttt{null} & As for \texttt{Question}\tabularnewline
+mode & \texttt{"speeded\ acceptability"} & As for
+\texttt{DashedSentence} (but with different default)\tabularnewline
+display & \texttt{"dashed"} & As for
+\texttt{DashedSentence}\tabularnewline
+blankText & \texttt{"\textbackslash{}u2014\textbackslash{}u2014"} & As
+for \texttt{DahsedSentence}\tabularnewline
+wordTime & \texttt{300} & As for \texttt{DashedSentence}\tabularnewline
+wordPauseTime & \texttt{100} & As for
+\texttt{DashedSentence}\tabularnewline
+sentenceDescType & \texttt{"literal"} & As for
+\texttt{DashedSentence}\tabularnewline
+showAhead & \texttt{true} & As for
+\texttt{DashedSentence}\tabularnewline
+showBehind & \texttt{true} & As for
+\texttt{DashedSentence}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Results}
+
+Each \texttt{DashedAcceptabilityJudgment} adds \textbf{two} lines to the
+results file if the ``mode'' option is set to ``speeded acceptability''.
+If it is set to ``self-paced reading'', the number of lines is 1 + the
+number of words in the sentence. The first line(s) are the same as for
+the \texttt{DashedSentence} controller; the last line is the same as for
+the \texttt{Question} controller.
+
+\subsection{VBox}\label{vbox}
+
+The \texttt{VBox} controller makes it possible to combine multiple
+controllers to form a single controller. Each controller in the VBox is
+displayed at the same time, one on top of the other. This allows the
+functionality of simple controllers to be reused in the construction of
+more complex controllers. For an example of a controller constructed
+using a VBox, see \texttt{js\_includes/acceptability\_judgment.js}.
+
+Currently, you canno create VBox controllers inline in your data file.
+Instead, you must create a new controller which passes its
+\texttt{options} dictionary to the VBox. E.g., by placing something like
+the following at the beginning of your data file:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{define_ibex_controller}\NormalTok{(\{}
+    \DataTypeTok{name}\NormalTok{: }\StringTok{"MyController"}\NormalTok{,}
+
+    \DataTypeTok{jqueryWidget}\NormalTok{: \{}
+        \DataTypeTok{_init}\NormalTok{: }\KeywordTok{function} \NormalTok{() \{}
+            \KeywordTok{this}\NormalTok{.}\OtherTok{options}\NormalTok{.}\FunctionTok{transfer} \NormalTok{= }\KeywordTok{null}\NormalTok{; }\CommentTok{// Remove 'click to continue message'.}
+            \KeywordTok{this}\NormalTok{.}\OtherTok{element}\NormalTok{.}\FunctionTok{VBox}\NormalTok{(\{}
+                \DataTypeTok{options}\NormalTok{: }\KeywordTok{this}\NormalTok{.}\FunctionTok{options}\NormalTok{,}
+                \DataTypeTok{triggers}\NormalTok{: [}\DecValTok{1}\NormalTok{],}
+                \DataTypeTok{children}\NormalTok{: [}
+                    \StringTok{"Message"}\NormalTok{, }\KeywordTok{this}\NormalTok{.}\FunctionTok{options}\NormalTok{,}
+                    \StringTok{"AcceptabilityJudgment"}\NormalTok{, }\KeywordTok{this}\NormalTok{.}\FunctionTok{options}\NormalTok{,}
+                \NormalTok{]}
+            \NormalTok{\});}
+        \NormalTok{\}}
+    \NormalTok{\},}
+
+    \DataTypeTok{properties}\NormalTok{: \{ \}}
+\NormalTok{\});}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Options}
+
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+children & \emph{obligatory} & An array of child controllers. Has
+exactly the same format as an array of elements for an
+item\tabularnewline
+triggers & \emph{obligatory} & In order to determine when a VBox element
+is complete, you must give an array of the indices of those of its
+children which are ``triggers'' (indices start from 0). When each of the
+trigger elements is complete, the VBox is complete.\tabularnewline
+padding & \texttt{"2em"} & The amount of vertical padding to place
+between the children. This should be a CSS dimension.\tabularnewline
+\emph{vboxCallbackWhenChildFinishes} & \texttt{null} & If set, this
+function is called every time one of the VBox's children finishes. It is
+called with two paramaters: the index of the child, and an array of
+arrays (= array of lines) giving the results for that
+child.\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Results}
+
+The \texttt{VBox} controller simply concatenates the results of its
+children in the order that the children were given.
+
+\subsection{Form}\label{form}
+
+The \texttt{Form} controller collects data from an HTML form presented
+to the participant. The form may contain any combination of text boxes
+(\texttt{\textless{}input\ type="text"\textgreater{}}), text areas
+(\texttt{\textless{}textarea\textgreater{}}), checkboxes
+(\texttt{\textless{}input\ type="checkbox"\textgreater{}}) or radio
+buttons (\texttt{\textless{}input\ type="radio"\textgreater{}}). It
+isn't necessary to wrap the \texttt{\textless{}input\textgreater{}} tags
+within a \texttt{\textless{}form\textgreater{}} tag; nor should you
+include a submit button.
+
+You can indicate that a text area or radio button group is obligatory by
+adding the ``obligatory'' class to it (e.g.
+\texttt{\textless{}input\ type="text"\ class="obligatory"\textgreater{}}).
 For groups of radio buttons, you need only add the ``obligatory'' class
-to one button in the group. (As usual, radio buttons in a single group should
-all have the same `name' attribute.)
+to one button in the group. (As usual, radio buttons in a single group
+should all have the same `name' attribute.)
 
-The ``obligatory'' class can also be used to indicate that a checkbox must be checked
-before the user can continue. (This is useful for consent checkboxes.)
+The ``obligatory'' class can also be used to indicate that a checkbox
+must be checked before the user can continue. (This is useful for
+consent checkboxes.)
 
-By default, failure to fill in an obligatory field is signaled by an alert dialog.
-However, you can indicate that the error message is to be displayed on the page
-by inserting an empty label tag in your form:
-\footnotesize\begin{verbatim}
+By default, failure to fill in an obligatory field is signaled by an
+alert dialog. However, you can indicate that the error message is to be
+displayed on the page by inserting an empty label tag in your form:
 
-    <label class="error" for="FIELD_NAME"></label>
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{<label}\OtherTok{ class=}\StringTok{"error"}\OtherTok{ for=}\StringTok{"FIELD_NAME"}\KeywordTok{></label>}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+If you want all error messages to be displayed in the same location, add
+a \texttt{\textless{}label\textgreater{}} with `for' set to
+``ALL\_FIELDS''.
 
-If you want all error messages to
-be displayed in the same location, add a \texttt{<label>} with `for' set to ``\_\_ALL\_FIELDS\_\_''.
+\textbf{Options}
 
-\subsubsection*{Options}
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+html & \emph{obligatory} & As for the \texttt{Message}
+controller.\tabularnewline
+continueOnReturn & \texttt{false} & If \texttt{true}, the user can
+complete the form by pressing the return key when a single-line text
+field is focused.\tabularnewline
+continueMessage & ``Click here to continue'' & If set to \texttt{null},
+no continue message is displayed.\tabularnewline
+checkedValue & \texttt{"yes"} & The value stored in the results file
+when a checkbox is checked.\tabularnewline
+uncheckedValue & \texttt{"no"} & The value stored in the results file
+when a checkbox is unchecked.\tabularnewline
+validators & \texttt{\{\ \}} & A JavaScript dictionary mapping field
+names to validating functions. Functions take the field value as their
+sole argument, and return \texttt{true} if the value is valid or an
+error string otherwise.\tabularnewline
+saveReactionTime & \texttt{false} & If \texttt{true}, controller saves
+the time elapsed between the form's being displayed and the
+participant's completing it. Reaction time appears in the results file
+as the value of a special \texttt{\_REACTION\_TIME\_}
+field.\tabularnewline
+errorCSSClass & error & The CSS class used to indicate that a
+\texttt{\textless{}label\textgreater{}} tag is a placeholder for error
+messages.\tabularnewline
+obligatoryErrorGenerator & \texttt{...} & A function from field names to
+error messages (used when an obligatory text box or text area is not
+filled in).\tabularnewline
+obligatoryCheckboxErrorGenerator & \texttt{...} & A function from field
+names to error messages (used when an obligatory checkbox is not
+checked).\tabularnewline
+obligatoryRadioErrorGenerator & \texttt{...} & As above but for radio
+button groups.\tabularnewline
+\bottomrule
+\end{longtable}
 
+\textbf{Results}
 
+For each \texttt{\textless{}input\textgreater{}} or
+\texttt{\textless{}textarea\textgreater{}} tag, there is a line in the
+results file with the following two columns:
 
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.0948in}|p{1.0218in}|p{3.3834in}|}
-\hline
- \textbf{Option}  &  \textbf{Default}  &  \textbf{Description} \\
-\hline
- html  & \textit{ obligatory}   &  As for the \texttt{Message} controller. \\
-\hline
- continueOnReturn  &  \texttt{false}  &  If \texttt{true}, the user can complete the form by pressing the return key when a single-line text field is focused. \\
-\hline
- continueMessage  &   ``Click here to continue''  &  If set to \texttt{null}, no continue message is displayed. \\
-\hline
- checkedValue  &  \texttt{``yes''}  &  The value stored in the results file when a checkbox is checked. \\
-\hline
- uncheckedValue  &  \texttt{``no''}  &  The value stored in the results file when a checkbox is unchecked. \\
-\hline
- validators  &  \texttt{\{ \}}  &  A JavaScript dictionary mapping field names to validating functions. Functions take the field value as their sole argument, and return \texttt{true} if the value is valid or an error string otherwise. \\
-\hline
- saveReactionTime  &  \texttt{false}  &  If \texttt{true}, controller saves the time elapsed between the form's being displayed and the participant's completing it. Reaction time appears in the results file as the value of a special \texttt{\_REACTION\_TIME\_} field. \\
-\hline
- errorCSSClass  &  error  &  The CSS class used to indicate that a \texttt{<label>} tag is a placeholder for error messages. \\
-\hline
- obligatoryErrorGenerator  &  \texttt{...}  &  A function from field names to error messages (used when an obligatory text box or text area is not filled in). \\
-\hline
- obligatoryCheckboxErrorGenerator  &  \texttt{...}  &  A function from field names to error messages (used when an obligatory checkbox is not checked). \\
-\hline
- obligatoryRadioErrorGenerator  &  \texttt{...}  &  As above but for radio button groups. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
+\begin{longtable}[c]{p{1in}p{5in}}
+\toprule
+\textbf{Column} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+1 & The name of the field (taken from the `name' attribute of the
+\texttt{\textless{}input\textgreater{}} or
+\texttt{\textless{}textarea\textgreater{}}).\tabularnewline
+2 & The answer given by the participant.\tabularnewline
+\bottomrule
+\end{longtable}
 
-\normalsize
+\section{Further configuration}\label{further-configuration}
 
-\subsubsection*{Results}
+\subsection{Miscellaneous options}\label{miscellaneous-options}
 
-For each \texttt{<input>} or \texttt{<textarea>} tag, there is a line in the results file with the
-following two columns:
+You can set the values of the following variables in your data file
+(e.g. \texttt{var\ showProgressBar\ =\ true;}).
 
+\begin{longtable}[c]{p{1in}p{1in}p{3.85in}}
+\toprule
+\textbf{Option} & \textbf{Default} & \textbf{Description}\tabularnewline
+\midrule
+\endhead
+showProgressBar & \texttt{true} & Whether or not to show a progress
+bar.\tabularnewline
+progressBarText & \texttt{progress} & The text that appears below the
+progress bar.\tabularnewline
+pageTitle & \texttt{"experiment"} & Page title.\tabularnewline
+loadingFatalErrorMessage & \texttt{"..."} & The message shown when a
+fatal error is encountered while loading chunks\tabularnewline
+loadingNonfatalErrorMessage & \texttt{"..."} & The message shown when a
+non-fatal error is encountered while loading chunks\tabularnewline
+sendingResultsMessage & \texttt{"..."} & The message shown while results
+are being sent to the server.\tabularnewline
+completionMessage & \texttt{"..."} & The message shown when the results
+are successfully sent to the server.\tabularnewline
+completionErrorMessage & \texttt{"..."} & The message shown when there
+is an error sending the results to the server.\tabularnewline
+practiceItemTypes & \texttt{{[}{]}} & A list of types for practice
+sentences. A sentence whose type is in this list will have a blue
+``practice'' heading above it.\tabularnewline
+practiceItemMessage & \texttt{"Practice"} & The message displayed for
+practice items\tabularnewline
+showOverview & false & See ``Overviews'' section\tabularnewline
+centerItems & true & Whether or not items should be centered on the
+page.\tabularnewline
+equalGroupSizes & false & If true, groups in latin square designs are
+required to contain equal numbers of items.\tabularnewline
+manualSendResults & false & See ``Sending Results Early'' subsection of
+``Shuffle Sequences'' section.\tabularnewline
+\bottomrule
+\end{longtable}
 
+\subsection{\texorpdfstring{Configuring \texttt{js\_includes},
+\texttt{data\_includes} and
+\texttt{css\_includes}}{Configuring js\_includes, data\_includes and css\_includes}}\label{configuring-jsux5fincludes-dataux5fincludes-and-cssux5fincludes}
 
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.1384in}|p{4.3616in}|}
-\hline
- \textbf{Column}  &  \textbf{Description} \\
-\hline
- 1         &  The name of the field (taken from the `name' attribute of the \texttt{<input>} or \texttt{<textarea>}). \\
-\hline
- 2         &  The answer given by the participant. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
+The directories \texttt{js\_includes}, \texttt{data\_includes} and
+\texttt{css\_includes} directories contain JavaScript and CSS files that
+are necessary for the running of an experiment. The most important of
+these is the data file in \texttt{data\_includes} containing the list of
+items for the experiment, but each controller also has its own file in
+\texttt{js\_includes} (for example, the \texttt{DashedSentence}
+controller lives in \texttt{dashed\_sentence.js}). Many controllers also
+define some CSS classes in corresponding files in \texttt{css\_includes}
+(e.g. \texttt{DashedSentence.css}). If you write your own controllers,
+you need to put the JavaScript and CSS files in these directories.
 
-\normalsize
-
-\section{Further configuration}
-
-\subsection{Miscellaneous  options}
-
-You can set the values of the following variables in your data file (e.g. \texttt{var showProgressBar = true;}).
-
-
-
-\footnotesize
-\begin{RaggedRight}
-\sloppy
-\begin{tabular}{|p{1.2196in}|p{1.0392in}|p{3.2413in}|}
-\hline
- \textbf{Option}  &  \textbf{Default}  &  \textbf{Description} \\
-\hline
- showProgressBar  &  \texttt{true}  &  Whether or not to show a progress bar. \\
-\hline
- progressBarText  &  \texttt{progress}  &  The text that appears below the progress bar. \\
-\hline
- pageTitle  &  \texttt{``experiment''}  &  Page title. \\
-\hline
- loadingFatalErrorMessage  &  \texttt{``...''}  &  The message shown when a fatal error is encountered while loading chunks \\
-\hline
- loadingNonfatalErrorMessage  &  \texttt{``...''}  &  The message shown when a non-fatal error is encountered while loading chunks \\
-\hline
- sendingResultsMessage  &  \texttt{``...''}  &  The message shown while results are being sent to the server. \\
-\hline
- completionMessage  &  \texttt{``...''}  &  The message shown when the results are successfully sent to the server. \\
-\hline
- completionErrorMessage  &  \texttt{``...''}  &  The message shown when there is an error sending the results to the server. \\
-\hline
- practiceItemTypes  &  \texttt{{[}{]}}  &  A list of types for practice sentences. A sentence whose type is in this list will have a blue ``practice'' heading above it. \\
-\hline
- practiceItemMessage  &  \texttt{``Practice''}  &  The message displayed for practice items \\
-\hline
- showOverview  &  false  &  See ``Overviews'' section \\
-\hline
- centerItems  &  true  &  Whether or not items should be centered on the page. \\
-\hline
- equalGroupSizes  &  false  &  If true, groups in latin square designs are required to contain equal numbers of items. \\
-\hline
- manualSendResults  &  false  &  See ``Sending Results Early'' subsection of ``Shuffle Sequences'' section. 
-\\\hline
-\end{tabular}
-\end{RaggedRight}
-\fussy
-
-\normalsize
-
-\subsection{Configuring `js\_includes`, `data\_includes` and `css\_includes`}
-
-The directories \texttt{js\_includes}, \texttt{data\_includes} and \texttt{css\_includes} directories
-contain JavaScript and CSS files that are necessary for the running of an
-experiment.  The most important of these is the data file in \texttt{data\_includes}
-containing the list of items for the experiment, but each controller also has
-its own file in \texttt{js\_includes} (for example, the \texttt{DashedSentence} controller
-lives in \texttt{dashed\_sentence.js}).  Many controllers also define some CSS classes
-in corresponding files in \texttt{css\_includes} (e.g. \texttt{DashedSentence.css}). If you
-write your own controllers, you need to put the JavaScript and CSS files in
-these directories.
-
-When the webpage for an experiment is accessed, the server concatenates all the
-files in \texttt{js\_includes} and serves them up as a single file (ditto for
-\texttt{data\_includes} and \texttt{css\_includes}). You can tell the server to ignore some of
-the files in \texttt{js\_includes} and \texttt{css\_includes} by editing the variables
-\texttt{JS\_INCLUDES\_LIST}, \texttt{DATA\_INCLUDES\_LIST} and \texttt{CSS\_INCLUDES\_LIST} in
-\texttt{server\_conf.py}.  (There is a comment documenting how to do this.) You may
-wish to exclude JavaScript and CSS files which are not used by your experiment
-in order to reduce the size of the file that needs to be downloaded. Since the
-files in both directories are named after the controllers with which they are
+When the webpage for an experiment is accessed, the server concatenates
+all the files in \texttt{js\_includes} and serves them up as a single
+file (ditto for \texttt{data\_includes} and \texttt{css\_includes}). You
+can tell the server to ignore some of the files in \texttt{js\_includes}
+and \texttt{css\_includes} by editing the variables
+\texttt{JS\_INCLUDES\_LIST}, \texttt{DATA\_INCLUDES\_LIST} and
+\texttt{CSS\_INCLUDES\_LIST} in \texttt{server\_conf.py}. (There is a
+comment documenting how to do this.) You may wish to exclude JavaScript
+and CSS files which are not used by your experiment in order to reduce
+the size of the file that needs to be downloaded. Since the files in
+both directories are named after the controllers with which they are
 associated, it is easy to see which files are superfluous.
 
-\textbf{Important:} the file \texttt{global\_main.css} is required by all
-controllers.
+\textbf{Important:} the file \texttt{global\_main.css} is required by
+all controllers.
 
-\section{HTML Code}
+\section{HTML Code}\label{html-code}
 
-Ibex provides three methods of passing HTML code to the \texttt{Message} and \texttt{Form} controllers
-(currently the only controllers which have an \texttt{html} option).
+Ibex provides three methods of passing HTML code to the \texttt{Message}
+and \texttt{Form} controllers\\(currently the only controllers which
+have an \texttt{html} option).
 
-\subsection{Method 1: HTML in a JavaScript String}
+\subsection{Method 1: HTML in a JavaScript
+String}\label{method-1-html-in-a-javascript-string}
 
 Pass a JavaScript string containing the HTML code.
 
-\subsection{Method 2: HTML as a JavaScript data structre}
+\subsection{Method 2: HTML as a JavaScript data
+structre}\label{method-2-html-as-a-javascript-data-structre}
 
-Pass a
-JavaScript data structure representing the HTML Code. For example, here is
-the representation of a \texttt{div} element containing two paragraphs:
-\footnotesize\begin{verbatim}
+Pass a JavaScript data structure representing the HTML Code. For
+example, here is the representation of a \texttt{div} element containing
+two paragraphs:
 
-    ["div",
-        ["p", "This is the first paragraph."],
-        ["p", "This is the second paragraph.", "Containing two text nodes."]
-    ]
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[}\StringTok{"div"}\NormalTok{,}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the first paragraph."}\NormalTok{],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the second paragraph."}\NormalTok{, }\StringTok{"Containing two text nodes."}\NormalTok{]}
+    \NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+Note that a space will automatically be inserted between the two text
+nodes in the second paragraph. If you wanted to set the foreground color
+of the \texttt{div} to red, you could use the following code:
 
-Note that a space will automatically be inserted between the two text nodes in
-the second paragraph. If you wanted to set the foreground color of the \texttt{div} to
-red, you could use the following code:
-\footnotesize\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[[}\StringTok{"div"}\NormalTok{, \{}\DataTypeTok{style}\NormalTok{: }\StringTok{"color: red;"}\NormalTok{\}],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the first paragraph."}\NormalTok{],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the second paragraph."}\NormalTok{, }\StringTok{"Containing two text nodes."}\NormalTok{]}
+    \NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-    [["div", {style: "color: red;"}],
-        ["p", "This is the first paragraph."],
-        ["p", "This is the second paragraph.", "Containing two text nodes."]
-    ]
-\end{verbatim}
+If you want to set DOM properties directly, you can use a key beginning
+with \href{mailto:"@"}{\nolinkurl{"@"}}:
 
-\smallskip\noindent\normalsize
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[[}\StringTok{"div"}\NormalTok{, \{}\StringTok{"@style.color"}\NormalTok{: }\StringTok{"red"}\NormalTok{\}],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the first paragraph."}\NormalTok{],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the second paragraph."}\NormalTok{, }\StringTok{"Containing two text nodes."}\NormalTok{]}
+    \NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-If you want to set DOM properties directly, you can use
-a key beginning with ``@'':
-\footnotesize\begin{verbatim}
+Elements (e.g. \texttt{\&ldquo;} -- a left double quote) are specified
+as in the following example:
 
-    [["div", {"@style.color": "red"}],
-        ["p", "This is the first paragraph."],
-        ["p", "This is the second paragraph.", "Containing two text nodes."]
-    ]
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[[}\StringTok{"div"}\NormalTok{, \{}\StringTok{"@style.color"}\NormalTok{: }\StringTok{"red"}\NormalTok{\}],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the first paragraph."}\NormalTok{],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"This is the second paragraph."}\NormalTok{, }\StringTok{"Containing two text nodes."}\NormalTok{],}
+        \NormalTok{[}\StringTok{"p"}\NormalTok{, }\StringTok{"Here's a paragraph where "}\NormalTok{, [}\StringTok{"&ldquo;"}\NormalTok{], }\StringTok{"this"}\NormalTok{, [}\StringTok{"&rdquo;"}\NormalTok{], }\StringTok{" is quoted."}\NormalTok{]}
+    \NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
-\smallskip\noindent\normalsize
+Spaces are \emph{not} automatically inserted before and after elements.
 
-Elements (e.g. \texttt{\&ldquo;} -- a left double quote) are specified as in the
-following example:
-\footnotesize\begin{verbatim}
+\subsection{Method 3: HTML in a separate
+file}\label{method-3-html-in-a-separate-file}
 
-    [["div", {"@style.color": "red"}],
-        ["p", "This is the first paragraph."],
-        ["p", "This is the second paragraph.", "Containing two text nodes."],
-        ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
-    ]
-\end{verbatim}
+Place the HTML in a file in the \texttt{chunk\_includes} dir. Files in
+this directory can be included as follows:
 
-\smallskip\noindent\normalsize
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{\{ }\DataTypeTok{html}\NormalTok{: \{ }\DataTypeTok{include}\NormalTok{: }\StringTok{"file_name.html"} \NormalTok{\} \}}
+\end{Highlighting}
+\end{Shaded}
 
-Spaces are\textit{ not}  automatically inserted before and after elements.
+\section{Creating your own
+controllers}\label{creating-your-own-controllers}
 
-\subsection{Method 3: HTML in a separate file}
+This is quite easy if you are familiar with JavaScript/DHTML and the
+jQuery JavaScript library. (One of the changes in Ibex from webspr 0.2
+is that controllers are now JQuery.ui widgets.) As an example, here's
+the code for a simplified version of the \texttt{Message} controller:
 
-Place the HTML in a file in the \texttt{chunk\_includes} dir.
-Files in this directory can be included as follows:
-\footnotesize\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{define_ibex_controller}\NormalTok{(\{}
+\DataTypeTok{name}\NormalTok{: }\StringTok{"Message"}\NormalTok{,}
 
-    { html: { include: "file_name.html" } }
-\end{verbatim}
+\DataTypeTok{jqueryWidget}\NormalTok{: \{}
+    \DataTypeTok{_init}\NormalTok{: }\KeywordTok{function}\NormalTok{() \{}
+        \CommentTok{// Boilerplate code that appears in all controllers.}
+        \KeywordTok{this}\NormalTok{.}\FunctionTok{cssPrefix} \NormalTok{= }\KeywordTok{this}\NormalTok{.}\OtherTok{options}\NormalTok{.}\FunctionTok{_cssPrefix}\NormalTok{;}
+        \KeywordTok{this}\NormalTok{.}\FunctionTok{utils} \NormalTok{= }\KeywordTok{this}\NormalTok{.}\OtherTok{options}\NormalTok{.}\FunctionTok{_utils}\NormalTok{;}
+        \KeywordTok{this}\NormalTok{.}\FunctionTok{finishedCallback} \NormalTok{= }\KeywordTok{this}\NormalTok{.}\OtherTok{options}\NormalTok{.}\FunctionTok{_finishedCallback}\NormalTok{;}
 
-\smallskip\noindent\normalsize
+        \KeywordTok{this}\NormalTok{.}\FunctionTok{html} \NormalTok{= }\KeywordTok{this}\NormalTok{.}\OtherTok{options}\NormalTok{.}\FunctionTok{html}\NormalTok{;}
+        \KeywordTok{this}\NormalTok{.}\OtherTok{element}\NormalTok{.}\FunctionTok{addClass}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{cssPrefix} \NormalTok{+ }\StringTok{"message"}\NormalTok{);}
+        \KeywordTok{this}\NormalTok{.}\OtherTok{element}\NormalTok{.}\FunctionTok{append}\NormalTok{(}\FunctionTok{htmlCodeToDOM}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{html}\NormalTok{));}
 
+        \KeywordTok{this}\NormalTok{.}\FunctionTok{transfer} \NormalTok{= }\FunctionTok{dget}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{options}\NormalTok{, }\StringTok{"transfer"}\NormalTok{, }\StringTok{"keypress"}\NormalTok{);}
+        \FunctionTok{assert}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{transfer} \NormalTok{== }\StringTok{"keypress"} \NormalTok{|| }\KeywordTok{typeof}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{transfer}\NormalTok{) == }\StringTok{"number"}\NormalTok{,}
+               \StringTok{"Value of 'transfer' option of Message must either be the string 'keypress' or a number"}\NormalTok{);}
 
-\section{Creating your own controllers}
+        \KeywordTok{if} \NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{transfer} \NormalTok{== }\StringTok{"keypress"}\NormalTok{) \{}
+            \KeywordTok{var} \NormalTok{t = }\KeywordTok{this}\NormalTok{;}
+            \CommentTok{// See below for info on 'safeBind'.}
+            \KeywordTok{this}\NormalTok{.}\FunctionTok{safeBind}\NormalTok{(}\FunctionTok{$}\NormalTok{(document), }\StringTok{'keydown'}\NormalTok{, }\KeywordTok{function} \NormalTok{() \{}
+                \OtherTok{t}\NormalTok{.}\FunctionTok{finishedCallback}\NormalTok{(}\KeywordTok{null}\NormalTok{);}
+                \KeywordTok{return} \KeywordTok{true}\NormalTok{;}
+            \NormalTok{\});}
+        \NormalTok{\}}
+        \KeywordTok{else} \NormalTok{\{}
+            \CommentTok{// See below for info on 'this.utils'.}
+            \KeywordTok{this}\NormalTok{.}\OtherTok{utils}\NormalTok{.}\FunctionTok{setTimeout}\NormalTok{(}\KeywordTok{this}\NormalTok{.}\FunctionTok{finishedCallback}\NormalTok{, }\KeywordTok{this}\NormalTok{.}\FunctionTok{transfer}\NormalTok{);}
+        \NormalTok{\}}
+    \NormalTok{\}}
+\NormalTok{\},}
 
-This is quite easy if you are familiar with JavaScript/DHTML
-and the jQuery JavaScript library. (One of the changes in Ibex
-from webspr 0.2 is that controllers are now JQuery.ui widgets.)
-As an example, here's the code for a simplified version of the
-\texttt{Message} controller:
-\footnotesize\begin{verbatim}
+\DataTypeTok{properties}\NormalTok{: \{}
+    \DataTypeTok{obligatory}\NormalTok{: [}\StringTok{"html"}\NormalTok{],}
+    \DataTypeTok{countsForProgressBar}\NormalTok{: }\KeywordTok{false}\NormalTok{,}
+    \DataTypeTok{htmlDescription}\NormalTok{: }\KeywordTok{function} \NormalTok{(opts) \{}
+        \KeywordTok{var} \NormalTok{d = }\FunctionTok{htmlCodeToDOM}\NormalTok{(}\OtherTok{opts}\NormalTok{.}\FunctionTok{html}\NormalTok{);}
+        \KeywordTok{return} \FunctionTok{truncateHTML}\NormalTok{(d, }\DecValTok{100}\NormalTok{);}
+    \NormalTok{\}}
+\NormalTok{\}}
+\NormalTok{\});}
+\end{Highlighting}
+\end{Shaded}
 
-define_ibex_controller({
-name: "Message",
+The call to \texttt{ibex\_controller\_set\_properties} sets some
+properties of the \texttt{Message} controller. The \texttt{obligatory}
+option specifies those options which must obligatorily be given to the
+controller. In this case, it is obligatory that the controller be given
+an \texttt{"html"} option. The \texttt{obligatory} key must be present
+in the object passed to \texttt{ibex\_controller\_set\_properties}. The
+\texttt{countsForProgressBar} property is optional and is \texttt{true}
+by default. It determines whether instances of the controller count
+towards the size of the progress bar. (This option can be overriden on
+an item-by-item basis by setting the \texttt{countsForProgressBar}
+property of an item.) The \texttt{htmlDescription} function should
+return either HTML or a DOM node which gives a brief summary of the
+content of an instance of the controller for use in overviews.
 
-jqueryWidget: {
-    _init: function() {
-        // Boilerplate code that appears in all controllers.
-        this.cssPrefix = this.options._cssPrefix;
-        this.utils = this.options._utils;
-        this.finishedCallback = this.options._finishedCallback;
+The \texttt{options} dictionary for the widget has three special values
+set:
 
-        this.html = this.options.html;
-        this.element.addClass(this.cssPrefix + "message");
-        this.element.append(htmlCodeToDOM(this.html));
-
-        this.transfer = dget(this.options, "transfer", "keypress");
-        assert(this.transfer == "keypress" || typeof(this.transfer) == "number",
-               "Value of 'transfer' option of Message must either be the string 'keypress' or a
- number");
-
-        if (this.transfer == "keypress") {
-            var t = this;
-            // See below for info on 'safeBind'.
-            this.safeBind($(document), 'keydown', function () {
-                t.finishedCallback(null);
-                return true;
-            });
-        }
-        else {
-            // See below for info on 'this.utils'.
-            this.utils.setTimeout(this.finishedCallback, this.transfer);
-        }
-    }
-},
-
-properties: {
-    obligatory: ["html"],
-    countsForProgressBar: false,
-    htmlDescription: function (opts) {
-        var d = htmlCodeToDOM(opts.html);
-        return truncateHTML(d, 100);
-    }
-}
-});
-\end{verbatim}
-
-\smallskip\noindent\normalsize
-
-The call to \texttt{ibex\_controller\_set\_properties} sets some properties of the \texttt{Message} controller.
-The \texttt{obligatory} option specifies those options which must obligatorily be
-given to the controller. In this case, it is obligatory that the controller
-be given an \texttt{``html''} option. The \texttt{obligatory} key must be present in the object
-passed to \texttt{ibex\_controller\_set\_properties}.
-The \texttt{countsForProgressBar} property is optional and is \texttt{true}
-by default. It determines whether instances of the controller count towards
-the size of the progress bar. (This option can be overriden on an item-by-item
-basis by setting the \texttt{countsForProgressBar} property of an item.)
-The \texttt{htmlDescription} function should return
-either HTML or a DOM node which gives a brief summary of the content of
-an instance of the controller for use in overviews.
-
-The \texttt{options} dictionary for the widget has three special values set:
 \begin{itemize}
-
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- A function (\texttt{\_finishedCallback}) which should be called with lines to be added to the results file when the controller is complete.
+  A function (\texttt{\_finishedCallback}) which should be called with
+  lines to be added to the results file when the controller is complete.
 \item
- A \texttt{\_utils} object which contains some useful functions.
+  A \texttt{\_utils} object which contains some useful functions.
 \item
- A \texttt{\_cssPrefix} string, which gives the controller its designated CSS prefix for all CSS class names/ids which it adds to DOM nodes (see section below, ``CSS mangling'').
+  A \texttt{\_cssPrefix} string, which gives the controller its
+  designated CSS prefix for all CSS class names/ids which it adds to DOM
+  nodes (see section below, ``CSS mangling'').
 \end{itemize}
-In the case of \texttt{Message}, \texttt{\_finishedCallback} is called with \texttt{null} as its argument
-because this controller does not add any lines to the results file.
-In general, the format of a non-null argument to \texttt{finishedCallback} is as follows:
-\footnotesize\begin{verbatim}
 
-    [
-        // Line 1.
-        [ ["fieldname1", value1], ["fieldname2", value2], ["fieldname3", value3], ... ],
-        // Line 2.
-        [ ["fieldname2", value2], ["fieldname2", value2], ["fieldname3", value3], ... ],
-        ...
-    ]
-\end{verbatim}
+In the case of \texttt{Message}, \texttt{\_finishedCallback} is called
+with \texttt{null} as its argument\\because this controller does not add
+any lines to the results file.\\In general, the format of a non-null
+argument to \texttt{finishedCallback} is as follows:
 
-\smallskip\noindent\normalsize
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{[}
+        \CommentTok{// Line 1.}
+        \NormalTok{[ [}\StringTok{"fieldname1"}\NormalTok{, value1], [}\StringTok{"fieldname2"}\NormalTok{, value2], [}\StringTok{"fieldname3"}\NormalTok{, value3], ... ],}
+        \CommentTok{// Line 2.}
+        \NormalTok{[ [}\StringTok{"fieldname2"}\NormalTok{, value2], [}\StringTok{"fieldname2"}\NormalTok{, value2], [}\StringTok{"fieldname3"}\NormalTok{, value3], ... ],}
+        \NormalTok{...}
+    \NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
 
+As can be seen in the code for \texttt{Message}, the \texttt{utils}
+object provides a \texttt{setTimeout} method similar to the builtin
+\texttt{setTimeout} function of JavaScript. Any timeouts set using this
+method are automatically cleared when the controller is complete.
+Similarly, a \texttt{safeBind} method has been added to jQuery, which
+ensures that event handlers are automatically unregistered once a
+controller instance is finished.
 
-As can be seen in the code for \texttt{Message}, the \texttt{utils} object provides a \texttt{setTimeout} method
-similar to the builtin \texttt{setTimeout} function of JavaScript.
-Any timeouts set using this method are automatically cleared when the controller is complete.
-Similarly, a \texttt{safeBind} method has been added to jQuery, which ensures that event handlers
-are automatically unregistered once a controller instance is finished.
+\subsection{CSS mangling}\label{css-mangling}
 
-\subsection{CSS mangling}
+Every class/id name in a CSS file in the \texttt{css\_includes}
+directory is prepended with the string `FILENAME-'. The CSS for each
+controller should live in \texttt{CONTROLLER\_NAME.css}. This ensures
+that there are no namespace clashes between controllers. Note that if
+you wish to prevent automatic CSS mangling (e.g.~because of a bug in the
+mangling code that you need to work around), you may prefix your CSS
+file name with \texttt{"global\_"}. This causes the file to be served
+as-is.
 
-Every class/id name in a CSS file in the \texttt{css\_includes} directory is prepended
-with the string `FILENAME-'. The CSS for each controller should live in \texttt{CONTROLLER\_NAME.css}.
-This ensures that there are no namespace
-clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
-of a bug in the mangling code that you need to work around),
-you may prefix your CSS file name with \texttt{``global\_''}. This causes the file to
-be served as-is.
-
-\section{Overviews}
+\section{Overviews}\label{overviews}
 
 Sometimes it's useful to get an overview of the sequence of items in an
-experiment without actually running through each item. There are two ways of
-getting webspr to display an overview of this sort. The first is to add the
-statement \texttt{var showOverview = true;} to your data file.  The second is
-to go to the page \texttt{overview.html} instead of \texttt{experiment.html}.
+experiment without actually running through each item. There are two
+ways of getting webspr to display an overview of this sort. The first is
+to add the statement \texttt{var\ showOverview\ =\ true;} to your data
+file. The second is to go to the page \texttt{overview.html} instead of
+\texttt{experiment.html}.
 
-\section{Cross-browser compatibility}
+\section{Cross-browser compatibility}\label{cross-browser-compatibility}
 
 I have tested compatibility with the following browsers:
 
 \begin{itemize}
-
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Internet Explorer 6 and 7. (Note that support for IE 5 has been dropped as of version 0.3 of this software, since the jQuery library doesn't support this browser.)
+  Internet Explorer 6 and 7. (Note that support for IE 5 has been
+  dropped as of version 0.3 of this software, since the jQuery library
+  doesn't support this browser.)
 \item
- Firefox 1, 1.5, 2, and 3.
+  Firefox 1, 1.5, 2, and 3.
 \item
- Safari 3.
+  Safari 3.
 \item
- Opera 9.
+  Opera 9.
 \item
- Google Chrome.
+  Google Chrome.
 \end{itemize}
+
 Known cross-browser issues:
 
 \begin{itemize}
-
 \item
- Overviews (see previous section) currently do not work on all versions of Internet Explorer.
+  Overviews (see previous section) currently do not work on all versions
+  of Internet Explorer.
 \item
- Pressing `6' and `7' in Opera affects text size; this interacts badly with acceptability judgments on scales including 6 and 7. I have not yet found a way of preventing Opera from interpreting these keypresses.
+  Pressing `6' and `7' in Opera affects text size; this interacts badly
+  with acceptability judgments on scales including 6 and 7. I have not
+  yet found a way of preventing Opera from interpreting these
+  keypresses.
 \item
- The stand-alone server serves up the JavaScript and CSS include files with a \texttt{Pragma: nocache} so that any changes you make will be immediately reflected if you refresh \texttt{experiment.html}. However, some versions of Internet Explorer ignore this pragma (I think this is a bug in IE, but not 100\% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
+  The stand-alone server serves up the JavaScript and CSS include files
+  with a \texttt{Pragma:\ nocache} so that any changes you make will be
+  immediately reflected if you refresh \texttt{experiment.html}.
+  However, some versions of Internet Explorer ignore this pragma (I
+  think this is a bug in IE, but not 100\% sure yet), so you will need
+  to delete your temporary internet files and then refresh. This is not
+  such a big issue for live experiments, but it makes developing and
+  testing experiments using IE a big PITA. The obvious workaround is
+  simply not to use IE for these purposes.
 \end{itemize}
-\section{Terminological clarifications}
 
-Unfortunately, the terms I've used relating to the design of experiments (latin squares, etc.) are confusing as they use some non-standard terms, and make non-standard use of some standard terms. Specifically:
+\section{Terminological
+clarifications}\label{terminological-clarifications}
+
+Unfortunately, the terms I've used relating to the design of experiments
+(latin squares, etc.) are confusing as they use some non-standard terms,
+and make non-standard use of some standard terms. Specifically:
 
 \begin{itemize}
-
 \item
- The term `item number' is used to describe the number assigned to a controller based on its position in the list of controllers in the data file. Of course, controllers are not normally in one-to-one correspondence with `items' in the usual sense of the term.
+  The term `item number' is used to describe the number assigned to a
+  controller based on its position in the list of controllers in the
+  data file. Of course, controllers are not normally in one-to-one
+  correspondence with `items' in the usual sense of the term.
 \item
- The term `group' is used to refer to what are usually called items (i.e. sets of conditions).
+  The term `group' is used to refer to what are usually called items
+  (i.e.~sets of conditions).
 \end{itemize}
-\section{Known problems and issues}
 
-The following are some subtle problems which can often arise when writing a
-data file:
+\section{Known problems and issues}\label{known-problems-and-issues}
+
+The following are some subtle problems which can often arise when
+writing a\\data file:
 
 \begin{itemize}
-
 \item
- A missing comma in the list of sentences in data.js can cause highly obscure JavaScript errors with no obvious relation to their source.
+  A missing comma in the list of sentences in data.js can cause highly
+  obscure JavaScript errors with no obvious relation to their source.
 \item
- Some browsers accept trailing commas in JavaScript array literals (i.e. they accept {[}1,2,3,4,{]} as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the \texttt{items} array.
+  Some browsers accept trailing commas in JavaScript array literals
+  (i.e.~they accept {[}1,2,3,4,{]} as a fine array); others do not. If
+  your browser of choice accepts array literals of this form, be sure to
+  check that your data.js has no trailing commas so that there will be
+  no browser incompatibilities. It is quite easy to introduce trailing
+  commas by accident if you comment out some of the items in the
+  \texttt{items} array.
 \end{itemize}
-Most browsers allow strings to be indexed using square brackets (i.e. \texttt{``foo''}\texttt{{[}1{]}}
-\texttt{== ``f''}). Internet Explorer, however, requires the use of the string's \texttt{charAt}
-method.
 
-For debugging, I recommend using Firefox's JavaScript console. Most syntax
-errors in a data file will result in an alert popping up with a warning that the
-\texttt{items} array has not been defined. You can usually get a much more informative
-error message by looking at the JavaScript console.
+Most browsers allow strings to be indexed using square brackets (i.e.
+\texttt{"foo"``{[}1{]}} \texttt{==\ "f"}). Internet Explorer, however,
+requires the use of the string's \texttt{charAt} method.
 
-\section{Changes}
+For debugging, I recommend using Firefox's JavaScript console. Most
+syntax errors in a data file will result in an alert popping up with a
+warning that the \texttt{items} array has not been defined. You can
+usually get a much more informative error message by looking at the
+JavaScript console.
+
+\section{Changes}\label{changes}
 
 Changes between 0.3.8 (current version and 0.3.7):
-\begin{itemize}
 
-\item
- Fix bug with VBox controller which caused transition to next item to fail sometimes.
-\item
- Fix bug in \texttt{Form} controller which prevented the \texttt{continueOnReturn} option
-\end{itemize}
-      from taking effect (thanks to Laurel Brehm).
 \begin{itemize}
-
 \item
- Some preliminary support for playing sounds (not yet documented).
+  Fix bug with VBox controller which caused transition to next item to
+  fail sometimes.
+\item
+  Fix bug in \texttt{Form} controller which prevented the
+  \texttt{continueOnReturn} option
+
+  \begin{quote}
+  \begin{quote}
+  from taking effect (thanks to Laurel Brehm).
+  \end{quote}
+  \end{quote}
+\item
+  Some preliminary support for playing sounds (not yet documented).
 \end{itemize}
+
 Changes between 0.3.7 (current version) and 0.3.6:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix bug which prevents \texttt{countsForProgressBar} option taking effect.
+  Fix bug which prevents \texttt{countsForProgressBar} option taking
+  effect.
 \end{itemize}
+
 Changes between 0.3.6 and 0.3.5:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Improve loading of files in chunk\_includes. Chunks are now preloaded so that experiments will not be disrupted.
+  Improve loading of files in chunk\_includes. Chunks are now preloaded
+  so that experiments will not be disrupted.
 \end{itemize}
+
 Changes between 0.3.5 and 0.3.4:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix a bug in the recording of answers for certain options of the \texttt{Question} controller (thanks to Michael Yoshitaka Erlewine).
+  Fix a bug in the recording of answers for certain options of the
+  \texttt{Question} controller (thanks to Michael Yoshitaka Erlewine).
 \item
- Fix a bug in VBox which caused errors to appear on the console in some cases (thanks to Alexandre Cremers).
+  Fix a bug in VBox which caused errors to appear on the console in some
+  cases (thanks to Alexandre Cremers).
 \end{itemize}
+
 Changes between 0.3.4 (current version) and 0.3.3:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix a bug which caused commas to be unescaped in `Form' controller results.
+  Fix a bug which caused commas to be unescaped in `Form' controller
+  results.
 \item
- Fix a minor bug in server.py (most likely did not have any user-visible effects).
+  Fix a minor bug in server.py (most likely did not have any
+  user-visible effects).
 \end{itemize}
+
 Changes between 0.3.3 and 0.3.2:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Improve recording of HTML sentences in results file with \texttt{AcceptabilityJudgment} and \texttt{FlashSentence}.
+  Improve recording of HTML sentences in results file with
+  \texttt{AcceptabilityJudgment} and \texttt{FlashSentence}.
 \item
- Fix a venerable bug in server.py which caused files to be served with a leading blank line with the toy server.
+  Fix a venerable bug in server.py which caused files to be served with
+  a leading blank line with the toy server.
 \item
- Remove `md5' option for `sentenceDescType'.
+  Remove `md5' option for `sentenceDescType'.
 \end{itemize}
+
 Changes between 0.3.2 and 0.3.1:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Corrected error in docs (``requiresConsent'' to ``consentRequired'').
+  Corrected error in docs (``requiresConsent'' to ``consentRequired'').
 \item
- Made it possible to use HTML with \texttt{FlashSentence} controller (and hence also with \texttt{AcceptabilityJudgment}). Currently undocumented; see Google group discussion.
+  Made it possible to use HTML with \texttt{FlashSentence} controller
+  (and hence also with \texttt{AcceptabilityJudgment}). Currently
+  undocumented; see Google group discussion.
 \end{itemize}
+
 Changes between 0.3.1 and 0.3.0:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fixed a regression introduced in 0.3.0 (trailing comma stopped experiments working in IE).
+  Fixed a regression introduced in 0.3.0 (trailing comma stopped
+  experiments working in IE).
 \end{itemize}
+
 Changes between 0.3.0 and 0.3-beta19:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fixed a bug involving timeouts with the \texttt{AcceptabilityJudgment} controller.
+  Fixed a bug involving timeouts with the \texttt{AcceptabilityJudgment}
+  controller.
 \end{itemize}
+
 Changes between 0.3-beta19 and 0.3-beta18:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Added special \texttt{\_\_SetCounter\_\_} controller (see comment in \texttt{example\_data.js}).
+  Added special \texttt{\_\_SetCounter\_\_} controller (see comment in
+  \texttt{example\_data.js}).
 \end{itemize}
+
 Changes between 0.3-beta18 and 0.3-beta17:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Add option to save reaction times to \texttt{Form} controller.
+  Add option to save reaction times to \texttt{Form} controller.
 \end{itemize}
+
 Changes between 0.3-beta17 and 0.3-beta16:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix a bug which caused timings for question answers to be recorded incorrectly in some instances.
+  Fix a bug which caused timings for question answers to be recorded
+  incorrectly in some instances.
 \item
- Add the \texttt{presentHorizontally} option to the \texttt{Question} controller.
+  Add the \texttt{presentHorizontally} option to the \texttt{Question}
+  controller.
 \item
- Add the option to assign keys to answers based on the (random) order in which they are presented.
+  Add the option to assign keys to answers based on the (random) order
+  in which they are presented.
 \end{itemize}
+
 Changes between 0.3-beta16 and 0.3-beta15:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix bug which stopped ibex working on Internet Explorer.
+  Fix bug which stopped ibex working on Internet Explorer.
 \end{itemize}
+
 Changes between 0.3-beta15 and 0.3-beta14:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Added the \texttt{DashedAcceptabilityJudgment} controller for easy speeded acceptability judgments.
+  Added the \texttt{DashedAcceptabilityJudgment} controller for easy
+  speeded acceptability judgments.
 \item
- Cleaned up the way controllers are defined (not a user-visible change).
+  Cleaned up the way controllers are defined (not a user-visible
+  change).
 \item
- Fixed a bug in the file-locking code in \texttt{server.py}.
+  Fixed a bug in the file-locking code in \texttt{server.py}.
 \item
- Fixed a bug with result concatenation in the \texttt{VBox} controller which surface on Chrome/Safari.
+  Fixed a bug with result concatenation in the \texttt{VBox} controller
+  which surface on Chrome/Safari.
 \item
- Make it possible to create \texttt{Form} and \texttt{Message} controllers which can't be completed (useful in VBoxes).
+  Make it possible to create \texttt{Form} and \texttt{Message}
+  controllers which can't be completed (useful in VBoxes).
 \end{itemize}
+
 Changes between 0.3-beta14 and 0.3-beta13:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- It is now possible to set the \texttt{countsForProgressBar} option at the level of individual items.
+  It is now possible to set the \texttt{countsForProgressBar} option at
+  the level of individual items.
 \item
- Add `continueOnReturn' option to the \texttt{Form} controller.
+  Add `continueOnReturn' option to the \texttt{Form} controller.
 \item
- Add the option to display all words at the center of the screen with the \texttt{DashedSentence} controller.
+  Add the option to display all words at the center of the screen with
+  the \texttt{DashedSentence} controller.
 \item
- Automatic generation of \texttt{experiment.html} and \texttt{overview.html} can now deal with installations where \texttt{sever.py} has been renamed.
+  Automatic generation of \texttt{experiment.html} and
+  \texttt{overview.html} can now deal with installations where
+  \texttt{sever.py} has been renamed.
 \item
- Upgrade to jquery 1.5.1 and jquery-ui 1.8.10
+  Upgrade to jquery 1.5.1 and jquery-ui 1.8.10
 \item
- Minor bug fixes.
+  Minor bug fixes.
 \end{itemize}
+
 Changes between 0.3-beta13 and 0.3-beta12:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Ibex no longer depends on cookies to set the value of the latin square counter.
+  Ibex no longer depends on cookies to set the value of the latin square
+  counter.
 \item
- Trailing comma removed in example\_data.js.
+  Trailing comma removed in example\_data.js.
 \item
- \texttt{DashedSentence} controller now uses spans instead of divs for the individual words. This should make things work more smoothly with right-to-left languages (though I haven't tested this yet).
+  \texttt{DashedSentence} controller now uses spans instead of divs for
+  the individual words. This should make things work more smoothly with
+  right-to-left languages (though I haven't tested this yet).
 \item
- Highlighting text no longer shows hidden words when using \texttt{DashedSentence}.
+  Highlighting text no longer shows hidden words when using
+  \texttt{DashedSentence}.
 \item
- Fixed regression introduced in 0.3 where line breaks in SPR sentences did not get recorded in the results.
+  Fixed regression introduced in 0.3 where line breaks in SPR sentences
+  did not get recorded in the results.
 \end{itemize}
+
 Changes between 0.3-beta12 and 0.3-beta11:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix a minor bug which caused `DYNAMIC' to be used instead of `NULL' in some cases in the results file.
+  Fix a minor bug which caused `DYNAMIC' to be used instead of `NULL' in
+  some cases in the results file.
 \item
- Fixed a bug which occasionally led to inconsistent values for the unique user ID in the results file (second column in each line).
+  Fixed a bug which occasionally led to inconsistent values for the
+  unique user ID in the results file (second column in each line).
 \end{itemize}
+
 Changes between 0.3-beta11 and 0.3-beta10:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Added the \texttt{modifyRunningOrder} config option.
+  Added the \texttt{modifyRunningOrder} config option.
 \item
- \texttt{example\_data.js} has been slimmed down and reformatted.
+  \texttt{example\_data.js} has been slimmed down and reformatted.
 \end{itemize}
+
 Changes between 0.3-beta10 and 0.3-beta9:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Time is now recorded for the last word in a sentence in self-paced reading experiments.
+  Time is now recorded for the last word in a sentence in self-paced
+  reading experiments.
 \end{itemize}
+
 Changes between 0.3-beta9 and 0.3-beta8:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- It is now possible to control the point in the experiment at which results are sent to the server using the special \texttt{\_\_SendResults\_\_} controller.
+  It is now possible to control the point in the experiment at which
+  results are sent to the server using the special
+  \texttt{\_\_SendResults\_\_} controller.
 \item
- Upgrade from jQuery 1.4.0 to 1.4.2.
+  Upgrade from jQuery 1.4.0 to 1.4.2.
 \item
- Fix bug which prevented ``keypress'' transfer working with the \texttt{Separator} controller.
+  Fix bug which prevented ``keypress'' transfer working with the
+  \texttt{Separator} controller.
 \item
- Fix bug which prevented the \texttt{DashedSentence} controller from being able to display text one ``chunk'' at a time.
+  Fix bug which prevented the \texttt{DashedSentence} controller from
+  being able to display text one ``chunk'' at a time.
 \item
- Minor fixes.
+  Minor fixes.
 \end{itemize}
+
 Changes between 0.3-beta8 and 0.3-beta7:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix bug which caused self-paced reading experiments to display incorrectly in IE 8.
+  Fix bug which caused self-paced reading experiments to display
+  incorrectly in IE 8.
 \item
- Fix bug which caused question answers to appear without numbers in IE.
+  Fix bug which caused question answers to appear without numbers in IE.
 \end{itemize}
+
 Changes between 0.3-beta7 and 0.3-beta6:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix bug which caused questions not to be recorded in results file.
+  Fix bug which caused questions not to be recorded in results file.
 \item
- Checkboxes can be specified as obligatory in the \texttt{Form} controller.
+  Checkboxes can be specified as obligatory in the \texttt{Form}
+  controller.
 \item
- Minor changes to example data file.
+  Minor changes to example data file.
 \end{itemize}
+
 Changes between 0.3-beta6 and 0.3-beta5:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix bug in VBox.js which caused some things to appear off center. (This bug only affected the presentation of items, not the results.)
+  Fix bug in VBox.js which caused some things to appear off center.
+  (This bug only affected the presentation of items, not the results.)
 \end{itemize}
+
 Changes between 0.3-beta5 and 0.3-beta4:
-\begin{itemize}
 
+\begin{itemize}
 \item
- Improvements to the recording of times in self-paced reading experiments. Times should now be recorded a little more accurately.
+  Improvements to the recording of times in self-paced reading
+  experiments. Times should now be recorded a little more accurately.
 \item
- DashedSentence controller works on the iPhone (though it's not practical for actually doing experiments).
+  DashedSentence controller works on the iPhone (though it's not
+  practical for actually doing experiments).
 \item
- Option to minify JavaScript code in \texttt{data\_includes} dir (turned off by default).
+  Option to minify JavaScript code in \texttt{data\_includes} dir
+  (turned off by default).
 \item
- In the results file, the MD5 hash of the subject's IP address has been replaced with a hash based on the IP address together with a variety of other identifying information (e.g. user agent string, subject's screen size). This both provides a better unique identifier, and is preferable from a privacy point of view. (It isn't difficult to reverse an IP address hash, but it would be pretty difficult to reverse the new hashes.)
+  In the results file, the MD5 hash of the subject's IP address has been
+  replaced with a hash based on the IP address together with a variety
+  of other identifying information (e.g.~user agent string, subject's
+  screen size). This both provides a better unique identifier, and is
+  preferable from a privacy point of view. (It isn't difficult to
+  reverse an IP address hash, but it would be pretty difficult to
+  reverse the new hashes.)
 \end{itemize}
+
 Changes between 0.3-beta4 and 0.3-beta3:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Fix a bug in the \texttt{Form} controller that caused values for radio buttons to be incorrectly recorded in the results file.
+  Fix a bug in the \texttt{Form} controller that caused values for radio
+  buttons to be incorrectly recorded in the results file.
 \end{itemize}
+
 Changes between 0.3-beta3 and 0.3-beta2:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- \texttt{Form} controller added for collecting data from participants.
+  \texttt{Form} controller added for collecting data from participants.
 \item
- New method of passing HTML to the \texttt{Message} and \texttt{Form} controllers (HTML files can be included from \texttt{chunk\_includes} dir).
+  New method of passing HTML to the \texttt{Message} and \texttt{Form}
+  controllers (HTML files can be included from \texttt{chunk\_includes}
+  dir).
 \end{itemize}
+
 Changes between 0.3-beta2 and 0.3-beta1:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Bug fixes.
+  Bug fixes.
 \end{itemize}
+
 Changes between 0.3-beta1 and 0.2.7:
-\begin{itemize}
 
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
 \item
- Name changed to ``Ibex'' (Internet Based EXperiments).
+  Name changed to ``Ibex'' (Internet Based EXperiments).
 \item
- Removed dependence on \texttt{paste} module for stand-alone server. The server now requires only modules that are bundled with Python >= 2.3.
+  Removed dependence on \texttt{paste} module for stand-alone server.
+  The server now requires only modules that are bundled with Python
+  \textgreater{}= 2.3.
 \item
- JavaScript code now uses jQuery 1.4. Controllers are jQuery.ui widgets.
+  JavaScript code now uses jQuery 1.4. Controllers are jQuery.ui
+  widgets.
 \item
- New ways of configuring the server. The server can now issue an HTTP GET request to get its config variables. Config variables can be inlined in server.py as well as being given in the separate \texttt{server\_conf.py} file. These features are used for the Ibex Farm (http://spellout.net/ibexfarm).
+  New ways of configuring the server. The server can now issue an HTTP
+  GET request to get its config variables. Config variables can be
+  inlined in server.py as well as being given in the separate
+  \texttt{server\_conf.py} file. These features are used for the Ibex
+  Farm (\url{http://spellout.net/ibexfarm}).
 \item
- CSS files in css\_includes now modified automatically by the server to ensure that there are no CSS namespace clashes between different widgets.
+  CSS files in css\_includes now modified automatically by the server to
+  ensure that there are no CSS namespace clashes between different
+  widgets.
 \item
- Server now caches css and js includes (i.e. the results of requests like server.py?includes=js).
+  Server now caches css and js includes (i.e.~the results of requests
+  like server.py?includes=js).
 \item
- Support for IE 5.5 dropped (jQuery does not support IE 5.5).
+  Support for IE 5.5 dropped (jQuery does not support IE 5.5).
 \item
- Some additional options for the \texttt{DashedSentence} controller.
+  Some additional options for the \texttt{DashedSentence} controller.
 \end{itemize}
 
-\end{document}\n
+\end{document}
