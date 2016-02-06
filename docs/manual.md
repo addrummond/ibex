@@ -1,11 +1,11 @@
-_**Check out the printable PDF version of this manual:**_ http://spellout.net/latest_ibex_manual.pdf
+**Check out the printable [PDF version](manual.pdf) of this manual.**
 
 # Versions
 This documentation covers 0.3.7. The 0.1.x
 versions of Webspr come with a README containing full documentation.
 0.2.x versions are documented in another page on the wiki.
 The latest version of this document can be found at
-http://code.google.com/p/webspr/wiki/Documentation03
+https://github.com/addrummond/ibex/blob/master/docs/manual.md
 
 See the end of this document for the changelog.
 
