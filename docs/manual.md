@@ -1,134 +1,59 @@
 **Check out the printable [PDF version](manual.pdf) of this manual.**
 
 # Versions
-This documentation covers 0.3.7. The 0.1.x
-versions of Webspr come with a README containing full documentation.
-0.2.x versions are documented in another page on the wiki.
-The latest version of this document can be found at
-https://github.com/addrummond/ibex/blob/master/docs/manual.md
+
+This documentation covers 0.3.7. The 0.1.x versions of Webspr come with a README containing full documentation.  0.2.x versions are documented in another page on the wiki.  The latest version of this document can be found at https://github.com/addrummond/ibex/blob/master/docs/manual.md
 
 See the end of this document for the changelog.
 
-Prior to version 0.3 this software was called "webspr",
-not "Ibex".
+Prior to version 0.3 this software was called "webspr", not "Ibex".
 
 # Requirements
   * Python >= 2.3. (Python 3000 not currently supported.)
 
 # Introduction
-Ibex ("Internet Based EXperiments") allows you to run various kinds of psycholinguistic experiment online.
-The system
-is modular and the range of possible experiments is steadily growing. Ibex
-uses JavaScript and HTML only, and doesn't require the use of plugins such as
-Java or Flash.
+
+Ibex ("Internet Based EXperiments") allows you to run various kinds of psycholinguistic experiment online.  The system is modular and the range of possible experiments is steadily growing. Ibex uses JavaScript and HTML only, and doesn't require the use of plugins such as Java or Flash.
 
 # Setting up the server
-**Note:** If you are using the Ibex Farm, you can skip to the "Basic Concepts" section
-below. For most applications you will only need to modify the file `example_data.js`.
-(The Ibex Farm allows you to modify/upload some other files, but this rarely necessary.)
 
-There are two ways of running the server: either using the stand-alone toy HTTP server,
-or as a CGI process. By default, the server runs in stand-alone mode. To start
-it, change to the `www` directory and execute server.py:
-```
+**Note:** If you are using the Ibex Farm, you can skip to the "Basic Concepts" section below. For most applications you will only need to modify the file `example_data.js`.  (The Ibex Farm allows you to modify/upload some other files, but this rarely necessary.)
+
+There are two ways of running the server: either using the stand-alone toy HTTP server, or as a CGI process. By default, the server runs in stand-alone mode. To start it, change to the `www` directory and execute server.py:
+
+``` sh
     python server.py
 ```
-This will start the server on port 3000 by default (so the
-experiment will be at http://localhost:3000/experiment.html).
 
-The stand-alone server is limited to serving files relating to Ibex, so it is
-unlikely to be useful for real work (unless perhaps you hide it behind a proxy).
-However, it is useful for testing experimental designs without setting up a
-real HTTP server, and for running experiments offline.
+This will start the server on port 3000 by default (so the experiment will be at http://localhost:3000/experiment.html).
 
-The server can be configured by editing `server_conf.py`. Each of the
-options is commented. Change the `SERVER_MODE` variable to determine
-whether the server runs in stand-alone mode or as a CGI
-application. When `SERVER_MODE` is set to "cgi", `server.py` will work
-as a standard CGI program; when it is set to "toy", the server will
-run in stand-alone mode. (The value "paste" has the same effect as
-"toy", for backwards compatibility with 0.2.x version.) The value of
-the `PORT` variable determines the port the server will listen on when
-operating in stand-alone mode. As an alternative to editing the
-configuration file, the `-m` and `-p` command-line options can also be
-used to set the server mode and port respectively. Command-line options
-override those set in `server_conf.py`.
+The stand-alone server is limited to serving files relating to Ibex, so it is unlikely to be useful for real work (unless perhaps you hide it behind a proxy).  However, it is useful for testing experimental designs without setting up a real HTTP server, and for running experiments offline.
 
-**New:** Version 0.3 adds some new ways of configuring the server.
-These are unlikely to be of interest to most users, but are documented
-in the "New Configuration Methods" section below.
+The server can be configured by editing `server_conf.py`. Each of the options is commented. Change the `SERVER_MODE` variable to determine whether the server runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to "cgi", `server.py` will work as a standard CGI program; when it is set to "toy", the server will run in stand-alone mode. (The value "paste" has the same effect as "toy", for backwards compatibility with 0.2.x version.) The value of the `PORT` variable determines the port the server will listen on when operating in stand-alone mode. As an alternative to editing the configuration file, the `-m` and `-p` command-line options can also be used to set the server mode and port respectively. Command-line options override those set in `server_conf.py`.
 
-If running the server as a CGI application, make sure that the web
-server can serve up `experiment.html`, and the other files in the
-`www` dir, as static files. All dynamic requests go through
-`server.py`, so as long as the files in `www` can be accessed, and the
-server recognizes `server.py` as a CGI application, everything should
-work. The "Step-by-step CGI" section below goes through the process
-of setting up webspr as a CGI app.
+**New:** Version 0.3 adds some new ways of configuring the server.  These are unlikely to be of interest to most users, but are documented in the "New Configuration Methods" section below.
 
-The directories `js_includes`, `data_includes` and `css_includes`
-contain JavaScript and CSS files required for particular kinds of
-experiment. When an HTTP request is made for `server.py?include=js`,
-`server.py?include=data` or `server.py?include=css`, the server
-concatenates all the files in the specified directory and serves up
-the result. Your data file(s) will live in `data_includes`.
-**Note:** The server mangles CSS files by adding a prefix to each
-class/id name based on the name of the CSS file; see the section "CSS
-mangling" below for more details.
+If running the server as a CGI application, make sure that the web server can serve up `experiment.html`, and the other files in the `www` dir, as static files. All dynamic requests go through `server.py`, so as long as the files in `www` can be accessed, and the server recognizes `server.py` as a CGI application, everything should work. The "Step-by-step CGI" section below goes through the process of setting up webspr as a CGI app.
 
-The server stores some state in the `server_state` directory. This
-directory is automatically created by the server if it does not
-already exist, and in order to start the server from a fresh state you
-may simply delete this directory and/or its contents. Currently, the
-directory just contains the counter used to alternate latin square
-designs (see "Latin Square Designs" section below). This counter can
-be reset on server startup using the `-r` option.
+The directories `js_includes`, `data_includes` and `css_includes` contain JavaScript and CSS files required for particular kinds of experiment. When an HTTP request is made for `server.py?include=js`, `server.py?include=data` or `server.py?include=css`, the server concatenates all the files in the specified directory and serves up the result. Your data file(s) will live in `data_includes`.  **Note:** The server mangles CSS files by adding a prefix to each class/id name based on the name of the CSS file; see the section "CSS mangling" below for more details.
 
-The server logs messages in the file `server.log`. The default is to
-store all files in the same directory as `server.py` (i.e. logs,
-results, the `server_state` directory, etc.), but the working
-directory of the server can be modified by setting the variable
-`IBEX_WORKING_DIR` in `server_conf.py`. You can also set the
-environment variable of the same name.  The value of this environment
-variable overrides the value of the variable in `server_conf.py`.
+The server stores some state in the `server_state` directory. This directory is automatically created by the server if it does not already exist, and in order to start the server from a fresh state you may simply delete this directory and/or its contents. Currently, the directory just contains the counter used to alternate latin square designs (see "Latin Square Designs" section below). This counter can be reset on server startup using the `-r` option.
 
-On Linux/Unix/OS X, the server uses file locking to ensure that the
-results file and server state remain consistent. Currently, it does
-not do so on Windows, so there is a theoretical possibility of the
-server state or the results being corrupted if the server is deployed
-in a Windows environment (but unless there is very high traffic, it's
-purely theoretical).
+The server logs messages in the file `server.log`. The default is to store all files in the same directory as `server.py` (i.e. logs, results, the `server_state` directory, etc.), but the working directory of the server can be modified by setting the variable `IBEX_WORKING_DIR` in `server_conf.py`. You can also set the environment variable of the same name.  The value of this environment variable overrides the value of the variable in `server_conf.py`.
 
-The stand-alone server has been tested on Windows and OS X (but will
-almost certainly work on any system with Python 2.3-2.6).  The CGI
-server has been tested on OS X and Linux using the lighttpd web server
-in both cases.
+On Linux/Unix/OS X, the server uses file locking to ensure that the results file and server state remain consistent. Currently, it does not do so on Windows, so there is a theoretical possibility of the server state or the results being corrupted if the server is deployed in a Windows environment (but unless there is very high traffic, it's purely theoretical).
+
+The stand-alone server has been tested on Windows and OS X (but will almost certainly work on any system with Python 2.3-2.6).  The CGI server has been tested on OS X and Linux using the lighttpd web server in both cases.
 
 ## New Configuration Methods
-Version 0.3 of this software introduces two new methods of setting
-configuration variables. The first is simply to include the variable
-definitions in `server_conf.py` directly in `server.py`, obviating the need
-to set the `SERVER_CONF_PY_FILE` variables in `server.py`. The second
-is to specify that `server.py` should issue an HTTP GET request to a given
-URL, with the result obtained being interpreted as a JSON dictionary specifying the
-values of the configuration variables. This mode is configured by setting
-the configuration variables `EXTERNAL_CONFIG_URL`, `EXTERNAL_CONFIG_METHOD`
-and `EXTERNAL_CONFIG_PASS_PARAMS`. The first of these variables is self-explanatory;
-the second must be set to `"GET"`; the third should be set to a boolean,
-specifying whether or not `server.py` should pass a `dir` paramater in the
-query string giving the directory in which `server.py` resides.
-Note that the values of these three variables may be set either in `server_conf.py`,
-or directly in `server.py`.
 
-The new configuration methods are used to handle the configuration
-of experiments in the Ibex Farm (http://spellout.net/ibexfarm).
-They are unlikely to be of interest to other users.
+Version 0.3 of this software introduces two new methods of setting configuration variables. The first is simply to include the variable definitions in `server_conf.py` directly in `server.py`, obviating the need to set the `SERVER_CONF_PY_FILE` variables in `server.py`. The second is to specify that `server.py` should issue an HTTP GET request to a given URL, with the result obtained being interpreted as a JSON dictionary specifying the values of the configuration variables. This mode is configured by setting the configuration variables `EXTERNAL_CONFIG_URL`, `EXTERNAL_CONFIG_METHOD` and `EXTERNAL_CONFIG_PASS_PARAMS`. The first of these variables is self-explanatory; the second must be set to `"GET"`; the third should be set to a boolean, specifying whether or not `server.py` should pass a `dir` paramater in the query string giving the directory in which `server.py` resides.  Note that the values of these three variables may be set either in `server_conf.py`, or directly in `server.py`.
+
+The new configuration methods are used to handle the configuration of experiments in the Ibex Farm (http://spellout.net/ibexfarm).  They are unlikely to be of interest to other users.
 
 ## Step-by-step CGI
-This subsection describes how to set up webspr as a CGI application from
-scratch.  Since the particulars of different web servers differ, some parts are
-necessarily rather vague. There are many possible ways of organizing the
-files/directories; the setup described below is just the simplest.
+
+This subsection describes how to set up webspr as a CGI application from scratch.  Since the particulars of different web servers differ, some parts are necessarily rather vague. There are many possible ways of organizing the files/directories; the setup described below is just the simplest.
 
   1. Ensure that the `www` directory is somewhere within the root directory of your HTTP server. You may want to place the entire `webspr` directory within the root directory, or you may want to copy the files in `www` to a new location within the root directory. All of these files are ordinary static files except for `server.py`, which needs to be run as a CGI app.
 
@@ -144,38 +69,24 @@ files/directories; the setup described below is just the simplest.
 
   1. You may need to rename `server.py` (e.g. some servers may only execute CGI scripts with the extension `.cgi`). If this is the case, follow the instructions in the subsection below.
 
-Once these steps are complete, it's just a matter of configuring your HTTP
-server correctly. If you are using shared hosting, there is a reasonably good
-chance that the HTTP server will already have been configured to run Python CGI
-apps, in which case you won't need to do any additional configuration. There is
-an example configuration file for lighttpd included in the distribution
-(`example_lighttpd.conf`).
+Once these steps are complete, it's just a matter of configuring your HTTP server correctly. If you are using shared hosting, there is a reasonably good chance that the HTTP server will already have been configured to run Python CGI apps, in which case you won't need to do any additional configuration. There is an example configuration file for lighttpd included in the distribution (`example_lighttpd.conf`).
 
 ### Renaming server.py
-Ibex will stop working if you rename `server.py`, since the files `experiment.html` and `overview.html`
-assume that the script has this name. (In older versions of ibex there were a few other files which
-made this assumption, but as of 0.3-beta14, this has been changed.)
 
-You can edit `experiment.html` and `overview.html` manually to replace all instances of `server.py`
-with the new name of the script. Alternatively, you can execute the renamed `server.py` script with the following options
-to automatically generate new `experiment.html` and `overview.html` files:
-```
+Ibex will stop working if you rename `server.py`, since the files `experiment.html` and `overview.html` assume that the script has this name. (In older versions of ibex there were a few other files which made this assumption, but as of 0.3-beta14, this has been changed.)
+
+You can edit `experiment.html` and `overview.html` manually to replace all instances of `server.py` with the new name of the script. Alternatively, you can execute the renamed `server.py` script with the following options to automatically generate new `experiment.html` and `overview.html` files:
+
+``` sh
     python /path/to/renamed/server.py --genhtml /foo/webspr-XXXX/www
 ```
-This command will produce no output if it executes successfully. Note that you must run this command **after**
-renaming `server.py`.
+
+This command will produce no output if it executes successfully. Note that you must run this command **after** renaming `server.py`.
 
 # Basic concepts
-An Ibex experiment is essentially a sequence of _items_.
-Each item is itself a sequence of _entities_. To give a concrete example, each
-item in a self-paced reading experiment might consist of two entities: an
-entity providing a sentence for the subject to step through word by word,
-followed by an entity posing a comprehension question. Some other items and
-entities would also be present under most circumstances. For example, there
-would probably be a "separator" entity between each sentence/question pair in
-order to provide a pause between sentences. Schematically, the sequence of
-items would be as follows (the Wiki insists on displaying this in pretty
-colors):
+
+An Ibex experiment is essentially a sequence of _items_.  Each item is itself a sequence of _entities_. To give a concrete example, each item in a self-paced reading experiment might consist of two entities: an entity providing a sentence for the subject to step through word by word, followed by an entity posing a comprehension question. Some other items and entities would also be present under most circumstances. For example, there would probably be a "separator" entity between each sentence/question pair in order to provide a pause between sentences. Schematically, the sequence of items would be as follows (the Wiki insists on displaying this in pretty colors):
+
 ```
     ITEM 1:
         ENTITY 1: Sentence
@@ -191,25 +102,12 @@ colors):
         ENTITY 1: Sentence
         ENTITY 2: Comprehension question
 ```
-It is not necessary to construct the full sequence of items and entities
-manually. Ibex provides tools for ordering items in various ways (e.g. for
-inserting a pause between each item) and for implementing latin square designs.
-More on these shortly.
 
-Each entity is an instance of a _controller_, which determines the kind of
-experimental task that the entity will present.  For example, there is a
-`DashedSentence` controller useful for self-paced reading and speeded
-acceptability judgment tasks.  Ibex has a modular design, where each
-controller is a JavaScript object that follows a standard interface. This
-makes it quite easy to add new controllers if you are familiar with
-JavaScript/DHTML programming.
+It is not necessary to construct the full sequence of items and entities manually. Ibex provides tools for ordering items in various ways (e.g. for inserting a pause between each item) and for implementing latin square designs.  More on these shortly.
 
-Ibex stores results in CSV format. This makes it easy to import results into
-spreadsheets, Matlab, R, etc. Each entity may contribute zero, one **or more**
-lines to the results file. The first seven columns of each line give generic
-information about the result (e.g. an MD5 hash identifying the subject) and
-the rest give information specific to the particular element (e.g. word reading
-times, comprehension question answers). The first seven columns are as follows:
+Each entity is an instance of a _controller_, which determines the kind of experimental task that the entity will present.  For example, there is a `DashedSentence` controller useful for self-paced reading and speeded acceptability judgment tasks.  Ibex has a modular design, where each controller is a JavaScript object that follows a standard interface. This makes it quite easy to add new controllers if you are familiar with JavaScript/DHTML programming.
+
+Ibex stores results in CSV format. This makes it easy to import results into spreadsheets, Matlab, R, etc. Each entity may contribute zero, one **or more** lines to the results file. The first seven columns of each line give generic information about the result (e.g. an MD5 hash identifying the subject) and the rest give information specific to the particular element (e.g. word reading times, comprehension question answers). The first seven columns are as follows:
 
 | **Column** | **Information**                                                  |
 |:-----------|:-----------------------------------------------------------------|
@@ -221,48 +119,21 @@ times, comprehension question answers). The first seven columns are as follows:
 | 6          | Type                                                             |
 | 7          | Group                                                            |
 
-Note that some information pertaining to an entire experiment (e.g. the time
-that the server received the results) is
-duplicated on each line of the results. This often makes it easier to parse the
-results, though it makes the format much more verbose.  The significance of the
-"type" and "group" columns will be explained later; they are involved in
-specifying the ordering of items.
+Note that some information pertaining to an entire experiment (e.g. the time that the server received the results) is duplicated on each line of the results. This often makes it easier to parse the results, though it makes the format much more verbose.  The significance of the "type" and "group" columns will be explained later; they are involved in specifying the ordering of items.
 
-There are two ways to find out what the values in each column mean.  The
-"manual" method is to interpret the first seven columns of each line as
-specified above, and then to consult the documentation for the relevant
-controllers to determine the format of the subsequent columns. All of the
-controllers that are bundled with the Ibex distribution are fully documented
-here.  An easier method is to look at the comments in the results file: for
-each sequence of lines in the same format, the server adds comments describing
-the values contained in each column.
+There are two ways to find out what the values in each column mean.  The "manual" method is to interpret the first seven columns of each line as specified above, and then to consult the documentation for the relevant controllers to determine the format of the subsequent columns. All of the controllers that are bundled with the Ibex distribution are fully documented here.  An easier method is to look at the comments in the results file: for each sequence of lines in the same format, the server adds comments describing the values contained in each column.
 
-**Important**: A single element my contribute multiple lines to the results file.
-For example, if the `DashedSentence` element is in "self-paced reading" mode, it
-will add a line to the results file for every word reading time it
-records. Thus, there is not a one-to-one correspondence between items/elements
-and lines.
+**Important**: A single element my contribute multiple lines to the results file.  For example, if the `DashedSentence` element is in "self-paced reading" mode, it will add a line to the results file for every word reading time it records. Thus, there is not a one-to-one correspondence between items/elements and lines.
 
-**New:** The server now uses a more sophisticated algorithm for commenting lines in
-the results file. It is now able to handle cases where there are repeating
-patterns of lines in a results file.
+**New:** The server now uses a more sophisticated algorithm for commenting lines in the results file. It is now able to handle cases where there are repeating patterns of lines in a results file.
 
-**Newer:** As of 0.3-beta15, there is another commenting algorithm
-available, which can be turned on by setting the
-`SIMPLE_RESULTS_FILE_COMMENTS` variable to `True` in `server_conf.py`
-(it defaults to `False`). This algorithm simply adds a comment for
-every line in the results file. This simpler method generally works
-better than the old algorithm, which tried to be clever but didn't
-really succeed. If you are using the Ibex Farm, there is currently
-no way of changing this configuration option using the web interface,
-but this should be fixed soon.
+**Newer:** As of 0.3-beta15, there is another commenting algorithm available, which can be turned on by setting the `SIMPLE_RESULTS_FILE_COMMENTS` variable to `True` in `server_conf.py` (it defaults to `False`). This algorithm simply adds a comment for every line in the results file. This simpler method generally works better than the old algorithm, which tried to be clever but didn't really succeed. If you are using the Ibex Farm, there is currently no way of changing this configuration option using the web interface, but this should be fixed soon.
 
 # Format of a data file
-Data files for Ibex are JavaScript source files, but it is not really
-necessary to know JavaScript in order to write one.  The most important part
-of a data file is the declaration of the "items" array, as in the following
-example:
-```
+
+Data files for Ibex are JavaScript source files, but it is not really necessary to know JavaScript in order to write one.  The most important part of a data file is the declaration of the "items" array, as in the following example:
+
+``` Javascript
     var items = [
 
     ["filler", "DashedSentence", {s: "Here's a silly filler sentence"}],
@@ -272,9 +143,8 @@ example:
 
     ]; // NOTE SEMICOLON HERE
 ```
-The "items" array is an array of arrays, where each subarray specifies a single
-item. In the example above, every item contains a single element (multiple
-element items will be covered shortly).
+
+The "items" array is an array of arrays, where each subarray specifies a single item. In the example above, every item contains a single element (multiple element items will be covered shortly).
 
   * The first member of each subarray specifies the _type_ of the item.  Types can either be numbers or strings. Although the types in the example above have descriptive names, Ibex does not interpret these names in any way.
 
@@ -282,19 +152,15 @@ element items will be covered shortly).
 
   * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
 
-Once the items array has been created, Ibex must be told the order in which
-the items should be displayed. There are some moderately sophisticated
-facilities for creating random orderings and latin square designs, but for the
-moment, let's just display the items in the order we gave them in the array.
-This can be achieved by adding the following definition (which won't make much
-sense yet):
-```
+Once the items array has been created, Ibex must be told the order in which the items should be displayed. There are some moderately sophisticated facilities for creating random orderings and latin square designs, but for the moment, let's just display the items in the order we gave them in the array.  This can be achieved by adding the following definition (which won't make much sense yet):
+
+``` Javascript
     var shuffleSequence = seq(anyType);
 ```
 
-Suppose we wanted to pair each sentence with a comprehension question.  The
-easiest way to do this is to add a second element to each item:
-```
+Suppose we wanted to pair each sentence with a comprehension question.  The easiest way to do this is to add a second element to each item:
+
+``` Javascript
     var items = [
 
     ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
@@ -308,21 +174,19 @@ easiest way to do this is to add a second element to each item:
 
     ]; // NOTE SEMICOLON HERE
 ```
-As shown above, this is done simply by adding to each item further pairs of
-controllers and associative arrays of options. It is rather tiresome to have to
-set the `as` option to ["Yes", "No"] every time, but this can easily be avoided
-by specifying this as the default for the Question controller. To give an
-example of how defaults for multiple controllers are specified, let's also set
-the `mode` option of `DashedSentence` to "speeded acceptability":
-```
+
+As shown above, this is done simply by adding to each item further pairs of controllers and associative arrays of options. It is rather tiresome to have to set the `as` option to ["Yes", "No"] every time, but this can easily be avoided by specifying this as the default for the Question controller. To give an example of how defaults for multiple controllers are specified, let's also set the `mode` option of `DashedSentence` to "speeded acceptability":
+
+``` Javascript
     var defaults = [
         "Question", {as: ["Yes", "No"]},
         "DashedSentence", {mode: "speeded acceptability"}
     ];
 ```
-Once this definition is in place, we can drop the specification of the `as`
-option for each Question element. The final data file looks like this:
-```
+
+Once this definition is in place, we can drop the specification of the `as` option for each Question element. The final data file looks like this:
+
+``` Javascript
     var shuffleSequence = seq(anyType);
 
     var defaults = [
@@ -343,25 +207,16 @@ option for each Question element. The final data file looks like this:
 
     ];
 ```
-**Where to put your data file**: Data files live in the `data_includes`
-directory, and must have a `.js` extension. You can only have data one file in
-the directory at any one time, since if you have multiple files, they will just
-overwrite the definitions for `shuffleSequence`, `items` and `defaults`.
-However, you can tell the server to ignore some of the files in `data_includes`
-(see the section "Configuring `js_includes`, `data_includes` and `css_includes`").
+
+**Where to put your data file**: Data files live in the `data_includes` directory, and must have a `.js` extension. You can only have data one file in the directory at any one time, since if you have multiple files, they will just overwrite the definitions for `shuffleSequence`, `items` and `defaults`.  However, you can tell the server to ignore some of the files in `data_includes` (see the section "Configuring `js_includes`, `data_includes` and `css_includes`").
 
 # Shuffle sequences
+
 ## `seq`, `randomize` and `shuffle`
 
-A "shuffle sequence" is a JavaScript data structure describing a series of
-"shuffling", randomizing and sequencing operations over an array of items.  A
-variable called `shuffleSequence` should be defined in your data file with a
-data structure of this sort as its value.
+A "shuffle sequence" is a JavaScript data structure describing a series of "shuffling", randomizing and sequencing operations over an array of items.  A variable called `shuffleSequence` should be defined in your data file with a data structure of this sort as its value.
 
-Shuffle sequences are composed of three basic operations, `seq`, `randomize`
-and `shuffle`. Both take a series of "type predicates" as arguments, where each
-type predicate is the characteristic function of a set of types. A type
-predicate may be one of the following:
+Shuffle sequences are composed of three basic operations, `seq`, `randomize` and `shuffle`. Both take a series of "type predicates" as arguments, where each type predicate is the characteristic function of a set of types. A type predicate may be one of the following:
 
   * A string or integer, denoting the characteristic function of all items of the given type.
 
@@ -390,95 +245,64 @@ The following type predicates are predefined as JavaScript functions:
 | `not(pred)`            | Matches anything that is not of a type matched by pred.   |
 | `anyOf(p1, p2, ...)`   | Takes any number of type predicates as its arguments, and matches anything matching one of these predicates. |
 
-If you define your own predicates, be careful to test that they are
-cross-browser compatible. See the "Cross-browser compatibility"
-section below for some pertinent advice.  The predicates above are
-defined in `shuffle.js`.
+If you define your own predicates, be careful to test that they are cross-browser compatible. See the "Cross-browser compatibility" section below for some pertinent advice.  The predicates above are defined in `shuffle.js`.
 
-The power of shuffle sequences derives from the possibility of composing them
-without limit. Suppose we want the following order: all practice items in their
-original order followed by evenly spaced real and filler items in random order.
-Assuming the types "practice", "real" and "filler", we could use the following
-shuffle sequence:
-```
+The power of shuffle sequences derives from the possibility of composing them without limit. Suppose we want the following order: all practice items in their original order followed by evenly spaced real and filler items in random order.  Assuming the types "practice", "real" and "filler", we could use the following shuffle sequence:
+
+``` JavaScript
     seq("practice", shuffle(randomize("real"), randomize("filler")))
 ```
-Now suppose that there are two types of real item ("real1" and "real2"), and we
-wish to order the items the same way as before:
-```
+
+Now suppose that there are two types of real item ("real1" and "real2"), and we wish to order the items the same way as before:
+
+``` JavaScript
     seq("practice", shuffle(randomize(anyOf("real1", "real2")),
                     randomize("filler")))
 ```
-What if we also want the two types of real item to be evenly spaced?  The
-following formula will do the trick:
-```
+
+What if we also want the two types of real item to be evenly spaced?  The following formula will do the trick:
+
+``` JavaScript
     seq("practice", shuffle(randomize("filler"),
                             shuffle(randomize("real1"),
                                     randomize("real2"))))
 ```
 
-This first shuffles items of type "real1" and items of type "real2" and then
-shuffles filler items into the mix.  Finally, practice items are prepended in
-the order they were given in `data.js`.
+This first shuffles items of type "real1" and items of type "real2" and then shuffles filler items into the mix.  Finally, practice items are prepended in the order they were given in `data.js`.
 
-Since it is often useful to apply `randomize` to every argument of `shuffle`,
-there is a utility function, `rshuffle`, which automates this. The following
-equivalence holds:
-```
+Since it is often useful to apply `randomize` to every argument of `shuffle`, there is a utility function, `rshuffle`, which automates this. The following equivalence holds:
+
+``` JavaScript
     rshuffle(a1, a2, ...) = shuffle(randomize(a1), randomize(a2), ...)
 ```
-If no shuffle sequence is specified, Ibex uses the following default
-sequence:
-```
+
+If no shuffle sequence is specified, Ibex uses the following default sequence:
+
+``` JavaScript
     seq(equalTo0, rshuffle(greaterThan0, lessThan0))
 ```
 
-This will seem rather cryptic to anyone not familiar with the behavior of
-earlier versions of Ibex, where this ordering specification was built in and
-unchangeable. In short, it works well if practice items have type 0, filler
-items have integer types < 0, and real items have integer types > 0.
+This will seem rather cryptic to anyone not familiar with the behavior of earlier versions of Ibex, where this ordering specification was built in and unchangeable. In short, it works well if practice items have type 0, filler items have integer types < 0, and real items have integer types > 0.
 
-**Important**: A shuffle sequence must always have one of `seq`, `shuffle`,
-`randomize` or `rshuffle` as its outer element. A single string or integer is
-_not_ a valid shuffle sequence, and neither is a predicate expression such as
-`not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and
-`seq(not("foo"))`, not just `not("foo")`.
+**Important**: A shuffle sequence must always have one of `seq`, `shuffle`, `randomize` or `rshuffle` as its outer element. A single string or integer is _not_ a valid shuffle sequence, and neither is a predicate expression such as `not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just `not("foo")`.
 
-It is possible to include duplicate items in the final sequence. For example,
-`seq("foo", "foo")` would include every item of type "foo" twice. For this
-reason, it is possible to accidentally include duplicate items if a number of
-your predicates overlap.  You can define your own shuffle sequence operators
-and predicates quite easily; see `shuffle.js` for the definitions of the `seq`,
-`shuffle` and `randomize` operators.
+It is possible to include duplicate items in the final sequence. For example, `seq("foo", "foo")` would include every item of type "foo" twice. For this reason, it is possible to accidentally include duplicate items if a number of your predicates overlap.  You can define your own shuffle sequence operators and predicates quite easily; see `shuffle.js` for the definitions of the `seq`, `shuffle` and `randomize` operators.
 
 ## Adding separators
-Normally, it is a good idea to have some sort of padding in between items to
-warn participants that they have finished one item and are starting another.
-Ibex provides the `Separator` item for this purpose. It can either work on a
-timeout or prompt for a keypress. Here's an example:
-```
+
+Normally, it is a good idea to have some sort of padding in between items to warn participants that they have finished one item and are starting another.  Ibex provides the `Separator` item for this purpose. It can either work on a timeout or prompt for a keypress. Here's an example:
+
+``` JavaScript
     ["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
 ```
-When the `transfer` option is set to 1000, this specifies that there should be
-a 1000ms wait before the next item. The `normalMessage` option gives the
-message that should be displayed if the participant didn't do anything wrong on
-the previous item (see the section "Communication between elements" for more
-details). If the other items have failure conditions, you should set the
-`errorMessage` option too. If you want the participant to proceed by pressing a
-key rather than waiting, set `transfer` to "keypress".
 
-The shuffle sequence operator `sepWith` is provided for the purpose of
-interpolating separators with other items. It takes two arguments: the first is
-a shuffle sequence specifying the sequence of items which should be used to
-separate the other items; the second argument is a shuffle sequence specifying
-the other items.
+When the `transfer` option is set to 1000, this specifies that there should be a 1000ms wait before the next item. The `normalMessage` option gives the message that should be displayed if the participant didn't do anything wrong on the previous item (see the section "Communication between elements" for more details). If the other items have failure conditions, you should set the `errorMessage` option too. If you want the participant to proceed by pressing a key rather than waiting, set `transfer` to "keypress".
 
-Let's take the example data file above and add timeout Separators between each
-item. There are no failure conditions in this experiment (since there is no
-"wrong" answer for an acceptability judgment) so we only need to specify the
-`normalMessage` option. For the moment, we'll still present the sentences in
-the order in which they appear in the `items` array. Here's the modified file:
-```
+The shuffle sequence operator `sepWith` is provided for the purpose of interpolating separators with other items. It takes two arguments: the first is a shuffle sequence specifying the sequence of items which should be used to separate the other items; the second argument is a shuffle sequence specifying the other items.
+
+Let's take the example data file above and add timeout Separators between each item. There are no failure conditions in this experiment (since there is no "wrong" answer for an acceptability judgment) so we only need to specify the `normalMessage` option. For the moment, we'll still present the sentences in the order in which they appear in the `items` array. Here's the modified file:
+
+``` JavaScript
     var shuffleSequence = sepWith("sep", not("sep"));
 
     var defaults = [
@@ -503,23 +327,12 @@ the order in which they appear in the `items` array. Here's the modified file:
 ```
 
 ## Manipulating individual items
-So far, we've been treating items as atoms for the purposes of shuffle
-sequences -- although an item might be composed of several elements, the
-operations `seq`, `randomize`, `shuffle` and `sepWith` ignore this internal structure.
-However, it is sometimes useful to be able to append or prepend a particular
-sequence of elements to every item.  For example, if you are doing a speeded
-acceptability judgment task, you might want every sentence to be followed by
-exactly the same question ("Was this a good sentence?"). To this end, webspr
-provides the `precedeEachWith` and `followEachWith` operations.
 
-Both functions take two arguments, each of which should be a shuffle sequence.
-The first argument specifies the sequence of items which (when flattened to a
-sequence of elements) is to be appended/prepended to every item in the second
-argument.  Returning to the previous example data file, let's modify it so that
-every sentence is followed by the same acceptability question.  We'll also
-ensure that the sentences are randomly ordered, with the fillers and "real"
-sentences evenly spaced:
-```
+So far, we've been treating items as atoms for the purposes of shuffle sequences -- although an item might be composed of several elements, the operations `seq`, `randomize`, `shuffle` and `sepWith` ignore this internal structure.  However, it is sometimes useful to be able to append or prepend a particular sequence of elements to every item.  For example, if you are doing a speeded acceptability judgment task, you might want every sentence to be followed by exactly the same question ("Was this a good sentence?"). To this end, webspr provides the `precedeEachWith` and `followEachWith` operations.
+
+Both functions take two arguments, each of which should be a shuffle sequence.  The first argument specifies the sequence of items which (when flattened to a sequence of elements) is to be appended/prepended to every item in the second argument.  Returning to the previous example data file, let's modify it so that every sentence is followed by the same acceptability question.  We'll also ensure that the sentences are randomly ordered, with the fillers and "real" sentences evenly spaced:
+
+``` JavaScript
     var shuffleSequence = followEachWith("question", rshuffle("filler", "relclause"));
 
     var defaults = [
@@ -538,88 +351,44 @@ sentences evenly spaced:
 
     ];
 ```
-**Important:** `precedeEachWith` and `followEachWith` have a somewhat confusing
-behavior with respect to the format of the results file. Although in effect,
-the first argument of `followEachWith` is appended to every item, the appended
-elements are not considered a part of the items they are appended to in the
-results file. Rather, every question in the preceding example will have the
-same item number and element number in the results file (that based on the
-position of the question item in the data file).
+
+**Important:** `precedeEachWith` and `followEachWith` have a somewhat confusing behavior with respect to the format of the results file. Although in effect, the first argument of `followEachWith` is appended to every item, the appended elements are not considered a part of the items they are appended to in the results file. Rather, every question in the preceding example will have the same item number and element number in the results file (that based on the position of the question item in the data file).
 
 ## Latin square designs
-Ibex has built-in support for latin square designs. These are implemented by
-assigning each item a _group_ in addition to its type. Each participant sees
-only one item out of all the items in any given group. To give an example, we
-could place both of the "relclause" sentences from the previous example in the
-same group using the following code:
-```
+
+Ibex has built-in support for latin square designs. These are implemented by assigning each item a _group_ in addition to its type. Each participant sees only one item out of all the items in any given group. To give an example, we could place both of the "relclause" sentences from the previous example in the same group using the following code:
+
+``` JavaScript
     [["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
     [["relclause", 1], "DashedSentence", {s: "Another sentence that has a relative clause"}]
 ```
-Now, any given participant will see only one of these
-sentences. Designs are rotated using a counter stored on the
-server.
-Groups, like types, may either be strings or numbers. By
-default, webspr does not check that all groups contain the same number
-of items (this behavior is new in 0.2.4). You can set the
-`equalGroupSizes` variable to `true` in order to revert to the old
-behavior, where an error is raised if groups contain differing number
-of items. (See the "Miscellaneous options" subsection below.)
 
-**New:** You may now choose which latin square a participant will be
-placed in by using a URL of the following form:
-".../server.py?withsquare=XXXX". This will set the latin square to
-XXXX for the current participant and then display the main experiment
-page.  Selecting the latin square in this manner does **not** modify the
-master counter stored on the server.
+Now, any given participant will see only one of these sentences. Designs are rotated using a counter stored on the server.  Groups, like types, may either be strings or numbers. By default, webspr does not check that all groups contain the same number of items (this behavior is new in 0.2.4). You can set the `equalGroupSizes` variable to `true` in order to revert to the old behavior, where an error is raised if groups contain differing number of items. (See the "Miscellaneous options" subsection below.)
 
-**Newer:** You can also set the counter in the data file, with a
-statement such as `var counterOverride = 18;`. Again, the server's
-latin square counter is not modified.  This method takes priority over
-the URL method described in the previous paragraph, if both are used.
+**New:** You may now choose which latin square a participant will be placed in by using a URL of the following form: ".../server.py?withsquare=XXXX". This will set the latin square to XXXX for the current participant and then display the main experiment page.  Selecting the latin square in this manner does **not** modify the master counter stored on the server.
 
-A new (and not very well-tested) feature allows for more complex designs where
-selection of an item from one group is dependent on selection of an item from
-another. For example, you can specify that the item chosen from group 3 should
-be the same as the item chosen from group 2 (i.e. if the first item is chosen
-from group 2, the first item will also be chosen from group 3). To use this
-feature, just replace each group specifier with a pair of group specifiers,
-where the first member of the pair is the original group specifier, and the
-second is the group which governs selection from the original group.  For
-example, suppose that we have another group (group 2), and we want choices from
-this group to be linked to choices from group 1 in the example above.  The
-following code will do the trick:
-```
+**Newer:** You can also set the counter in the data file, with a statement such as `var counterOverride = 18;`. Again, the server's latin square counter is not modified.  This method takes priority over the URL method described in the previous paragraph, if both are used.
+
+A new (and not very well-tested) feature allows for more complex designs where selection of an item from one group is dependent on selection of an item from another. For example, you can specify that the item chosen from group 3 should be the same as the item chosen from group 2 (i.e. if the first item is chosen from group 2, the first item will also be chosen from group 3). To use this feature, just replace each group specifier with a pair of group specifiers, where the first member of the pair is the original group specifier, and the second is the group which governs selection from the original group.  For example, suppose that we have another group (group 2), and we want choices from this group to be linked to choices from group 1 in the example above.  The following code will do the trick:
+
+``` JavaScript
     [["relclause", [2, 1]], "DashedSentence",
       {s: "I am paired with 'A sentence that has a relative clause'"}],
     [["relclause", [2, 1]], "DashedSentence",
       {s: "I am paired with 'Another sentence that has a relative clause'"}]
 ```
-Note that the second number in the pair must be the same for all items in the group.
-**Warning:** This feature may be removed in future releases if I get around to implementing
-a more general way of implementing more complex latin square designs.
+
+Note that the second number in the pair must be the same for all items in the group.  **Warning:** This feature may be removed in future releases if I get around to implementing a more general way of implementing more complex latin square designs.
 
 ## Sending results early
-You can now control the point in the experiment at which Ibex sends the results to the server.
-This allows you to (e.g.) present the participant with a link to another website after the
-results have been successfully uploaded. In order to use this feature, you must first set
-the `manualSendResults` config variable to `true`. Then, add a `__SendResults__` controller
-to your items list and insert it somewhere in your shuffle sequence. There is some example
-code in `data_includes/example_data.js`.  Note that you may only
-send results once per experiment -- it is not possible to incrementally upload results.
 
-If you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to
-your shuffle sequence, then the results will never get sent at all.
+You can now control the point in the experiment at which Ibex sends the results to the server.  This allows you to (e.g.) present the participant with a link to another website after the results have been successfully uploaded. In order to use this feature, you must first set the `manualSendResults` config variable to `true`. Then, add a `__SendResults__` controller to your items list and insert it somewhere in your shuffle sequence. There is some example code in `data_includes/example_data.js`.  Note that you may only send results once per experiment -- it is not possible to incrementally upload results.
+
+If you set `manualSendResults` to `true`, but do not add a `__SendResults__` controller to your shuffle sequence, then the results will never get sent at all.
 
 ## Modifying the running order manually
-Occasionally, shuffle sequences aren't powerful enough to arrange
-items in the order you wish.  To perform abritrary rearrangements of
-items, you can define a `modifyRunningOrder` function in your data
-file. This function takes as its input the running order generated by
-the shuffleSequence, and returns a new runningOrder. (The function is
-permitted to modify its argument, but it must return a running order.)
-A running order is an array of arrays of elements. Each element is an object
-with the following properties:
+
+Occasionally, shuffle sequences aren't powerful enough to arrange items in the order you wish.  To perform abritrary rearrangements of items, you can define a `modifyRunningOrder` function in your data file. This function takes as its input the running order generated by the shuffleSequence, and returns a new runningOrder. (The function is permitted to modify its argument, but it must return a running order.)  A running order is an array of arrays of elements. Each element is an object with the following properties:
 
   * `itemNumber`
   * `elementNumber`
@@ -629,19 +398,11 @@ with the following properties:
   * `options` (an object giving the options for the controller)
   * `hideResults` (boolean; if true, results from this controller are not included in the results file)
 
-You can create new objects with these properties and insert them into
-the running order.  Typically, these objects would have `itemNumber`,
-`elementNumber`, `type` and `group` set to `null`. In this case, if
-the controller adds lines to the results file, then the "item",
-"element", "type" and "group" columns will all have the value
-"DYNAMIC".
+You can create new objects with these properties and insert them into the running order.  Typically, these objects would have `itemNumber`, `elementNumber`, `type` and `group` set to `null`. In this case, if the controller adds lines to the results file, then the "item", "element", "type" and "group" columns will all have the value "DYNAMIC".
 
-The convenince constructor `DynamicElement` is provided to ease the construction
-of typical element objects. This takes as its first argument a controller name,
-and as its second the controller's options. Optionally, `true` may be passed as the
-third argument to set the `hideResults` property to `true`.
-The following example inserts a "pause" `Message` at every tenth item:
-```
+The convenince constructor `DynamicElement` is provided to ease the construction of typical element objects. This takes as its first argument a controller name, and as its second the controller's options. Optionally, `true` may be passed as the third argument to set the `hideResults` property to `true`.  The following example inserts a "pause" `Message` at every tenth item:
+
+``` JavaScript
     function modifyRunningOrder(ro) {
         for (var i = 0; i < ro.length; ++i) {
             if (i % 10 == 0) {
@@ -660,25 +421,17 @@ The following example inserts a "pause" `Message` at every tenth item:
 ```
 
 # Communication between elements
-Ibex allows for a limited amount of communication between elements.  Each
-element may set keys in a hashtable which is passed to the next element.  The
-hashtable is cleared between elements, so there is no possibility of
-long-distance communication.
 
-Currently, this system is used to provide feedback to participants when they
-(for example) answer a comprehension question incorrectly.  Controllers such as
-`Question` set the key "failed" if something goes wrong, and the next
-`Separator` item is then able to display a message warning the participant that
-they answered incorrectly.
+Ibex allows for a limited amount of communication between elements.  Each element may set keys in a hashtable which is passed to the next element.  The hashtable is cleared between elements, so there is no possibility of long-distance communication.
+
+Currently, this system is used to provide feedback to participants when they (for example) answer a comprehension question incorrectly.  Controllers such as `Question` set the key "failed" if something goes wrong, and the next `Separator` item is then able to display a message warning the participant that they answered incorrectly.
 
 # Controllers
-For all controllers, the `hideProgressBar` option may be set to true, in order to prevent the progress
-bar being displayed while the controller is in action. Similarly, the `countsForProgressBar` option
-may be set to determine whether or not completion of the controller causes the indicator in the
-progress bar to move to the right. (Different controllers have a different default setting for
-`countsForProgressBar`.)
+
+For all controllers, the `hideProgressBar` option may be set to true, in order to prevent the progress bar being displayed while the controller is in action. Similarly, the `countsForProgressBar` option may be set to determine whether or not completion of the controller causes the indicator in the progress bar to move to the right. (Different controllers have a different default setting for `countsForProgressBar`.)
 
 ## Separator
+
 **Options**
 
 | **Option**        | **Default**    | **Description** |
@@ -693,6 +446,7 @@ progress bar to move to the right. (Different controllers have a different defau
 `Separator` does not add any lines to the results file.
 
 ## Message
+
 **Options**
 
 | **Option**            | **Default**    | **Description**                                                        |
@@ -709,6 +463,7 @@ progress bar to move to the right. (Different controllers have a different defau
 `Message` does not add any lines to the results file.
 
 ## DashedSentence
+
 **Options**
 
 | **Option**      | **Default**              | **Description**                                               |
@@ -724,16 +479,11 @@ progress bar to move to the right. (Different controllers have a different defau
 | showBehind      | `true`                   | As above (but behind rather than ahead). If both showAhead and showBehind are set to `false`, no dashes are shown. |
 | hideUnderscores | `false`                  | If this is set to `true`, the underscore character is interpreted as a space which does not trigger a break between words. This is an alternative to passing an array of strings as the value of the `s` option. |
 
-**Note on right-to-left languages:** The current version of Ibex doesn't provide out-of-the-box support
-for doing self-paced reading experiments with languages that are displayed right to left (although
-I hope to add support for this soon). However, it
-is possible to modify the code for the `DashedSentence` controller to display in right-to-left order.
-Please contact me (a.d.drummond@gmail.com) if you want to do this.
+**Note on right-to-left languages:** The current version of Ibex doesn't provide out-of-the-box support for doing self-paced reading experiments with languages that are displayed right to left (although I hope to add support for this soon). However, it is possible to modify the code for the `DashedSentence` controller to display in right-to-left order.  Please contact me (a.d.drummond@gmail.com) if you want to do this.
 
 **Results**
 
-The format of the results depends on the setting of the `mode` option. If it is
-set to "speeded acceptability", results have the following format:
+The format of the results depends on the setting of the `mode` option. If it is set to "speeded acceptability", results have the following format:
 
 | **Column** | **Description** |
 |:-----------|:----------------|
@@ -750,6 +500,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 | 5          | See documentation for 'sentenceDescType' option above. |
 
 ## FlashSentence
+
 **Options**
 
 | **Option** | **Default**    | **Description**                 |
@@ -765,6 +516,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 | 1          | See documentation for 'sentenceDescType' option of the DashedSentence controller. |
 
 ## Question
+
 **Options**
 
 | **Option**       | **Default**    | **Description**                                                     |
@@ -792,8 +544,8 @@ If `mode` is set to "self-paced reading", the results look like this:
 | 4          | The time the participant took to answer the question (ms). |
 
 ## AcceptabilityJudgment
-The `AcceptabilityJudgment` controller makes it straightforward to present a sentence together
-with a rating scale. It is a combination of the `FlashSentence` and `Message` controllers.
+
+The `AcceptabilityJudgment` controller makes it straightforward to present a sentence together with a rating scale. It is a combination of the `FlashSentence` and `Message` controllers.
 
 | **Option**       | **Default**           | **Description**                |
 |:-----------------|:----------------------|:-------------------------------|
@@ -812,15 +564,11 @@ with a rating scale. It is a combination of the `FlashSentence` and `Message` co
 
 **Results**
 
-Each `AcceptabilityJudgment` adds **two** lines to the results file. The first
-line is the same as for the `FlashSentence` controller; the second line is the
-same as for the `Question` controller.
+Each `AcceptabilityJudgment` adds **two** lines to the results file. The first line is the same as for the `FlashSentence` controller; the second line is the same as for the `Question` controller.
 
 ## DashedAcceptabilityJudgment
-This is like `AcceptabilityJudgment`, but it uses `DashedSentence`
-instead of `FlashSentence`.  This is useful for running speeded
-acceptability judgment tasks (which otherwise require some rather
-creative use of shuffle sequences).
+
+This is like `AcceptabilityJudgment`, but it uses `DashedSentence` instead of `FlashSentence`.  This is useful for running speeded acceptability judgment tasks (which otherwise require some rather creative use of shuffle sequences).
 
 | **Option**         | **Default**                 | **Description**                                        |
 |:-------------------|:----------------------------|:-------------------------------------------------------|
@@ -847,25 +595,15 @@ creative use of shuffle sequences).
 
 **Results**
 
-Each `DashedAcceptabilityJudgment` adds **two** lines to the results
-file if the "mode" option is set to "speeded acceptability". If it is
-set to "self-paced reading", the number of lines is 1 + the number of
-words in the sentence.  The first line(s) are the same as for the
-`DashedSentence` controller; the last line is the same as for the
-`Question` controller.
+Each `DashedAcceptabilityJudgment` adds **two** lines to the results file if the "mode" option is set to "speeded acceptability". If it is set to "self-paced reading", the number of lines is 1 + the number of words in the sentence.  The first line(s) are the same as for the `DashedSentence` controller; the last line is the same as for the `Question` controller.
 
 ## VBox
-The `VBox` controller makes it possible to combine multiple controllers to form
-a single controller. Each controller in the VBox is displayed at the same time,
-one on top of the other. This allows the functionality of simple controllers to
-be reused in the construction of more complex controllers. For an example of a
-controller constructed using a VBox, see
-`js_includes/acceptability_judgment.js`.
 
-Currently, you canno create VBox controllers inline in your data file. Instead,
-you must create a new controller which passes its `options` dictionary to the VBox.
-E.g., by placing something like the following at the beginning of your data file:
-```
+The `VBox` controller makes it possible to combine multiple controllers to form a single controller. Each controller in the VBox is displayed at the same time, one on top of the other. This allows the functionality of simple controllers to be reused in the construction of more complex controllers. For an example of a controller constructed using a VBox, see `js_includes/acceptability_judgment.js`.
+
+Currently, you canno create VBox controllers inline in your data file. Instead, you must create a new controller which passes its `options` dictionary to the VBox.  E.g., by placing something like the following at the beginning of your data file:
+
+``` JavaScript
 define_ibex_controller({
     name: "MyController",
 
@@ -901,29 +639,20 @@ define_ibex_controller({
 The `VBox` controller simply concatenates the results of its children in the order that the children were given.
 
 ## Form
-The `Form` controller collects data from an HTML form presented to the participant.
-The form may contain any combination of text boxes (`<input type="text">`), text areas (`<textarea>`),
-checkboxes (`<input type="checkbox">`) or radio buttons (`<input type="radio">`).
-It isn't necessary to wrap the `<input>` tags within a `<form>` tag; nor should
-you include a submit button.
 
-You can indicate that a text area or radio button group is obligatory by adding
-the "obligatory" class to it (e.g. `<input type="text" class="obligatory">`).
-For groups of radio buttons, you need only add the "obligatory" class
-to one button in the group. (As usual, radio buttons in a single group should
-all have the same 'name' attribute.)
+The `Form` controller collects data from an HTML form presented to the participant.  The form may contain any combination of text boxes (`<input type="text">`), text areas (`<textarea>`), checkboxes (`<input type="checkbox">`) or radio buttons (`<input type="radio">`).  It isn't necessary to wrap the `<input>` tags within a `<form>` tag; nor should you include a submit button.
 
-The "obligatory" class can also be used to indicate that a checkbox must be checked
-before the user can continue. (This is useful for consent checkboxes.)
+You can indicate that a text area or radio button group is obligatory by adding the "obligatory" class to it (e.g. `<input type="text" class="obligatory">`).  For groups of radio buttons, you need only add the "obligatory" class to one button in the group. (As usual, radio buttons in a single group should all have the same 'name' attribute.)
 
-By default, failure to fill in an obligatory field is signaled by an alert dialog.
-However, you can indicate that the error message is to be displayed on the page
-by inserting an empty label tag in your form:
-```
+The "obligatory" class can also be used to indicate that a checkbox must be checked before the user can continue. (This is useful for consent checkboxes.)
+
+By default, failure to fill in an obligatory field is signaled by an alert dialog.  However, you can indicate that the error message is to be displayed on the page by inserting an empty label tag in your form:
+
+``` html
     <label class="error" for="FIELD_NAME"></label>
 ```
-If you want all error messages to
-be displayed in the same location, add a `<label>` with 'for' set to "ALL\_FIELDS".
+
+If you want all error messages to be displayed in the same location, add a `<label>` with 'for' set to "ALL\_FIELDS".
 
 **Options**
 
@@ -943,8 +672,7 @@ be displayed in the same location, add a `<label>` with 'for' set to "ALL\_FIELD
 
 **Results**
 
-For each `<input>` or `<textarea>` tag, there is a line in the results file with the
-following two columns:
+For each `<input>` or `<textarea>` tag, there is a line in the results file with the following two columns:
 
 | **Column** | **Description** |
 |:-----------|:----------------|
@@ -952,7 +680,9 @@ following two columns:
 | 2          | The answer given by the participant. |
 
 # Further configuration
+
 ## Miscellaneous  options
+
 You can set the values of the following variables in your data file (e.g. `var showProgressBar = true;`).
 
 | **Option** | **Default** | **Description** |
@@ -973,89 +703,76 @@ You can set the values of the following variables in your data file (e.g. `var s
 | manualSendResults | false       | See "Sending Results Early" subsection of "Shuffle Sequences" section. |
 
 ## Configuring `js_includes`, `data_includes` and `css_includes`
-The directories `js_includes`, `data_includes` and `css_includes` directories
-contain JavaScript and CSS files that are necessary for the running of an
-experiment.  The most important of these is the data file in `data_includes`
-containing the list of items for the experiment, but each controller also has
-its own file in `js_includes` (for example, the `DashedSentence` controller
-lives in `dashed_sentence.js`).  Many controllers also define some CSS classes
-in corresponding files in `css_includes` (e.g. `DashedSentence.css`). If you
-write your own controllers, you need to put the JavaScript and CSS files in
-these directories.
 
-When the webpage for an experiment is accessed, the server concatenates all the
-files in `js_includes` and serves them up as a single file (ditto for
-`data_includes` and `css_includes`). You can tell the server to ignore some of
-the files in `js_includes` and `css_includes` by editing the variables
-`JS_INCLUDES_LIST`, `DATA_INCLUDES_LIST` and `CSS_INCLUDES_LIST` in
-`server_conf.py`.  (There is a comment documenting how to do this.) You may
-wish to exclude JavaScript and CSS files which are not used by your experiment
-in order to reduce the size of the file that needs to be downloaded. Since the
-files in both directories are named after the controllers with which they are
-associated, it is easy to see which files are superfluous.
+The directories `js_includes`, `data_includes` and `css_includes` directories contain JavaScript and CSS files that are necessary for the running of an experiment.  The most important of these is the data file in `data_includes` containing the list of items for the experiment, but each controller also has its own file in `js_includes` (for example, the `DashedSentence` controller lives in `dashed_sentence.js`).  Many controllers also define some CSS classes in corresponding files in `css_includes` (e.g. `DashedSentence.css`). If you write your own controllers, you need to put the JavaScript and CSS files in these directories.
 
-**Important:** the file `global_main.css` is required by all
-controllers.
+When the webpage for an experiment is accessed, the server concatenates all the files in `js_includes` and serves them up as a single file (ditto for `data_includes` and `css_includes`). You can tell the server to ignore some of the files in `js_includes` and `css_includes` by editing the variables `JS_INCLUDES_LIST`, `DATA_INCLUDES_LIST` and `CSS_INCLUDES_LIST` in `server_conf.py`.  (There is a comment documenting how to do this.) You may wish to exclude JavaScript and CSS files which are not used by your experiment in order to reduce the size of the file that needs to be downloaded. Since the files in both directories are named after the controllers with which they are associated, it is easy to see which files are superfluous.
+
+**Important:** the file `global_main.css` is required by all controllers.
 
 # HTML Code
+
 Ibex provides three methods of passing HTML code to the `Message` and `Form` controllers
 (currently the only controllers which have an `html` option).
 
 ## Method 1: HTML in a JavaScript String
+
 Pass a JavaScript string containing the HTML code.
 
 ## Method 2: HTML as a JavaScript data structre
-Pass a
-JavaScript data structure representing the HTML Code. For example, here is
-the representation of a `div` element containing two paragraphs:
-```
+
+Pass a JavaScript data structure representing the HTML Code. For example, here is the representation of a `div` element containing two paragraphs:
+
+``` JavaScript
     ["div",
         ["p", "This is the first paragraph."],
         ["p", "This is the second paragraph.", "Containing two text nodes."]
     ]
 ```
-Note that a space will automatically be inserted between the two text nodes in
-the second paragraph. If you wanted to set the foreground color of the `div` to
-red, you could use the following code:
-```
+
+Note that a space will automatically be inserted between the two text nodes in the second paragraph. If you wanted to set the foreground color of the `div` to red, you could use the following code:
+
+``` JavaScript
     [["div", {style: "color: red;"}],
         ["p", "This is the first paragraph."],
         ["p", "This is the second paragraph.", "Containing two text nodes."]
     ]
 ```
-If you want to set DOM properties directly, you can use
-a key beginning with "@":
-```
+
+If you want to set DOM properties directly, you can use a key beginning with "@":
+
+``` JavaScript
     [["div", {"@style.color": "red"}],
         ["p", "This is the first paragraph."],
         ["p", "This is the second paragraph.", "Containing two text nodes."]
     ]
 ```
-Elements (e.g. `&ldquo;` -- a left double quote) are specified as in the
-following example:
-```
+
+Elements (e.g. `&ldquo;` -- a left double quote) are specified as in the following example:
+
+``` JavaScript
     [["div", {"@style.color": "red"}],
         ["p", "This is the first paragraph."],
         ["p", "This is the second paragraph.", "Containing two text nodes."],
         ["p", "Here's a paragraph where ", ["&ldquo;"], "this", ["&rdquo;"], " is quoted."]
     ]
 ```
+
 Spaces are _not_ automatically inserted before and after elements.
 
 ## Method 3: HTML in a separate file
-Place the HTML in a file in the `chunk_includes` dir.
-Files in this directory can be included as follows:
-```
+
+Place the HTML in a file in the `chunk_includes` dir.  Files in this directory can be included as follows:
+
+``` JavaScript
     { html: { include: "file_name.html" } }
 ```
 
 # Creating your own controllers
-This is quite easy if you are familiar with JavaScript/DHTML
-and the jQuery JavaScript library. (One of the changes in Ibex
-from webspr 0.2 is that controllers are now JQuery.ui widgets.)
-As an example, here's the code for a simplified version of the
-`Message` controller:
-```
+
+This is quite easy if you are familiar with JavaScript/DHTML and the jQuery JavaScript library. (One of the changes in Ibex from webspr 0.2 is that controllers are now JQuery.ui widgets.)  As an example, here's the code for a simplified version of the `Message` controller:
+
+``` JavaScript
 define_ibex_controller({
 name: "Message",
 
@@ -1099,20 +816,11 @@ properties: {
 }
 });
 ```
-The call to `ibex_controller_set_properties` sets some properties of the `Message` controller.
-The `obligatory` option specifies those options which must obligatorily be
-given to the controller. In this case, it is obligatory that the controller
-be given an `"html"` option. The `obligatory` key must be present in the object
-passed to `ibex_controller_set_properties`.
-The `countsForProgressBar` property is optional and is `true`
-by default. It determines whether instances of the controller count towards
-the size of the progress bar. (This option can be overriden on an item-by-item
-basis by setting the `countsForProgressBar` property of an item.)
-The `htmlDescription` function should return
-either HTML or a DOM node which gives a brief summary of the content of
-an instance of the controller for use in overviews.
+
+The call to `ibex_controller_set_properties` sets some properties of the `Message` controller.  The `obligatory` option specifies those options which must obligatorily be given to the controller. In this case, it is obligatory that the controller be given an `"html"` option. The `obligatory` key must be present in the object passed to `ibex_controller_set_properties`.  The `countsForProgressBar` property is optional and is `true` by default. It determines whether instances of the controller count towards the size of the progress bar. (This option can be overriden on an item-by-item basis by setting the `countsForProgressBar` property of an item.)  The `htmlDescription` function should return either HTML or a DOM node which gives a brief summary of the content of an instance of the controller for use in overviews.
 
 The `options` dictionary for the widget has three special values set:
+
   * A function (`_finishedCallback`) which should be called with lines to be added to the results file when the controller is complete.
   * A `_utils` object which contains some useful functions.
   * A `_cssPrefix` string, which gives the controller its designated CSS prefix for all CSS class names/ids which it adds to DOM nodes (see section below, "CSS mangling").
@@ -1120,7 +828,8 @@ The `options` dictionary for the widget has three special values set:
 In the case of `Message`, `_finishedCallback` is called with `null` as its argument
 because this controller does not add any lines to the results file.
 In general, the format of a non-null argument to `finishedCallback` is as follows:
-```
+
+``` JavaScript
     [
         // Line 1.
         [ ["fieldname1", value1], ["fieldname2", value2], ["fieldname3", value3], ... ],
@@ -1130,29 +839,18 @@ In general, the format of a non-null argument to `finishedCallback` is as follow
     ]
 ```
 
-As can be seen in the code for `Message`, the `utils` object provides a `setTimeout` method
-similar to the builtin `setTimeout` function of JavaScript.
-Any timeouts set using this method are automatically cleared when the controller is complete.
-Similarly, a `safeBind` method has been added to jQuery, which ensures that event handlers
-are automatically unregistered once a controller instance is finished.
+As can be seen in the code for `Message`, the `utils` object provides a `setTimeout` method similar to the builtin `setTimeout` function of JavaScript.  Any timeouts set using this method are automatically cleared when the controller is complete.  Similarly, a `safeBind` method has been added to jQuery, which ensures that event handlers are automatically unregistered once a controller instance is finished.
 
 ## CSS mangling
-Every class/id name in a CSS file in the `css_includes` directory is prepended
-with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`.
-This ensures that there are no namespace
-clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because
-of a bug in the mangling code that you need to work around),
-you may prefix your CSS file name with `"global_"`. This causes the file to
-be served as-is.
+
+Every class/id name in a CSS file in the `css_includes` directory is prepended with the string 'FILENAME-'. The CSS for each controller should live in `CONTROLLER_NAME.css`.  This ensures that there are no namespace clashes between controllers. Note that if you wish to prevent automatic CSS mangling (e.g. because of a bug in the mangling code that you need to work around), you may prefix your CSS file name with `"global_"`. This causes the file to be served as-is.
 
 # Overviews
-Sometimes it's useful to get an overview of the sequence of items in an
-experiment without actually running through each item. There are two ways of
-getting webspr to display an overview of this sort. The first is to add the
-statement `var showOverview = true;` to your data file.  The second is
-to go to the page `overview.html` instead of `experiment.html`.
+
+Sometimes it's useful to get an overview of the sequence of items in an experiment without actually running through each item. There are two ways of getting webspr to display an overview of this sort. The first is to add the statement `var showOverview = true;` to your data file.  The second is to go to the page `overview.html` instead of `experiment.html`.
 
 # Cross-browser compatibility
+
 I have tested compatibility with the following browsers:
 
   * Internet Explorer 6 and 7. (Note that support for IE 5 has been dropped as of version 0.3 of this software, since the jQuery library doesn't support this browser.)
@@ -1170,6 +868,7 @@ Known cross-browser issues:
   * The stand-alone server serves up the JavaScript and CSS include files with a `Pragma: nocache` so that any changes you make will be immediately reflected if you refresh `experiment.html`. However, some versions of Internet Explorer ignore this pragma (I think this is a bug in IE, but not 100% sure yet), so you will need to delete your temporary internet files and then refresh. This is not such a big issue for live experiments, but it makes developing and testing experiments using IE a big PITA. The obvious workaround is simply not to use IE for these purposes.
 
 # Terminological clarifications
+
 Unfortunately, the terms I've used relating to the design of experiments (latin squares, etc.) are confusing as they use some non-standard terms, and make non-standard use of some standard terms. Specifically:
 
   * The term 'item number' is used to describe the number assigned to a controller based on its position in the list of controllers in the data file. Of course, controllers are not normally in one-to-one correspondence with 'items' in the usual sense of the term.
@@ -1177,6 +876,7 @@ Unfortunately, the terms I've used relating to the design of experiments (latin 
   * The term 'group' is used to refer to what are usually called items (i.e. sets of conditions).
 
 # Known problems and issues
+
 The following are some subtle problems which can often arise when writing a
 data file:
 
@@ -1184,16 +884,12 @@ data file:
 
   * Some browsers accept trailing commas in JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
-Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]`
-`== "f"`). Internet Explorer, however, requires the use of the string's `charAt`
-method.
+Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]` `== "f"`). Internet Explorer, however, requires the use of the string's `charAt` method.
 
-For debugging, I recommend using Firefox's JavaScript console. Most syntax
-errors in a data file will result in an alert popping up with a warning that the
-`items` array has not been defined. You can usually get a much more informative
-error message by looking at the JavaScript console.
+For debugging, I recommend using Firefox's JavaScript console. Most syntax errors in a data file will result in an alert popping up with a warning that the `items` array has not been defined. You can usually get a much more informative error message by looking at the JavaScript console.
 
 # Changes
+
 Changes between 0.3.8 (current version and 0.3.7):
   * Fix bug with VBox controller which caused transition to next item to fail sometimes.
   * Fix bug in `Form` controller which prevented the `continueOnReturn` option
