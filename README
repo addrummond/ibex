@@ -6,29 +6,14 @@ The following are some notes intended for developers.
 1. Generating PDF documentation.
 ------------------------------------------------------------------------
 
-You can generate a printable PDF of the documentation by executing the
-following commands from the main ibex directory:
+Pandoc (http://pandoc.org) and LaTeX are required to generate PDF documentation.
 
-    runhaskell GoCoWiToTex.hs docs/manual.txt IBEX_VERSION >docs/manual.tex
+Execute the following commands to generate a LaTeX version of the docs and then
+compile it to a PDF:
+
     cd docs
+    make manual.tex
     pdflatex manual.tex
-
-In order for the 'runhaskell' command to work, you may need to install
-the following Haskell packages first:
-
-    cabal install regex-posix
-    cabal install regex-compat
-    cabal install parsec
-
-Executing the first set of commands should create docs/manual.pdf.
-The automatic conversion is still a little buggy in places, but the
-resulting PDF is pretty usable.
-
-To do this, you'll need:
-
-    * A standard LaTeX install (with all the usual packages).
-
-    * GHC (Haskell compiler). http://www.haskell.org/ghc
 
 
 2. Packaging a release.
