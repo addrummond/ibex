@@ -1,4 +1,4 @@
-**Check out the printable [PDF version](manual.pdf) of this manual.**
+**Check out the printable [PDF version](http://spellout.net/latest_ibex_manual.pdf) of this manual.**
 
 # Versions
 
