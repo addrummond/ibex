@@ -12,8 +12,7 @@ Execute the following commands to generate a LaTeX version of the docs and then
 compile it to a PDF:
 
     cd docs
-    make manual.tex
-    pdflatex manual.tex
+    make manual.pdf
 
 
 2. Packaging a release.
