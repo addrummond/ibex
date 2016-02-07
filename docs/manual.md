@@ -63,7 +63,7 @@ This subsection describes how to set up webspr as a CGI application from scratch
 
   1. Edit `server_conf.py` and change the value of `IBEX_WORKING_DIR` to the new location of the main `webspr` dir.
 
-  1. Edit `server_conf.py` and change change the value of `SERVER_MODE` to `"cgi"`.
+  1. Edit `server_conf.py` and change the value of `SERVER_MODE` to `"cgi"`.
 
   1. If the version of Python you wish to use is not the default used by the HTTP server, add a `#!` line at the beginning of `server.py`.
 
