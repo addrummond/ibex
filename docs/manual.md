@@ -29,7 +29,7 @@ This will start the server on port 3000 by default (so the experiment will be at
 
 The stand-alone server is limited to serving files relating to Ibex, so it is unlikely to be useful for real work (unless perhaps you hide it behind a proxy).  However, it is useful for testing experimental designs without setting up a real HTTP server, and for running experiments offline.
 
-The server can be configured by editing `server_conf.py`. Each of the options is commented. Change the `SERVER_MODE` variable to determine whether the server runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to "cgi", `server.py` will work as a standard CGI program; when it is set to "toy", the server will run in stand-alone mode. (The value "paste" has the same effect as "toy", for backwards compatibility with 0.2.x version.) The value of the `PORT` variable determines the port the server will listen on when operating in stand-alone mode. As an alternative to editing the configuration file, the `-m` and `-p` command-line options can also be used to set the server mode and port respectively. Command-line options override those set in `server_conf.py`.
+The server can be configured by editing `server_conf.py`. Each of the options is commented. Change the `SERVER_MODE` variable to determine whether the server runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to `"cgi"`, `server.py` will work as a standard CGI program; when it is set to `"toy"`, the server will run in stand-alone mode. (The value `"paste"` has the same effect as `"toy"`, for backwards compatibility with 0.2.x version.) The value of the `PORT` variable determines the port the server will listen on when operating in stand-alone mode. As an alternative to editing the configuration file, the `-m` and `-p` command-line options can also be used to set the server mode and port respectively. Command-line options override those set in `server_conf.py`.
 
 **New:** Version 0.3 adds some new ways of configuring the server.  These are unlikely to be of interest to most users, but are documented in the "New Configuration Methods" section below.
 
@@ -63,7 +63,7 @@ This subsection describes how to set up webspr as a CGI application from scratch
 
   1. Edit `server_conf.py` and change the value of `IBEX_WORKING_DIR` to the new location of the main `webspr` dir.
 
-  1. Edit `server_conf.py` and change change the value of `SERVER_MODE` to `"cgi"`.
+  1. Edit `server_conf.py` and change the value of `SERVER_MODE` to `"cgi"`.
 
   1. If the version of Python you wish to use is not the default used by the HTTP server, add a `#!` line at the beginning of `server.py`.
 
@@ -150,7 +150,7 @@ The "items" array is an array of arrays, where each subarray specifies a single 
 
   * The second member specifies the controller.
 
-  * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
+  * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option (`s`), which tells the `DashedSentence` controller which sentence it should display.
 
 Once the items array has been created, Ibex must be told the order in which the items should be displayed. There are some moderately sophisticated facilities for creating random orderings and latin square designs, but for the moment, let's just display the items in the order we gave them in the array.  This can be achieved by adding the following definition (which won't make much sense yet):
 
@@ -175,7 +175,7 @@ Suppose we wanted to pair each sentence with a comprehension question.  The easi
     ]; // NOTE SEMICOLON HERE
 ```
 
-As shown above, this is done simply by adding to each item further pairs of controllers and associative arrays of options. It is rather tiresome to have to set the `as` option to ["Yes", "No"] every time, but this can easily be avoided by specifying this as the default for the Question controller. To give an example of how defaults for multiple controllers are specified, let's also set the `mode` option of `DashedSentence` to "speeded acceptability":
+As shown above, this is done simply by adding to each item further pairs of controllers and associative arrays of options. It is rather tiresome to have to set the `as` option to `["Yes", "No"]` every time, but this can easily be avoided by specifying this as the default for the Question controller. To give an example of how defaults for multiple controllers are specified, let's also set the `mode` option of `DashedSentence` to `"speeded acceptability"`:
 
 ``` Javascript
     var defaults = [
@@ -284,7 +284,7 @@ If no shuffle sequence is specified, Ibex uses the following default sequence:
 
 This will seem rather cryptic to anyone not familiar with the behavior of earlier versions of Ibex, where this ordering specification was built in and unchangeable. In short, it works well if practice items have type 0, filler items have integer types < 0, and real items have integer types > 0.
 
-**Important**: A shuffle sequence must always have one of `seq`, `shuffle`, `randomize` or `rshuffle` as its outer element. A single string or integer is _not_ a valid shuffle sequence, and neither is a predicate expression such as `not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just `not("foo")`.
+**Important**: A shuffle sequence must always have one of `seq`, `shuffle`, `randomize` or `rshuffle` as its outer element. A single string or integer is *not* a valid shuffle sequence, and neither is a predicate expression such as `not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just `not("foo")`.
 
 It is possible to include duplicate items in the final sequence. For example, `seq("foo", "foo")` would include every item of type "foo" twice. For this reason, it is possible to accidentally include duplicate items if a number of your predicates overlap.  You can define your own shuffle sequence operators and predicates quite easily; see `shuffle.js` for the definitions of the `seq`, `shuffle` and `randomize` operators.
 
@@ -296,7 +296,7 @@ Normally, it is a good idea to have some sort of padding in between items to war
     ["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
 ```
 
-When the `transfer` option is set to 1000, this specifies that there should be a 1000ms wait before the next item. The `normalMessage` option gives the message that should be displayed if the participant didn't do anything wrong on the previous item (see the section "Communication between elements" for more details). If the other items have failure conditions, you should set the `errorMessage` option too. If you want the participant to proceed by pressing a key rather than waiting, set `transfer` to "keypress".
+When the `transfer` option is set to 1000, this specifies that there should be a 1000ms wait before the next item. The `normalMessage` option gives the message that should be displayed if the participant didn't do anything wrong on the previous item (see the section "Communication between elements" for more details). If the other items have failure conditions, you should set the `errorMessage` option too. If you want the participant to proceed by pressing a key rather than waiting, set `transfer` to `"keypress"`.
 
 The shuffle sequence operator `sepWith` is provided for the purpose of interpolating separators with other items. It takes two arguments: the first is a shuffle sequence specifying the sequence of items which should be used to separate the other items; the second argument is a shuffle sequence specifying the other items.
 
@@ -356,7 +356,7 @@ Both functions take two arguments, each of which should be a shuffle sequence.  
 
 ## Latin square designs
 
-Ibex has built-in support for latin square designs. These are implemented by assigning each item a _group_ in addition to its type. Each participant sees only one item out of all the items in any given group. To give an example, we could place both of the "relclause" sentences from the previous example in the same group using the following code:
+Ibex has built-in support for latin square designs. These are implemented by assigning each item a /group/ in addition to its type. Each participant sees only one item out of all the items in any given group. To give an example, we could place both of the "relclause" sentences from the previous example in the same group using the following code:
 
 ``` JavaScript
     [["relclause", 1], "DashedSentence", {s: "A sentence that has a relative clause"}],
@@ -365,7 +365,7 @@ Ibex has built-in support for latin square designs. These are implemented by ass
 
 Now, any given participant will see only one of these sentences. Designs are rotated using a counter stored on the server.  Groups, like types, may either be strings or numbers. By default, webspr does not check that all groups contain the same number of items (this behavior is new in 0.2.4). You can set the `equalGroupSizes` variable to `true` in order to revert to the old behavior, where an error is raised if groups contain differing number of items. (See the "Miscellaneous options" subsection below.)
 
-**New:** You may now choose which latin square a participant will be placed in by using a URL of the following form: ".../server.py?withsquare=XXXX". This will set the latin square to XXXX for the current participant and then display the main experiment page.  Selecting the latin square in this manner does **not** modify the master counter stored on the server.
+**New:** You may now choose which latin square a participant will be placed in by using a URL of the following form: `.../server.py?withsquare=XXXX`. This will set the latin square to XXXX for the current participant and then display the main experiment page.  Selecting the latin square in this manner does **not** modify the master counter stored on the server.
 
 **Newer:** You can also set the counter in the data file, with a statement such as `var counterOverride = 18;`. Again, the server's latin square counter is not modified.  This method takes priority over the URL method described in the previous paragraph, if both are used.
 
@@ -451,7 +451,7 @@ For all controllers, the `hideProgressBar` option may be set to true, in order t
 
 | **Option**            | **Default**    | **Description**                                                        |
 |:----------------------|:---------------|:-----------------------------------------------------------------------|
-| html                  | _obligatory_   | The HTML for the message to display (see section "HTML Code" below).   |
+| html                  | *obligatory*   | The HTML for the message to display (see section "HTML Code" below).   |
 | transfer              | `"click"`      | Either `"click"`, `"keypress`", an integer, or `null`. If `"click"`, the participant clicks a link at the bottom of the message to continue (see "continueMessage" option). If `"keypress"`, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. If `null`, there is no way for the user to complete the controller (and no "click to continue" message is displayed). This is useful only when the controller is part of a larger `VBox`. |
 | consentRequired       | `false`        | If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. Note that it is also possible to create checkboxes like this using the more flexible `Form` controller. |
 | continueMessage       | `"..."`        | Only valid if the "consentRequired" option is set to `"true"`. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. |
@@ -468,7 +468,7 @@ For all controllers, the `hideProgressBar` option may be set to true, in order t
 
 | **Option**      | **Default**              | **Description**                                               |
 |:----------------|:-------------------------|:--------------------------------------------------------------|
-| s               | _obligatory_             | The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. |
+| s               | *obligatory*             | The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. |
 | mode            | `"self-paced reading"`   | Either `"self-paced reading"` or `"speeded acceptability"`.   |
 | display         | `"dashed"`               | If set to `"dashed"`, the sentence is displayed as a sequence of dashes; when the participant presses the space bar, the current  word is displayed above the corresponding dash, and no other words are displayed. If set to `"in place"`, words are displayed one-by-one in the center of the screen. Setting to `"in place"` changes the default value of `wordPauseTime` from 100 to 0 and the default value of `wordTime` from 300 to 400, since otherwise the display flickers. |
 | blankText       | `"\u2014\u2014"`         | Applicable only if "display" is set to `"in place"`. This is the text that is shown before the participant presses space for the first time. By default it is two horizontal dashes. |
@@ -505,7 +505,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 | **Option** | **Default**    | **Description**                 |
 |:-----------|:---------------|:--------------------------------|
-| s          | _obligatory_   | The sentence to be displayed.   |
+| s          | *obligatory*   | The sentence to be displayed.   |
 | timeout    | 2000           | If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence.    |
 | sentenceDescType | `"md5"`        | See documentation for DashedSentence controller. |
 
@@ -522,7 +522,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 | **Option**       | **Default**    | **Description**                                                     |
 |:-----------------|:---------------|:--------------------------------------------------------------------|
 | q                | `null`         | The question to pose.                                               |
-| as               | _obligatory_   | A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if `presentAsScale` is `true` (but they will not be ignored if `presentHorizontally` is true). |
+| as               | *obligatory*   | A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if `presentAsScale` is `true` (but they will not be ignored if `presentHorizontally` is true). |
 | instructions     | `null`         | Instructions for answering the question, displayed following the question and the answer selection. |
 | hasCorrect       | `false`        | If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. |
 | autoFirstChar    | `false`        | If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) |
@@ -549,9 +549,9 @@ The `AcceptabilityJudgment` controller makes it straightforward to present a sen
 
 | **Option**       | **Default**           | **Description**                |
 |:-----------------|:----------------------|:-------------------------------|
-| s                | _obligatory_          | The sentence.                  |
-| q                | _obligatory_          | The question.                  |
-| as               | _obligatory_          | Answers (as for `Question`).   |
+| s                | *obligatory*          | The sentence.                  |
+| q                | *obligatory*          | The question.                  |
+| as               | *obligatory*          | Answers (as for `Question`).   |
 | instructions     | `null`                | As for `Question`              |
 | hasCorrect       | `false`               | As for `Question`              |
 | autoFirstChar    | `false`               | As for `Question`              |
@@ -572,9 +572,9 @@ This is like `AcceptabilityJudgment`, but it uses `DashedSentence` instead of `F
 
 | **Option**         | **Default**                 | **Description**                                        |
 |:-------------------|:----------------------------|:-------------------------------------------------------|
-| s                  | _obligatory_                | The sentence.                                          |
-| q                  | _obligatory_                | The question.                                          |
-| as                 | _obligatory_                | Answers (as for `Question`).                           |
+| s                  | *obligatory*                | The sentence.                                          |
+| q                  | *obligatory*                | The question.                                          |
+| as                 | *obligatory*                | Answers (as for `Question`).                           |
 | instructions       | `null`                      | As for `Question`                                      |
 | hasCorrect         | `false`                     | As for `Question`                                      |
 | autoFirstChar      | `false`                     | As for `Question`                                      |
@@ -595,7 +595,7 @@ This is like `AcceptabilityJudgment`, but it uses `DashedSentence` instead of `F
 
 **Results**
 
-Each `DashedAcceptabilityJudgment` adds **two** lines to the results file if the "mode" option is set to "speeded acceptability". If it is set to "self-paced reading", the number of lines is 1 + the number of words in the sentence.  The first line(s) are the same as for the `DashedSentence` controller; the last line is the same as for the `Question` controller.
+Each `DashedAcceptabilityJudgment` adds **two** lines to the results file if the "mode" option is set to `"speeded acceptability"`. If it is set to "self-paced reading", the number of lines is 1 + the number of words in the sentence.  The first line(s) are the same as for the `DashedSentence` controller; the last line is the same as for the `Question` controller.
 
 ## VBox
 
@@ -629,8 +629,8 @@ define_ibex_controller({
 
 | **Option**  | **Default**    | **Description** |
 |:------------|:---------------|:----------------|
-| children    | _obligatory_   | An array of child controllers. Has exactly the same format as an array of elements for an item |
-| triggers    | _obligatory_   | In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. |
+| children    | *obligatory*   | An array of child controllers. Has exactly the same format as an array of elements for an item |
+| triggers    | *obligatory*   | In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. |
 | padding     | `"2em"`        | The amount of vertical padding to place between the children. This should be a CSS dimension. |
 | _vboxCallbackWhenChildFinishes_| `null`         | If set, this function is called every time one of the VBox's children finishes. It is called with two paramaters: the index of the child, and an array of arrays (= array of lines) giving the results for that child. |
 
@@ -652,13 +652,13 @@ By default, failure to fill in an obligatory field is signaled by an alert dialo
     <label class="error" for="FIELD_NAME"></label>
 ```
 
-If you want all error messages to be displayed in the same location, add a `<label>` with 'for' set to "ALL\_FIELDS".
+If you want all error messages to be displayed in the same location, add a `<label>` with 'for' set to `__ALL_FIELDS__`.
 
 **Options**
 
 | **Option** | **Default** | **Description** |
 |:-----------|:------------|:----------------|
-| html       | _obligatory_ | As for the `Message` controller. |
+| html       | *obligatory* | As for the `Message` controller. |
 | continueOnReturn | `false`     | If `true`, the user can complete the form by pressing the return key when a single-line text field is focused. |
 | continueMessage |  "Click here to continue" | If set to `null`, no continue message is displayed. |
 | checkedValue | `"yes"`     | The value stored in the results file when a checkbox is checked. |
@@ -884,7 +884,7 @@ data file:
 
   * Some browsers accept trailing commas in JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
-Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]` `== "f"`). Internet Explorer, however, requires the use of the string's `charAt` method.
+Most browsers allow strings to be indexed using square brackets (i.e. `"foo"[1] == "f"`). Internet Explorer, however, requires the use of the string's `charAt` method.
 
 For debugging, I recommend using Firefox's JavaScript console. Most syntax errors in a data file will result in an alert popping up with a warning that the `items` array has not been defined. You can usually get a much more informative error message by looking at the JavaScript console.
 
