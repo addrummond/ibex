@@ -29,7 +29,7 @@ This will start the server on port 3000 by default (so the experiment will be at
 
 The stand-alone server is limited to serving files relating to Ibex, so it is unlikely to be useful for real work (unless perhaps you hide it behind a proxy).  However, it is useful for testing experimental designs without setting up a real HTTP server, and for running experiments offline.
 
-The server can be configured by editing `server_conf.py`. Each of the options is commented. Change the `SERVER_MODE` variable to determine whether the server runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to "cgi", `server.py` will work as a standard CGI program; when it is set to "toy", the server will run in stand-alone mode. (The value "paste" has the same effect as "toy", for backwards compatibility with 0.2.x version.) The value of the `PORT` variable determines the port the server will listen on when operating in stand-alone mode. As an alternative to editing the configuration file, the `-m` and `-p` command-line options can also be used to set the server mode and port respectively. Command-line options override those set in `server_conf.py`.
+The server can be configured by editing `server_conf.py`. Each of the options is commented. Change the `SERVER_MODE` variable to determine whether the server runs in stand-alone mode or as a CGI application. When `SERVER_MODE` is set to `"cgi"`, `server.py` will work as a standard CGI program; when it is set to `"toy"`, the server will run in stand-alone mode. (The value `"paste"` has the same effect as `"toy"`, for backwards compatibility with 0.2.x version.) The value of the `PORT` variable determines the port the server will listen on when operating in stand-alone mode. As an alternative to editing the configuration file, the `-m` and `-p` command-line options can also be used to set the server mode and port respectively. Command-line options override those set in `server_conf.py`.
 
 **New:** Version 0.3 adds some new ways of configuring the server.  These are unlikely to be of interest to most users, but are documented in the "New Configuration Methods" section below.
 
@@ -150,7 +150,7 @@ The "items" array is an array of arrays, where each subarray specifies a single 
 
   * The second member specifies the controller.
 
-  * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option ("s"), which tells the `DashedSentence` controller which sentence it should display.
+  * The third member is an associative array of key/value pairs. This array is passed to the controller and is used to customize its behavior. In this case, we pass only one option (`s`), which tells the `DashedSentence` controller which sentence it should display.
 
 Once the items array has been created, Ibex must be told the order in which the items should be displayed. There are some moderately sophisticated facilities for creating random orderings and latin square designs, but for the moment, let's just display the items in the order we gave them in the array.  This can be achieved by adding the following definition (which won't make much sense yet):
 
@@ -175,7 +175,7 @@ Suppose we wanted to pair each sentence with a comprehension question.  The easi
     ]; // NOTE SEMICOLON HERE
 ```
 
-As shown above, this is done simply by adding to each item further pairs of controllers and associative arrays of options. It is rather tiresome to have to set the `as` option to ["Yes", "No"] every time, but this can easily be avoided by specifying this as the default for the Question controller. To give an example of how defaults for multiple controllers are specified, let's also set the `mode` option of `DashedSentence` to "speeded acceptability":
+As shown above, this is done simply by adding to each item further pairs of controllers and associative arrays of options. It is rather tiresome to have to set the `as` option to `["Yes", "No"]` every time, but this can easily be avoided by specifying this as the default for the Question controller. To give an example of how defaults for multiple controllers are specified, let's also set the `mode` option of `DashedSentence` to `"speeded acceptability"`:
 
 ``` Javascript
     var defaults = [
@@ -296,7 +296,7 @@ Normally, it is a good idea to have some sort of padding in between items to war
     ["sep", "Separator", {transfer: 1000, normalMessage: "Please wait for the next sentence."}]
 ```
 
-When the `transfer` option is set to 1000, this specifies that there should be a 1000ms wait before the next item. The `normalMessage` option gives the message that should be displayed if the participant didn't do anything wrong on the previous item (see the section "Communication between elements" for more details). If the other items have failure conditions, you should set the `errorMessage` option too. If you want the participant to proceed by pressing a key rather than waiting, set `transfer` to "keypress".
+When the `transfer` option is set to 1000, this specifies that there should be a 1000ms wait before the next item. The `normalMessage` option gives the message that should be displayed if the participant didn't do anything wrong on the previous item (see the section "Communication between elements" for more details). If the other items have failure conditions, you should set the `errorMessage` option too. If you want the participant to proceed by pressing a key rather than waiting, set `transfer` to `"keypress"`.
 
 The shuffle sequence operator `sepWith` is provided for the purpose of interpolating separators with other items. It takes two arguments: the first is a shuffle sequence specifying the sequence of items which should be used to separate the other items; the second argument is a shuffle sequence specifying the other items.
 
@@ -365,7 +365,7 @@ Ibex has built-in support for latin square designs. These are implemented by ass
 
 Now, any given participant will see only one of these sentences. Designs are rotated using a counter stored on the server.  Groups, like types, may either be strings or numbers. By default, webspr does not check that all groups contain the same number of items (this behavior is new in 0.2.4). You can set the `equalGroupSizes` variable to `true` in order to revert to the old behavior, where an error is raised if groups contain differing number of items. (See the "Miscellaneous options" subsection below.)
 
-**New:** You may now choose which latin square a participant will be placed in by using a URL of the following form: ".../server.py?withsquare=XXXX". This will set the latin square to XXXX for the current participant and then display the main experiment page.  Selecting the latin square in this manner does **not** modify the master counter stored on the server.
+**New:** You may now choose which latin square a participant will be placed in by using a URL of the following form: `.../server.py?withsquare=XXXX`. This will set the latin square to XXXX for the current participant and then display the main experiment page.  Selecting the latin square in this manner does **not** modify the master counter stored on the server.
 
 **Newer:** You can also set the counter in the data file, with a statement such as `var counterOverride = 18;`. Again, the server's latin square counter is not modified.  This method takes priority over the URL method described in the previous paragraph, if both are used.
 
@@ -595,7 +595,7 @@ This is like `AcceptabilityJudgment`, but it uses `DashedSentence` instead of `F
 
 **Results**
 
-Each `DashedAcceptabilityJudgment` adds **two** lines to the results file if the "mode" option is set to "speeded acceptability". If it is set to "self-paced reading", the number of lines is 1 + the number of words in the sentence.  The first line(s) are the same as for the `DashedSentence` controller; the last line is the same as for the `Question` controller.
+Each `DashedAcceptabilityJudgment` adds **two** lines to the results file if the "mode" option is set to `"speeded acceptability"`. If it is set to "self-paced reading", the number of lines is 1 + the number of words in the sentence.  The first line(s) are the same as for the `DashedSentence` controller; the last line is the same as for the `Question` controller.
 
 ## VBox
 
@@ -884,7 +884,7 @@ data file:
 
   * Some browsers accept trailing commas in JavaScript array literals (i.e. they accept [1,2,3,4,] as a fine array); others do not. If your browser of choice accepts array literals of this form, be sure to check that your data.js has no trailing commas so that there will be no browser incompatibilities. It is quite easy to introduce trailing commas by accident if you comment out some of the items in the `items` array.
 
-Most browsers allow strings to be indexed using square brackets (i.e. `"foo"``[1]` `== "f"`). Internet Explorer, however, requires the use of the string's `charAt` method.
+Most browsers allow strings to be indexed using square brackets (i.e. `"foo"[1] == "f"`). Internet Explorer, however, requires the use of the string's `charAt` method.
 
 For debugging, I recommend using Firefox's JavaScript console. Most syntax errors in a data file will result in an alert popping up with a warning that the `items` array has not been defined. You can usually get a much more informative error message by looking at the JavaScript console.
 
