@@ -284,7 +284,7 @@ If no shuffle sequence is specified, Ibex uses the following default sequence:
 
 This will seem rather cryptic to anyone not familiar with the behavior of earlier versions of Ibex, where this ordering specification was built in and unchangeable. In short, it works well if practice items have type 0, filler items have integer types < 0, and real items have integer types > 0.
 
-**Important**: A shuffle sequence must always have one of `seq`, `shuffle`, `randomize` or `rshuffle` as its outer element. A single string or integer is /not/ a valid shuffle sequence, and neither is a predicate expression such as `not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just `not("foo")`.
+**Important**: A shuffle sequence must always have one of `seq`, `shuffle`, `randomize` or `rshuffle` as its outer element. A single string or integer is *not* a valid shuffle sequence, and neither is a predicate expression such as `not("foo")`. Thus, one must use `seq("foo")`, not just `"foo"`, and `seq(not("foo"))`, not just `not("foo")`.
 
 It is possible to include duplicate items in the final sequence. For example, `seq("foo", "foo")` would include every item of type "foo" twice. For this reason, it is possible to accidentally include duplicate items if a number of your predicates overlap.  You can define your own shuffle sequence operators and predicates quite easily; see `shuffle.js` for the definitions of the `seq`, `shuffle` and `randomize` operators.
 
@@ -451,7 +451,7 @@ For all controllers, the `hideProgressBar` option may be set to true, in order t
 
 | **Option**            | **Default**    | **Description**                                                        |
 |:----------------------|:---------------|:-----------------------------------------------------------------------|
-| html                  | /obligatory/   | The HTML for the message to display (see section "HTML Code" below).   |
+| html                  | *obligatory*   | The HTML for the message to display (see section "HTML Code" below).   |
 | transfer              | `"click"`      | Either `"click"`, `"keypress`", an integer, or `null`. If `"click"`, the participant clicks a link at the bottom of the message to continue (see "continueMessage" option). If `"keypress"`, they press any key to continue. If an integer, the experiment continues after pausing for the specified number of milliseconds. If `null`, there is no way for the user to complete the controller (and no "click to continue" message is displayed). This is useful only when the controller is part of a larger `VBox`. |
 | consentRequired       | `false`        | If true, the participant is required to tick a checkbox indicating that they consent to do the experiment (in this case, the message would probably be some sort of statement of terms/conditions). This option can only be set to `true` if the "transfer" option is set go `"click"`. Note that it is also possible to create checkboxes like this using the more flexible `Form` controller. |
 | continueMessage       | `"..."`        | Only valid if the "consentRequired" option is set to `"true"`. This specifies the text that will appear in the link that the participant needs to click to continue with the experiment. |
@@ -468,7 +468,7 @@ For all controllers, the `hideProgressBar` option may be set to true, in order t
 
 | **Option**      | **Default**              | **Description**                                               |
 |:----------------|:-------------------------|:--------------------------------------------------------------|
-| s               | /obligatory/             | The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. |
+| s               | *obligatory*             | The sentence. This is either a string, in which case the sentence will be presented word-by-word, or a list of strings ("chunks"), in which case the sentence will be presented chunk-by-chunk. If one of the words/chunks begins with the character "@", then the controller will finish after the word beginning with "@" is displayed (the "@" will be stripped when the word is presented). This feature can be useful if you want (for example) to interrupt a self-paced reading item with a lexical decision task. |
 | mode            | `"self-paced reading"`   | Either `"self-paced reading"` or `"speeded acceptability"`.   |
 | display         | `"dashed"`               | If set to `"dashed"`, the sentence is displayed as a sequence of dashes; when the participant presses the space bar, the current  word is displayed above the corresponding dash, and no other words are displayed. If set to `"in place"`, words are displayed one-by-one in the center of the screen. Setting to `"in place"` changes the default value of `wordPauseTime` from 100 to 0 and the default value of `wordTime` from 300 to 400, since otherwise the display flickers. |
 | blankText       | `"\u2014\u2014"`         | Applicable only if "display" is set to `"in place"`. This is the text that is shown before the participant presses space for the first time. By default it is two horizontal dashes. |
@@ -505,7 +505,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 
 | **Option** | **Default**    | **Description**                 |
 |:-----------|:---------------|:--------------------------------|
-| s          | /obligatory/   | The sentence to be displayed.   |
+| s          | *obligatory*   | The sentence to be displayed.   |
 | timeout    | 2000           | If `null`, the sentence is displayed indefinitely (only useful if part of a VBox). Otherwise, a number giving the time in ms to display the sentence.    |
 | sentenceDescType | `"md5"`        | See documentation for DashedSentence controller. |
 
@@ -522,7 +522,7 @@ If `mode` is set to "self-paced reading", the results look like this:
 | **Option**       | **Default**    | **Description**                                                     |
 |:-----------------|:---------------|:--------------------------------------------------------------------|
 | q                | `null`         | The question to pose.                                               |
-| as               | /obligatory/   | A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if `presentAsScale` is `true` (but they will not be ignored if `presentHorizontally` is true). |
+| as               | *obligatory*   | A list of strings giving the answers the user has to choose from. May also be a list of pairs of strings (e.g. `["y", "Yes"]`. In this case, the second string gives the answer, and the first string specifies a key which the user may press to select that answer. Note that these key assignments will be ignored if `presentAsScale` is `true` (but they will not be ignored if `presentHorizontally` is true). |
 | instructions     | `null`         | Instructions for answering the question, displayed following the question and the answer selection. |
 | hasCorrect       | `false`        | If `false`, indicates that none of the answers is privileged as correct. Otherwise, is either `true`, indicating that the first answer in the `as` list is the correct one; an integer, giving the index of the correct answer in the `as` list (starting from 0); or a string, giving the correct answer. |
 | autoFirstChar    | `false`        | If set to true, users can select answers by pressing the key corresponding to the first letter in the answer. (This is useful e.g. for yes/no questions.) |
@@ -549,9 +549,9 @@ The `AcceptabilityJudgment` controller makes it straightforward to present a sen
 
 | **Option**       | **Default**           | **Description**                |
 |:-----------------|:----------------------|:-------------------------------|
-| s                | /obligatory/          | The sentence.                  |
-| q                | /obligatory/          | The question.                  |
-| as               | /obligatory/          | Answers (as for `Question`).   |
+| s                | *obligatory*          | The sentence.                  |
+| q                | *obligatory*          | The question.                  |
+| as               | *obligatory*          | Answers (as for `Question`).   |
 | instructions     | `null`                | As for `Question`              |
 | hasCorrect       | `false`               | As for `Question`              |
 | autoFirstChar    | `false`               | As for `Question`              |
@@ -572,9 +572,9 @@ This is like `AcceptabilityJudgment`, but it uses `DashedSentence` instead of `F
 
 | **Option**         | **Default**                 | **Description**                                        |
 |:-------------------|:----------------------------|:-------------------------------------------------------|
-| s                  | /obligatory/                | The sentence.                                          |
-| q                  | /obligatory/                | The question.                                          |
-| as                 | /obligatory/                | Answers (as for `Question`).                           |
+| s                  | *obligatory*                | The sentence.                                          |
+| q                  | *obligatory*                | The question.                                          |
+| as                 | *obligatory*                | Answers (as for `Question`).                           |
 | instructions       | `null`                      | As for `Question`                                      |
 | hasCorrect         | `false`                     | As for `Question`                                      |
 | autoFirstChar      | `false`                     | As for `Question`                                      |
@@ -629,8 +629,8 @@ define_ibex_controller({
 
 | **Option**  | **Default**    | **Description** |
 |:------------|:---------------|:----------------|
-| children    | /obligatory/   | An array of child controllers. Has exactly the same format as an array of elements for an item |
-| triggers    | /obligatory/   | In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. |
+| children    | *obligatory*   | An array of child controllers. Has exactly the same format as an array of elements for an item |
+| triggers    | *obligatory*   | In order to determine when a VBox element is complete, you must give an array of the indices of those of its children which are "triggers" (indices start from 0). When each of the trigger elements is complete, the VBox is complete. |
 | padding     | `"2em"`        | The amount of vertical padding to place between the children. This should be a CSS dimension. |
 | _vboxCallbackWhenChildFinishes_| `null`         | If set, this function is called every time one of the VBox's children finishes. It is called with two paramaters: the index of the child, and an array of arrays (= array of lines) giving the results for that child. |
 
@@ -658,7 +658,7 @@ If you want all error messages to be displayed in the same location, add a `<lab
 
 | **Option** | **Default** | **Description** |
 |:-----------|:------------|:----------------|
-| html       | /obligatory/ | As for the `Message` controller. |
+| html       | *obligatory* | As for the `Message` controller. |
 | continueOnReturn | `false`     | If `true`, the user can complete the form by pressing the return key when a single-line text field is focused. |
 | continueMessage |  "Click here to continue" | If set to `null`, no continue message is displayed. |
 | checkedValue | `"yes"`     | The value stored in the results file when a checkbox is checked. |
