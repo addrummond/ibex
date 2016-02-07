@@ -1,4 +1,8 @@
 
+manual.pdf: manual.tex
+	pdflatex $<
+	pdflatex $<
+
 manual.tex: manual.md
 	pandoc -f markdown_github -t latex -H manual_header.tex -B manual_titlepage.tex -o $@ manual.md
 	sed -i -e s/@{}//g $@
