@@ -652,7 +652,7 @@ By default, failure to fill in an obligatory field is signaled by an alert dialo
     <label class="error" for="FIELD_NAME"></label>
 ```
 
-If you want all error messages to be displayed in the same location, add a `<label>` with 'for' set to "ALL\_FIELDS".
+If you want all error messages to be displayed in the same location, add a `<label>` with 'for' set to `__ALL_FIELDS__`.
 
 **Options**
 
