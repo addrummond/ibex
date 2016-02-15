@@ -1,0 +1,65 @@
+.Question {
+    margin-left: 0;
+    padding-left: 0;
+}
+.sentence {
+  font-size: 2em;
+}
+img {
+  border: 2px black solid;
+  width: 16em;
+  padding: 1px;
+  margin: 0em;
+  float: center;
+}
+.instructions-text {
+    font-style: italic;
+    padding-top: 1em;
+    font-size: small;
+}
+li.normal-answer {
+    text-align: center;
+    cursor: pointer;
+    padding-bottom: 1em;
+}
+li:hover.normal-answer {
+    cursor: pointer;
+}
+li.scale-box {
+    float: left;
+    list-style: none;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0em;
+    padding: 0em;
+    text-align: center;
+}
+.scale-comment-box {
+    float: center;
+    list-style: none;
+    margin-left: 0em;
+    padding-left: 1em;
+    margin-right: 1em;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    text-align: center;
+    font-style: italic;
+}
+li.scale-box a {
+    text-decoration: none; 
+    display: block;
+    vertical-align: middle;
+}
+li.scale-box a:hover {
+    text-decoration: none;
+    display: block;
+    vertical-align: middle;
+}
+span.fake-link {
+    color: blue;
+    cursor: pointer;
+}
+span:hover.fake-link {
+    cursor: pointer;
+}
+
