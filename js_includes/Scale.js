@@ -141,10 +141,11 @@ jqueryWidget: {
         this.scaleWidth = parseInt(this.scaleWidth);
         this.scaleHeight = parseInt(this.scaleHeight);
         this.handleWidth = parseInt(this.handleWidth);
-        this.handleHeight = parseInt(this.handleWidth);
+        this.handleHeight = parseInt(this.handleHeight);
+        console.log("WH", this.handleWidth, this.handleHeight);
         $bar.css('width', this.scaleWidth + 'px');
         $bar.css('height', this.scaleHeight + 'px');
-        $handle.css({ width: this.handleWith + 'px',
+        $handle.css({ width: this.handleWidth + 'px',
                       height: this.handleHeight + 'px' });
 
         $bar.append($handle);
