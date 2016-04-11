@@ -97,7 +97,6 @@ jqueryWidget: {
             self.timeout = dget(self.options, "timeout", 2000);
 
             self.sentenceMD5 = csv_url_encode(self.options.s.html ? self.options.s.html : (self.options.s.audio ? self.options.s.audio+'' : (self.options.s+'')));
-            console.log("R", self.options, self.sentenceMD5);
 
             self.element.addClass(self.cssPrefix + "flashed-sentence");
             if (self.sentenceDom) {
