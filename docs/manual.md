@@ -166,7 +166,7 @@ Suppose we wanted to pair each sentence with a comprehension question.  The easi
     ["filler", "DashedSentence", {s: "Here's a silly filler sentence"},
                "Question", {q: "Is this a filler sentence?", as: ["Yes", "No"]}],
     ["filler", "DashedSentence", {s: "And another silly filler sentence"},
-               "Question", {q: "Does this sentence have a relative clause?", as: ["Yes","No"]],
+               "Question", {q: "Does this sentence have a relative clause?", as: ["Yes","No"]}],
     ["relclause", "DashedSentence", {s: "A sentence that has a relative clause"},
                   "Question", {q: "Was there movement through [Spec,CP]?", as: ["Yes", "No"]}],
     ["relclause", "DashedSentence", {s: "Another sentence that has a relative clause"},
