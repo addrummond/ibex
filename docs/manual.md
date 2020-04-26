@@ -85,7 +85,7 @@ This command will produce no output if it executes successfully. Note that you m
 
 # Basic concepts
 
-An Ibex experiment is essentially a sequence of _items_.  Each item is itself a sequence of _entities_. To give a concrete example, each item in a self-paced reading experiment might consist of two entities: an entity providing a sentence for the subject to step through word by word, followed by an entity posing a comprehension question. Some other items and entities would also be present under most circumstances. For example, there would probably be a "separator" entity between each sentence/question pair in order to provide a pause between sentences. Schematically, the sequence of items would be as follows (the Wiki insists on displaying this in pretty colors):
+An Ibex experiment is essentially a sequence of _items_.  Each item is itself a sequence of _entities_. To give a concrete example, each item in a self-paced reading experiment might consist of two entities: an entity providing a sentence for the subject to step through word by word, followed by an entity posing a comprehension question. Some other items and entities would also be present under most circumstances. For example, there would probably be a "separator" entity between each sentence/question pair in order to provide a pause between sentences. Schematically, the sequence of items would be as follows:
 
 ```
     ITEM 1:
