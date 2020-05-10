@@ -1465,7 +1465,7 @@ try:
         else:
             mjs = open(os.path.join(PWD, CFG['CACHE_DIR'], 'MINIFY_JS'), 'r+')
             contents = mjs.read()
-            if contents != str(CFG['MINIFY_JS']):
+            if contents != str(CFG['MINIFY_JS']) + '\r\n':
                 mjs.truncate(0)
                 mjs.seek(0)
                 mjs.write(str(CFG['MINIFY_JS']) + '\r\n')
