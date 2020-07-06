@@ -1161,7 +1161,7 @@ def group_list(l, n):
     newl.append(current_sub)
     return newl
 
-def rearrange(parsed_json, thetime, ip, user_agent):
+def rearrange(parsed_json, thetime, user_agent):
     if type(parsed_json) != types.ListType or len(parsed_json) != 6:
         raise HighLevelParseError()
 
@@ -1185,8 +1185,8 @@ def rearrange(parsed_json, thetime, ip, user_agent):
     if (type(unique_md5) != type("") and type(unique_md5) != type(u"")) or \
        len(unique_md5) != 22:
         raise HighLevelParseError()
-    uid = ip + ':' + user_agent + unique_md5
-    uid_hexdigest = md5.md5(uid).hexdigest()
+    # Just getting the hex digest so that results file format remains consistent.
+    uid_hexdigest = md5.md5(unique_md5).hexdigest()
 
     should_update_counter = parsed_json[5]
     if (type(random_counter) != types.BooleanType):
@@ -1262,7 +1262,7 @@ def intersperse_comments(main, name_specs):
                 if len(name_spec) == 1:
                     newr.append([u"# Columns below this comment are as follows:"])
                     newr.append([u"# 1. Time results were received."])
-                    newr.append([u"# 2. MD5 hash of participant's IP address."])
+                    newr.append([u"# 2. MD5 hash that hopefully uniquely identifies participant."])
                     for colname,n in itertools.izip(name_spec[0], itertools.count(3)):
                         newr.append([u"# %i. %s" % (n, ensure_period(unicode(colname)))])
                     break
@@ -1273,7 +1273,7 @@ def intersperse_comments(main, name_specs):
                     for names, i in itertools.izip(name_spec, itertools.count(1)):
                         newr.append([u"# Line %i:" % i])
                         newr.append([u"#     Col. 1: Time results were received."])
-                        newr.append([u"#     Col. 2: MD5 hash of participant's IP address."])
+                        newr.append([u"#     Col. 2: MD5 hash that hopefully uniquely identifies participant."])
                         for name, j in itertools.izip(names, itertools.count(3)):
                             newr.append([u"#     Col. %i: %s" % (j, ensure_period(unicode(name)))])
                     break
@@ -1301,7 +1301,7 @@ def simple_intersperse_comments(main, name_specs):
 
         ns = name_specs[name_specs_index][1]
         cns = ns[(i - start_i) % len(ns)]
-        assert len(cns) == len(line) - 2 # -2 because of time and IP MD5 columns.
+        assert len(cns) == len(line) - 2 # -2 because of time and MD5 columns.
         assert len(cns) >= 5
         newr.append([u"# ...First 7... " + u" -- ".join([("[%i] %s" % (i+8,s)) for i,s in itertools.izip(itertools.count(0), cns[5:])])])
         newr.append(line)
@@ -1485,12 +1485,6 @@ finally:
 def control(env, start_response):
     # Save the time the results were received.
     thetime = time_module.time()
-
-    ip = None
-    if env.has_key('HTTP_X_FORWARDED_FOR'):
-        ip = env['HTTP_X_FORWARDED_FOR']
-    else:
-        ip = env['REMOTE_ADDR']
 
     user_agent = "Unknown user agent"
     if env.has_key('USER_AGENT'):
@@ -1697,7 +1691,7 @@ def control(env, start_response):
             try:
                 dec = JSONDecoder()
                 parsed_json = dec.decode(post_data)
-                random_counter, counter, main_results, column_names, should_update_counter = rearrange(parsed_json, thetime, ip, user_agent)
+                random_counter, counter, main_results, column_names, should_update_counter = rearrange(parsed_json, thetime, user_agent)
                 header = None
                 if CFG['INCLUDE_HEADERS_IN_RESULTS_FILE']:
                     header = u'#\n# Results on %s.\n# USER AGENT: %s\n# %s\n#\n' % \

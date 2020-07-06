@@ -569,42 +569,19 @@ pForElement[runningOrder[0][0].controller](os);
 if (currentElementOptions.hideProgressBar)
     hideProgressBar();
 
-// Attempt to generate a unique MD5 hash based on various features of the user's
-// browser. (Ideas taken from http://panopticlick.eff.org/)
-// Note that the server also makes use of the user agent and IP address
-// when creating unique identifying hashes.
-function uniqueMD5() {
-    // Time zone.
-    var s = "" + new Date().getTimezoneOffset() + ':';
-
-    // Plugins.
-    var plugins = [
-        "Java",
-        "QuickTime",
-        "DevalVR",
-        "Shockwave",
-        "Flash",
-        "Windows Media Player",
-        "Silverlight",
-        "VLC Player"
-    ];
-    for (var i = 0; i < plugins.length; ++i) {
-        var v = PluginDetect.getVersion(plugins[i]);
-        if (v) s += plugins[i] + ':' + v;
+function hopefullyUniqueMD5() {
+    var id = readCookie("ibex_random_id");
+    if (id) {
+        return id;
     }
-
-    // Whether or not cookies are turned on.
-    createCookie("TEST", "TEST", 0.01); // Keep it for 0.01 days.
-    if (readCookie("TEST") == "TEST")
-        s += "C";
-
-    // Screen dimensions and color depth.
-    var width = screen.width ? screen.width : 1;
-    var height = screen.height ? screen.height : 1;
-    var colorDepth = screen.colorDepth ? screen.colorDepth : 1;
-    s += width + ':' + height + ':' + colorDepth;
-
-    return b64_md5(s);
+    var s = '';
+    for (var i = 0; i < 20; ++i) {
+        // Don't use '\0' just in case it triggers some weird edge cases.
+        s += String.fromCharCode(1 + Math.random() * ((1 << 16)-2));
+    }
+    var md5 = b64_md5(s);
+    createCookie("ibex_random_id", md5, 7);
+    return md5;
 }
 
 // Make a post request to a given address. Address may either be a domain
@@ -616,7 +593,7 @@ function sendResults(resultsLines, success, failure)
                                counter,
                                columnNamesArray,
                                resultsLines,
-                               uniqueMD5(),
+                               hopefullyUniqueMD5(),
                                !COUNTER_HAS_ALREADY_BEEN_UPDATED]);
 
     $.ajax({
