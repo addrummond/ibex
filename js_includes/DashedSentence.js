@@ -219,7 +219,7 @@ jqueryWidget: {
                     // *** goToNext() ***
                     //t.recordSprResult(time, t.currentWord);
                     var word = t.currentWord;
-                    if (word > 0 && word < t.stoppingPoint) {
+                    if (word > 0 && word <= t.stoppingPoint) {
                         var rs = t.sprResults[word-1];
                         rs[0] = time;
                         rs[1] = t.previousTime;
