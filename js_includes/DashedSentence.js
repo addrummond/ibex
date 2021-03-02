@@ -156,7 +156,9 @@ jqueryWidget: {
             this.utils.setTimeout(wordTimeout, this.wordTime);
         }
         else if (this.mode == "self-paced reading") {
-            var t = this;
+	    var keyDown = false;
+	    // keep track of pressed keys
+	    var t = this;
             // Inlining this to minimize function calls in code for updating screen after space is pressed.
 /*            function goToNext(time) {
                 t.recordSprResult(time, t.currentWord);
@@ -177,8 +179,10 @@ jqueryWidget: {
             this.safeBind($(document), 'keydown', function(e) {
                 var time = new Date().getTime();
                 var code = e.keyCode;
-
-                if (code == 32) {
+		
+		// only continue if the key was released
+                if (code == 32 && !keyDown) {
+		    keyDown = true;
                     // *** goToNext() ***
 //                    t.recordSprResult(time, t.currentWord);
                     var word = t.currentWord;
@@ -205,6 +209,12 @@ jqueryWidget: {
                     return true;
                 }
             });
+	
+	   // once the space key is released, allow its use again
+	   this.safeBind($(document), 'keyup', function(e) {
+		var code = e.keyCode;
+		keyDown = false;			
+		})		
 
             // For iPhone/iPod touch -- add button for going to next word.
             if (isIPhone) {
