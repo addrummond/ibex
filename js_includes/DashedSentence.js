@@ -11,6 +11,11 @@ jqueryWidget: {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
+        if (typeof window.performance == 'object' && typeof performance.now == 'function')
+            this.now = function () { return performance.now(); };
+        else
+            this.now = function () { return new Date().getTime(); };
+
         if (typeof(this.options.s) == "string") {
             // replace all linebreaks (and surrounding space) with 'space-return-space'
             var inputString = this.options.s.replace(/\s*[\r\n]\s*/g, " \r ");
@@ -175,7 +180,7 @@ jqueryWidget: {
             }*/
 
             this.safeBind($(document), 'keydown', function(e) {
-                var time = new Date().getTime();
+                var time = t.now();
                 var code = e.keyCode;
 
                 if (code == 32) {
@@ -214,7 +219,7 @@ jqueryWidget: {
                            .text(btext);
                 this.element.append(next);
                 next.click(function () {
-                    var time = new Date().getTime();
+                    var time = t.now();
 
                     // *** goToNext() ***
                     //t.recordSprResult(time, t.currentWord);
@@ -290,10 +295,14 @@ jqueryWidget: {
         }
 
         for (var i = 0; i < nonSpaceWords.length; ++i) {
+            var rt = this.sprResults[i][0] - this.sprResults[i][1];
+            // More than one decimal place is pointless for reaction times measured in ms.
+            rt = Math.round(rt * 10)/10;
+
             this.resultsLines.push([
                 ["Word number", i+1],
                 ["Word", csv_url_encode(nonSpaceWords[i])],
-                ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
+                ["Reading time", rt],
                 ["Newline?", (this.display != "in place") &&
                              boolToInt(((i+1) < this.wordOSpans.length) &&
                              (this.wordOSpans[i].offset().top != this.wordOSpans[i+1].offset().top))],
