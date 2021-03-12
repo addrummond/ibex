@@ -12,7 +12,7 @@ jqueryWidget: {
         this.finishedCallback = this.options._finishedCallback;
 
         if (typeof window.performance == 'object' && typeof performance.now == 'function')
-            this.now = function () { return performance.now(); };
+            this.now = function () { return window.performance.now(); };
         else
             this.now = function () { return new Date().getTime(); };
 
