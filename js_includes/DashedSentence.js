@@ -294,7 +294,7 @@ jqueryWidget: {
                 ["Word number", i+1],
                 ["Word", csv_url_encode(nonSpaceWords[i])],
                 ["Reading time", this.sprResults[i][0] - this.sprResults[i][1]],
-                ["Newline?", (! this.display == "in place") &&
+                ["Newline?", (this.display != "in place") &&
                              boolToInt(((i+1) < this.wordOSpans.length) &&
                              (this.wordOSpans[i].offset().top != this.wordOSpans[i+1].offset().top))],
                 ["Sentence (or sentence MD5)", this.sentenceDesc]
