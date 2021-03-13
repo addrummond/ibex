@@ -39,7 +39,7 @@ jqueryWidget: {
             var e = $("label." + escape(t.errorCSSClass) + "[for=" + escape(name) + "]");
             if (e.length > 0)
                 e.addClass(t.cssPrefix + "error-text").text(error);
-            else 
+            else
                 alert(error);
         }
 
@@ -84,15 +84,24 @@ jqueryWidget: {
                 var checks = $(dom).find("input[type=checkbox]");
                 for (var i = 0; i < checks.length; ++i) {
                     var check = $(checks[i]);
- 
+
                     // Checkboxes with the 'obligatory' class must be checked.
                     if (! check.attr('checked') && check.hasClass('obligatory')) {
                         alertOrAddError(check.attr('name'), t.obligatoryCheckboxErrorGenerator(check.attr('name')));
                         return;
                     }
 
+                    var checkValue = check.attr('checked') ? t.checkedValue : t.uncheckedValue;
+                    if (t.validators[check.attr('name')]) {
+                        var er = t.validators[check.attr('name')](checkValue);
+                        if (typeof(er) == "string") {
+                            alertOrAddError(check.attr('name'), er);
+                            return;
+                        }
+                    }
+
                     rlines.push([["Field name", check.attr('name')],
-                                 ["Field value", check.attr('checked') ? t.checkedValue : t.uncheckedValue]]);
+                                 ["Field value", checkValue]]);
                 }
 
                 var rads = $(dom).find("input[type=radio]");
@@ -125,8 +134,17 @@ jqueryWidget: {
                         return;
                     }
                     if (oneIsSelected) {
+                        var radioValue = rgs[k][oneThatWasSelected].attr('value');
+                        if (t.validators[rgs[k][0].attr('name')]) {
+                            var er = t.validators[rgs[k][0].attr('name')](radioValue);
+                            if (typeof(er) == "string") {
+                                alertOrAddError(rgs[k][0].attr('name'), er);
+                                return;
+                            }
+                        }
+
                         rlines.push([["Field name", rgs[k][0].attr('name')],
-                                     ["Field value", rgs[k][oneThatWasSelected].attr('value')]]);
+                                     ["Field value", radioValue]]);
                     }
                 }
 
