@@ -18,6 +18,11 @@ jqueryWidget: {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
+        if (typeof window.performance == 'object' && typeof performance.now == 'function')
+            this.now = function () { return window.performance.now(); };
+        else
+            this.now = function () { return new Date().getTime(); };
+
         var questionField = "Sentence";
         var answerField = "Chosen picture (Starting from 1)";
         var correctField = "Whether or not answer was correct (NULL if N/A)";
@@ -128,7 +133,7 @@ jqueryWidget: {
             var a = $(document.createElement("span")).addClass(this.cssPrefix + "fake-link");
             __Question_answers__[i] = ans;
             __Question_callback__ = function (i) {
-                var answerTime = new Date().getTime();
+                var answerTime = t.now();
                 var ans = __Question_answers__[i];
                 var resultsAns = (i+1).toString();
                 var correct = "NULL";
@@ -171,7 +176,7 @@ jqueryWidget: {
         if (this.timeout) {
             var t = this;
             this.utils.setTimeout(function () {
-                var answerTime = new Date().getTime();
+                var answerTime = t.now();
                 t.setFlag(false);
                 t.finishedCallback([[[questionField, t.question ? csv_url_encode(t.question) : "NULL"],
                                      [answerField, "NULL"], [correctField, "NULL"],
@@ -183,9 +188,8 @@ jqueryWidget: {
         var t = this;
         this.safeBind($(document), 'keydown', function(e) {
             var code = e.keyCode;
-            var time = new Date().getTime();
 
-            var answerTime = new Date().getTime();
+            var answerTime = t.now();
             if ((! t.presentAsScale && !t.presentHorizontally) && t.showNumbers &&
                 ((code >= 48 && code <= 57) || (code >= 96 && code <= 105))) {
                 // Convert numeric keypad codes to ordinary keypad codes.
@@ -260,7 +264,7 @@ jqueryWidget: {
         });
 
         // Store the time when this was first displayed.
-        this.creationTime = new Date().getTime();
+        this.creationTime = t.now();
     }
 },
 
