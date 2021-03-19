@@ -9,6 +9,11 @@ jqueryWidget: {
         this.finishedCallback = this.options._finishedCallback;
         this.utils = this.options._utils;
 
+        if (typeof window.performance == 'object' && typeof performance.now == 'function')
+            this.now = function () { return window.performance.now(); };
+        else
+            this.now = function () { return new Date().getTime(); };
+
         this.html = dget(this.options, "html");
         this.continueOnReturn = dget(this.options, "continueOnReturn", false);
         this.continueMessage = dget(this.options, "continueMessage", "Click here to continue");
@@ -47,7 +52,7 @@ jqueryWidget: {
 
         function handleClick(dom) {
             return function (e) {
-                var answerTime = new Date().getTime();
+                var answerTime = t.now();
 
                 e.preventDefault();
                 if (! HAS_LOADED) return;
@@ -173,7 +178,7 @@ jqueryWidget: {
                                                 .click(handler)));
         }
 
-        this.creationTime = new Date().getTime();
+        this.creationTime = this.now();
     }
 },
 
