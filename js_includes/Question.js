@@ -131,7 +131,7 @@ jqueryWidget: {
             var a = $(document.createElement("span")).addClass(this.cssPrefix + "fake-link");
             __Question_answers__[i] = ans;
             __Question_callback__ = function (i) {
-                var answerTime = new Date().getTime();
+                var answerTime = t.now();
                 var ans = __Question_answers__[i];
                 var correct = "NULL";
                 if (! (t.hasCorrect === false)) {
