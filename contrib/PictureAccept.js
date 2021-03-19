@@ -18,7 +18,7 @@ jqueryWidget: {
         this.utils = this.options._utils;
         this.finishedCallback = this.options._finishedCallback;
 
-        if (typeof window.performance == 'object' && typeof performance.now == 'function')
+        if (typeof window.performance == 'object' && typeof window.performance.now == 'function')
             this.now = function () { return window.performance.now(); };
         else
             this.now = function () { return new Date().getTime(); };
