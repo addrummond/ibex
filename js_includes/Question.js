@@ -2,7 +2,7 @@
 
 //
 // TODO: Replace this controller with something that's not such a horrible mess!
-// 
+//
 
 (function () {
 
@@ -248,7 +248,7 @@ jqueryWidget: {
                                          [answerField, csv_url_encode(ans)],
                                          [correctField, correct],
                                          [timeField, answerTime - t.creationTime]]]);
-                    
+
                     return false;
                 }
             }
